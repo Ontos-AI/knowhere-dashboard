@@ -1,137 +1,203 @@
 # 前端应用正式环境部署指南 (Production Deployment Guide)
 
-本指南旨在指导你将 Next.js 应用（基于 Monorepo 结构）从本地开发环境部署到生产服务器。
+本指南详细说明了如何构建、部署和运行 Knowhere 前端应用（Next.js）。
 
----
+## 1. 环境要求 (Prerequisites)
 
-## 1. 准备工作 (Prerequisites)
+在开始部署之前，请确保服务器满足以下要求：
 
-在开始构建之前，请确保已经准备好以下环境和配置。
+- **Node.js**: v18.17.0 或更高版本 (建议使用 LTS 版本)
+- **包管理器**: pnpm (本项目锁定使用 pnpm)
+- **操作系统**: Linux (推荐 Ubuntu/Debian/CentOS), macOS, 或 Windows Server
 
-### 1.1 系统要求
-- **本地环境**: Node.js v18+
-- **权限要求 (Windows 用户必看)**: 
-  > **警告**: Windows 下执行 `pnpm build` **必须使用管理员权限** (Right-click -> Run as Administrator) 打开终端。
-  > 否则构建过程会因无法创建符号链接而失败（报错 `EPERM: operation not permitted`），导致最终生成的包缺失依赖（报错 `Cannot find module 'next'`）。
+## 2. 环境变量配置 (Environment Variables)
 
-  > **💡 彻底解决痛点方案**:
-  > 如果你不想每次都用管理员权限，也不想遇到 `node_modules` 被破坏的问题，请在**项目根目录**（即包含 `pnpm-workspace.yaml` 的地方）创建一个 `.npmrc` 文件，填入以下内容：
-  > ```ini
-  > node-linker=hoisted
-  > ```
-  > 保存后，删除所有 `node_modules` 并重新 `pnpm install`。这会让 pnpm 像 npm 一样工作，彻底避免 Windows 符号链接问题。
+在生产环境中，你需要创建一个 `.env.production` 文件（或直接在部署平台的后台配置环境变量）。
 
-### 1.2 环境变量配置
-请确保生产环境（如 `.env.production` 或服务器环境变量）已包含以下核心配置：
+以下是必须配置的环境变量：
 
-| 变量名 | 必填 | 说明 | 示例值 |
-| :--- | :--- | :--- | :--- |
-| `NEXT_PUBLIC_API_URL` | 是 | 后端 API 地址 | `https://api.example.com/api` |
-| `NEXT_PUBLIC_AUTH_BASE_URL` | 是 | 认证基础路径 | `https://example.com/api/auth` |
-| `BETTER_AUTH_URL` | 是 | 前端域名 | `https://example.com` |
-| `BETTER_AUTH_SECRET` | 是 | 认证加密密钥 | (长随机字符串) |
-| `RESEND_API_KEY` | 否 | 邮件服务密钥 | `re_123...` |
+### 核心配置
+```bash
+# 生产环境标识
+NODE_ENV=production
 
-*(OAuth 登录的 Client ID/Secret 请参考各平台文档)*
+# 后端 API 地址 (如果不配置，默认为 http://218.17.187.47:5005/api)
+NEXT_PUBLIC_API_URL=https://api.your-domain.com/api
+```
 
----
-
-## 2. 构建与打包 (Build & Package)
-
-本步骤在**本地开发机**执行。
-
-### 2.1 执行构建
-在项目根目录或 `apps/web` 目录下运行：
+### 认证配置 (Better Auth)
+本项目使用 Better Auth 进行用户认证。
 
 ```bash
-# 确保已安装依赖
-pnpm install
+# 应用的基础 URL (生产环境必须配置为实际域名)
+BETTER_AUTH_URL=https://www.your-domain.com
 
-# 执行构建 (Windows 请务必使用管理员权限，除非你配置了 .npmrc)
-pnpm build
+# Auth API 的路径 (通常不需要修改)
+NEXT_PUBLIC_AUTH_BASE_URL=/api/auth
+
+# Auth 密钥 (必须修改！生成一个随机长字符串)
+# 可以使用 `openssl rand -base64 32` 生成
+BETTER_AUTH_SECRET=your-secure-random-secret-key
+
+# OAuth 提供商配置 (如果启用了对应登录方式)
+GITHUB_CLIENT_ID=your-github-client-id
+GITHUB_CLIENT_SECRET=your-github-client-secret
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
 ```
 
-> **检查点**: 请留意控制台输出。如果出现 `ELIFECYCLE Command failed` 或 `EPERM: operation not permitted`，说明构建失败，**不能**继续下一步。请切换到管理员终端重试。
-
-### 2.2 制作部署包 (关键步骤)
-由于本项目启用了 `output: 'standalone'` 且位于 Monorepo 中，构建产物结构较为特殊。请严格按照以下步骤操作。
-
-Next.js 自动生成的文件位于 `.next/standalone`，但它**不包含**静态资源。你需要手动合并。
-
-**操作命令 (在 `apps/web` 目录下执行):**
+### 邮件服务 (Resend)
+用于发送 Magic Link 登录邮件。
 
 ```bash
-# 1. 复制 public 文件夹 (仅当存在 public 目录时执行)
-# 注意：当前项目似乎没有 public 目录，如果没有请跳过此步
-if [ -d "public" ]; then
-  cp -r public .next/standalone/apps/web/public
-fi
-# (PowerShell 用户如果遇到 public 不存在可直接跳过)
-
-# 2. 复制 .next/static 文件夹 (包含 JS/CSS，必须执行)
-# 目标路径必须包含 apps/web/.next 层级
-cp -r .next/static .next/standalone/apps/web/.next/static
+RESEND_API_KEY=$KNOWHERE_API_KEY
+# 发件人邮箱 (必须是在 Resend 验证过的域名)
+RESEND_FROM=onboarding@your-domain.com
 ```
 
-完成上述步骤后，整个 `.next/standalone` 文件夹就是你的**完整部署包**。
-
----
-
-## 3. 服务器部署 (Server Deployment)
-
-本步骤在**生产服务器**执行。
-
-### 3.1 上传文件
-将本地处理好的 `.next/standalone` 文件夹压缩并上传到服务器。
-
-### 3.2 验证目录结构
-解压后，服务器上的文件结构应如下所示（请仔细核对 `apps/web` 层级）：
-
-```text
-/your-deployment-folder
-├── node_modules/          # (应包含 next, react 等依赖)
-├── package.json
-├── apps/
-│   └── web/
-│       ├── package.json
-│       ├── server.js      # ★ 启动入口
-│       ├── public/        # (如果项目有则存在)
-│       └── .next/
-│           └── static/    # (必须存在)
-```
-
-### 3.3 启动服务
-进入部署目录根目录，执行启动命令：
+### 数据统计 (PostHog)
+用于用户行为分析。
 
 ```bash
-# 直接启动
-node apps/web/server.js
-
-# 或者使用 PM2 (推荐)
-pm2 start apps/web/server.js --name "my-web-app"
+NEXT_PUBLIC_POSTHOG_KEY=phc_your_public_key
+NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
 ```
 
-*注意: 默认端口为 3000。如需更改，请在启动前设置环境变量 `PORT=8080`。*
+## 3. 构建与部署 (Build & Deployment)
 
----
+本项目配置了 `output: 'standalone'` (在 `next.config.js` 中)，这意味着构建后会生成一个独立的 Node.js 应用，非常适合 Docker 或 VPS 部署。
 
-## 4. 常见问题排查 (Troubleshooting)
+### 方式一：标准 VPS 部署 (使用 PM2)
 
-### Q1: 启动时报错 `Error: Cannot find module 'next'`
-**原因**: 本地构建时没有使用管理员权限，导致 `standalone` 目录下的 `node_modules` 符号链接创建失败。
-**解决**:
-1.  **推荐**: 删除 `.next` 目录，使用**管理员权限**打开终端，重新运行 `pnpm build`。
-2.  **补救**: 如果无法重新构建，可以尝试进入部署包的根目录（即 `server.js` 的上两级，包含 `package.json` 的地方），运行 `npm install` 来手动下载依赖。
+1.  **安装依赖**:
+    ```bash
+    pnpm install --frozen-lockfile
+    ```
 
-### Q2: 频繁遇到 `EPERM` 或 `node_modules` 被删除/损坏？
-**原因**: Windows 文件系统对符号链接支持不佳，而 pnpm 和 Next.js Standalone 默认都大量使用符号链接。
-**彻底解决方法**:
-1. 在项目根目录（`knowhere-api-main/`）创建文件 `.npmrc`。
-2. 写入内容：`node-linker=hoisted`。
-3. 删除整个项目的 `node_modules` 文件夹。
-4. 重新运行 `pnpm install`。
-这将迫使 pnpm 使用扁平化安装（类似 npm），彻底消除符号链接兼容性问题。
+2.  **构建项目**:
+    ```bash
+    pnpm build
+    ```
+    构建完成后，你会看到 `.next` 目录。
 
-### Q3: 页面样式丢失 (404 on .css/.js)
-**原因**: 步骤 2.2 中没有正确复制 `.next/static` 文件夹。
-**解决**: 重新检查文件夹结构，确保 `.next/standalone/apps/web/.next/static` 存在。
+3.  **准备运行文件**:
+    Next.js 的 Standalone 模式会自动将必要的依赖打包到 `.next/standalone` 目录中。
+    但是，你需要**手动复制** `public` 目录和 `.next/static` 目录到 standalone 目录中，以确保静态资源正常加载。
+
+    ```bash
+    # 假设你在项目根目录
+    cp -r public .next/standalone/public
+    cp -r .next/static .next/standalone/.next/static
+    ```
+
+4.  **启动服务**:
+    进入 standalone 目录并启动 `server.js`。
+
+    ```bash
+    cd .next/standalone
+    node server.js
+    ```
+    默认端口为 3000。你可以通过 `PORT` 环境变量指定端口：
+    ```bash
+    PORT=8080 node server.js
+    ```
+
+5.  **使用 PM2 守护进程 (推荐)**:
+    在项目根目录下创建一个 `ecosystem.config.js` 或直接运行：
+    ```bash
+    cd .next/standalone
+    pm2 start server.js --name "knowhere-frontend" --env PORT=3000
+    ```
+
+### 方式二：Docker 部署 (推荐)
+
+使用 Docker 可以确保环境一致性。
+
+1.  **创建 Dockerfile**:
+    (如果项目根目录没有 Dockerfile，请参考以下内容创建)
+
+    ```dockerfile
+    FROM node:18-alpine AS base
+
+    # Install dependencies only when needed
+    FROM base AS deps
+    WORKDIR /app
+    COPY package.json pnpm-lock.yaml* ./
+    RUN npm install -g pnpm && pnpm i --frozen-lockfile
+
+    # Rebuild the source code only when needed
+    FROM base AS builder
+    WORKDIR /app
+    COPY --from=deps /app/node_modules ./node_modules
+    COPY . .
+    RUN npm install -g pnpm && pnpm build
+
+    # Production image, copy all the files and run next
+    FROM base AS runner
+    WORKDIR /app
+    ENV NODE_ENV production
+    ENV PORT 3000
+
+    RUN addgroup --system --gid 1001 nodejs
+    RUN adduser --system --uid 1001 nextjs
+
+    COPY --from=builder /app/public ./public
+    
+    # Automatically leverage output traces to reduce image size
+    # https://nextjs.org/docs/advanced-features/output-file-tracing
+    COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+    COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+    USER nextjs
+
+    EXPOSE 3000
+    CMD ["node", "server.js"]
+    ```
+
+2.  **构建镜像**:
+    ```bash
+    docker build -t knowhere-frontend .
+    ```
+
+3.  **运行容器**:
+    ```bash
+    docker run -d -p 3000:3000 \
+      --env-file .env.production \
+      --name knowhere-frontend \
+      knowhere-frontend
+    ```
+
+## 4. 常见问题与注意事项 (Troubleshooting)
+
+### 1. 静态资源 404
+如果在 Standalone 模式下发现图片或样式丢失 (404)，请检查是否正确复制了 `.next/static` 文件夹到 `.next/standalone/.next/static`。
+**目录结构应该是这样的：**
+```
+.next/standalone/
+├── .next/
+│   └── static/  <-- 必须存在
+├── public/      <-- 必须存在
+├── server.js
+└── package.json
+```
+
+### 2. Authentication Error (Better Auth)
+如果登录失败或重定向错误，请检查：
+- `BETTER_AUTH_URL` 是否与当前浏览器访问的域名完全一致（包括 http/https 协议）。
+- `trustedOrigins` 配置：在 `lib/auth.ts` 中，我们配置了 `trustedOrigins`。确保生产环境的域名被包含在内，或者通过环境变量正确传递。
+
+### 3. API 连接失败
+检查 `NEXT_PUBLIC_API_URL` 是否正确指向后端服务。注意如果是在浏览器端请求（Client Component），该 URL 必须是公网可访问的地址。
+
+### 4. 跨域问题 (CORS)
+如果前端和后端部署在不同域名，确保后端配置了允许前端域名的 CORS 策略。
+本项目的 `next.config.js` 配置了 `/api` 的代理，如果使用 Next.js 的 API 路由作为中转，可以避免部分 CORS 问题。
+
+## 5. 常用命令速查
+
+| 命令 | 说明 |
+|------|------|
+| `pnpm dev` | 启动开发服务器 |
+| `pnpm build` | 构建生产版本 |
+| `pnpm start` | 启动生产服务器 (非 Standalone 模式) |
+| `pnpm lint` | 代码检查 |
