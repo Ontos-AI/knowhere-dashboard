@@ -198,7 +198,8 @@ export interface JobResponse {
   credits_spent?: number
   result_url_expires_at?: string
   
-  // waiting-file status specific upload_url?: string
+  // waiting-file status specific
+  upload_url?: string
   upload_headers?: Record<string, string>
   expires_in?: number
   
