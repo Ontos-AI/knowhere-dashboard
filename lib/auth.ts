@@ -1,3 +1,4 @@
+import "./polyfill"
 import { betterAuth } from "better-auth"
 import { magicLink } from "better-auth/plugins"
 import { nextCookies } from "better-auth/next-js"

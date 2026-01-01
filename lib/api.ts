@@ -3,6 +3,8 @@
  * 统一处理后端API请求和响应
  */
 
+import './polyfill'
+
 // ============================================
 // 类型定义
 // ============================================
@@ -166,7 +168,7 @@ export interface ParsingParams {
 
 export interface JobCreate {
   source_type: string
-  file?: File
+  file?: any // Use any instead of File to avoid server-side ReferenceError
   file_name?: string
   url?: string
   text?: string
@@ -778,7 +780,7 @@ export class KnowhereAPI {
    */
   async uploadFileToS3(
     uploadUrl: string, 
-    file: File, 
+    file: any, // Use any instead of File to avoid server-side ReferenceError
     headers: Record<string, string>,
     onProgress?: (progress: number) => void
   ): Promise<void> {

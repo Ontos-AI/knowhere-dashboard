@@ -6,7 +6,7 @@
 
 在开始部署之前，请确保服务器满足以下要求：
 
-- **Node.js**: v18.17.0 或更高版本 (建议使用 LTS 版本)
+- **Node.js**: v20.0.0 或更高版本 (建议使用 LTS 版本)
 - **包管理器**: pnpm (本项目锁定使用 pnpm)
 - **操作系统**: Linux (推荐 Ubuntu/Debian/CentOS), macOS, 或 Windows Server
 
