@@ -15,12 +15,14 @@ interface OAuthButtonsProps {
 export function OAuthButtons({ onSuccess, onError }: OAuthButtonsProps) {
   const toast = useToast()
   const [isLoading, setIsLoading] = useState(false)
+  const [clickedProvider, setClickedProvider] = useState<'google' | 'github' | null>(null)
   const t = useTranslations('Auth')
 
   // 使用 Better Auth 发起社交登录（重定向到提供商）
   const signInWithProvider = async (provider: 'github' | 'google') => {
     if (isLoading) return
     setIsLoading(true)
+    setClickedProvider(provider)
     try {
       await authClient.signIn.social({
         provider,
@@ -33,8 +35,11 @@ export function OAuthButtons({ onSuccess, onError }: OAuthButtonsProps) {
       const message = error instanceof Error ? error.message : t('loginFailed')
       toast.error(t('oauthFailed'), message)
       onError?.(message)
-    } finally {
       setIsLoading(false)
+      setClickedProvider(null)
+    } finally {
+      // 注意：成功时不重置 isLoading，因为页面即将跳转
+      // 只有失败时在 catch 块中重置
     }
   }
 
@@ -46,7 +51,7 @@ export function OAuthButtons({ onSuccess, onError }: OAuthButtonsProps) {
         className="w-full h-11"
         disabled={isLoading}
       >
-        {isLoading ? (
+        {isLoading && clickedProvider === 'google' ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
           <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
@@ -77,7 +82,7 @@ export function OAuthButtons({ onSuccess, onError }: OAuthButtonsProps) {
         className="w-full h-11"
         disabled={isLoading}
       >
-        {isLoading ? (
+        {isLoading && clickedProvider === 'github' ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
           <Github className="w-5 h-5 mr-2" />

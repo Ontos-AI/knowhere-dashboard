@@ -102,6 +102,22 @@ NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
     PORT=8080 node server.js
     ```
 
+    **注意：** Standalone 模式**不会**自动加载 `.env.production` 文件。你需要通过以下方式之一注入环境变量：
+
+    **方法 A：使用 dotenv-cli (推荐)**
+    ```bash
+    # 安装
+    npm install -g dotenv-cli
+
+    # 启动
+    dotenv -e .env.production -- node server.js
+    ```
+
+    **方法 B：Linux 命令行注入**
+    ```bash
+    export $(cat .env.production | xargs) && node server.js
+    ```
+
 5.  **使用 PM2 守护进程 (推荐)**:
     在项目根目录下创建一个 `ecosystem.config.js` 或直接运行：
     ```bash
