@@ -76,16 +76,44 @@ export const auth = betterAuth({
             to: email,
             subject: "登录您的 Knowhere 账户",
             html: `
-              <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-                <h2>登录 Knowhere</h2>
-                <p>您请求了登录链接。请点击下方按钮完成登录：</p>
-                <a href="${url}" style="display: inline-block; padding: 12px 24px; background-color: #000; color: #fff; text-decoration: none; border-radius: 6px;">
-                  登录系统
-                </a>
-                <p style="margin-top: 20px; font-size: 12px; color: #666;">
-                  如果您没有请求此链接，请忽略此邮件。
-                </p>
-              </div>
+              <!DOCTYPE html>
+              <html>
+              <head>
+                <meta name="color-scheme" content="light dark">
+                <meta name="supported-color-schemes" content="light dark">
+                <style>
+                  @media (prefers-color-scheme: dark) {
+                    .body-bg { background-color: #09090b !important; }
+                    .content-text { color: #ffffff !important; }
+                    .secondary-text { color: #a1a1aa !important; }
+                    .button-primary { background-color: #fafafa !important; color: #09090b !important; }
+                    .link-text { color: #a1a1aa !important; }
+                    .divider { border-color: #27272a !important; }
+                  }
+                </style>
+              </head>
+              <body class="body-bg" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #ffffff;">
+                <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+                  <h2 class="content-text" style="color: #09090b; margin-bottom: 24px; font-size: 24px; font-weight: 600;">登录 Knowhere</h2>
+                  <p class="content-text" style="color: #09090b; margin-bottom: 24px; line-height: 1.6; font-size: 16px;">您请求了登录链接。请点击下方按钮完成登录：</p>
+                  
+                  <a href="${url}" class="button-primary" style="display: inline-block; padding: 12px 24px; background-color: #09090b; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 16px;">
+                    登录系统
+                  </a>
+
+                  <div class="divider" style="margin-top: 32px; padding-top: 32px; border-top: 1px solid #e5e5e5;">
+                    <p class="secondary-text" style="font-size: 14px; color: #666666; margin-bottom: 12px; line-height: 1.5;">如果按钮无法点击，请复制以下链接到浏览器：</p>
+                    <a href="${url}" class="link-text" style="font-size: 13px; color: #666666; text-decoration: underline; word-break: break-all; line-height: 1.6; display: block;">
+                      ${url}
+                    </a>
+                  </div>
+
+                  <p class="secondary-text" style="margin-top: 32px; font-size: 12px; color: #a1a1aa;">
+                    如果您没有请求此链接，请忽略此邮件。
+                  </p>
+                </div>
+              </body>
+              </html>
             `,
           })
 
