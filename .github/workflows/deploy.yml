@@ -34,7 +34,7 @@ env:
   # AWS 区域
   AWS_REGION: us-east-1
   # EKS 集群名称
-  EKS_CLUSTER_NAME: knowhere-cluster
+  EKS_CLUSTER_NAME: knowhere-prod-cluster
 
 jobs:
   build-and-deploy:
