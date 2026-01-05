@@ -449,7 +449,8 @@ export default function SettingsPage() {
                 <Select 
                   defaultValue={locale}
                   onValueChange={(val) => {
-                    router.replace(pathname, { locale: val })
+                    document.cookie = `NEXT_LOCALE=${val}; path=/; max-age=31536000; SameSite=Lax`
+                    router.refresh()
                   }}
                 >
                   <SelectTrigger className="w-48">
