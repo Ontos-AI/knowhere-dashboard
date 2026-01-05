@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import '../globals.css'
+import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import PostHogProvider from '@/components/providers/PostHogProvider'
 import { Providers } from '@/components/providers/Providers'
@@ -16,13 +16,16 @@ export const metadata: Metadata = {
   description: '基于 AI 的知识库管理和智能问答系统',
 }
 
+import { cookies } from 'next/headers';
+
 export default async function RootLayout({
   children,
-  params: { locale }
 }: {
   children: React.ReactNode
-  params: { locale: string }
 }) {
+  const cookieStore = cookies();
+  const locale = cookieStore.get('NEXT_LOCALE')?.value || 'en';
+
   // 在服务端读取环境变量（运行时配置，不带NEXT_PUBLIC_前缀）
   const appConfig = getDefaultConfig()
   
@@ -32,7 +35,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body className={inter.className}>
-        <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider messages={messages} locale={locale}>
           <ConfigProvider config={appConfig}>
             <ThemeProvider
               attribute="class"

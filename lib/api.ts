@@ -761,8 +761,8 @@ export class KnowhereAPI {
     if (params?.status) queryParams.append('status', params.status)
     
     // Add default job_type=kb_management if not specified, as requested
-    const jobType = params?.job_type || 'kb_management'
-    queryParams.append('job_type', jobType)
+    // const jobType = params?.job_type || 'kb_management'
+    // queryParams.append('job_type', jobType)
     
     // New filtering parameters
     if (params?.recent_days) queryParams.append('recent_days', params.recent_days.toString())
