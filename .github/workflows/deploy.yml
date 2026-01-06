@@ -33,8 +33,8 @@ env:
   
   # AWS 区域
   AWS_REGION: us-east-1
-  # EKS 集群名称 
-  EKS_CLUSTER_NAME: knowhere-prod-cluster
+  # EKS 集群名称 - 请根据实际情况修改
+  EKS_CLUSTER_NAME: knowhere-cluster
 
 jobs:
   build-and-deploy:
@@ -76,20 +76,64 @@ jobs:
         # 根据分支或手动输入确定环境
         if [[ "${{ github.ref_name }}" == "main" || "${{ github.event.inputs.environment }}" == "production" ]]; then
           echo "NAMESPACE=knowhere" >> $GITHUB_ENV
-          echo "ENV_FILE=.env.production" >> $GITHUB_ENV
+          echo "ENV_TYPE=production" >> $GITHUB_ENV
         else
           echo "NAMESPACE=knowhere-staging" >> $GITHUB_ENV
-          echo "ENV_FILE=.env.staging" >> $GITHUB_ENV
+          echo "ENV_TYPE=staging" >> $GITHUB_ENV
         fi
         
         echo "Using namespace: $NAMESPACE"
-        echo "Using environment file: $ENV_FILE"
+        echo "Environment type: $ENV_TYPE"
+    
+    - name: Create temporary .env file for build
+      run: |
+        echo "Creating temporary .env file for $ENV_TYPE environment"
+        
+        # 根据环境类型选择对应的 Secret 内容
+        if [ "$ENV_TYPE" = "production" ]; then
+          ENV_CONTENT="${{ secrets.PRODUCTION_ENV_CONTENT }}"
+          ENV_FILE=".env.production"
+        else
+          ENV_CONTENT="${{ secrets.STAGING_ENV_CONTENT }}"
+          ENV_FILE=".env.staging"
+        fi
+        
+        # 创建 .env 文件
+        echo "$ENV_CONTENT" > $ENV_FILE
+        
+        # 验证文件内容（隐藏敏感信息）
+        echo "Created $ENV_FILE with following variables (sensitive values masked):"
+        while IFS= read -r line; do
+          if [[ "$line" =~ ^[A-Z_]+= ]]; then
+            key="${line%%=*}"
+            value="${line#*=}"
+            if [[ ${#value} -gt 20 ]] || [[ "$key" =~ SECRET|KEY|PASSWORD|TOKEN ]]; then
+              echo "  $key=*** (hidden)"
+            else
+              echo "  $line"
+            fi
+          fi
+        done < "$ENV_FILE"
+        
+        # 设置环境变量供后续步骤使用
+        echo "ENV_FILE=$ENV_FILE" >> $GITHUB_ENV
+        
+        # 确保 .env 文件不会被意外提交或打包
+        echo "Adding .env.* to .dockerignore..."
+        if ! grep -q "^\.env\." .dockerignore 2>/dev/null; then
+          echo ".env.*" >> .dockerignore
+        fi
+        echo "Adding .env to .dockerignore..."
+        if ! grep -q "^\.env$" .dockerignore 2>/dev/null; then
+          echo ".env" >> .dockerignore
+        fi
     
     - name: Build and push Docker image
       run: |
         echo "Building Docker image with tag: ${{ steps.image-tag.outputs.TAG }}"
+        echo "Using environment file: $ENV_FILE"
         
-        # 构建 Docker 镜像
+        # 构建 Docker 镜像，传递环境文件名作为构建参数
         docker build \
           --build-arg ENVIRONMENT=$ENV_FILE \
           -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ steps.image-tag.outputs.TAG }} \
@@ -226,29 +270,11 @@ jobs:
         UPDATED_IMAGE=$(kubectl get deployment $PROJECT_NAME -n $NAMESPACE -o jsonpath='{.spec.template.spec.containers[0].image}')
         echo "✓ Deployment successfully updated with image: $UPDATED_IMAGE"
     
-    - name: Test service access (staging only)
-      if: env.NAMESPACE == 'knowhere-staging'
+    - name: Clean up temporary files
+      if: always()
       run: |
-        echo "Testing service access for staging environment..."
-        
-        # 获取服务信息
-        SERVICE_INFO=$(kubectl get service $PROJECT_NAME -n $NAMESPACE)
-        echo "Service info:"
-        echo "$SERVICE_INFO"
-        
-        # 尝试获取外部访问地址
-        EXTERNAL_HOST=$(kubectl get service $PROJECT_NAME -n $NAMESPACE -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-        EXTERNAL_IP=$(kubectl get service $PROJECT_NAME -n $NAMESPACE -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-        
-        if [ -n "$EXTERNAL_HOST" ]; then
-          echo "::notice title=Staging URL Available::Application is available at: http://$EXTERNAL_HOST"
-          echo "Staging URL: http://$EXTERNAL_HOST"
-        elif [ -n "$EXTERNAL_IP" ]; then
-          echo "::notice title=Staging URL Available::Application is available at: http://$EXTERNAL_IP"
-          echo "Staging URL: http://$EXTERNAL_IP"
-        else
-          echo "Note: No external IP/Hostname found. Service may be using ClusterIP or NodePort."
-        fi
+        echo "Cleaning up temporary .env files..."
+        rm -f .env.production .env.staging 2>/dev/null || true
     
     - name: Display final status
       run: |
@@ -317,4 +343,3 @@ jobs:
         echo ""
         echo "Deployment details:"
         kubectl describe deployment $PROJECT_NAME -n $NAMESPACE 2>/dev/null || echo "Cannot describe deployment"
-    
