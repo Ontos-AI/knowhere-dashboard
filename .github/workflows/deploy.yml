@@ -85,62 +85,52 @@ jobs:
         echo "Using namespace: $NAMESPACE"
         echo "Environment type: $ENV_TYPE"
     
-    - name: Create temporary .env file for build
+    - name: Parse environment variables from GitHub Secrets
+      id: parse-env
       run: |
-        echo "Creating temporary .env file for $ENV_TYPE environment"
-        
         # 根据环境类型选择对应的 Secret 内容
         if [ "$ENV_TYPE" = "production" ]; then
           ENV_CONTENT="${{ secrets.PRODUCTION_ENV_CONTENT }}"
-          ENV_FILE=".env.production"
         else
           ENV_CONTENT="${{ secrets.STAGING_ENV_CONTENT }}"
-          ENV_FILE=".env.staging"
         fi
         
-        # 创建 .env 文件
-        echo "$ENV_CONTENT" > $ENV_FILE
-        echo "File content (with sensitive values masked):"
-        cat "$ENV_FILE" | while IFS= read -r line; do
+        # 将环境变量解析为单独的变量
+        echo "$ENV_CONTENT" | while IFS= read -r line; do
           if [[ "$line" =~ ^([A-Z_]+)=(.*)$ ]]; then
             key="${BASH_REMATCH[1]}"
             value="${BASH_REMATCH[2]}"
+            
+            # 设置环境变量
+            echo "${key}=${value}" >> $GITHUB_ENV
+            
+            # 对于敏感变量，只显示长度用于调试
             if [[ "$key" =~ SECRET|KEY|PASSWORD|TOKEN ]]; then
-              echo "$key=*** (length: ${#value})"
+              echo "Setting $key (length: ${#value})"
             else
-              echo "$key=$value"
+              echo "Setting $key=$value"
             fi
-          else
-            echo "$line"
           fi
         done
-        if [ -f "$ENV_FILE" ]; then
-          echo "✅ $ENV_FILE exists and is readable"
-          echo "File size: $(wc -l < $ENV_FILE) lines"
-          echo "RESEND_API_KEY exists: $(grep -q RESEND_API_KEY $ENV_FILE && echo "✅ Yes" || echo "❌ No")"
-          
-          # 显示 RESEND_API_KEY 的实际值（前10个字符用于调试）
-          RESEND_KEY=$(grep RESEND_API_KEY "$ENV_FILE" | cut -d= -f2)
-          if [ -n "$RESEND_KEY" ]; then
-            echo "RESEND_API_KEY length: ${#RESEND_KEY}"
-            echo "RESEND_API_KEY starts with: ${RESEND_KEY:0:10}..."
-          fi
-        else
-          echo "❌ $ENV_FILE does not exist!"
-          exit 1
-        fi
-        
-        # 设置环境变量供后续步骤使用
-        echo "ENV_FILE=$ENV_FILE" >> $GITHUB_ENV
     
     - name: Build and push Docker image
       run: |
         echo "Building Docker image with tag: ${{ steps.image-tag.outputs.TAG }}"
-        echo "Using environment file: $ENV_FILE"
+        echo "Environment type: $ENV_TYPE"
+        echo "Key environment variables available for build"
         
-        # 构建 Docker 镜像，传递环境文件名作为构建参数
+        # 构建 Docker 镜像，通过构建参数传递所有环境变量
         docker build \
-          --build-arg ENVIRONMENT=$ENV_FILE \
+          --build-arg NEXT_PUBLIC_API_URL="$NEXT_PUBLIC_API_URL" \
+          --build-arg NEXT_PUBLIC_AUTH_BASE_URL="$NEXT_PUBLIC_AUTH_BASE_URL" \
+          --build-arg BETTER_AUTH_URL="$BETTER_AUTH_URL" \
+          --build-arg BETTER_AUTH_SECRET="$BETTER_AUTH_SECRET" \
+          --build-arg GITHUB_CLIENT_ID="$GITHUB_CLIENT_ID" \
+          --build-arg GITHUB_CLIENT_SECRET="$GITHUB_CLIENT_SECRET" \
+          --build-arg GOOGLE_CLIENT_ID="$GOOGLE_CLIENT_ID" \
+          --build-arg GOOGLE_CLIENT_SECRET="$GOOGLE_CLIENT_SECRET" \
+          --build-arg RESEND_API_KEY="$RESEND_API_KEY" \
+          --build-arg RESEND_FROM="$RESEND_FROM" \
           -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ steps.image-tag.outputs.TAG }} \
           -t $ECR_REGISTRY/$ECR_REPOSITORY:latest \
           .
@@ -274,12 +264,6 @@ jobs:
         # 显示最终镜像版本
         UPDATED_IMAGE=$(kubectl get deployment $PROJECT_NAME -n $NAMESPACE -o jsonpath='{.spec.template.spec.containers[0].image}')
         echo "✓ Deployment successfully updated with image: $UPDATED_IMAGE"
-    
-    - name: Clean up temporary files
-      if: always()
-      run: |
-        echo "Cleaning up temporary .env files..."
-        rm -f .env.production .env.staging 2>/dev/null || true
     
     - name: Display final status
       run: |
