@@ -101,20 +101,6 @@ jobs:
         # 创建 .env 文件
         echo "$ENV_CONTENT" > $ENV_FILE
         
-        # 验证文件内容（隐藏敏感信息）
-        echo "Created $ENV_FILE with following variables (sensitive values masked):"
-        while IFS= read -r line; do
-          if [[ "$line" =~ ^[A-Z_]+= ]]; then
-            key="${line%%=*}"
-            value="${line#*=}"
-            if [[ ${#value} -gt 20 ]] || [[ "$key" =~ SECRET|KEY|PASSWORD|TOKEN ]]; then
-              echo "  $key=*** (hidden)"
-            else
-              echo "  $line"
-            fi
-          fi
-        done < "$ENV_FILE"
-        
         # 设置环境变量供后续步骤使用
         echo "ENV_FILE=$ENV_FILE" >> $GITHUB_ENV
         
