@@ -103,16 +103,6 @@ jobs:
         
         # 设置环境变量供后续步骤使用
         echo "ENV_FILE=$ENV_FILE" >> $GITHUB_ENV
-        
-        # 确保 .env 文件不会被意外提交或打包
-        echo "Adding .env.* to .dockerignore..."
-        if ! grep -q "^\.env\." .dockerignore 2>/dev/null; then
-          echo ".env.*" >> .dockerignore
-        fi
-        echo "Adding .env to .dockerignore..."
-        if ! grep -q "^\.env$" .dockerignore 2>/dev/null; then
-          echo ".env" >> .dockerignore
-        fi
     
     - name: Build and push Docker image
       run: |
