@@ -16,13 +16,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { LoadingSpinner } from '@/components/common/LoadingSpinner'
 import { EmptyState } from '@/components/common/EmptyState'
-import { 
-  Plus, 
-  Search, 
-  Copy, 
-  Trash2, 
-  Key
-} from 'lucide-react'
+import { Plus, Search, Copy, Trash2, Key } from 'lucide-react'
 import { formatDate, copyToClipboard } from '@/lib/format'
 import { useTranslations, useLocale } from 'next-intl'
 import { useTimezone } from '@/contexts/TimezoneContext'
