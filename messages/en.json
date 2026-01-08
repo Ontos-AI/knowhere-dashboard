@@ -286,7 +286,7 @@
     "active": "Active",
     "disabled": "Disabled",
     "neverUsed": "Never used",
-    "neverExpires": "Never expires",
+    "neverExpires": "Never",
     "copyAndSave": "Please copy and save your API Key securely. For security reasons, we will not show the full key again.",
     "yourApiKey": "Your API Key",
     "securityWarning": "⚠️ Please copy and save this API Key immediately, you will not be able to see the full key again after closing this dialog.",

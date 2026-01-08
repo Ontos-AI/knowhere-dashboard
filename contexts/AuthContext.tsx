@@ -54,7 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       // Sync with backend API
       const syncWithBackend = async () => {
-        console.log('[AuthContext] syncWithBackend triggered. Session User:', session.user)
+        // console.log('[AuthContext] syncWithBackend triggered. Session User:', session.user)
         
         if (!session.user.email) {
             console.error('[AuthContext] No email in session user, cannot sync.')

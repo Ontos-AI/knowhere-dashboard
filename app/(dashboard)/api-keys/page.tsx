@@ -360,7 +360,7 @@ export default function ApiKeysPage() {
                       {key.last_used_at ? formatDate(key.last_used_at, 'relative', locale, timezone) : t('neverUsed')}
                     </TableCell>
                     <TableCell>
-                      {key.expires_at ? formatDate(key.expires_at, 'long', locale, timezone) : t('neverExpires')}
+                      {key.expires_at && new Date(key.expires_at).getFullYear() < 9999 ? formatDate(key.expires_at, 'long', locale, timezone) : t('neverExpires')}
                     </TableCell>
                     <TableCell className="text-right">
                       <Button
