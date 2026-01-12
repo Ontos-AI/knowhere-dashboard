@@ -1,13 +1,13 @@
 "use client"
 
-import { useEffect } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { useAuth } from '@/hooks/useAuth'
 import { useAppConfigContext } from '@/components/providers/ConfigProvider'
 
-export function AuthLayoutClient({ children }: { children: React.ReactNode }) {
+export function AuthLayoutClient({ children }: { children: ReactNode }) {
   const appConfig = useAppConfigContext()
   const { isAuthenticated, isLoading } = useAuth()
   const router = useRouter()
@@ -35,7 +35,7 @@ export function AuthLayoutClient({ children }: { children: React.ReactNode }) {
       {/* 顶部导航 */}
       <header className="flex items-center justify-between p-6">
         <Link href="/" className="text-2xl font-bold text-primary">
-          {appConfig.simpleCompanyName}Knowhere
+          Knowhere API
         </Link>
         <ThemeToggle />
       </header>
@@ -54,8 +54,8 @@ export function AuthLayoutClient({ children }: { children: React.ReactNode }) {
           {appConfig.showIcp && (
             <>
               {' '}
-              <a 
-                href={appConfig.icpUrl} 
+              <a
+                href={appConfig.icpUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
