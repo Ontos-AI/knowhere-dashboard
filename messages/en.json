@@ -90,7 +90,9 @@
     "modelAdvanced": "Advanced",
     "pts": "pts",
     "download": "Download",
-    "resultUrl": "Result URL"
+    "resultUrl": "Result URL",
+    "rowsPerPage": "Rows per page",
+    "totalRows": "Total: {total}"
   },
   "BuyCredits": {
     "title": "Buy Credits",

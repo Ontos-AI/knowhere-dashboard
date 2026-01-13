@@ -12,6 +12,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  PaginationState,
 } from "@tanstack/react-table"
 import { ArrowUpDown, ChevronDown, Download, MoreHorizontal, FileText, CheckCircle, XCircle, Clock } from "lucide-react"
 
@@ -26,6 +27,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import {
   Table,
@@ -57,14 +65,35 @@ export type UsageRecord = {
 export function UsageTable({ 
   data, 
   timeZone = 'UTC',
-  onDownload 
+  onDownload,
+  pageCount,
+  pageIndex,
+  pageSize,
+  onPageChange,
+  total,
+  isLoading = false,
 }: { 
   data: UsageRecord[], 
   timeZone?: string,
-  onDownload?: (jobId: string, resultUrl?: string) => void 
+  onDownload?: (jobId: string, resultUrl?: string) => void,
+  pageCount?: number,
+  pageIndex?: number,
+  pageSize?: number,
+  onPageChange?: (pagination: PaginationState) => void,
+  total?: number,
+  isLoading?: boolean,
 }) {
   const t = useTranslations('UsageTable')
   
+  const [loadingTarget, setLoadingTarget] = React.useState<'prev' | 'next' | 'pageSize' | null>(null)
+
+  // Reset loading target when isLoading becomes false
+  React.useEffect(() => {
+    if (!isLoading) {
+      setLoadingTarget(null)
+    }
+  }, [isLoading])
+
   // Memoize formatter to avoid creating it for every row render
   const dateFormatter = React.useMemo(() => {
       try {
@@ -236,6 +265,29 @@ export function UsageTable({
   const table = useReactTable({
     data,
     columns,
+    pageCount: pageCount ?? -1,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+      pagination: {
+        pageIndex: pageIndex ?? 0,
+        pageSize: pageSize ?? 10,
+      },
+    },
+    onPaginationChange: (updater) => {
+      if (typeof updater === 'function') {
+        const newState = updater({
+          pageIndex: pageIndex ?? 0,
+          pageSize: pageSize ?? 10,
+        })
+        onPageChange?.(newState)
+      } else {
+        onPageChange?.(updater)
+      }
+    },
+    manualPagination: true,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -244,12 +296,6 @@ export function UsageTable({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
   })
 
   return (
@@ -305,30 +351,59 @@ export function UsageTable({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground hidden">
-          {t('rowsSelected', {
-            selected: table.getFilteredSelectedRowModel().rows.length,
-            total: table.getFilteredRowModel().rows.length
-          })}
+      <div className="flex items-center justify-between py-4">
+        <div className="flex-1 text-sm text-muted-foreground">
+           {t('totalRows', { total: total || 0 })}
         </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            {t('previous')}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            {t('next')}
-          </Button>
+        <div className="flex items-center space-x-6 lg:space-x-8">
+          <div className="flex items-center space-x-2">
+            <p className="text-sm font-medium">{t('rowsPerPage')}</p>
+            <Select
+              value={`${table.getState().pagination.pageSize}`}
+              onValueChange={(value) => {
+                setLoadingTarget('pageSize')
+                table.setPageSize(Number(value))
+              }}
+              disabled={isLoading}
+            >
+              <SelectTrigger className="h-8 w-[70px]">
+                <SelectValue placeholder={table.getState().pagination.pageSize} />
+              </SelectTrigger>
+              <SelectContent side="top">
+                {[10, 20, 30, 40, 50].map((pageSize) => (
+                  <SelectItem key={pageSize} value={`${pageSize}`}>
+                    {pageSize}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setLoadingTarget('prev')
+                table.previousPage()
+              }}
+              disabled={!table.getCanPreviousPage() || isLoading}
+            >
+              {isLoading && loadingTarget === 'prev' && <Clock className="mr-2 h-3 w-3 animate-spin" />}
+              {t('previous')}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setLoadingTarget('next')
+                table.nextPage()
+              }}
+              disabled={!table.getCanNextPage() || isLoading}
+            >
+              {isLoading && loadingTarget === 'next' && <Clock className="mr-2 h-3 w-3 animate-spin" />}
+              {t('next')}
+            </Button>
+          </div>
         </div>
       </div>
     </div>

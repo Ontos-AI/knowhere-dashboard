@@ -90,7 +90,9 @@
     "modelAdvanced": "高级版",
     "pts": "积分",
     "download": "下载",
-    "resultUrl": "结果链接"
+    "resultUrl": "结果链接",
+    "rowsPerPage": "每页行数",
+    "totalRows": "共 {total} 条"
   },
   "BuyCredits": {
     "title": "购买 Knowhere API 积分",

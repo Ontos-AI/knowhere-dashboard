@@ -32,13 +32,26 @@ export default function UsagePage() {
   const [jobs, setJobs] = useState<UsageRecord[]>([])
   const [usageStats, setUsageStats] = useState<ParseUsageResponse | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  })
+  const [totalCount, setTotalCount] = useState(0)
+
+  const handlePageChange = (newPagination: any) => {
+    setIsLoading(true)
+    setPagination(newPagination)
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true)
         
-        const params: any = { page_size: 100 }
+        const params: any = { 
+          page: pagination.pageIndex + 1,
+          page_size: pagination.pageSize
+        }
         
         if (activeRange) {
            if (activeRange === '1d') params.recent_days = 1
@@ -63,6 +76,9 @@ export default function UsagePage() {
         ])
         
         setUsageStats(statsResponse)
+        if (jobsResponse.total !== undefined) {
+          setTotalCount(jobsResponse.total)
+        }
         
         const mappedJobs: UsageRecord[] = jobsResponse.jobs.map((job: JobResponse) => {
           let status: UsageRecord['status'] = 'Running'
@@ -110,7 +126,7 @@ export default function UsagePage() {
     }
     
     fetchData()
-  }, [date, activeRange])
+  }, [date, activeRange, pagination.pageIndex, pagination.pageSize])
 
   // Calculate stats from filtered data
   const totalRequests = jobs.length
@@ -163,8 +179,9 @@ export default function UsagePage() {
       ...rows.map(row => row.join(','))
     ].join('\n')
     
-    // Create blob and download link
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    // Create blob with BOM and download link
+    const bom = new Uint8Array([0xEF, 0xBB, 0xBF])
+    const blob = new Blob([bom, csvContent], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.setAttribute('href', url)
@@ -300,7 +317,16 @@ export default function UsagePage() {
           </Button>
         </div>
         
-        <UsageTable data={jobs} timeZone={timezone} />
+        <UsageTable 
+          data={jobs} 
+          timeZone={timezone}
+          pageCount={Math.ceil(totalCount / pagination.pageSize)}
+          pageIndex={pagination.pageIndex}
+          pageSize={pagination.pageSize}
+          onPageChange={handlePageChange}
+          total={totalCount}
+          isLoading={isLoading}
+        />
       </div>
     </div>
   )
