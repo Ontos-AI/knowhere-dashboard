@@ -286,7 +286,7 @@
     "lastUsed": "Last Used",
     "actions": "Actions",
     "active": "Active",
-    "disabled": "Disabled",
+    "disabled":"Disabled",
     "neverUsed": "Never used",
     "neverExpires": "Never",
     "copyAndSave": "Please copy and save your API Key securely. For security reasons, we will not show the full key again.",

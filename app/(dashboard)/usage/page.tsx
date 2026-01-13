@@ -164,7 +164,7 @@ export default function UsagePage() {
     const rows = jobs.map(item => [
       formatDate(item.date, 'yyyy-MM-dd HH:mm:ss'),
       item.jobId,
-      `"${(item.fileName || '').replace(/"/g, '""')}"`, // Escape quotes
+      `"${(item.fileName || '').replace(/"/g, '""')}"`,
       item.model,
       item.pages,
       item.duration,

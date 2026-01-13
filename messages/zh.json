@@ -37,7 +37,7 @@
     "America/Vancouver": "温哥华时间",
     "America/Sao_Paulo": "圣保罗时间",
     "Australia/Sydney": "悉尼时间",
-    "Australia/Melbourne": "墨尔本时间",
+    "Australia/Melbourne":"墨尔本时间",
     "Pacific/Auckland": "奥克兰时间"
   },
   "Usage": {
