@@ -12,29 +12,21 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# 通过构建参数注入环境变量
-ARG NEXT_PUBLIC_API_URL
-ARG NEXT_PUBLIC_AUTH_BASE_URL
-ARG BETTER_AUTH_URL
-ARG BETTER_AUTH_SECRET
-ARG GITHUB_CLIENT_ID
-ARG GITHUB_CLIENT_SECRET
-ARG GOOGLE_CLIENT_ID
-ARG GOOGLE_CLIENT_SECRET
-ARG RESEND_API_KEY
-ARG RESEND_FROM
-
-# 设置环境变量
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_AUTH_BASE_URL=$NEXT_PUBLIC_AUTH_BASE_URL
-ENV BETTER_AUTH_URL=$BETTER_AUTH_URL
-ENV BETTER_AUTH_SECRET=$BETTER_AUTH_SECRET
-ENV GITHUB_CLIENT_ID=$GITHUB_CLIENT_ID
-ENV GITHUB_CLIENT_SECRET=$GITHUB_CLIENT_SECRET
-ENV GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
-ENV GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET
-ENV RESEND_API_KEY=$RESEND_API_KEY
-ENV RESEND_FROM=$RESEND_FROM
+# 验证 .env.production 文件存在
+RUN echo "=== Checking for .env.production file ===" && \
+    ls -la .env.production || echo "WARNING: .env.production not found in listing" && \
+    if [ -f .env.production ]; then \
+      echo "✅ .env.production file exists"; \
+      echo "File size: $(wc -l < .env.production) lines"; \
+      echo "RESEND_API_KEY in file: $(grep -q RESEND_API_KEY .env.production && echo '✅ Found' || echo '❌ Not found')"; \
+      echo "First few lines:"; \
+      head -5 .env.production; \
+    else \
+      echo "❌ ERROR: .env.production file not found!"; \
+      echo "Current directory contents:"; \
+      ls -la; \
+      exit 1; \
+    fi
 
 RUN npm install -g pnpm && pnpm build
 
@@ -46,7 +38,6 @@ ENV PORT=3000
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
-
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing

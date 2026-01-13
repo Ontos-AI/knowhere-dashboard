@@ -33,7 +33,7 @@ env:
   
   # AWS 区域
   AWS_REGION: us-east-1
-  # EKS 集群名称 - 请根据实际情况修改
+  # EKS 集群名称
   EKS_CLUSTER_NAME: knowhere-prod-cluster
 
 jobs:
@@ -85,52 +85,73 @@ jobs:
         echo "Using namespace: $NAMESPACE"
         echo "Environment type: $ENV_TYPE"
     
-    - name: Parse environment variables from GitHub Secrets
-      id: parse-env
+    - name: Create .env.production file from GitHub Secret
+      id: create-env-file
       run: |
+        echo "Creating .env.production file for $ENV_TYPE environment"
+        
         # 根据环境类型选择对应的 Secret 内容
         if [ "$ENV_TYPE" = "production" ]; then
           ENV_CONTENT="${{ secrets.PRODUCTION_ENV_CONTENT }}"
+          echo "Using PRODUCTION_ENV_CONTENT secret"
         else
           ENV_CONTENT="${{ secrets.STAGING_ENV_CONTENT }}"
+          echo "Using STAGING_ENV_CONTENT secret"
         fi
         
-        # 将环境变量解析为单独的变量
-        echo "$ENV_CONTENT" | while IFS= read -r line; do
+        # 创建 .env.production 文件
+        echo "$ENV_CONTENT" > .env.production
+        
+        # 验证文件内容
+        echo "✅ Created .env.production file"
+        echo "File size: $(wc -l < .env.production) lines"
+        echo "File exists: $(if [ -f .env.production ]; then echo 'Yes'; else echo 'No'; fi)"
+        
+        # 显示文件基本信息（不显示敏感内容）
+        echo "Checking key variables in .env.production:"
+        echo "RESEND_API_KEY exists: $(grep -q RESEND_API_KEY .env.production && echo '✅ Yes' || echo '❌ No')"
+        echo "NEXT_PUBLIC_API_URL exists: $(grep -q NEXT_PUBLIC_API_URL .env.production && echo '✅ Yes' || echo '❌ No')"
+        echo "BETTER_AUTH_SECRET exists: $(grep -q BETTER_AUTH_SECRET .env.production && echo '✅ Yes' || echo '❌ No')"
+        
+        # 显示前几行（隐藏敏感值）
+        echo "First 5 lines of .env.production (sensitive values masked):"
+        head -5 .env.production | while IFS= read -r line; do
           if [[ "$line" =~ ^([A-Z_]+)=(.*)$ ]]; then
             key="${BASH_REMATCH[1]}"
             value="${BASH_REMATCH[2]}"
-            
-            # 设置环境变量
-            echo "${key}=${value}" >> $GITHUB_ENV
-            
-            # 对于敏感变量，只显示长度用于调试
             if [[ "$key" =~ SECRET|KEY|PASSWORD|TOKEN ]]; then
-              echo "Setting $key (length: ${#value})"
+              echo "  $key=*** (length: ${#value})"
             else
-              echo "Setting $key=$value"
+              echo "  $key=$value"
             fi
+          else
+            echo "  $line"
           fi
         done
+        
+        # 显示当前目录内容，确保文件存在
+        echo "Current directory contents:"
+        ls -la
+    
+    - name: Show Dockerfile content for debugging
+      run: |
+        echo "=== Dockerfile Content ==="
+        cat Dockerfile || echo "Dockerfile not found"
+        echo "=== .dockerignore Content ==="
+        cat .dockerignore 2>/dev/null || echo ".dockerignore not found"
     
     - name: Build and push Docker image
       run: |
         echo "Building Docker image with tag: ${{ steps.image-tag.outputs.TAG }}"
         echo "Environment type: $ENV_TYPE"
-        echo "Key environment variables available for build"
         
-        # 构建 Docker 镜像，通过构建参数传递所有环境变量
+        # 显示当前目录内容，确保 .env.production 存在
+        echo "Current directory before build:"
+        ls -la
+        
+        # 构建 Docker 镜像 - 使用 --progress=plain 获取详细输出
         docker build \
-          --build-arg NEXT_PUBLIC_API_URL="$NEXT_PUBLIC_API_URL" \
-          --build-arg NEXT_PUBLIC_AUTH_BASE_URL="$NEXT_PUBLIC_AUTH_BASE_URL" \
-          --build-arg BETTER_AUTH_URL="$BETTER_AUTH_URL" \
-          --build-arg BETTER_AUTH_SECRET="$BETTER_AUTH_SECRET" \
-          --build-arg GITHUB_CLIENT_ID="$GITHUB_CLIENT_ID" \
-          --build-arg GITHUB_CLIENT_SECRET="$GITHUB_CLIENT_SECRET" \
-          --build-arg GOOGLE_CLIENT_ID="$GOOGLE_CLIENT_ID" \
-          --build-arg GOOGLE_CLIENT_SECRET="$GOOGLE_CLIENT_SECRET" \
-          --build-arg RESEND_API_KEY="$RESEND_API_KEY" \
-          --build-arg RESEND_FROM="$RESEND_FROM" \
+          --progress=plain \
           -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ steps.image-tag.outputs.TAG }} \
           -t $ECR_REGISTRY/$ECR_REPOSITORY:latest \
           .
@@ -142,6 +163,14 @@ jobs:
         # 输出镜像信息
         echo "Image pushed to: $ECR_REGISTRY/$ECR_REPOSITORY:${{ steps.image-tag.outputs.TAG }}"
         echo "IMAGE_FULL_NAME=$ECR_REGISTRY/$ECR_REPOSITORY:${{ steps.image-tag.outputs.TAG }}" >> $GITHUB_ENV
+    
+    - name: Clean up .env.production file
+      if: always()
+      run: |
+        echo "Cleaning up .env.production file..."
+        rm -f .env.production 2>/dev/null || true
+        echo "Current directory after cleanup:"
+        ls -la
     
     - name: Setup kubectl
       uses: azure/setup-kubectl@v3
