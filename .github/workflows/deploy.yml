@@ -17,11 +17,11 @@ on:
         required: false
         type: string
 
-  # 自动触发 - 暂时注释
+  # 自动触发 - 暂时注释掉 main 分支的自动触发，只保留 staging
   push:
     branches:
-    #  - staging
-    # - main  # 正式上线前先注释掉
+      - staging
+      - main 
 
 env:
   # ECR 仓库配置
@@ -34,7 +34,7 @@ env:
   # AWS 区域
   AWS_REGION: us-east-1
   # EKS 集群名称
-  EKS_CLUSTER_NAME: knowhere-cluster
+  EKS_CLUSTER_NAME: knowhere-prod-cluster
 
 jobs:
   build-and-deploy:
@@ -59,26 +59,6 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
     
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20.x'
-        cache: 'pnpm'
-    
-    - name: Setup pnpm
-      uses: pnpm/action-setup@v2
-      with:
-        version: 8
-    
-    - name: Install dependencies
-      run: pnpm install --frozen-lockfile
-    
-    - name: Run linting
-      run: pnpm lint
-    
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-    
     - name: Determine image tag
       id: image-tag
       run: |
@@ -90,37 +70,107 @@ jobs:
           echo "TAG=${BRANCH}-${SHORT_SHA}-$(date +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
         fi
     
-    - name: Determine environment variables
-      id: env-vars
+    - name: Set environment variables
+      id: set-env
       run: |
+        # 根据分支或手动输入确定环境
         if [[ "${{ github.ref_name }}" == "main" || "${{ github.event.inputs.environment }}" == "production" ]]; then
-          echo "NAMESPACE=knowhere" >> $GITHUB_OUTPUT
-          echo "ENV_FILE=.env.production" >> $GITHUB_OUTPUT
+          echo "NAMESPACE=knowhere" >> $GITHUB_ENV
+          echo "ENV_TYPE=production" >> $GITHUB_ENV
         else
-          echo "NAMESPACE=knowhere-staging" >> $GITHUB_OUTPUT
-          echo "ENV_FILE=.env.staging" >> $GITHUB_OUTPUT
+          echo "NAMESPACE=knowhere-staging" >> $GITHUB_ENV
+          echo "ENV_TYPE=staging" >> $GITHUB_ENV
         fi
+        
+        echo "Using namespace: $NAMESPACE"
+        echo "Environment type: $ENV_TYPE"
+    
+    - name: Create .env.production file from GitHub Secret
+      id: create-env-file
+      run: |
+        echo "Creating .env.production file for $ENV_TYPE environment"
+        
+        # 根据环境类型选择对应的 Secret 内容
+        if [ "$ENV_TYPE" = "production" ]; then
+          ENV_CONTENT="${{ secrets.PRODUCTION_ENV_CONTENT }}"
+          echo "Using PRODUCTION_ENV_CONTENT secret"
+        else
+          ENV_CONTENT="${{ secrets.STAGING_ENV_CONTENT }}"
+          echo "Using STAGING_ENV_CONTENT secret"
+        fi
+        
+        # 创建 .env.production 文件
+        echo "$ENV_CONTENT" > .env.production
+        
+        # 验证文件内容
+        echo "✅ Created .env.production file"
+        echo "File size: $(wc -l < .env.production) lines"
+        echo "File exists: $(if [ -f .env.production ]; then echo 'Yes'; else echo 'No'; fi)"
+        
+        # 显示文件基本信息（不显示敏感内容）
+        echo "Checking key variables in .env.production:"
+        echo "RESEND_API_KEY exists: $(grep -q RESEND_API_KEY .env.production && echo '✅ Yes' || echo '❌ No')"
+        echo "NEXT_PUBLIC_API_URL exists: $(grep -q NEXT_PUBLIC_API_URL .env.production && echo '✅ Yes' || echo '❌ No')"
+        echo "BETTER_AUTH_SECRET exists: $(grep -q BETTER_AUTH_SECRET .env.production && echo '✅ Yes' || echo '❌ No')"
+        
+        # 显示前几行（隐藏敏感值）
+        echo "First 5 lines of .env.production (sensitive values masked):"
+        head -5 .env.production | while IFS= read -r line; do
+          if [[ "$line" =~ ^([A-Z_]+)=(.*)$ ]]; then
+            key="${BASH_REMATCH[1]}"
+            value="${BASH_REMATCH[2]}"
+            if [[ "$key" =~ SECRET|KEY|PASSWORD|TOKEN ]]; then
+              echo "  $key=*** (length: ${#value})"
+            else
+              echo "  $key=$value"
+            fi
+          else
+            echo "  $line"
+          fi
+        done
+        
+        # 显示当前目录内容，确保文件存在
+        echo "Current directory contents:"
+        ls -la
+    
+    - name: Show Dockerfile content for debugging
+      run: |
+        echo "=== Dockerfile Content ==="
+        cat Dockerfile || echo "Dockerfile not found"
+        echo "=== .dockerignore Content ==="
+        cat .dockerignore 2>/dev/null || echo ".dockerignore not found"
     
     - name: Build and push Docker image
-      env:
-        ECR_REGISTRY: ${{ env.ECR_REGISTRY }}
-        ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
-        IMAGE_TAG: ${{ steps.image-tag.outputs.TAG }}
       run: |
-        # 构建 Docker 镜像
+        echo "Building Docker image with tag: ${{ steps.image-tag.outputs.TAG }}"
+        echo "Environment type: $ENV_TYPE"
+        
+        # 显示当前目录内容，确保 .env.production 存在
+        echo "Current directory before build:"
+        ls -la
+        
+        # 构建 Docker 镜像 - 使用 --progress=plain 获取详细输出
         docker build \
-          --build-arg ENVIRONMENT=${{ steps.env-vars.outputs.ENV_FILE }} \
-          -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+          --progress=plain \
+          -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ steps.image-tag.outputs.TAG }} \
           -t $ECR_REGISTRY/$ECR_REPOSITORY:latest \
           .
         
         # 推送镜像到 ECR
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:${{ steps.image-tag.outputs.TAG }}
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
         
         # 输出镜像信息
-        echo "Image pushed to: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-        echo "IMAGE_FULL_NAME=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_ENV
+        echo "Image pushed to: $ECR_REGISTRY/$ECR_REPOSITORY:${{ steps.image-tag.outputs.TAG }}"
+        echo "IMAGE_FULL_NAME=$ECR_REGISTRY/$ECR_REPOSITORY:${{ steps.image-tag.outputs.TAG }}" >> $GITHUB_ENV
+    
+    - name: Clean up .env.production file
+      if: always()
+      run: |
+        echo "Cleaning up .env.production file..."
+        rm -f .env.production 2>/dev/null || true
+        echo "Current directory after cleanup:"
+        ls -la
     
     - name: Setup kubectl
       uses: azure/setup-kubectl@v3
@@ -129,45 +179,50 @@ jobs:
     
     - name: Configure kubeconfig for EKS
       run: |
+        # 更新 kubeconfig 以连接到 EKS 集群
         aws eks update-kubeconfig \
-          --region ${{ env.AWS_REGION }} \
-          --name ${{ env.EKS_CLUSTER_NAME }}
-        kubectl version --client
+          --region $AWS_REGION \
+          --name $EKS_CLUSTER_NAME
+        
+        # 验证 kubectl 连接
+        kubectl cluster-info
+        kubectl get nodes
     
     - name: Check current deployment status
-      env:
-        NAMESPACE: ${{ steps.env-vars.outputs.NAMESPACE }}
-        PROJECT_NAME: ${{ env.PROJECT_NAME }}
       run: |
-        echo "Checking current deployment status..."
-        kubectl get deployment $PROJECT_NAME -n $NAMESPACE
-        kubectl get pods -n $NAMESPACE -l app=$PROJECT_NAME
-        echo "Current image:"
-        kubectl get deployment $PROJECT_NAME -n $NAMESPACE -o jsonpath='{.spec.template.spec.containers[0].image}'
+        echo "Checking current deployment status in namespace: $NAMESPACE"
+        
+        # 检查 Deployment
+        echo "=== Deployment Status ==="
+        kubectl get deployment $PROJECT_NAME -n $NAMESPACE || echo "Deployment not found or error"
+        
+        # 检查 Pods
+        echo ""
+        echo "=== Pods Status ==="
+        kubectl get pods -n $NAMESPACE -l app=$PROJECT_NAME 2>/dev/null || echo "No pods found"
+        
+        # 显示当前镜像
+        echo ""
+        echo "=== Current Image Version ==="
+        CURRENT_IMAGE=$(kubectl get deployment $PROJECT_NAME -n $NAMESPACE -o jsonpath='{.spec.template.spec.containers[0].image}' 2>/dev/null || echo "Unknown")
+        echo "Current image: $CURRENT_IMAGE"
     
     - name: Update deployment with new image
-      env:
-        NAMESPACE: ${{ steps.env-vars.outputs.NAMESPACE }}
-        PROJECT_NAME: ${{ env.PROJECT_NAME }}
-        IMAGE_NAME: ${{ env.IMAGE_FULL_NAME }}
       run: |
-        echo "Updating deployment $PROJECT_NAME in namespace $NAMESPACE with image $IMAGE_NAME"
+        echo "Updating deployment $PROJECT_NAME in namespace $NAMESPACE"
+        echo "New image: $IMAGE_FULL_NAME"
         
         # 更新 Deployment 的镜像
         kubectl set image deployment/$PROJECT_NAME \
-          $PROJECT_NAME=$IMAGE_NAME \
+          $PROJECT_NAME=$IMAGE_FULL_NAME \
           -n $NAMESPACE
         
-        # 记录更新历史
         echo "Deployment update initiated at: $(date)"
-        kubectl rollout status deployment/$PROJECT_NAME -n $NAMESPACE --timeout=5s || true
     
     - name: Wait for rollout to complete
-      env:
-        NAMESPACE: ${{ steps.env-vars.outputs.NAMESPACE }}
-        PROJECT_NAME: ${{ env.PROJECT_NAME }}
       run: |
-        echo "Waiting for deployment rollout to complete..."
+        echo "Waiting for deployment rollout to complete in namespace: $NAMESPACE"
+        echo "Timeout: 300 seconds"
         
         # 等待部署完成，设置超时时间为5分钟
         kubectl rollout status deployment/$PROJECT_NAME \
@@ -177,75 +232,132 @@ jobs:
         echo "✓ Deployment rollout completed successfully"
     
     - name: Verify deployment health
-      env:
-        NAMESPACE: ${{ steps.env-vars.outputs.NAMESPACE }}
-        PROJECT_NAME: ${{ env.PROJECT_NAME }}
       run: |
-        echo "Verifying deployment health..."
+        echo "Verifying deployment health in namespace: $NAMESPACE"
         
         # 检查 Deployment 状态
-        DEPLOYMENT_STATUS=$(kubectl get deployment $PROJECT_NAME -n $NAMESPACE -o jsonpath='{.status.conditions[?(@.type=="Available")].status}')
-        if [ "$DEPLOYMENT_STATUS" != "True" ]; then
-          echo "✗ Deployment is not available"
+        echo "1. Checking deployment availability..."
+        AVAILABLE=$(kubectl get deployment $PROJECT_NAME -n $NAMESPACE -o jsonpath='{.status.conditions[?(@.type=="Available")].status}')
+        
+        if [ "$AVAILABLE" = "True" ]; then
+          echo "✓ Deployment is Available"
+        else
+          echo "✗ Deployment is not Available"
+          exit 1
+        fi
+        
+        # 检查副本状态
+        echo "2. Checking replica status..."
+        DESIRED=$(kubectl get deployment $PROJECT_NAME -n $NAMESPACE -o jsonpath='{.spec.replicas}')
+        READY=$(kubectl get deployment $PROJECT_NAME -n $NAMESPACE -o jsonpath='{.status.readyReplicas}')
+        
+        if [ "$READY" = "$DESIRED" ]; then
+          echo "✓ All $DESIRED replicas are ready"
+        else
+          echo "✗ Only $READY out of $DESIRED replicas are ready"
           exit 1
         fi
         
         # 检查 Pod 状态
-        PODS=$(kubectl get pods -n $NAMESPACE -l app=$PROJECT_NAME -o jsonpath='{.items[*].metadata.name}')
+        echo "3. Checking pod status..."
+        PODS=$(kubectl get pods -n $NAMESPACE -l app=$PROJECT_NAME -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}')
         
+        ALL_HEALTHY=true
         for POD in $PODS; do
-          POD_STATUS=$(kubectl get pod $POD -n $NAMESPACE -o jsonpath='{.status.phase}')
-          POD_READY=$(kubectl get pod $POD -n $NAMESPACE -o jsonpath='{.status.containerStatuses[0].ready}')
+          PHASE=$(kubectl get pod $POD -n $NAMESPACE -o jsonpath='{.status.phase}')
+          READY_STATUS=$(kubectl get pod $POD -n $NAMESPACE -o jsonpath='{.status.containerStatuses[0].ready}')
           
-          echo "Pod $POD: Status=$POD_STATUS, Ready=$POD_READY"
-          
-          if [ "$POD_STATUS" != "Running" ] || [ "$POD_READY" != "true" ]; then
-            echo "✗ Pod $POD is not healthy"
-            
-            # 获取 Pod 详细信息用于调试
-            echo "Pod details:"
-            kubectl describe pod $POD -n $NAMESPACE
-            
-            # 获取 Pod 日志
-            echo "Pod logs (last 50 lines):"
-            kubectl logs $POD -n $NAMESPACE --tail=50
-            
-            exit 1
+          if [ "$PHASE" = "Running" ] && [ "$READY_STATUS" = "true" ]; then
+            echo "✓ Pod $POD: Running and Ready"
+          else
+            echo "✗ Pod $POD: Phase=$PHASE, Ready=$READY_STATUS"
+            ALL_HEALTHY=false
           fi
         done
         
-        # 检查所有 Pod 都处于 Running 状态
-        RUNNING_PODS=$(kubectl get pods -n $NAMESPACE -l app=$PROJECT_NAME --field-selector=status.phase=Running --no-headers | wc -l)
-        DESIRED_REPLICAS=$(kubectl get deployment $PROJECT_NAME -n $NAMESPACE -o jsonpath='{.spec.replicas}')
-        
-        if [ "$RUNNING_PODS" -eq "$DESIRED_REPLICAS" ]; then
-          echo "✓ All $DESIRED_REPLICAS pods are running and healthy"
-        else
-          echo "✗ Only $RUNNING_PODS out of $DESIRED_REPLICAS pods are running"
+        if [ "$ALL_HEALTHY" = false ]; then
+          echo "Some pods are not healthy. Checking logs..."
+          
+          # 检查有问题的 Pod 日志
+          for POD in $PODS; do
+            PHASE=$(kubectl get pod $POD -n $NAMESPACE -o jsonpath='{.status.phase}')
+            if [ "$PHASE" != "Running" ]; then
+              echo "=== Logs for pod $POD ==="
+              kubectl logs $POD -n $NAMESPACE --tail=50 || echo "Could not retrieve logs"
+            fi
+          done
+          
           exit 1
         fi
         
-        # 显示当前部署的镜像
-        CURRENT_IMAGE=$(kubectl get deployment $PROJECT_NAME -n $NAMESPACE -o jsonpath='{.spec.template.spec.containers[0].image}')
-        echo "✓ Deployment successfully updated with image: $CURRENT_IMAGE"
+        # 显示最终镜像版本
+        UPDATED_IMAGE=$(kubectl get deployment $PROJECT_NAME -n $NAMESPACE -o jsonpath='{.spec.template.spec.containers[0].image}')
+        echo "✓ Deployment successfully updated with image: $UPDATED_IMAGE"
+    
+    - name: Display final status
+      run: |
+        echo "========================================"
+        echo "DEPLOYMENT COMPLETED SUCCESSFULLY"
+        echo "========================================"
+        echo "Environment: $NAMESPACE"
+        echo "Deployment: $PROJECT_NAME"
+        echo "Image: $IMAGE_FULL_NAME"
+        echo "Time: $(date)"
+        echo "========================================"
+        
+        # 显示最终状态
+        echo ""
+        echo "Final deployment status:"
+        kubectl get deployment $PROJECT_NAME -n $NAMESPACE -o wide
+        
+        echo ""
+        echo "Pod status:"
+        kubectl get pods -n $NAMESPACE -l app=$PROJECT_NAME -o wide
+        
+        echo ""
+        echo "Service status:"
+        kubectl get service $PROJECT_NAME -n $NAMESPACE -o wide
     
     - name: Rollback on failure
       if: failure()
-      env:
-        NAMESPACE: ${{ steps.env-vars.outputs.NAMESPACE }}
-        PROJECT_NAME: ${{ env.PROJECT_NAME }}
       run: |
-        echo "Deployment failed, attempting rollback..."
+        echo "Deployment failed! Attempting rollback..."
+        echo "Namespace: $NAMESPACE"
         
-        # 回滚到上一个版本
-        kubectl rollout undo deployment/$PROJECT_NAME -n $NAMESPACE
+        # 检查 Deployment 是否存在
+        if kubectl get deployment $PROJECT_NAME -n $NAMESPACE > /dev/null 2>&1; then
+          echo "Rolling back deployment $PROJECT_NAME in namespace $NAMESPACE"
+          
+          # 回滚到上一个版本
+          if kubectl rollout undo deployment/$PROJECT_NAME -n $NAMESPACE; then
+            echo "Rollback command executed successfully"
+            
+            # 等待回滚完成
+            if kubectl rollout status deployment/$PROJECT_NAME -n $NAMESPACE --timeout=180s; then
+              echo "✓ Rollback completed successfully"
+            else
+              echo "⚠️ Rollback status check failed or timed out"
+            fi
+          else
+            echo "✗ Failed to execute rollback command"
+          fi
+          
+          # 显示当前状态
+          echo ""
+          echo "Status after rollback attempt:"
+          kubectl get deployment $PROJECT_NAME -n $NAMESPACE
+          echo ""
+          kubectl get pods -n $NAMESPACE -l app=$PROJECT_NAME
+        else
+          echo "⚠️ Deployment $PROJECT_NAME not found in namespace $NAMESPACE"
+        fi
         
-        # 等待回滚完成
-        kubectl rollout status deployment/$PROJECT_NAME -n $NAMESPACE --timeout=180s
+        # 输出错误信息以便调试
+        echo ""
+        echo "=== Debug Information ==="
+        echo "Last few events in namespace:"
+        kubectl get events -n $NAMESPACE --sort-by='.lastTimestamp' | tail -20
         
-        echo "✓ Rollback completed"
-        
-        # 显示当前状态
-        kubectl get deployment $PROJECT_NAME -n $NAMESPACE
-        kubectl get pods -n $NAMESPACE -l app=$PROJECT_NAME
-    
+        echo ""
+        echo "Deployment details:"
+        kubectl describe deployment $PROJECT_NAME -n $NAMESPACE 2>/dev/null || echo "Cannot describe deployment"
