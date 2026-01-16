@@ -21,7 +21,7 @@ on:
   push:
     branches:
       - staging
-    # - main  # 正式上线前先注释掉
+      - main
 
 env:
   # ECR 仓库配置
