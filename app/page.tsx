@@ -4,6 +4,9 @@ import { useEffect } from 'react'
 import { useRouter } from '@/navigation'
 import { useAuth } from '@/hooks/useAuth'
 import { useTranslations } from 'next-intl'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import { LandingPage } from '@/components/common/LandingPage'
 
 export default function Home() {
   const { isAuthenticated, isLoading } = useAuth()
@@ -11,12 +14,8 @@ export default function Home() {
   const t = useTranslations('Common')
 
   useEffect(() => {
-    if (!isLoading) {
-      if (isAuthenticated) {
-        router.push('/usage')
-      } else {
-        router.push('/login')
-      }
+    if (!isLoading && isAuthenticated) {
+      router.push('/usage')
     }
   }, [isAuthenticated, isLoading, router])
 
@@ -31,5 +30,8 @@ export default function Home() {
     )
   }
 
-  return null
+  // 如果已登录，useEffect 会处理跳转
+  if (isAuthenticated) return null
+
+  return <LandingPage />
 }
