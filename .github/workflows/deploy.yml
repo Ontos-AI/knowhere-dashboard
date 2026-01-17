@@ -21,7 +21,7 @@ on:
   push:
     branches:
       - staging
-      - main
+      - main 
 
 env:
   # ECR 仓库配置
@@ -75,7 +75,7 @@ jobs:
       run: |
         # 根据分支或手动输入确定环境
         if [[ "${{ github.ref_name }}" == "main" || "${{ github.event.inputs.environment }}" == "production" ]]; then
-          echo "NAMESPACE=knowhere" >> $GITHUB_ENV
+          echo "NAMESPACE=knowhere-prod" >> $GITHUB_ENV
           echo "ENV_TYPE=production" >> $GITHUB_ENV
         else
           echo "NAMESPACE=knowhere-staging" >> $GITHUB_ENV
