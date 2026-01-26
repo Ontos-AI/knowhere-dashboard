@@ -1,62 +1,68 @@
-"use client"
+'use client'
 
-import { useEffect, useState, useMemo } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { useAuth } from '@/hooks/useAuth'
-import { useToast } from '@/hooks/useToast'
-import { api, type User } from '@/lib/api'
-import { authClient } from '@/lib/betterAuthClient'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { LoadingSpinner } from '@/components/common/LoadingSpinner'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
-import { LoadingSpinner } from '@/components/common/LoadingSpinner'
-import { 
-  User as UserIcon, 
-  Shield, 
-  Settings as SettingsIcon,
+import { Switch } from '@/components/ui/switch'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useAuth } from '@/hooks/useAuth'
+import { useToast } from '@/hooks/useToast'
+import { type User, api } from '@/lib/api'
+import { authClient } from '@/lib/betterAuthClient'
+import { formatDate } from '@/lib/format'
+import { usePathname, useRouter } from '@/navigation'
+import { zodResolver } from '@hookform/resolvers/zod'
+import {
   Bell,
   Globe,
   Palette,
-  Save
+  Save,
+  Settings as SettingsIcon,
+  Shield,
+  User as UserIcon,
 } from 'lucide-react'
-import { formatDate } from '@/lib/format'
-import { useTranslations, useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { useTheme } from 'next-themes'
-import { useRouter, usePathname } from '@/navigation'
+import { useEffect, useMemo, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
 import { useTimezone } from '@/contexts/TimezoneContext'
 
 const TIMEZONES = [
-  "UTC",
-  "Asia/Shanghai",
-  "Asia/Tokyo",
-  "Asia/Singapore",
-  "Asia/Seoul",
-  "Asia/Dubai",
-  "Asia/Kolkata",
-  "Europe/London",
-  "Europe/Paris",
-  "Europe/Berlin",
-  "Europe/Moscow",
-  "Europe/Rome",
-  "Europe/Madrid",
-  "America/New_York",
-  "America/Chicago",
-  "America/Denver",
-  "America/Los_Angeles",
-  "America/Toronto",
-  "America/Vancouver",
-  "America/Sao_Paulo",
-  "Australia/Sydney",
-  "Australia/Melbourne",
-  "Pacific/Auckland",
+  'UTC',
+  'Asia/Shanghai',
+  'Asia/Tokyo',
+  'Asia/Singapore',
+  'Asia/Seoul',
+  'Asia/Dubai',
+  'Asia/Kolkata',
+  'Europe/London',
+  'Europe/Paris',
+  'Europe/Berlin',
+  'Europe/Moscow',
+  'Europe/Rome',
+  'Europe/Madrid',
+  'America/New_York',
+  'America/Chicago',
+  'America/Denver',
+  'America/Los_Angeles',
+  'America/Toronto',
+  'America/Vancouver',
+  'America/Sao_Paulo',
+  'Australia/Sydney',
+  'Australia/Melbourne',
+  'Pacific/Auckland',
 ]
 
 export default function SettingsPage() {
@@ -72,21 +78,31 @@ export default function SettingsPage() {
   const pathname = usePathname()
   const { timezone, setTimezone } = useTimezone()
 
-  const profileSchema = useMemo(() => z.object({
-    username: z.string().min(2, t('usernameMinLength')),
-    email: z.string().email(t('emailInvalid')),
-    phone: z.string().optional(),
-  }), [t])
-  
-  const passwordSchema = useMemo(() => z.object({
-    currentPassword: z.string().min(6, t('passwordMinLength')),
-    newPassword: z.string().min(8, t('newPasswordMinLength')),
-    confirmPassword: z.string(),
-  }).refine((data) => data.newPassword === data.confirmPassword, {
-    message: t('passwordMismatch'),
-    path: ['confirmPassword'],
-  }), [t])
-  
+  const profileSchema = useMemo(
+    () =>
+      z.object({
+        username: z.string().min(2, t('usernameMinLength')),
+        email: z.string().email(t('emailInvalid')),
+        phone: z.string().optional(),
+      }),
+    [t]
+  )
+
+  const passwordSchema = useMemo(
+    () =>
+      z
+        .object({
+          currentPassword: z.string().min(6, t('passwordMinLength')),
+          newPassword: z.string().min(8, t('newPasswordMinLength')),
+          confirmPassword: z.string(),
+        })
+        .refine((data) => data.newPassword === data.confirmPassword, {
+          message: t('passwordMismatch'),
+          path: ['confirmPassword'],
+        }),
+    [t]
+  )
+
   type ProfileForm = z.infer<typeof profileSchema>
   type PasswordForm = z.infer<typeof passwordSchema>
 
@@ -95,7 +111,7 @@ export default function SettingsPage() {
     defaultValues: {
       username: '',
       email: '',
-    }
+    },
   })
 
   const passwordForm = useForm<PasswordForm>({
@@ -119,22 +135,22 @@ export default function SettingsPage() {
       })
       setIsLoading(false)
     } else {
-       // If we don't have user yet, we might be loading or not authenticated
-       // But useAuth usually handles the initial loading state.
-       // We can keep isLoading true if user is null and we expect one?
-       // For now, let's rely on AuthContext's isLoading if needed, but here we just wait for user.
-       if (!user) setIsLoading(false) // Stop loading if no user (maybe error state or just not loaded)
+      // If we don't have user yet, we might be loading or not authenticated
+      // But useAuth usually handles the initial loading state.
+      // We can keep isLoading true if user is null and we expect one?
+      // For now, let's rely on AuthContext's isLoading if needed, but here we just wait for user.
+      if (!user) setIsLoading(false) // Stop loading if no user (maybe error state or just not loaded)
     }
   }, [user, profileForm])
 
   const handleUpdateProfile = async (data: ProfileForm) => {
     try {
       setIsSaving(true)
-      
+
       // 1. 同步更新 Better Auth 的用户信息 (前端 Session)
       // 这是关键步骤：如果不更新 Session，AuthContext 会使用旧的 Session 信息(如旧邮箱)
       // 去尝试同步后端，导致后端找不到用户或重新注册旧用户，从而使修改失效。
-      /* 
+      /*
        * 暂时注释掉 Better Auth 更新，因为 /api/auth/user/update 报 404
        * 我们改为在后端更新成功后，通过 refreshUser 手动拉取后端最新数据
        */
@@ -163,18 +179,17 @@ export default function SettingsPage() {
       await api.updateUserProfile({
         username: data.username,
         // Only update email if changed
-        ...(data.email !== user?.email ? { email: data.email } : {})
+        ...(data.email !== user?.email ? { email: data.email } : {}),
       })
 
       // 3. 刷新用户状态
       await refreshUser()
       toast.success(t('profileUpdated'))
-      
+
       // If email changed, warn user about verification if necessary
       if (data.email !== user?.email) {
-        toast.info(t('emailVerificationSent') || "Please verify your new email address")
+        toast.info(t('emailVerificationSent') || 'Please verify your new email address')
       }
-
     } catch (error: any) {
       console.error('Failed to update profile:', error)
       toast.error(error.message || t('profileUpdateFailed'))
@@ -186,13 +201,13 @@ export default function SettingsPage() {
   const handleUpdatePassword = async (data: PasswordForm) => {
     try {
       setIsSaving(true)
-      
+
       // Use API client for password change as well
       await api.changePassword({
         current_password: data.currentPassword,
-        new_password: data.newPassword
+        new_password: data.newPassword,
       })
-      
+
       toast.success(t('passwordUpdated'))
       passwordForm.reset()
     } catch (error: any) {
@@ -205,7 +220,7 @@ export default function SettingsPage() {
 
   const handleTimezoneChange = (value: string) => {
     setTimezone(value)
-    toast.success(t('timezoneUpdated') || "Timezone updated")
+    toast.success(t('timezoneUpdated') || 'Timezone updated')
   }
 
   if (isLoading && !user) {
@@ -221,9 +236,7 @@ export default function SettingsPage() {
       {/* 页面标题 */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight">{t('title')}</h1>
-        <p className="text-muted-foreground">
-          {t('subtitle')}
-        </p>
+        <p className="text-muted-foreground">{t('subtitle')}</p>
       </div>
 
       <Tabs defaultValue="profile" className="space-y-4">
@@ -241,9 +254,7 @@ export default function SettingsPage() {
                 <UserIcon className="mr-2 h-5 w-5" />
                 {t('profile')}
               </CardTitle>
-              <CardDescription>
-                {t('profileDesc')}
-              </CardDescription>
+              <CardDescription>{t('profileDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={profileForm.handleSubmit(handleUpdateProfile)} className="space-y-4">
@@ -292,9 +303,7 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>{t('accountInfo')}</CardTitle>
-              <CardDescription>
-                {t('accountInfoDesc')}
-              </CardDescription>
+              <CardDescription>{t('accountInfoDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
@@ -308,13 +317,13 @@ export default function SettingsPage() {
                 </div>
                 <div>
                   <Label className="text-sm text-muted-foreground">{t('registerTime')}</Label>
-                  <p className="text-sm">{formatDate(user?.create_time || '', 'long', locale, timezone)}</p>
+                  <p className="text-sm">
+                    {formatDate(user?.create_time || '', 'long', locale, timezone)}
+                  </p>
                 </div>
                 <div>
                   <Label className="text-sm text-muted-foreground">{t('accountStatus')}</Label>
-                  <p className="text-sm">
-                    {user?.is_active ? t('active') : t('disabled')}
-                  </p>
+                  <p className="text-sm">{user?.is_active ? t('active') : t('disabled')}</p>
                 </div>
               </div>
             </CardContent>
@@ -329,12 +338,13 @@ export default function SettingsPage() {
                 <Shield className="mr-2 h-5 w-5" />
                 {t('passwordSettings')}
               </CardTitle>
-              <CardDescription>
-                {t('passwordDesc')}
-              </CardDescription>
+              <CardDescription>{t('passwordDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={passwordForm.handleSubmit(handleUpdatePassword)} className="space-y-4">
+              <form
+                onSubmit={passwordForm.handleSubmit(handleUpdatePassword)}
+                className="space-y-4"
+              >
                 <div className="space-y-2">
                   <Label htmlFor="currentPassword">{t('currentPassword')}</Label>
                   <Input
@@ -394,27 +404,20 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>{t('twoFactor')}</CardTitle>
-              <CardDescription>
-                {t('twoFactorDesc')}
-              </CardDescription>
+              <CardDescription>{t('twoFactorDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-medium">{t('twoFactor')}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {t('twoFactorApp')}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{t('twoFactorApp')}</p>
                 </div>
                 <Switch disabled />
               </div>
-              <p className="text-xs text-muted-foreground mt-2">
-                {t('comingSoon')}
-              </p>
+              <p className="text-xs text-muted-foreground mt-2">{t('comingSoon')}</p>
             </CardContent>
           </Card>
         </TabsContent>
-
 
         {/* 偏好设置标签页 */}
         <TabsContent value="preferences" className="space-y-4">
@@ -424,19 +427,15 @@ export default function SettingsPage() {
                 <SettingsIcon className="mr-2 h-5 w-5" />
                 {t('interface')}
               </CardTitle>
-              <CardDescription>
-                {t('interfaceDesc')}
-              </CardDescription>
+              <CardDescription>{t('interfaceDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <Label>{t('darkMode')}</Label>
-                  <p className="text-sm text-muted-foreground">
-                    {t('darkModeDesc')}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{t('darkModeDesc')}</p>
                 </div>
-                <Switch 
+                <Switch
                   checked={theme === 'dark'}
                   onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
                 />
@@ -446,7 +445,7 @@ export default function SettingsPage() {
 
               <div className="space-y-2">
                 <Label>{t('language')}</Label>
-                <Select 
+                <Select
                   defaultValue={locale}
                   onValueChange={(val) => {
                     document.cookie = `NEXT_LOCALE=${val}; path=/; max-age=31536000; SameSite=Lax`
@@ -467,10 +466,7 @@ export default function SettingsPage() {
 
               <div className="space-y-2">
                 <Label>{t('timezone')}</Label>
-                <Select 
-                  value={timezone}
-                  onValueChange={handleTimezoneChange}
-                >
+                <Select value={timezone} onValueChange={handleTimezoneChange}>
                   <SelectTrigger className="w-48">
                     <SelectValue />
                   </SelectTrigger>

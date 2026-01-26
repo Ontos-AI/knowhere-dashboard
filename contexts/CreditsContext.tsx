@@ -1,8 +1,9 @@
-"use client"
+'use client'
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import { api } from '@/lib/api'
 import { useAuth } from '@/hooks/useAuth'
+import { api } from '@/lib/api'
+import type React from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 
 interface CreditsContextType {
   credits: number
@@ -30,7 +31,7 @@ export function CreditsProvider({ children }: { children: React.ReactNode }) {
       // Don't set loading to true on refresh to avoid UI flickering
       // Only initial load needs loading state if desired, or we can just update silently
       // But for initial load, isLoading is true by default.
-      
+
       const data = await api.getCreditsBalance()
       setCredits(data.credits_balance)
       setError(null)

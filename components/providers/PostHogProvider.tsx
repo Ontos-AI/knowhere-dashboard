@@ -12,7 +12,7 @@ interface PostHogProviderProps {
 export default function PostHogProvider({ children }: PostHogProviderProps) {
   // 暂时直接返回children，不进行PostHog追踪
   return <>{children}</>
-  
+
   // const pathname = usePathname()
 
   // useEffect(() => {

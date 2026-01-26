@@ -9,7 +9,6 @@ import './polyfill'
 // 类型定义
 // ============================================
 
-
 import { authClient } from './betterAuthClient'
 
 /**
@@ -18,7 +17,7 @@ import { authClient } from './betterAuthClient'
 export class ApiError extends Error {
   code: number
   status?: number
-  
+
   constructor(message: string, code: number, status?: number) {
     super(message)
     this.name = 'ApiError'
@@ -160,8 +159,6 @@ export interface PaymentIntentResponse {
 // 统一任务相关类型（符合PRD规范）
 // ============================================
 
-
-
 export interface ParsingParams {
   [key: string]: any
 }
@@ -190,7 +187,7 @@ export interface JobResponse {
   data_id?: string
   created_at: string
   result_mode: 'auto' | 'inline' | 'url'
-  
+
   // New flattened fields from API
   file_name?: string
   file_extension?: string
@@ -199,20 +196,20 @@ export interface JobResponse {
   duration_seconds?: number
   credits_spent?: number
   result_url_expires_at?: string
-  
+
   // waiting-file status specific
   upload_url?: string
   upload_headers?: Record<string, string>
   expires_in?: number
-  
+
   // running状态特有字段
   progress?: Record<string, any>
-  
+
   // done状态特有字段
   result?: Record<string, any>
   result_url?: string
   result_metadata?: Record<string, any>
-  
+
   // failed状态特有字段
   error?: Record<string, any>
 }
@@ -225,17 +222,17 @@ export interface JobStatus {
   created_at: string
   updated_at?: string
   result_mode: 'auto' | 'inline' | 'url'
-  
+
   // 状态相关字段
   current_state?: string
   progress?: Record<string, any>
   error?: Record<string, any>
-  
+
   // 结果相关字段
   result?: Record<string, any>
   result_url?: string
   result_metadata?: Record<string, any>
-  
+
   // 元数据
   file_path?: string
   s3_key?: string
@@ -250,19 +247,17 @@ export interface JobList {
   page_size: number
 }
 
-
-
 export interface CreditsBalance {
   [key: string]: any
 }
 
 export interface ParseUsageResponse {
-  "request_total": number
-  "mom_growth": number
-  "credits_used": number
-  "estimated_amount": number
-  "success_rate": number
-  "avg_processing_time": number
+  request_total: number
+  mom_growth: number
+  credits_used: number
+  estimated_amount: number
+  success_rate: number
+  avg_processing_time: number
 }
 
 export interface UsageStats {
@@ -272,8 +267,6 @@ export interface UsageStats {
 export interface Transaction {
   [key: string]: any
 }
-
-
 
 // ============================================
 // 核心API客户端类
@@ -320,16 +313,16 @@ export class KnowhereAPI {
     if (!token || typeof token !== 'string') {
       return false
     }
-    
+
     // JWT token通常包含三个部分，用.分隔
     const parts = token.split('.')
     if (parts.length !== 3) {
       return false
     }
-    
+
     // 检查每个部分是否都是有效的base64
     try {
-      parts.forEach(part => {
+      parts.forEach((part) => {
         if (part.length === 0) throw new Error('Empty part')
         // 简单的base64检查
         atob(part.replace(/-/g, '+').replace(/_/g, '/'))
@@ -343,17 +336,14 @@ export class KnowhereAPI {
   /**
    * 统一的fetch请求封装
    */
-  private async request<T = any>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<T> {
+  private async request<T = any>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`
-    
+
     // 构建请求头
     const headers: Record<string, string> = {
       ...(options.headers as Record<string, string>),
     }
-    
+
     // 只有在没有设置Content-Type且不是FormData时才设置默认的Content-Type
     if (!headers['Content-Type'] && !(options.body instanceof FormData)) {
       headers['Content-Type'] = 'application/json'
@@ -362,7 +352,7 @@ export class KnowhereAPI {
     // 添加Accept-Language header
     if (typeof window !== 'undefined' && !headers['Accept-Language']) {
       // 尝试从cookie获取NEXT_LOCALE
-      const match = document.cookie.match(new RegExp('(^| )NEXT_LOCALE=([^;]+)'))
+      const match = document.cookie.match(/(^| )NEXT_LOCALE=([^;]+)/)
       const locale = match ? match[2] : navigator.language
       headers['Accept-Language'] = locale
     }
@@ -375,9 +365,8 @@ export class KnowhereAPI {
         this.updateToken(null)
         throw new ApiError('Token格式无效，请重新登录', 401)
       }
-      headers['Authorization'] = `Bearer ${this.token}`
+      headers.Authorization = `Bearer ${this.token}`
     }
-
 
     // 发送请求
     try {
@@ -403,28 +392,28 @@ export class KnowhereAPI {
         if (response.status === 401) {
           console.warn('收到401响应，清除本地token并退出')
           this.updateToken(null)
-          
-          if (typeof window !== 'undefined') {
-             // 清除其他可能存在的用户数据
-             localStorage.removeItem('user_data')
-             
-             // 尝试清除 Better Auth Session，防止中间件死循环重定向
-             try {
-               await authClient.signOut()
-             } catch (e) {
-               console.error('Failed to sign out from Better Auth:', e)
-             }
 
-             // 可以在这里触发一个自定义事件，通知应用层进行跳转，或者直接刷新/跳转
-             // 为了安全起见，简单地刷新页面或跳转到登录页通常是最好的
-             // 这里假设应用有一个 /login 路由
-             // 使用 window.location.href 会导致全页面刷新，这对于清除状态是好的
-             if (!window.location.pathname.includes('/login')) {
-                 window.location.href = '/login?expired=true'
-             }
+          if (typeof window !== 'undefined') {
+            // 清除其他可能存在的用户数据
+            localStorage.removeItem('user_data')
+
+            // 尝试清除 Better Auth Session，防止中间件死循环重定向
+            try {
+              await authClient.signOut()
+            } catch (e) {
+              console.error('Failed to sign out from Better Auth:', e)
+            }
+
+            // 可以在这里触发一个自定义事件，通知应用层进行跳转，或者直接刷新/跳转
+            // 为了安全起见，简单地刷新页面或跳转到登录页通常是最好的
+            // 这里假设应用有一个 /login 路由
+            // 使用 window.location.href 会导致全页面刷新，这对于清除状态是好的
+            if (!window.location.pathname.includes('/login')) {
+              window.location.href = '/login?expired=true'
+            }
           }
         }
-        
+
         throw new ApiError(
           result.detail || result.msg || `HTTP错误: ${response.status}`,
           result.code || response.status,
@@ -443,11 +432,11 @@ export class KnowhereAPI {
       if (error instanceof Error && error.name === 'AbortError') {
         throw error
       }
-      
+
       if (error instanceof Error) {
         throw new ApiError(error.message, 500)
       }
-      
+
       throw new ApiError('未知错误', 500)
     }
   }
@@ -455,27 +444,22 @@ export class KnowhereAPI {
   /**
    * GET请求
    */
-  private async get<T = any>(
-    endpoint: string,
-    options?: RequestInit
-  ): Promise<T> {
+  private async get<T = any>(endpoint: string, options?: RequestInit): Promise<T> {
     return this.request<T>(endpoint, { ...options, method: 'GET' })
   }
 
   /**
    * POST请求
    */
-  private async post<T = any>(
-    endpoint: string,
-    data?: any,
-    options?: RequestInit
-  ): Promise<T> {
+  private async post<T = any>(endpoint: string, data?: any, options?: RequestInit): Promise<T> {
     const isFormData = data instanceof FormData
-    
+
     return this.request<T>(endpoint, {
       ...options,
       method: 'POST',
-      headers: isFormData ? options?.headers : { 'Content-Type': 'application/json', ...options?.headers },
+      headers: isFormData
+        ? options?.headers
+        : { 'Content-Type': 'application/json', ...options?.headers },
       body: isFormData ? data : JSON.stringify(data),
     })
   }
@@ -483,11 +467,7 @@ export class KnowhereAPI {
   /**
    * PUT请求
    */
-  private async put<T = any>(
-    endpoint: string,
-    data?: any,
-    options?: RequestInit
-  ): Promise<T> {
+  private async put<T = any>(endpoint: string, data?: any, options?: RequestInit): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
       method: 'PUT',
@@ -498,29 +478,20 @@ export class KnowhereAPI {
   /**
    * DELETE请求
    */
-  private async delete<T = any>(
-    endpoint: string,
-    options?: RequestInit
-  ): Promise<T> {
+  private async delete<T = any>(endpoint: string, options?: RequestInit): Promise<T> {
     return this.request<T>(endpoint, { ...options, method: 'DELETE' })
   }
 
   /**
    * PATCH请求
    */
-  private async patch<T = any>(
-    endpoint: string,
-    data?: any,
-    options?: RequestInit
-  ): Promise<T> {
+  private async patch<T = any>(endpoint: string, data?: any, options?: RequestInit): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
       method: 'PATCH',
       body: JSON.stringify(data),
     })
   }
-
-
 
   // ============================================
   // 认证与用户API
@@ -533,7 +504,7 @@ export class KnowhereAPI {
     const formData = new URLSearchParams()
     formData.append('username', data.email)
     if (data.password) formData.append('password', data.password)
-    
+
     return this.request<LoginResponse>('/v1/jwt/login', {
       method: 'POST',
       headers: {
@@ -649,22 +620,18 @@ export class KnowhereAPI {
   /**
    * 获取使用统计
    */
-  async getUsageStats(period: string = 'month') {
+  async getUsageStats(period = 'month') {
     return this.get<UsageStats>(`/v1/billing/usage?period=${period}`)
   }
 
   /**
    * 获取交易历史
    */
-  async getTransactionHistory(limit: number = 50, offset: number = 0) {
+  async getTransactionHistory(limit = 50, offset = 0) {
     return this.get<{ transactions: Transaction[]; total: number }>(
       `/v1/user/credits/transactions?limit=${limit}&offset=${offset}`
     )
   }
-
-
-
-
 
   // ============================================
   // 统一任务API
@@ -691,7 +658,7 @@ export class KnowhereAPI {
    */
   async deleteApiKey(id: string) {
     // 使用 POST /v1/auth/revoke 撤销 API Key
-    return this.post(`/v1/auth/revoke`, { api_key_id: id })
+    return this.post('/v1/auth/revoke', { api_key_id: id })
   }
 
   /**
@@ -716,8 +683,6 @@ export class KnowhereAPI {
   }
 
   // --- End API Key Management ---
-
-
 
   /**
    * 创建任务
@@ -746,47 +711,45 @@ export class KnowhereAPI {
   /**
    * 获取任务列表
    */
-  async listJobs(params?: { 
-    page?: number; 
-    page_size?: number; 
-    status?: string;
-    job_type?: string;
-    recent_days?: 1 | 7 | 30;
-    start_time?: string;
-    end_time?: string;
+  async listJobs(params?: {
+    page?: number
+    page_size?: number
+    status?: string
+    job_type?: string
+    recent_days?: 1 | 7 | 30
+    start_time?: string
+    end_time?: string
   }) {
     const queryParams = new URLSearchParams()
     if (params?.page) queryParams.append('page', params.page.toString())
     if (params?.page_size) queryParams.append('page_size', params.page_size.toString())
     if (params?.status) queryParams.append('status', params.status)
-    
+
     // Add default job_type=kb_management if not specified, as requested
     // const jobType = params?.job_type || 'kb_management'
-    // queryParams.append('job_type', jobType) 
-    
+    // queryParams.append('job_type', jobType)
+
     // New filtering parameters
     if (params?.recent_days) queryParams.append('recent_days', params.recent_days.toString())
     if (params?.start_time) queryParams.append('start_time', params.start_time)
     if (params?.end_time) queryParams.append('end_time', params.end_time)
-    
+
     const query = queryParams.toString()
     return this.get<JobList>(`/v1/jobs/page${query ? `?${query}` : ''}`)
   }
-
-
 
   /**
    * 直接上传文件到S3预签名URL
    */
   async uploadFileToS3(
-    uploadUrl: string, 
+    uploadUrl: string,
     file: any, // Use any instead of File to avoid server-side ReferenceError
     headers: Record<string, string>,
     onProgress?: (progress: number) => void
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest()
-      
+
       // 监听上传进度
       if (onProgress) {
         xhr.upload.addEventListener('progress', (event) => {
@@ -796,7 +759,7 @@ export class KnowhereAPI {
           }
         })
       }
-      
+
       // 监听完成事件
       xhr.addEventListener('load', () => {
         if (xhr.status >= 200 && xhr.status < 300) {
@@ -805,33 +768,31 @@ export class KnowhereAPI {
           reject(new Error(`Upload failed with status ${xhr.status}`))
         }
       })
-      
+
       // 监听错误事件
       xhr.addEventListener('error', () => {
         reject(new Error('Upload failed due to network error'))
       })
-      
+
       // 监听超时事件
       xhr.addEventListener('timeout', () => {
         reject(new Error('Upload timed out'))
       })
-      
+
       // 设置超时时间（5分钟）
       xhr.timeout = 5 * 60 * 1000
-      
+
       // 开始上传
       xhr.open('PUT', uploadUrl)
-      
+
       // 设置请求头
       Object.entries(headers).forEach(([key, value]) => {
         xhr.setRequestHeader(key, value)
       })
-      
+
       xhr.send(file)
     })
   }
-
-
 
   // ============================================
 }

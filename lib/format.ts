@@ -1,13 +1,18 @@
 // 日期格式化
-export function formatDate(date: string | Date, format: 'short' | 'long' | 'relative' = 'short', locale: string = 'zh-CN', timeZone?: string): string {
+export function formatDate(
+  date: string | Date,
+  format: 'short' | 'long' | 'relative' = 'short',
+  locale = 'zh-CN',
+  timeZone?: string
+): string {
   const d = new Date(date)
-  
-  if (isNaN(d.getTime())) {
+
+  if (Number.isNaN(d.getTime())) {
     return '无效日期'
   }
 
   const options: Intl.DateTimeFormatOptions = {
-    timeZone
+    timeZone,
   }
 
   switch (format) {
@@ -20,7 +25,7 @@ export function formatDate(date: string | Date, format: 'short' | 'long' | 'rela
         hour: '2-digit',
         minute: '2-digit',
       })
-    
+
     case 'long':
       return d.toLocaleDateString(locale, {
         ...options,
@@ -31,40 +36,42 @@ export function formatDate(date: string | Date, format: 'short' | 'long' | 'rela
         minute: '2-digit',
         second: '2-digit',
       })
-    
+
     case 'relative':
       return formatRelativeTime(d, locale, timeZone)
-    
+
     default:
       return d.toLocaleDateString(locale, options)
   }
 }
 
 // 相对时间格式化
-function formatRelativeTime(date: Date, locale: string = 'zh-CN', timeZone?: string): string {
+function formatRelativeTime(date: Date, locale = 'zh-CN', timeZone?: string): string {
   const now = new Date()
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
-  
+
   const isZh = locale.startsWith('zh')
 
   if (diffInSeconds < 60) {
     return isZh ? '刚刚' : 'Just now'
-  } else if (diffInSeconds < 3600) {
+  }
+  if (diffInSeconds < 3600) {
     const minutes = Math.floor(diffInSeconds / 60)
     return isZh ? `${minutes}分钟前` : `${minutes}m ago`
-  } else if (diffInSeconds < 86400) {
+  }
+  if (diffInSeconds < 86400) {
     const hours = Math.floor(diffInSeconds / 3600)
     return isZh ? `${hours}小时前` : `${hours}h ago`
-  } else if (diffInSeconds < 2592000) {
+  }
+  if (diffInSeconds < 2592000) {
     const days = Math.floor(diffInSeconds / 86400)
     return isZh ? `${days}天前` : `${days}d ago`
-  } else {
-    return formatDate(date, 'short', locale, timeZone)
   }
+  return formatDate(date, 'short', locale, timeZone)
 }
 
 // 金额格式化
-export function formatCurrency(amount: number, currency: string = 'CNY'): string {
+export function formatCurrency(amount: number, currency = 'CNY'): string {
   return new Intl.NumberFormat('zh-CN', {
     style: 'currency',
     currency: currency,
@@ -79,23 +86,23 @@ export function formatCredits(credits: number): string {
 // 文件大小格式化
 export function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 B'
-  
+
   const k = 1024
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
   const i = Math.floor(Math.log(bytes) / Math.log(k))
-  
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+
+  return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`
 }
 
 // 百分比格式化
-export function formatPercentage(value: number, decimals: number = 1): string {
+export function formatPercentage(value: number, decimals = 1): string {
   return `${value.toFixed(decimals)}%`
 }
 
 // 截断文本
 export function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text
-  return text.substring(0, maxLength) + '...'
+  return `${text.substring(0, maxLength)}...`
 }
 
 // 掩码API Key
@@ -117,25 +124,25 @@ export function getPasswordStrength(password: string): {
   color: string
 } {
   let score = 0
-  
+
   if (password.length >= 8) score++
   if (password.length >= 12) score++
   if (/[a-z]/.test(password)) score++
   if (/[A-Z]/.test(password)) score++
   if (/[0-9]/.test(password)) score++
   if (/[^A-Za-z0-9]/.test(password)) score++
-  
+
   if (score <= 2) {
     return { score, label: '弱', color: 'text-red-500' }
-  } else if (score <= 4) {
-    return { score, label: '中等', color: 'text-yellow-500' }
-  } else {
-    return { score, label: '强', color: 'text-green-500' }
   }
+  if (score <= 4) {
+    return { score, label: '中等', color: 'text-yellow-500' }
+  }
+  return { score, label: '强', color: 'text-green-500' }
 }
 
 // 生成随机字符串
-export function generateRandomString(length: number = 16): string {
+export function generateRandomString(length = 16): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
   let result = ''
   for (let i = 0; i < length; i++) {

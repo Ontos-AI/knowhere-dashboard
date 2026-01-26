@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import { Component, ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { AlertTriangle, RefreshCw } from 'lucide-react'
+import { Component, type ReactNode } from 'react'
 
 interface ErrorBoundaryState {
   hasError: boolean
@@ -46,9 +46,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               <AlertTriangle className="h-5 w-5 text-destructive" />
               <CardTitle>出现错误</CardTitle>
             </div>
-            <CardDescription>
-              抱歉，页面遇到了一个错误
-            </CardDescription>
+            <CardDescription>抱歉，页面遇到了一个错误</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {this.state.error && (
@@ -63,9 +61,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 <RefreshCw className="h-4 w-4 mr-2" />
                 重试
               </Button>
-              <Button onClick={() => window.location.reload()}>
-                刷新页面
-              </Button>
+              <Button onClick={() => window.location.reload()}>刷新页面</Button>
             </div>
           </CardContent>
         </Card>

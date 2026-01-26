@@ -1,10 +1,11 @@
-"use client"
+'use client'
 
-import React, { createContext, useContext, useState, useEffect } from 'react'
-import { useRouter } from '@/navigation'
-import { api, User } from '@/lib/api'
-import { toast } from 'sonner'
+import { type User, api } from '@/lib/api'
 import { authClient } from '@/lib/betterAuthClient'
+import { useRouter } from '@/navigation'
+import type React from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 interface AuthContextType {
   user: User | null
@@ -38,7 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     if (session?.user) {
       // console.log('[AuthContext] Session detected, starting backend sync...')
-      
+
       // Map Better Auth session user to our User type
       const mappedUser: User = {
         id: session.user.id,
@@ -49,39 +50,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         is_verified: session.user.emailVerified,
         credits_balance: 0,
         avatar_url: session.user.image || undefined,
-        create_time: session.user.createdAt ? new Date(session.user.createdAt).toISOString() : new Date().toISOString()
+        create_time: session.user.createdAt
+          ? new Date(session.user.createdAt).toISOString()
+          : new Date().toISOString(),
       }
-      
+
       // Sync with backend API
       const syncWithBackend = async () => {
         // console.log('[AuthContext] syncWithBackend triggered. Session User:', session.user)
-        
+
         if (!session.user.email) {
-            console.error('[AuthContext] No email in session user, cannot sync.')
-            return
+          console.error('[AuthContext] No email in session user, cannot sync.')
+          return
         }
 
         // 使用环境变量中的默认密码，如果没有则使用硬编码的后备密码
-        const hardcodedPassword = process.env.NEXT_PUBLIC_DEFAULT_API_PASSWORD || "DefaultPass123!@#"
-        
+        const hardcodedPassword =
+          process.env.NEXT_PUBLIC_DEFAULT_API_PASSWORD || 'DefaultPass123!@#'
+
         try {
           // 1. Try to login first
           try {
             const loginRes = await api.login({
               email: session.user.email,
-              password: hardcodedPassword
+              password: hardcodedPassword,
             })
             // 用户要求仔细检查 login 返回
             // console.log('Login response:', loginRes)
-            
+
             const newToken = loginRes.access_token
             if (!newToken) {
-                console.error('[AuthContext] No access_token in login response:', loginRes)
-                throw new Error('No access_token returned')
+              console.error('[AuthContext] No access_token in login response:', loginRes)
+              throw new Error('No access_token returned')
             }
             setToken(newToken)
             api.updateToken(newToken)
-            
+
             // Fetch full profile
             const profile = await api.getUserProfile()
             setUser(profile)
@@ -89,28 +93,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           } catch (loginError) {
             // If login fails, try to register
             // console.log("[AuthContext] Login failed, attempting registration...", loginError)
-            
+
             try {
-               await api.register({
+              await api.register({
                 email: session.user.email,
                 password: hardcodedPassword,
-                username: session.user.name || session.user.email.split('@')[0] || 'User'
+                username: session.user.name || session.user.email.split('@')[0] || 'User',
               })
-              
+
               // After register, login again
               const loginRes = await api.login({
                 email: session.user.email,
-                password: hardcodedPassword
+                password: hardcodedPassword,
               })
-              
+
               const newToken = loginRes.access_token
               setToken(newToken)
               api.updateToken(newToken)
-              
+
               const profile = await api.getUserProfile()
               setUser(profile)
             } catch (regError) {
-              console.error("[AuthContext] Registration failed:", regError)
+              console.error('[AuthContext] Registration failed:', regError)
               await authClient.signOut()
               setUser(null)
               setToken(null)
@@ -119,7 +123,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             }
           }
         } catch (error) {
-          console.error("[AuthContext] Auth sync error:", error)
+          console.error('[AuthContext] Auth sync error:', error)
           await authClient.signOut()
           setUser(null)
           setToken(null)
@@ -141,12 +145,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const refreshUser = async () => {
     // 1. Force a session refresh (updates Better Auth session if possible)
-    await authClient.getSession({ 
+    await authClient.getSession({
       fetchOptions: {
         headers: {
-          'Cache-Control': 'no-cache'
-        }
-      }
+          'Cache-Control': 'no-cache',
+        },
+      },
     })
 
     // 2. Manually re-fetch backend profile to ensure we have the latest data
@@ -163,16 +167,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      const { data, error } = await authClient.signIn.email({ 
-        email, 
+      const { data, error } = await authClient.signIn.email({
+        email,
         password,
-        callbackURL: '/usage'
+        callbackURL: '/usage',
       })
-      
+
       if (error) {
         throw new Error(error.message || '登录失败')
       }
-      
+
       // Session update will trigger useEffect
     } catch (error) {
       console.error('Login error:', error)
@@ -186,13 +190,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         email,
         password,
         name: username,
-        callbackURL: '/dashboard'
+        callbackURL: '/dashboard',
       })
 
       if (error) {
         throw new Error(error.message || '注册失败')
       }
-      
+
       // Session update will trigger useEffect
     } catch (error) {
       console.error('Register error:', error)
@@ -215,8 +219,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setToken(null)
             api.updateToken(null)
             router.push('/login')
-          }
-        }
+          },
+        },
       })
     } catch (error) {
       console.error('Logout error:', error)

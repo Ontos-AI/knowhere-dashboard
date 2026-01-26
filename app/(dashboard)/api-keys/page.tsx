@@ -1,25 +1,45 @@
-"use client"
+'use client'
 
-import { useEffect, useState } from 'react'
+import { EmptyState } from '@/components/common/EmptyState'
+import { LoadingSpinner } from '@/components/common/LoadingSpinner'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Switch } from '@/components/ui/switch'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { Textarea } from '@/components/ui/textarea'
+import { useTimezone } from '@/contexts/TimezoneContext'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/useToast'
-import { api, type APIKey } from '@/lib/api'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Switch } from '@/components/ui/switch'
-import { LoadingSpinner } from '@/components/common/LoadingSpinner'
-import { EmptyState } from '@/components/common/EmptyState'
-import { Plus, Search, Copy, Trash2, Key } from 'lucide-react'
-import { formatDate, copyToClipboard } from '@/lib/format'
-import { useTranslations, useLocale } from 'next-intl'
-import { useTimezone } from '@/contexts/TimezoneContext'
+import { type APIKey, api } from '@/lib/api'
+import { copyToClipboard, formatDate } from '@/lib/format'
+import { Copy, Key, Plus, Search, Trash2 } from 'lucide-react'
+import { useLocale, useTranslations } from 'next-intl'
+import { useEffect, useState } from 'react'
 
 import {
   AlertDialog,
@@ -63,7 +83,7 @@ export default function ApiKeysPage() {
   useEffect(() => {
     if (expirationDuration === 'never') {
       // 设置一个无限大的日期，例如 9999-12-31
-      setNewApiKey(prev => ({ ...prev, expires_at: '9999-12-31T23:59:59' }))
+      setNewApiKey((prev) => ({ ...prev, expires_at: '9999-12-31T23:59:59' }))
       // setNewApiKey(prev => ({ ...prev, expires_at: '9999-12-31T23:59:59Z' }))
       return
     }
@@ -85,7 +105,7 @@ export default function ApiKeysPage() {
         break
     }
     // toISOString() 已经是 UTC 时间，去除毫秒部分和 'Z'
-    setNewApiKey(prev => ({ ...prev, expires_at: date.toISOString().split('.')[0] }))
+    setNewApiKey((prev) => ({ ...prev, expires_at: date.toISOString().split('.')[0] }))
     // setNewApiKey(prev => ({ ...prev, expires_at: date.toISOString().split('.')[0]+'Z' }))
   }, [expirationDuration])
 
@@ -93,7 +113,7 @@ export default function ApiKeysPage() {
     const controller = new AbortController()
     loadApiKeys(controller.signal)
     return () => {
-        controller.abort()
+      controller.abort()
     }
   }, [])
 
@@ -107,9 +127,9 @@ export default function ApiKeysPage() {
       console.error('Failed to load API keys:', error)
       toast.error(t('loadFailed'))
     } finally {
-        if (!signal?.aborted) {
-            setIsLoading(false)
-        }
+      if (!signal?.aborted) {
+        setIsLoading(false)
+      }
     }
   }
 
@@ -117,7 +137,7 @@ export default function ApiKeysPage() {
     try {
       setIsCreating(true)
       const createdKeyData = await api.createApiKey(newApiKey)
-      
+
       if (createdKeyData?.api_key) {
         setCreatedKey(createdKeyData.api_key)
         setShowCreatedKey(true)
@@ -144,7 +164,6 @@ export default function ApiKeysPage() {
     }
   }
 
-
   const confirmRevokeKey = (keyId: string) => {
     setKeyToDelete(keyId)
     setIsDeleteAlertOpen(true)
@@ -170,7 +189,7 @@ export default function ApiKeysPage() {
 
   const handleToggleKey = async (keyId: string) => {
     // Check if key is currently active
-    const key = apiKeys.find(k => k.id === keyId)
+    const key = apiKeys.find((k) => k.id === keyId)
     if (key?.is_active) {
       // If active, show confirmation dialog
       setKeyToToggle(keyId)
@@ -198,9 +217,10 @@ export default function ApiKeysPage() {
     }
   }
 
-  const filteredApiKeys = apiKeys.filter(key =>
-    key.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    (key.api_key && key.api_key.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredApiKeys = apiKeys.filter(
+    (key) =>
+      key.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      key.api_key?.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   if (isLoading) {
@@ -217,9 +237,7 @@ export default function ApiKeysPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{t('title')}</h1>
-          <p className="text-muted-foreground">
-            {t('subtitle')}
-          </p>
+          <p className="text-muted-foreground">{t('subtitle')}</p>
         </div>
         <div className="mt-4 sm:mt-0">
           <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
@@ -232,9 +250,7 @@ export default function ApiKeysPage() {
             <DialogContent className="sm:max-w-md">
               <DialogHeader>
                 <DialogTitle>{t('createDialogTitle')}</DialogTitle>
-                <DialogDescription>
-                  {t('createDialogDesc')}
-                </DialogDescription>
+                <DialogDescription>{t('createDialogDesc')}</DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 <div className="space-y-2">
@@ -248,10 +264,7 @@ export default function ApiKeysPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="expires_at">{t('expiration')}</Label>
-                  <Select
-                    value={expirationDuration}
-                    onValueChange={setExpirationDuration}
-                  >
+                  <Select value={expirationDuration} onValueChange={setExpirationDuration}>
                     <SelectTrigger>
                       <SelectValue placeholder={t('selectExpiration')} />
                     </SelectTrigger>
@@ -265,16 +278,10 @@ export default function ApiKeysPage() {
                   </Select>
                 </div>
                 <div className="flex justify-end space-x-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => setIsCreateDialogOpen(false)}
-                  >
+                  <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
                     {t('cancel')}
                   </Button>
-                  <Button
-                    onClick={handleCreateApiKey}
-                    disabled={isCreating || !newApiKey.name}
-                  >
+                  <Button onClick={handleCreateApiKey} disabled={isCreating || !newApiKey.name}>
                     {isCreating ? t('creating') : t('create')}
                   </Button>
                 </div>
@@ -303,18 +310,22 @@ export default function ApiKeysPage() {
           icon={<Key className="h-12 w-12 text-muted-foreground" />}
           title={searchTerm ? t('noKeysFound') : t('noKeys')}
           description={searchTerm ? t('noKeysFoundDesc') : t('noKeysDesc')}
-          action={!searchTerm ? {
-            label: t('createKey'),
-            onClick: () => setIsCreateDialogOpen(true)
-          } : undefined}
+          action={
+            !searchTerm
+              ? {
+                  label: t('createKey'),
+                  onClick: () => setIsCreateDialogOpen(true),
+                }
+              : undefined
+          }
         />
       ) : (
         <Card>
           <CardHeader>
-            <CardTitle>{t('title')} ({filteredApiKeys.length})</CardTitle>
-            <CardDescription>
-              {t('subtitle')}
-            </CardDescription>
+            <CardTitle>
+              {t('title')} ({filteredApiKeys.length})
+            </CardTitle>
+            <CardDescription>{t('subtitle')}</CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
@@ -334,9 +345,7 @@ export default function ApiKeysPage() {
                   <TableRow key={key.id}>
                     <TableCell className="font-medium">{key.name}</TableCell>
                     <TableCell>
-                      <code className="text-sm bg-muted px-2 py-1 rounded">
-                        {key.api_key}
-                      </code>
+                      <code className="text-sm bg-muted px-2 py-1 rounded">{key.api_key}</code>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-2">
@@ -351,17 +360,17 @@ export default function ApiKeysPage() {
                     </TableCell>
                     <TableCell>{formatDate(key.created_at, 'short', locale, timezone)}</TableCell>
                     <TableCell>
-                      {key.last_used_at ? formatDate(key.last_used_at, 'relative', locale, timezone) : t('neverUsed')}
+                      {key.last_used_at
+                        ? formatDate(key.last_used_at, 'relative', locale, timezone)
+                        : t('neverUsed')}
                     </TableCell>
                     <TableCell>
-                      {key.expires_at && new Date(key.expires_at).getFullYear() < 9999 ? formatDate(key.expires_at, 'long', locale, timezone) : t('neverExpires')}
+                      {key.expires_at && new Date(key.expires_at).getFullYear() < 9999
+                        ? formatDate(key.expires_at, 'long', locale, timezone)
+                        : t('neverExpires')}
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => confirmRevokeKey(key.id)}
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => confirmRevokeKey(key.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </TableCell>
@@ -378,13 +387,11 @@ export default function ApiKeysPage() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t('deleteConfirmTitle')}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t('deleteConfirmDesc')}
-            </AlertDialogDescription>
+            <AlertDialogDescription>{t('deleteConfirmDesc')}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isRevoking}>{t('cancel')}</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={(e) => {
                 e.preventDefault()
                 handleRevokeKey()
@@ -405,12 +412,13 @@ export default function ApiKeysPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>{t('toggleConfirmTitle') || '确认禁用 API Key？'}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t('toggleConfirmDesc') || '禁用后，使用此 Key 的应用将无法访问 API。您随时可以再次启用它。'}
+              {t('toggleConfirmDesc') ||
+                '禁用后，使用此 Key 的应用将无法访问 API。您随时可以再次启用它。'}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isToggling}>{t('cancel')}</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={(e) => {
                 e.preventDefault()
                 if (keyToToggle) performToggle(keyToToggle)
@@ -429,9 +437,7 @@ export default function ApiKeysPage() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>{t('createSuccess')}</DialogTitle>
-            <DialogDescription>
-              {t('copyAndSave')}
-            </DialogDescription>
+            <DialogDescription>{t('copyAndSave')}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
@@ -453,14 +459,10 @@ export default function ApiKeysPage() {
               </div>
             </div>
             <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-md">
-              <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                {t('securityWarning')}
-              </p>
+              <p className="text-sm text-yellow-800 dark:text-yellow-200">{t('securityWarning')}</p>
             </div>
             <div className="flex justify-end">
-              <Button onClick={() => setShowCreatedKey(false)}>
-                {t('iHaveSaved')}
-              </Button>
+              <Button onClick={() => setShowCreatedKey(false)}>{t('iHaveSaved')}</Button>
             </div>
           </div>
         </DialogContent>

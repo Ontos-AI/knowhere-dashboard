@@ -1,21 +1,21 @@
-"use client"
+'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
+import { OAuthButtons } from '@/components/auth/OAuthButtons'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/useToast'
-import { OAuthButtons } from '@/components/auth/OAuthButtons'
 import { getPasswordStrength } from '@/lib/format'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { useMemo } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
 export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false)
@@ -25,15 +25,21 @@ export default function RegisterPage() {
   const router = useRouter()
   const t = useTranslations('Auth')
 
-  const registerSchema = useMemo(() => z.object({
-    username: z.string().min(2, t('usernameMinLength')),
-    email: z.string().email(t('emailInvalid')),
-    password: z.string().min(8, t('passwordMinLength')),
-    confirmPassword: z.string(),
-  }).refine((data) => data.password === data.confirmPassword, {
-    message: t('passwordMismatch'),
-    path: ['confirmPassword'],
-  }), [t])
+  const registerSchema = useMemo(
+    () =>
+      z
+        .object({
+          username: z.string().min(2, t('usernameMinLength')),
+          email: z.string().email(t('emailInvalid')),
+          password: z.string().min(8, t('passwordMinLength')),
+          confirmPassword: z.string(),
+        })
+        .refine((data) => data.password === data.confirmPassword, {
+          message: t('passwordMismatch'),
+          path: ['confirmPassword'],
+        }),
+    [t]
+  )
 
   type RegisterForm = z.infer<typeof registerSchema>
 
@@ -75,9 +81,7 @@ export default function RegisterPage() {
     <Card className="w-full">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl text-center">{t('register')}</CardTitle>
-        <CardDescription className="text-center">
-          {t('registerDesc')}
-        </CardDescription>
+        <CardDescription className="text-center">{t('registerDesc')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* OAuth登录 */}
@@ -108,9 +112,7 @@ export default function RegisterPage() {
               {...register('email')}
               disabled={isLoading}
             />
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email.message}</p>
-            )}
+            {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -135,8 +137,8 @@ export default function RegisterPage() {
                         passwordStrength.score <= 2
                           ? 'bg-red-500'
                           : passwordStrength.score <= 4
-                          ? 'bg-yellow-500'
-                          : 'bg-green-500'
+                            ? 'bg-yellow-500'
+                            : 'bg-green-500'
                       }`}
                       style={{ width: `${(passwordStrength.score / 6) * 100}%` }}
                     />

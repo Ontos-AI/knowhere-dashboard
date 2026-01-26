@@ -1,54 +1,44 @@
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
-} from "@/components/ui/card";
-import { 
-  Globe, 
-  FileText, 
-  Zap, 
-  Code2, 
-  Shield, 
-  Cpu 
-} from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Code2, Cpu, FileText, Globe, Shield, Zap } from 'lucide-react'
 
 const features = [
   {
-    title: "Universal Input",
-    description: "Process documents from direct file uploads or URLs. Support for PDF, DOCX, and more.",
+    title: 'Universal Input',
+    description:
+      'Process documents from direct file uploads or URLs. Support for PDF, DOCX, and more.',
     icon: FileText,
   },
   {
-    title: "Global Infrastructure",
-    description: "Multi-region deployment on AWS (Global) and Aliyun (China) ensures low latency worldwide.",
+    title: 'Global Infrastructure',
+    description:
+      'Multi-region deployment on AWS (Global) and Aliyun (China) ensures low latency worldwide.',
     icon: Globe,
   },
   {
-    title: "Intelligent Parsing",
-    description: "Advanced OCR and layout analysis to extract structured data from complex documents.",
+    title: 'Intelligent Parsing',
+    description:
+      'Advanced OCR and layout analysis to extract structured data from complex documents.',
     icon: Brain,
   },
   {
-    title: "Developer First",
-    description: "Simple REST API, webhooks, and async processing designed for easy integration.",
+    title: 'Developer First',
+    description: 'Simple REST API, webhooks, and async processing designed for easy integration.',
     icon: Code2,
   },
   {
-    title: "Enterprise Secure",
-    description: "Bank-grade security with API key authentication and encrypted data transmission.",
+    title: 'Enterprise Secure',
+    description: 'Bank-grade security with API key authentication and encrypted data transmission.',
     icon: Shield,
   },
   {
-    title: "High Performance",
-    description: "Optimized for speed with 60 RPM rate limits and scalable processing queues.",
+    title: 'High Performance',
+    description: 'Optimized for speed with 60 RPM rate limits and scalable processing queues.',
     icon: Zap,
   },
-];
+]
 
 function Brain(props: any) {
-  return <Cpu {...props} />; // Using Cpu as Brain proxy if needed, or just import Brain from lucide-react if available.
+  return <Cpu {...props} /> // Using Cpu as Brain proxy if needed, or just import Brain from lucide-react if available.
 }
 
 export function Features() {
@@ -66,7 +56,10 @@ export function Features() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {features.map((feature, index) => (
-            <Card key={index} className="bg-background border-muted hover:border-primary/50 transition-colors">
+            <Card
+              key={index}
+              className="bg-background border-muted hover:border-primary/50 transition-colors"
+            >
               <CardHeader>
                 <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   <feature.icon className="h-6 w-6 text-primary" />
@@ -74,14 +67,12 @@ export function Features() {
                 <CardTitle>{feature.title}</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-base">
-                  {feature.description}
-                </CardDescription>
+                <CardDescription className="text-base">{feature.description}</CardDescription>
               </CardContent>
             </Card>
           ))}
         </div>
       </div>
     </section>
-  );
+  )
 }

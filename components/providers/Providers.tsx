@@ -1,10 +1,10 @@
-"use client"
+'use client'
 
-import { AuthProvider } from '@/contexts/AuthContext'
-import { TimezoneProvider } from '@/contexts/TimezoneContext'
-import { CreditsProvider } from '@/contexts/CreditsContext'
-import { Toaster } from '@/components/ui/sonner'
 import { useAppConfigContext } from '@/components/providers/ConfigProvider'
+import { Toaster } from '@/components/ui/sonner'
+import { AuthProvider } from '@/contexts/AuthContext'
+import { CreditsProvider } from '@/contexts/CreditsContext'
+import { TimezoneProvider } from '@/contexts/TimezoneContext'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const config = useAppConfigContext()
@@ -18,6 +18,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
       </TimezoneProvider>
     </AuthProvider>
   )
-  
+
   return content
 }

@@ -6,7 +6,7 @@ export async function GET() {
       status: 'healthy',
       service: 'knowhere-web',
       timestamp: new Date().toISOString(),
-      uptime: process.uptime()
+      uptime: process.uptime(),
     })
   } catch (error) {
     return NextResponse.json(
@@ -14,7 +14,7 @@ export async function GET() {
         status: 'unhealthy',
         service: 'knowhere-web',
         error: error instanceof Error ? error.message : 'Unknown error',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     )

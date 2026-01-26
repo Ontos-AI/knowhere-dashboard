@@ -1,10 +1,10 @@
-"use client"
+'use client'
 
-import { useEffect, Suspense } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
 import { useToast } from '@/hooks/useToast'
 import { authClient } from '@/lib/betterAuthClient'
 import { useTranslations } from 'next-intl'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense, useEffect } from 'react'
 
 function AppleCallbackContent() {
   const router = useRouter()
@@ -31,7 +31,7 @@ function AppleCallbackContent() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4" />
         <p>{t('processingAppleLogin')}</p>
       </div>
     </div>
@@ -40,11 +40,13 @@ function AppleCallbackContent() {
 
 export default function AppleCallbackPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        </div>
+      }
+    >
       <AppleCallbackContent />
     </Suspense>
   )

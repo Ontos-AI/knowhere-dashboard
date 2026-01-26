@@ -12,22 +12,24 @@ let posthog: any = null
 const initPostHog = () => {
   if (typeof window !== 'undefined' && POSTHOG_KEY && !posthog) {
     // 动态导入PostHog，避免服务端渲染问题
-    import('posthog-js').then((module) => {
-      posthog = module.default
-      posthog.init(POSTHOG_KEY, {
-        api_host: POSTHOG_HOST,
-        person_profiles: 'identified_only',
-        capture_pageview: false, // 手动控制页面浏览事件
-        capture_pageleave: true,
-        loaded: (posthog: any) => {
-          if (process.env.NODE_ENV === 'development') {
-            console.log('PostHog loaded')
-          }
-        }
+    import('posthog-js')
+      .then((module) => {
+        posthog = module.default
+        posthog.init(POSTHOG_KEY, {
+          api_host: POSTHOG_HOST,
+          person_profiles: 'identified_only',
+          capture_pageview: false, // 手动控制页面浏览事件
+          capture_pageleave: true,
+          loaded: (posthog: any) => {
+            if (process.env.NODE_ENV === 'development') {
+              console.log('PostHog loaded')
+            }
+          },
+        })
       })
-    }).catch((error) => {
-      console.error('Failed to load PostHog:', error)
-    })
+      .catch((error) => {
+        console.error('Failed to load PostHog:', error)
+      })
   }
 }
 
@@ -57,7 +59,7 @@ export const resetUser = () => {
 export const trackPageView = (pageName?: string) => {
   if (typeof window !== 'undefined' && posthog) {
     posthog.capture('$pageview', {
-      page: pageName || window.location.pathname
+      page: pageName || window.location.pathname,
     })
   }
 }
@@ -81,7 +83,7 @@ export const trackLogin = (method: 'google' | 'github' | 'apple' | 'email', user
   trackEvent('user_login', {
     method,
     user_id: userId,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   })
 }
 
@@ -90,7 +92,7 @@ export const trackSignUp = (method: 'google' | 'github' | 'apple' | 'email', use
   trackEvent('user_signup', {
     method,
     user_id: userId,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   })
 }
 
@@ -99,7 +101,7 @@ export const trackApiKeyCreated = (keyId: string, keyName: string) => {
   trackEvent('api_key_created', {
     key_id: keyId,
     key_name: keyName,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   })
 }
 
@@ -107,7 +109,7 @@ export const trackApiKeyCreated = (keyId: string, keyName: string) => {
 export const trackApiKeyDeleted = (keyId: string) => {
   trackEvent('api_key_deleted', {
     key_id: keyId,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   })
 }
 
@@ -117,27 +119,35 @@ export const trackCreditsPurchased = (amount: number, planType: string, transact
     amount,
     plan_type: planType,
     transaction_id: transactionId,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   })
 }
 
 // 追踪任务创建
-export const trackJobCreated = (jobType: 'kb_management', jobId: string, sourceType: 'direct_upload' | 'url') => {
+export const trackJobCreated = (
+  jobType: 'kb_management',
+  jobId: string,
+  sourceType: 'direct_upload' | 'url'
+) => {
   trackEvent('job_created', {
     job_type: jobType,
     job_id: jobId,
     source_type: sourceType,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   })
 }
 
 // 追踪任务完成
-export const trackJobCompleted = (jobType: 'kb_management', jobId: string, processingTimeMs: number) => {
+export const trackJobCompleted = (
+  jobType: 'kb_management',
+  jobId: string,
+  processingTimeMs: number
+) => {
   trackEvent('job_completed', {
     job_type: jobType,
     job_id: jobId,
     processing_time_ms: processingTimeMs,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   })
 }
 
@@ -147,17 +157,21 @@ export const trackJobFailed = (jobType: 'kb_management', jobId: string, errorMes
     job_type: jobType,
     job_id: jobId,
     error_message: errorMessage,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   })
 }
 
 // 追踪文件上传
-export const trackFileUpload = (fileType: string, fileSize: number, uploadMethod: 'direct' | 'url') => {
+export const trackFileUpload = (
+  fileType: string,
+  fileSize: number,
+  uploadMethod: 'direct' | 'url'
+) => {
   trackEvent('file_uploaded', {
     file_type: fileType,
     file_size: fileSize,
     upload_method: uploadMethod,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   })
 }
 
@@ -165,7 +179,7 @@ export const trackFileUpload = (fileType: string, fileSize: number, uploadMethod
 export const trackWebhookConfigured = (webhookUrl: string) => {
   trackEvent('webhook_configured', {
     webhook_url: webhookUrl,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   })
 }
 
@@ -174,7 +188,7 @@ export const trackError = (errorMessage: string, errorContext?: Record<string, a
   trackEvent('error_occurred', {
     error_message: errorMessage,
     error_context: errorContext,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   })
 }
 
@@ -183,7 +197,7 @@ export const trackFeatureUsage = (featureName: string, properties?: Record<strin
   trackEvent('feature_used', {
     feature_name: featureName,
     ...properties,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   })
 }
 

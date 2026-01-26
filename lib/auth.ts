@@ -1,12 +1,12 @@
-import "./polyfill"
-import { betterAuth } from "better-auth"
-import { magicLink } from "better-auth/plugins"
-import { nextCookies } from "better-auth/next-js"
-import { Resend } from "resend"
-import { ProxyAgent, setGlobalDispatcher } from "undici"
+import './polyfill'
+import { betterAuth } from 'better-auth'
+import { nextCookies } from 'better-auth/next-js'
+import { magicLink } from 'better-auth/plugins'
+import { Resend } from 'resend'
+import { ProxyAgent, setGlobalDispatcher } from 'undici'
 
 // 在开发环境下，如果配置了代理，则设置全局代理（解决国内无法访问 Google/GitHub OAuth 的问题）
-if (process.env.NODE_ENV === "development" || process.env.HTTPS_PROXY) {
+if (process.env.NODE_ENV === 'development' || process.env.HTTPS_PROXY) {
   const proxyUrl = process.env.HTTPS_PROXY || process.env.HTTP_PROXY
   if (proxyUrl) {
     try {
@@ -23,14 +23,11 @@ if (process.env.NODE_ENV === "development" || process.env.HTTPS_PROXY) {
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
 export const auth = betterAuth({
-  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
+  baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3000',
   // 显式指定 trustedOrigins 防止反向代理或 Docker 环境下的 host 校验失败
   // 必须包含生产环境域名，否则会导致 invalid_origin 错误
-  trustedOrigins: [
-    "http://localhost:3000", 
-    process.env.BETTER_AUTH_URL || "http://localhost:3000"
-  ], 
-  secret: process.env.BETTER_AUTH_SECRET || "dev-secret-please-change",
+  trustedOrigins: ['http://localhost:3000', process.env.BETTER_AUTH_URL || 'http://localhost:3000'],
+  secret: process.env.BETTER_AUTH_SECRET || 'dev-secret-please-change',
   session: {
     // 启用 JWT session，这样前端获取的 token 就是一个标准的 JWT，
     // 后端可以直接验证这个 JWT，而不需要访问数据库（前提是共享 secret）
@@ -65,8 +62,8 @@ export const auth = betterAuth({
         try {
           // 检查必要的环境变量
           if (!process.env.RESEND_API_KEY || !resend) {
-            console.warn("RESEND_API_KEY is missing. Printing magic link to console instead.")
-            if (process.env.NODE_ENV === "development") {
+            console.warn('RESEND_API_KEY is missing. Printing magic link to console instead.')
+            if (process.env.NODE_ENV === 'development') {
               console.log(`\n📨 [DEV MODE] Magic Link for ${email}:\n${url}\n`)
             }
             return
@@ -75,7 +72,7 @@ export const auth = betterAuth({
           const { data, error } = await resend.emails.send({
             from: process.env.RESEND_FROM || 'onboarding@resend.dev',
             to: email,
-            subject: "登录您的 Knowhere 账户",
+            subject: '登录您的 Knowhere 账户',
             html: `
               <!DOCTYPE html>
               <html>
@@ -119,19 +116,19 @@ export const auth = betterAuth({
           })
 
           if (error) {
-            console.error("Resend error:", error)
+            console.error('Resend error:', error)
             throw error
           }
 
           console.log(`Magic link sent to ${email}. Id: ${data?.id}`)
         } catch (error) {
-          console.error("Failed to send magic link:", error)
+          console.error('Failed to send magic link:', error)
           // 即使发送失败，也在开发环境下打印链接，确保流程不阻塞
-          if (process.env.NODE_ENV === "development") {
+          if (process.env.NODE_ENV === 'development') {
             console.log(`\n⚠️ [FALLBACK] Email failed. Here is the Magic Link:\n${url}\n`)
             // 在开发模式下，如果启用了 fallback 打印，我们可以选择不抛出错误，让流程继续
             // 但如果用户希望看到真实错误，可以注释掉下面这行 return
-            return 
+            return
           }
           // 在生产环境或非 fallback 情况下，必须抛出错误，否则前端会显示"发送成功"
           throw error
@@ -141,4 +138,3 @@ export const auth = betterAuth({
     nextCookies(),
   ],
 })
-

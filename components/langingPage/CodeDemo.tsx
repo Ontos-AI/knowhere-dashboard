@@ -1,11 +1,11 @@
-"use client";
+'use client'
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Check, Copy } from "lucide-react";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Highlight, themes } from "prism-react-renderer";
+import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Check, Copy } from 'lucide-react'
+import { Highlight, themes } from 'prism-react-renderer'
+import { useState } from 'react'
 
 const pythonCode = `import requests
 
@@ -24,7 +24,7 @@ payload = {
 }
 
 response = requests.post(url, headers=headers, json=payload)
-print(response.json())`;
+print(response.json())`
 
 const curlCode = `curl -X POST https://api.knowhereto.ai/v1/jobs \\
   -H "Authorization: Bearer ***REMOVED***" \\
@@ -36,21 +36,24 @@ const curlCode = `curl -X POST https://api.knowhereto.ai/v1/jobs \\
       "model": "base",
       "ocr_enabled": true
     }
-  }'`;
+  }'`
 
 export function CodeDemo() {
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState(false)
 
   const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+    navigator.clipboard.writeText(text)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   const CodeBlock = ({ code, language }: { code: string; language: string }) => (
     <Highlight theme={themes.vsDark} code={code} language={language}>
       {({ className, style, tokens, getLineProps, getTokenProps }) => (
-        <pre style={{ ...style, background: "transparent" }} className={`${className} font-mono text-xs md:text-sm`}>
+        <pre
+          style={{ ...style, background: 'transparent' }}
+          className={`${className} font-mono text-xs md:text-sm`}
+        >
           {tokens.map((line, i) => (
             <div key={i} {...getLineProps({ line })}>
               {line.map((token, key) => (
@@ -61,7 +64,7 @@ export function CodeDemo() {
         </pre>
       )}
     </Highlight>
-  );
+  )
 
   return (
     <section className="py-16 md:py-24">
@@ -72,9 +75,8 @@ export function CodeDemo() {
               Integrate in minutes, not days
             </h2>
             <p className="text-base md:text-lg text-muted-foreground mb-6 md:mb-8">
-              Our API is designed to be intuitive and easy to use.
-              Whether you're using Python, Node.js, or raw cURL,
-              you can get started with just a few lines of code.
+              Our API is designed to be intuitive and easy to use. Whether you're using Python,
+              Node.js, or raw cURL, you can get started with just a few lines of code.
             </p>
 
             <div className="space-y-4">
@@ -84,7 +86,9 @@ export function CodeDemo() {
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">Get your API Key</h3>
-                  <p className="text-sm md:text-base text-muted-foreground">Sign up and generate your secure API key from the dashboard.</p>
+                  <p className="text-sm md:text-base text-muted-foreground">
+                    Sign up and generate your secure API key from the dashboard.
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
@@ -93,7 +97,9 @@ export function CodeDemo() {
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">Submit a Job</h3>
-                  <p className="text-sm md:text-base text-muted-foreground">Send a URL or upload a file to our processing queue.</p>
+                  <p className="text-sm md:text-base text-muted-foreground">
+                    Send a URL or upload a file to our processing queue.
+                  </p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
@@ -102,7 +108,9 @@ export function CodeDemo() {
                 </div>
                 <div>
                   <h3 className="font-semibold mb-1">Receive Results</h3>
-                  <p className="text-sm md:text-base text-muted-foreground">Get structured JSON data via webhook or polling.</p>
+                  <p className="text-sm md:text-base text-muted-foreground">
+                    Get structured JSON data via webhook or polling.
+                  </p>
                 </div>
               </div>
             </div>
@@ -171,5 +179,5 @@ export function CodeDemo() {
         </div>
       </div>
     </section>
-  );
+  )
 }

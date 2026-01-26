@@ -1,31 +1,31 @@
-'use client';
+'use client'
 
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Languages } from 'lucide-react';
-import { useLocale } from 'next-intl';
+} from '@/components/ui/dropdown-menu'
+import { Languages } from 'lucide-react'
+import { useLocale } from 'next-intl'
+import { useRouter } from 'next/navigation'
 
 export function LanguageSwitcher() {
-  const locale = useLocale();
-  const router = useRouter();
+  const locale = useLocale()
+  const router = useRouter()
 
   const localeLabels = {
     en: 'English',
-    zh: '中文'
-  };
+    zh: '中文',
+  }
 
   const switchLocale = (newLocale: string) => {
     // Set cookie
-    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax`
     // Refresh page
-    router.refresh();
-  };
+    router.refresh()
+  }
 
   return (
     <DropdownMenu>
@@ -38,13 +38,13 @@ export function LanguageSwitcher() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem 
+        <DropdownMenuItem
           onClick={() => switchLocale('en')}
           className={`cursor-pointer ${locale === 'en' ? 'bg-muted' : ''}`}
         >
           English
         </DropdownMenuItem>
-        <DropdownMenuItem 
+        <DropdownMenuItem
           onClick={() => switchLocale('zh')}
           className={`cursor-pointer ${locale === 'zh' ? 'bg-muted' : ''}`}
         >
@@ -52,5 +52,5 @@ export function LanguageSwitcher() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

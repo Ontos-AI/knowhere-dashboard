@@ -1,14 +1,14 @@
-"use client"
+'use client'
 
-import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Check, Loader2 } from 'lucide-react'
-import { SubscriptionPlan, Subscription } from '@/lib/api'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useToast } from '@/hooks/useToast'
+import type { Subscription, SubscriptionPlan } from '@/lib/api'
 import { api } from '@/lib/api'
+import { Check, Loader2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { useState } from 'react'
 
 interface SubscriptionCardProps {
   plan: SubscriptionPlan
@@ -16,36 +16,36 @@ interface SubscriptionCardProps {
   onSubscriptionChange?: () => void
 }
 
-export function SubscriptionCard({ 
-  plan, 
-  currentSubscription, 
-  onSubscriptionChange 
+export function SubscriptionCard({
+  plan,
+  currentSubscription,
+  onSubscriptionChange,
 }: SubscriptionCardProps) {
   const [isLoading, setIsLoading] = useState(false)
   const toast = useToast()
   const t = useTranslations('Billing')
-  
+
   const isCurrentPlan = currentSubscription?.plan_type === plan.id
   const isActive = currentSubscription?.status === 'active'
-  
+
   const handleSubscribe = async () => {
     if (isCurrentPlan && isActive) {
       toast.info(t('alreadySubscribed'))
       return
     }
-    
+
     try {
       setIsLoading(true)
-      
+
       if (plan.id === 'free') {
         // 免费套餐不需要支付
         toast.info(t('freePlanNoPayment'))
         return
       }
-      
+
       // 调用订阅API
       const response = await api.subscribePlan(plan.id)
-      
+
       if (response.checkout_url) {
         // 跳转到Stripe Checkout
         window.location.href = response.checkout_url
@@ -59,20 +59,20 @@ export function SubscriptionCard({
       setIsLoading(false)
     }
   }
-  
+
   const getButtonText = () => {
     if (isLoading) return t('processing')
     if (isCurrentPlan && isActive) return t('currentPlan')
     if (plan.id === 'free') return t('freePlan')
     return t('subscribeTo', { name: plan.name })
   }
-  
+
   const getButtonVariant = () => {
     if (isCurrentPlan && isActive) return 'secondary'
     if (plan.popular) return 'default'
     return 'outline'
   }
-  
+
   return (
     <Card className={`relative ${plan.popular ? 'border-primary shadow-lg' : ''}`}>
       {plan.popular && (
@@ -80,55 +80,54 @@ export function SubscriptionCard({
           {t('recommend')}
         </Badge>
       )}
-      
+
       <CardHeader className="text-center">
         <CardTitle className="text-2xl">{plan.name}</CardTitle>
         <CardDescription>
           {(() => {
-            const price = typeof plan.price === 'number' ? plan.price : parseFloat(String(plan.price || 0))
-            if (price === 0 || isNaN(price)) {
+            const price =
+              typeof plan.price === 'number'
+                ? plan.price
+                : Number.parseFloat(String(plan.price || 0))
+            if (price === 0 || Number.isNaN(price)) {
               return <span className="text-2xl font-bold text-green-600">{t('free')}</span>
             }
             const formattedPrice = price.toFixed(2)
             return (
-            <span className="text-2xl font-bold">
+              <span className="text-2xl font-bold">
                 ¥{formattedPrice}
                 {plan.period && (
-              <span className="text-sm font-normal text-muted-foreground">
-                /{plan.period}
-                  </span>
+                  <span className="text-sm font-normal text-muted-foreground">/{plan.period}</span>
                 )}
               </span>
             )
           })()}
         </CardDescription>
       </CardHeader>
-      
+
       <CardContent className="space-y-4">
         {plan.description && (
           <p className="text-sm text-muted-foreground text-center">{plan.description}</p>
         )}
-        
+
         {plan.credits !== undefined && (
-        <div className="text-center">
-          <div className="text-3xl font-bold text-primary">
-            {plan.credits.toLocaleString()}
+          <div className="text-center">
+            <div className="text-3xl font-bold text-primary">{plan.credits.toLocaleString()}</div>
+            <div className="text-sm text-muted-foreground">{t('creditsPerMonth')}</div>
           </div>
-          <div className="text-sm text-muted-foreground">{t('creditsPerMonth')}</div>
-        </div>
         )}
-        
+
         {plan.features && plan.features.length > 0 && (
-        <ul className="space-y-2">
-          {plan.features.map((feature, index) => (
-            <li key={index} className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
-              <span className="text-sm">{feature}</span>
-            </li>
-          ))}
-        </ul>
+          <ul className="space-y-2">
+            {plan.features.map((feature, index) => (
+              <li key={index} className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                <span className="text-sm">{feature}</span>
+              </li>
+            ))}
+          </ul>
         )}
-        
+
         <Button
           className="w-full"
           variant={getButtonVariant()}
