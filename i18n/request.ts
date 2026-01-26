@@ -3,7 +3,7 @@ import {routing} from './routing';
 import {cookies} from 'next/headers';
  
 export default getRequestConfig(async () => {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const locale = cookieStore.get('NEXT_LOCALE')?.value || routing.defaultLocale;
  
   return {

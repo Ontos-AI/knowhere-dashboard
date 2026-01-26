@@ -19,7 +19,8 @@ if (process.env.NODE_ENV === "development" || process.env.HTTPS_PROXY) {
   }
 }
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Only initialize Resend if API key is provided
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
@@ -63,7 +64,7 @@ export const auth = betterAuth({
       sendMagicLink: async ({ email, token, url }) => {
         try {
           // 检查必要的环境变量
-          if (!process.env.RESEND_API_KEY) {
+          if (!process.env.RESEND_API_KEY || !resend) {
             console.warn("RESEND_API_KEY is missing. Printing magic link to console instead.")
             if (process.env.NODE_ENV === "development") {
               console.log(`\n📨 [DEV MODE] Magic Link for ${email}:\n${url}\n`)

@@ -23,7 +23,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const locale = cookieStore.get('NEXT_LOCALE')?.value || 'en';
 
   // 在服务端读取环境变量（运行时配置，不带NEXT_PUBLIC_前缀）
