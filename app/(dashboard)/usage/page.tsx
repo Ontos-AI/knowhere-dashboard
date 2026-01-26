@@ -12,7 +12,7 @@ import { type UsageRecord, UsageTable } from '@/components/dashboard/usage-table
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { useCredits } from '@/contexts/CreditsContext'
+import { useCredits } from '@/hooks/use-credits'
 import { useTimezone } from '@/contexts/TimezoneContext'
 import { useToast } from '@/hooks/useToast'
 import { type JobResponse, type ParseUsageResponse, api } from '@/lib/api'
@@ -28,7 +28,7 @@ export default function UsagePage() {
   })
   const [activeRange, setActiveRange] = useState<'1d' | '7d' | '30d' | null>('30d')
   const { timezone, formatDate } = useTimezone()
-  const { credits } = useCredits()
+  const { data: credits } = useCredits()
   const [jobs, setJobs] = useState<UsageRecord[]>([])
   const [usageStats, setUsageStats] = useState<ParseUsageResponse | null>(null)
   const [isLoading, setIsLoading] = useState(true)

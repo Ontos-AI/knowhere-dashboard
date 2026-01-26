@@ -4,7 +4,7 @@ import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { BuyCreditsDialog } from '@/components/dashboard/buy-credits-dialog'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
-import { useCredits } from '@/contexts/CreditsContext'
+import { useCredits } from '@/hooks/use-credits'
 import { Bell, Menu } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
@@ -13,7 +13,7 @@ interface HeaderProps {
 }
 
 export function Header({ onMenuClick }: HeaderProps) {
-  const { credits } = useCredits()
+  const { data: credits } = useCredits()
   const t = useTranslations('Common')
 
   return (

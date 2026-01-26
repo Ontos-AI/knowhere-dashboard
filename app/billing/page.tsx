@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { useCredits } from '@/contexts/CreditsContext'
+import { useCredits } from '@/hooks/use-credits'
 import { CheckCircle2, XCircle } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
@@ -13,7 +13,7 @@ import { toast } from 'sonner'
 function BillingContent() {
   const t = useTranslations('Pricing')
   const searchParams = useSearchParams()
-  const { refreshCredits } = useCredits()
+  const { refetch: refreshCredits } = useCredits()
 
   useEffect(() => {
     // Handle payment success/cancel callbacks
