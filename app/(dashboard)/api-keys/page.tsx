@@ -39,6 +39,7 @@ import { type APIKey, api } from '@/lib/api'
 import { copyToClipboard, formatDate } from '@/lib/format'
 import { Copy, Key, Plus, Search, Trash2 } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
+import { useQueryState } from 'nuqs'
 import { useEffect, useState } from 'react'
 
 import {
@@ -60,7 +61,7 @@ export default function ApiKeysPage() {
   const { timezone } = useTimezone()
   const [apiKeys, setApiKeys] = useState<APIKey[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useQueryState('search', { defaultValue: '' })
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
   const [newApiKey, setNewApiKey] = useState({
