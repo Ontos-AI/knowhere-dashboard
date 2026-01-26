@@ -15,13 +15,11 @@ const nextConfig = {
       // 其余 /api/* 代理到外部后端 API
       {
         source: '/api/:path*',
-        destination: process.env.NEXT_PUBLIC_API_URL ? `${process.env.NEXT_PUBLIC_API_URL}/:path*` : 'http://218.17.187.47:5005/api/:path*',
+        destination: process.env.NEXT_PUBLIC_API_URL
+          ? `${process.env.NEXT_PUBLIC_API_URL}/:path*`
+          : 'http://218.17.187.47:5005/api/:path*',
       },
     ]
-  },
-  env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://218.17.187.47:5005/api',
-    NEXT_PUBLIC_AUTH_BASE_URL: process.env.NEXT_PUBLIC_AUTH_BASE_URL || '/api/auth',
   },
 }
 
