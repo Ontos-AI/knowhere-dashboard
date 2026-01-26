@@ -30,3 +30,8 @@ pnpm-debug.log*
 .env.production
 !.env.example
 /.env.local
+
+# Editor & Tooling
+.claude
+.cursor
+CLAUDE.md
