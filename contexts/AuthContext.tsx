@@ -2,6 +2,7 @@
 
 import { type User, api } from '@/lib/api'
 import { authClient } from '@/lib/betterAuthClient'
+import { env } from '@/lib/env'
 import { useRouter } from '@/navigation'
 import type React from 'react'
 import { createContext, useContext, useEffect, useState } from 'react'
@@ -64,9 +65,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           return
         }
 
-        // 使用环境变量中的默认密码，如果没有则使用硬编码的后备密码
-        const hardcodedPassword =
-          process.env.NEXT_PUBLIC_DEFAULT_API_PASSWORD || 'DefaultPass123!@#'
+        // 使用环境变量中的默认密码
+        const hardcodedPassword = env.NEXT_PUBLIC_DEFAULT_API_PASSWORD
 
         try {
           // 1. Try to login first
