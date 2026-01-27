@@ -883,13 +883,16 @@ export const cn = (...inputs: ClassValue[]) => {
 
 ### React 19 + React Compiler
 
-**Important**: This project uses React 19 and React Compiler, most performance optimizations are handled automatically.
+**Important**: This project uses React 19 with React Compiler enabled. Write clean code directly - optimizations are automatic.
 
-**React Compiler automatically handles**:
+**Don't use these** (compiler handles them):
 
-- ✅ Component memoization (`React.memo`)
-- ✅ Callback function caching (`useCallback`)
-- ✅ Computed result caching (`useMemo`)
+- `React.memo` - automatic component memoization
+- `useCallback` - automatic callback caching
+- `useMemo` - automatic computation caching
+- Dependency arrays - automatic dependency tracking
+
+**Only add manual optimization if profiling shows a real bottleneck.**
 
 ---
 
