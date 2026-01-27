@@ -12,6 +12,11 @@ const nextConfig = {
         source: '/api/auth/:path*',
         destination: '/api/auth/:path*',
       },
+      // 保留 oRPC 路由在本应用内处理
+      {
+        source: '/api/orpc/:path*',
+        destination: '/api/orpc/:path*',
+      },
       // 其余 /api/* 代理到外部后端 API
       {
         source: '/api/:path*',

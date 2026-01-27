@@ -7,8 +7,8 @@ import { ProxyAgent, setGlobalDispatcher } from 'undici';
 import { env } from '@/lib/env';
 
 // 在开发环境下，如果配置了代理，则设置全局代理（解决国内无法访问 Google/GitHub OAuth 的问题）
-if (process.env.NODE_ENV === 'development' || process.env.HTTPS_PROXY) {
-  const proxyUrl = process.env.HTTPS_PROXY || process.env.HTTP_PROXY;
+if (env.NODE_ENV === 'development' || env.HTTPS_PROXY) {
+  const proxyUrl = env.HTTPS_PROXY || env.HTTP_PROXY;
   if (proxyUrl) {
     try {
       const dispatcher = new ProxyAgent(proxyUrl);
@@ -27,7 +27,7 @@ export const auth = betterAuth({
   baseURL: env.BETTER_AUTH_URL,
   // 显式指定 trustedOrigins 防止反向代理或 Docker 环境下的 host 校验失败
   // 必须包含生产环境域名，否则会导致 invalid_origin 错误
-  trustedOrigins: ['http://localhost:3000', env.BETTER_AUTH_URL],
+  trustedOrigins: [env.NEXT_PUBLIC_APP_URL, env.BETTER_AUTH_URL],
   secret: env.BETTER_AUTH_SECRET,
   session: {
     // 启用 JWT session，这样前端获取的 token 就是一个标准的 JWT，
