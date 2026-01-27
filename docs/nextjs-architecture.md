@@ -53,76 +53,76 @@ Web Application (supports SSR, SSG, ISR)
 
 ### Core Technologies
 
-| Technology     | Version | Purpose                        |
-| -------------- | ------- | ------------------------------ |
-| **Next.js**    | 15+     | React full-stack framework     |
-| **React**      | 19+     | UI library                     |
-| **TypeScript** | 5.0+    | Type system (strict mode)      |
+| Technology     | Version | Purpose                    |
+| -------------- | ------- | -------------------------- |
+| **Next.js**    | 15+     | React full-stack framework |
+| **React**      | 19+     | UI library                 |
+| **TypeScript** | 5.0+    | Type system (strict mode)  |
 
 ### State Management
 
-| Technology                       | Purpose                                      |
-| -------------------------------- | -------------------------------------------- |
-| **Zustand**                      | Global state management (client-side state)  |
+| Technology                       | Purpose                                          |
+| -------------------------------- | ------------------------------------------------ |
+| **Zustand**                      | Global state management (client-side state)      |
 | **TanStack Query (React Query)** | Server state management (data fetching, caching) |
 
 ### UI and Styling
 
-| Technology        | Purpose                |
-| ----------------- | ---------------------- |
-| **shadcn/ui**     | UI component library   |
-| **Tailwind CSS**  | CSS framework          |
-| **Framer Motion** | Animation library      |
+| Technology        | Purpose                      |
+| ----------------- | ---------------------------- |
+| **shadcn/ui**     | UI component library         |
+| **Tailwind CSS**  | CSS framework                |
+| **Framer Motion** | Animation library            |
 | **next/image**    | Image optimization component |
-| **Lucide React**  | Icon library           |
+| **Lucide React**  | Icon library                 |
 
 ### Data Persistence
 
-| Technology       | Purpose                                                    |
-| ---------------- | ---------------------------------------------------------- |
+| Technology       | Purpose                                                              |
+| ---------------- | -------------------------------------------------------------------- |
 | **localStorage** | Client-side simple key-value storage (theme, user preferences, etc.) |
-| **Redis**        | Server-side caching, session management, queues (optional) |
+| **Redis**        | Server-side caching, session management, queues (optional)           |
 
 ### Network Requests
 
-| Technology         | Purpose                           |
-| ------------------ | --------------------------------- |
-| **oRPC**           | End-to-end type-safe RPC framework |
+| Technology         | Purpose                              |
+| ------------------ | ------------------------------------ |
+| **oRPC**           | End-to-end type-safe RPC framework   |
 | **TanStack Query** | Request caching and state management |
 
 ### Type Validation
 
-| Technology | Purpose                                                  |
-| ---------- | -------------------------------------------------------- |
+| Technology | Purpose                                                                 |
+| ---------- | ----------------------------------------------------------------------- |
 | **Zod**    | Type-safe runtime validation (forms, environment variables, APIs, etc.) |
 
 ### Form Handling
 
-| Technology          | Purpose              |
-| ------------------- | -------------------- |
+| Technology          | Purpose               |
+| ------------------- | --------------------- |
 | **React Hook Form** | Form state management |
 
 ### Utility Libraries
 
-| Technology    | Purpose                    |
-| ------------- | -------------------------- |
+| Technology    | Purpose                     |
+| ------------- | --------------------------- |
 | **date-fns**  | Date handling (lightweight) |
-| **clsx / cn** | Class name merging utility |
+| **clsx / cn** | Class name merging utility  |
 
 ### Monitoring and Analytics
 
-| Technology  | Purpose              |
-| ----------- | -------------------- |
-| **Sentry**  | Error monitoring     |
+| Technology  | Purpose                 |
+| ----------- | ----------------------- |
+| **Sentry**  | Error monitoring        |
 | **PostHog** | User behavior analytics |
 
 ### Others
 
-| Technology      | Purpose          |
-| --------------- | ---------------- |
+| Technology      | Purpose              |
+| --------------- | -------------------- |
 | **next-intl**   | Internationalization |
-| **better-auth** | Authentication   |
-| **next-themes** | Theme switching  |
+| **better-auth** | Authentication       |
+| **next-themes** | Theme switching      |
 
 ---
 
@@ -150,22 +150,37 @@ Web Application (supports SSR, SSG, ISR)
 ```
 my-nextjs-app/
 ├── app/                          # Next.js App Router
-│   ├── layout.tsx
-│   ├── page.tsx
+│   ├── layout.tsx               # Root layout (shared by all pages)
 │   ├── globals.css
 │   │
-│   ├── (dashboard)/             # Main application route group
-│   │   ├── layout.tsx
+│   ├── (landing)/               # Landing page route group
+│   │   ├── layout.tsx          # Landing layout (nested in root layout)
+│   │   ├── page.tsx            # Home page → URL: /
+│   │   └── _components/        # Home page-specific components
+│   │       ├── hero.tsx
+│   │       ├── features.tsx
+│   │       └── cta.tsx
+│   │
+│   ├── (dashboard)/             # Application route group
+│   │   ├── layout.tsx          # Dashboard layout (nested in root layout)
 │   │   │
 │   │   ├── home/
-│   │   │   ├── page.tsx
-│   │   │   ├── _components/    # Page-specific components
-│   │   │   └── _hooks/         # Page-specific API hooks
+│   │   │   ├── page.tsx       # → URL: /home
+│   │   │   ├── _components/   # Page-specific components
+│   │   │   └── _hooks/        # Page-specific API hooks
 │   │   │
 │   │   └── settings/
-│   │       ├── page.tsx
+│   │       ├── page.tsx       # → URL: /settings
 │   │       ├── _components/
 │   │       └── _hooks/
+│   │
+│   ├── about/                   # Other pages directly under app/
+│   │   ├── page.tsx            # → URL: /about
+│   │   └── _components/
+│   │
+│   ├── pricing/
+│   │   ├── page.tsx            # → URL: /pricing
+│   │   └── _components/
 │   │
 │   └── api/
 │       ├── auth/
@@ -304,6 +319,7 @@ import { APP_NAME } from '@constants/app';
 import type { User } from '@server/routers/users';
 
 // Page-specific code
+import { Hero } from '@app/(landing)/_components/hero';
 import { HomeBanner } from '@app/(dashboard)/home/_components/home-banner';
 import { useHomeFilters } from '@app/(dashboard)/home/_hooks/use-home-filters';
 ```
@@ -879,13 +895,13 @@ export const cn = (...inputs: ClassValue[]) => {
 
 ## Naming Conventions
 
-| Type             | Naming Rule | Example                                                      |
-| ---------------- | ----------- | ------------------------------------------------------------ |
-| **Files**        | kebab-case  | `post-card.tsx`, `use-auth.ts`                               |
-| **Components**   | PascalCase  | `PostCard`, `UserAvatar`                                     |
-| **Hook Files**   | kebab-case  | `use-auth.ts`, `use-debounce.ts`                             |
-| **Hook Functions** | camelCase | `useAuth`, `useDebounce` (file `use-auth.ts` exports `useAuth`) |
-| **Constants**    | UPPER_CASE  | `API_BASE_URL`, `MAX_RETRY_COUNT`                            |
+| Type               | Naming Rule | Example                                                         |
+| ------------------ | ----------- | --------------------------------------------------------------- |
+| **Files**          | kebab-case  | `post-card.tsx`, `use-auth.ts`                                  |
+| **Components**     | PascalCase  | `PostCard`, `UserAvatar`                                        |
+| **Hook Files**     | kebab-case  | `use-auth.ts`, `use-debounce.ts`                                |
+| **Hook Functions** | camelCase   | `useAuth`, `useDebounce` (file `use-auth.ts` exports `useAuth`) |
+| **Constants**      | UPPER_CASE  | `API_BASE_URL`, `MAX_RETRY_COUNT`                               |
 
 ---
 
