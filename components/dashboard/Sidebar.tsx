@@ -1,35 +1,31 @@
-"use client"
+'use client'
 
-import { useState } from 'react'
-import { Link, usePathname } from '@/navigation'
-import { cn } from '@/lib/utils'
+import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { Button } from '@/components/ui/button'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import {
-  LayoutDashboard,
-  Key,
-  CreditCard,
-  Settings,
-  Menu,
-  X,
-  LogOut,
-  BookOpen,
-  Search,
-  Clock,
-  FileText,
-  Table,
-} from 'lucide-react'
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '@/components/ui/hover-card'
 import { Separator } from '@/components/ui/separator'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/useToast'
+import { cn } from '@/lib/utils'
+import { Link, usePathname } from '@/navigation'
+import {
+  BookOpen,
+  Clock,
+  CreditCard,
+  FileText,
+  Key,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Search,
+  Settings,
+  Table,
+  X,
+} from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { LanguageSwitcher } from '@/components/LanguageSwitcher'
+import { useState } from 'react'
 
 interface SidebarProps {
   open: boolean
@@ -96,11 +92,16 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
       <div className="p-4 border-t">
         <HoverCard openDelay={0} closeDelay={100}>
           <HoverCardTrigger asChild>
-            <Button variant="ghost" className="w-full justify-start px-2 h-auto py-2 hover:bg-muted">
+            <Button
+              variant="ghost"
+              className="w-full justify-start px-2 h-auto py-2 hover:bg-muted"
+            >
               <div className="flex items-center gap-x-3 text-left w-full">
-                <div 
-                  className="h-8 w-8 rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0 bg-cover bg-center" 
-                  style={{ backgroundImage: user?.avatar_url ? `url(${user.avatar_url})` : undefined }}
+                <div
+                  className="h-8 w-8 rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0 bg-cover bg-center"
+                  style={{
+                    backgroundImage: user?.avatar_url ? `url(${user.avatar_url})` : undefined,
+                  }}
                 >
                   {!user?.avatar_url && (
                     <span className="text-xs font-medium">
@@ -119,9 +120,7 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
             <div className="flex items-center justify-start gap-2 p-2">
               <div className="flex flex-col space-y-1 leading-none">
                 <p className="font-medium">{user?.username}</p>
-                <p className="w-[200px] truncate text-sm text-muted-foreground">
-                  {user?.email}
-                </p>
+                <p className="w-[200px] truncate text-sm text-muted-foreground">{user?.email}</p>
               </div>
             </div>
             <Separator className="my-1" />
@@ -132,7 +131,7 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
               </div>
             </Link>
             <Separator className="my-1" />
-            <div 
+            <div
               className="relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
               onClick={handleLogout}
             >

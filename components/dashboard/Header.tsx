@@ -1,30 +1,25 @@
-"use client"
+'use client'
 
-import { Menu, Bell } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { ThemeToggle } from '@/components/theme-toggle'
-import { useCredits } from '@/contexts/CreditsContext'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
-import { useTranslations } from 'next-intl'
 import { BuyCreditsDialog } from '@/components/dashboard/buy-credits-dialog'
+import { ThemeToggle } from '@/components/theme-toggle'
+import { Button } from '@/components/ui/button'
+import { useCredits } from '@/hooks/use-credits'
+import { Bell, Menu } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 interface HeaderProps {
   onMenuClick: () => void
 }
 
 export function Header({ onMenuClick }: HeaderProps) {
-  const { credits } = useCredits()
+  const { data: credits } = useCredits()
   const t = useTranslations('Common')
 
   return (
     <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b bg-background px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
       {/* 移动端菜单按钮 */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="lg:hidden"
-        onClick={onMenuClick}
-      >
+      <Button variant="ghost" size="icon" className="lg:hidden" onClick={onMenuClick}>
         <Menu className="h-6 w-6" />
         <span className="sr-only">{t('openSidebar')}</span>
       </Button>
@@ -47,7 +42,7 @@ export function Header({ onMenuClick }: HeaderProps) {
           <Bell className="h-5 w-5" />
           <span className="sr-only">{t('viewNotifications')}</span>
           {/* 通知红点 */}
-          <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-destructive"></span>
+          <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-destructive" />
         </Button>
 
         {/* 主题切换 */}

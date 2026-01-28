@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import { createContext, useContext, type ReactNode } from 'react'
 import type { AppConfigType } from '@/lib/config'
+import { type ReactNode, createContext, useContext } from 'react'
 
 const ConfigContext = createContext<AppConfigType | null>(null)
 
@@ -32,4 +32,3 @@ export function useAppConfigContext(): AppConfigType {
   }
   return config
 }
-

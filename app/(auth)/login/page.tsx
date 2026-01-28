@@ -1,21 +1,21 @@
-"use client"
+'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { useToast } from '@/hooks/useToast'
 import { OAuthButtons } from '@/components/auth/OAuthButtons'
 import { useAppConfigContext } from '@/components/providers/ConfigProvider'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { useToast } from '@/hooks/useToast'
 import { authClient } from '@/lib/betterAuthClient'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { useMemo } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
@@ -25,9 +25,13 @@ export default function LoginPage() {
   const t = useTranslations('Auth')
 
   // Magic Link 登录仅需要邮箱地址
-  const loginSchema = useMemo(() => z.object({
-    email: z.string().email(t('emailInvalid')),
-  }), [t])
+  const loginSchema = useMemo(
+    () =>
+      z.object({
+        email: z.string().email(t('emailInvalid')),
+      }),
+    [t]
+  )
 
   type LoginForm = z.infer<typeof loginSchema>
 
@@ -76,9 +80,7 @@ export default function LoginPage() {
     <Card className="w-full">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl text-center">{t('login')}</CardTitle>
-        <CardDescription className="text-center">
-          {t('loginDesc')}
-        </CardDescription>
+        <CardDescription className="text-center">{t('loginDesc')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* OAuth登录 */}
@@ -95,9 +97,7 @@ export default function LoginPage() {
               {...register('email')}
               disabled={isLoading}
             />
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email.message}</p>
-            )}
+            {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>

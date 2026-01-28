@@ -1,11 +1,11 @@
-"use client"
+'use client'
 
-import { useEffect, type ReactNode } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { useAppConfigContext } from '@/components/providers/ConfigProvider'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { useAuth } from '@/hooks/useAuth'
-import { useAppConfigContext } from '@/components/providers/ConfigProvider'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { type ReactNode, useEffect } from 'react'
 
 export function AuthLayoutClient({ children }: { children: ReactNode }) {
   const appConfig = useAppConfigContext()
@@ -24,7 +24,7 @@ export function AuthLayoutClient({ children }: { children: ReactNode }) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4" />
           <p>加载中...</p>
         </div>
       </div>
@@ -42,9 +42,7 @@ export function AuthLayoutClient({ children }: { children: ReactNode }) {
 
       {/* 主要内容 */}
       <main className="flex-1 flex items-center justify-center px-6 py-12">
-        <div className="w-full max-w-md">
-          {children}
-        </div>
+        <div className="w-full max-w-md">{children}</div>
       </main>
 
       {/* 底部 */}
@@ -69,4 +67,3 @@ export function AuthLayoutClient({ children }: { children: ReactNode }) {
     </div>
   )
 }
-

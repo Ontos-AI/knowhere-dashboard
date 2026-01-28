@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect } from 'react'
-import { useRouter } from '@/navigation'
-import { useAuth } from '@/hooks/useAuth'
-import { useTranslations } from 'next-intl'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 import { LandingPage } from '@/components/common/LandingPage'
+import { Button } from '@/components/ui/button'
+import { useAuth } from '@/hooks/useAuth'
+import { useRouter } from '@/navigation'
+import { useTranslations } from 'next-intl'
+import Link from 'next/link'
+import { useEffect } from 'react'
 
 export default function Home() {
   const { isAuthenticated, isLoading } = useAuth()
@@ -23,7 +23,7 @@ export default function Home() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4" />
           <p>{t('loading')}</p>
         </div>
       </div>

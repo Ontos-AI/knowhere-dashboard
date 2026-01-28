@@ -1,20 +1,20 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { FileText, Menu } from "lucide-react";
+import { Button } from '@/components/ui/button'
 import {
   Sheet,
   SheetContent,
-  SheetTrigger,
-  SheetTitle,
   SheetDescription,
   SheetHeader,
-} from "@/components/ui/sheet";
-import { useState } from "react";
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
+import { FileText, Menu } from 'lucide-react'
+import Link from 'next/link'
+import { useState } from 'react'
 
 export function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-sm border-b">
@@ -26,19 +26,32 @@ export function Navbar() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-6">
-          <Link href="#features" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+          <Link
+            href="#features"
+            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+          >
             Features
           </Link>
-          <Link href="#docs" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+          <Link
+            href="#docs"
+            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+          >
             Documentation
           </Link>
-          <Link href="#pricing" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+          <Link
+            href="#pricing"
+            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+          >
             Pricing
           </Link>
         </div>
 
         <div className="hidden md:flex items-center space-x-4">
-          <Link href="https://github.com/knowhereapi" target="_blank" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+          <Link
+            href="https://github.com/knowhereapi"
+            target="_blank"
+            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+          >
             GitHub
           </Link>
           <Button asChild>
@@ -96,7 +109,12 @@ export function Navbar() {
                   GitHub
                 </Link>
                 <div className="pt-4 border-t flex flex-col gap-3">
-                  <Button variant="outline" className="w-full" asChild onClick={() => setIsOpen(false)}>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    asChild
+                    onClick={() => setIsOpen(false)}
+                  >
                     <Link href="/login">Login</Link>
                   </Button>
                   <Button className="w-full" asChild onClick={() => setIsOpen(false)}>
@@ -109,5 +127,5 @@ export function Navbar() {
         </div>
       </div>
     </nav>
-  );
+  )
 }

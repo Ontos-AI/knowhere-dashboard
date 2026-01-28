@@ -1,23 +1,15 @@
-"use client"
+'use client'
 
-import { useState, useCallback } from 'react'
-import { Button } from '@/components/ui/button'
-import { Progress } from '@/components/ui/progress'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { 
-  Upload, 
-  CheckCircle, 
-  XCircle, 
-  Clock, 
-  AlertCircle,
-  FileText,
-  RefreshCw
-} from 'lucide-react'
-import { api, JobCreate, JobResponse, ParsingParams } from '@/lib/api'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
 import { useToast } from '@/hooks/useToast'
+import { type JobCreate, type JobResponse, type ParsingParams, api } from '@/lib/api'
+import { AlertCircle, CheckCircle, Clock, FileText, RefreshCw, Upload, XCircle } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { useCallback, useState } from 'react'
 
 interface FileUploadFlowProps {
   file: File
@@ -43,7 +35,7 @@ export default function FileUploadFlow({
   resultMode = 'auto',
   onSuccess,
   onError,
-  onCancel
+  onCancel,
 }: FileUploadFlowProps) {
   const t = useTranslations('FileUpload')
   const toast = useToast()
@@ -66,7 +58,7 @@ export default function FileUploadFlow({
         data_id: dataId,
         parsing_params: parsingParams,
         webhook: webhook,
-        result_mode: resultMode
+        result_mode: resultMode,
       }
 
       const jobResponse = await api.createJob(jobCreate)
@@ -88,20 +80,20 @@ export default function FileUploadFlow({
 
         // 上传完成，等待5秒后进行确认
         setStep('confirming')
-        
+
         // 等待5秒让S3事件有机会触发
-        await new Promise(resolve => setTimeout(resolve, 5000))
-        
+        await new Promise((resolve) => setTimeout(resolve, 5000))
+
         try {
           // 调用确认上传API
           console.log('开始调用confirm-upload API，job_id:', jobResponse.job_id)
           await api.confirmUpload(jobResponse.job_id)
           console.log('confirm-upload API调用成功')
-          
+
           // 获取更新后的任务状态
           const confirmedJob = await api.getJobStatus(jobResponse.job_id)
           setJob(confirmedJob)
-          
+
           if (confirmedJob.status === 'pending' || confirmedJob.status === 'running') {
             setStep('success')
             onSuccess(confirmedJob)
@@ -132,7 +124,7 @@ export default function FileUploadFlow({
 
   const handleRetry = useCallback(() => {
     if (retryCount < 3) {
-      setRetryCount(prev => prev + 1)
+      setRetryCount((prev) => prev + 1)
       setError(null)
       setStep('idle')
     } else {
@@ -189,7 +181,9 @@ export default function FileUploadFlow({
       case 'confirming':
         return t('description.confirming')
       case 'success':
-        return job ? t('description.successWithId', { jobId: job.job_id }) : t('description.success')
+        return job
+          ? t('description.successWithId', { jobId: job.job_id })
+          : t('description.success')
       case 'error':
         return error || t('description.errorDefault')
       default:
@@ -204,12 +198,8 @@ export default function FileUploadFlow({
         <div className="flex items-center space-x-3">
           <FileText className="h-10 w-10 text-blue-500" />
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900 truncate">
-              {file.name}
-            </p>
-            <p className="text-sm text-gray-500">
-              {(file.size / 1024 / 1024).toFixed(2)} MB
-            </p>
+            <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
+            <p className="text-sm text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
           </div>
         </div>
 
@@ -225,9 +215,7 @@ export default function FileUploadFlow({
                 </Badge>
               )}
             </div>
-            <p className="text-xs text-gray-500 mt-1">
-              {getStepDescription()}
-            </p>
+            <p className="text-xs text-gray-500 mt-1">{getStepDescription()}</p>
           </div>
         </div>
 
@@ -236,9 +224,7 @@ export default function FileUploadFlow({
           <div className="space-y-2">
             <Progress value={step === 'uploading' ? progress : 100} className="h-2" />
             {step === 'uploading' && (
-              <p className="text-xs text-center text-gray-500">
-                {progress}% 完成
-              </p>
+              <p className="text-xs text-center text-gray-500">{progress}% 完成</p>
             )}
           </div>
         )}
@@ -259,14 +245,14 @@ export default function FileUploadFlow({
               {t('buttons.startUpload')}
             </Button>
           )}
-          
+
           {step === 'error' && retryCount < 3 && (
             <Button onClick={handleRetry} variant="outline" className="flex-1">
               <RefreshCw className="mr-2 h-4 w-4" />
               {t('buttons.retry')} ({retryCount}/3)
             </Button>
           )}
-          
+
           {onCancel && step !== 'success' && (
             <Button onClick={onCancel} variant="outline">
               {t('buttons.cancel')}
@@ -283,9 +269,7 @@ export default function FileUploadFlow({
             <p className="text-sm text-green-800">
               <strong>{t('result.status')}</strong> {job.status}
             </p>
-            <p className="text-xs text-green-600 mt-1">
-              {t('result.checkProgress')}
-            </p>
+            <p className="text-xs text-green-600 mt-1">{t('result.checkProgress')}</p>
           </div>
         )}
       </CardContent>

@@ -1,6 +1,6 @@
-import { getDefaultConfig } from '@/lib/config'
 import { AuthLayoutClient } from '@/components/auth/AuthLayoutClient'
 import { ConfigProvider } from '@/components/providers/ConfigProvider'
+import { getDefaultConfig } from '@/lib/config'
 
 // 强制动态渲染，确保每次请求时读取最新的环境变量
 export const dynamic = 'force-dynamic'

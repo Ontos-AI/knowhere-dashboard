@@ -1,11 +1,11 @@
-"use client"
+'use client'
 
-import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/useToast'
-import { Github, Loader2 } from 'lucide-react'
 import { authClient } from '@/lib/betterAuthClient'
+import { Github, Loader2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { useState } from 'react'
 
 interface OAuthButtonsProps {
   onSuccess?: () => void

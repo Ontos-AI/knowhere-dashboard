@@ -1,6 +1,7 @@
-"use client"
+'use client'
 
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import type React from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 
 interface TimezoneContextType {
   timezone: string
@@ -27,10 +28,10 @@ export function TimezoneProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('timezone', tz)
   }
 
-  const formatDate = (date: Date | string | number, formatStr: string = 'yyyy-MM-dd HH:mm:ss') => {
-    // Before mount, use UTC or server time to avoid hydration mismatch? 
-    // Actually, this function is likely called in render. 
-    // To be safe, we should perhaps return a consistent value during SSR, 
+  const formatDate = (date: Date | string | number, formatStr = 'yyyy-MM-dd HH:mm:ss') => {
+    // Before mount, use UTC or server time to avoid hydration mismatch?
+    // Actually, this function is likely called in render.
+    // To be safe, we should perhaps return a consistent value during SSR,
     // but the user wants client-side timezone adjustment.
     // If we use this in useEffect or event handlers, it's fine.
     // If used in render, we need to be careful about hydration.
@@ -38,8 +39,8 @@ export function TimezoneProvider({ children }: { children: React.ReactNode }) {
     // We'll proceed.
 
     const d = new Date(date)
-    if (isNaN(d.getTime())) return '-'
-    
+    if (Number.isNaN(d.getTime())) return '-'
+
     try {
       // Use Intl to format to parts in the target timezone
       const formatter = new Intl.DateTimeFormat('en-US', {
@@ -50,21 +51,21 @@ export function TimezoneProvider({ children }: { children: React.ReactNode }) {
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
-        hour12: false
+        hour12: false,
       })
-      
+
       const parts = formatter.formatToParts(d)
-      const map = new Map(parts.map(p => [p.type, p.value]))
-      
+      const map = new Map(parts.map((p) => [p.type, p.value]))
+
       // Simple replacement for common patterns
-      let result = formatStr
+      const result = formatStr
         .replace('yyyy', map.get('year') || '')
         .replace('MM', map.get('month') || '')
         .replace('dd', map.get('day') || '')
         .replace('HH', map.get('hour') || '')
         .replace('mm', map.get('minute') || '')
         .replace('ss', map.get('second') || '')
-        
+
       return result
     } catch (e) {
       console.error('Format date error:', e)
