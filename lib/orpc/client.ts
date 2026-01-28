@@ -11,6 +11,13 @@ const link = new RPCLink({
   url: `${typeof window !== 'undefined' ? window.location.origin : env.NEXT_PUBLIC_APP_URL}/api/orpc`,
   headers: async () => {
     if (typeof window !== 'undefined') {
+      // In browser environment, get auth_token from localStorage and add to Authorization header
+      const token = localStorage.getItem('auth_token')
+      if (token) {
+        return {
+          Authorization: `Bearer ${token}`,
+        }
+      }
       return {}
     }
 

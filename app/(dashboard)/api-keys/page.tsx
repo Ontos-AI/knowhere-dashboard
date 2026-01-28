@@ -1,10 +1,10 @@
 'use client'
 
-import { EmptyState } from '@/components/common/EmptyState'
-import { LoadingSpinner } from '@/components/common/LoadingSpinner'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { EmptyState } from '@components/common/empty-state'
+import { LoadingSpinner } from '@components/common/loading-spinner'
+import { Badge } from '@components/ui/badge'
+import { Button } from '@components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@components/ui/card'
 import {
   Dialog,
   DialogContent,
@@ -12,17 +12,17 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+} from '@components/ui/dialog'
+import { Input } from '@components/ui/input'
+import { Label } from '@components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Switch } from '@/components/ui/switch'
+} from '@components/ui/select'
+import { Switch } from '@components/ui/switch'
 import {
   Table,
   TableBody,
@@ -30,13 +30,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { Textarea } from '@/components/ui/textarea'
-import { useTimezone } from '@/contexts/TimezoneContext'
-import { useAuth } from '@/hooks/useAuth'
-import { useToast } from '@/hooks/useToast'
-import { type APIKey, api } from '@/lib/api'
-import { copyToClipboard, formatDate } from '@/lib/format'
+} from '@components/ui/table'
+import { Textarea } from '@components/ui/textarea'
+import { useAuth } from '@hooks/useAuth'
+import { useTimezone } from '@hooks/use-timezone'
+import { useToast } from '@hooks/useToast'
+import { type APIKey, api } from '@server/external-api/client'
+import { copyToClipboard, formatDate } from '@utils/format'
 import { Copy, Key, Plus, Search, Trash2 } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
 import { useQueryState } from 'nuqs'
@@ -51,7 +51,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
+} from '@components/ui/alert-dialog'
 
 export default function ApiKeysPage() {
   const { user } = useAuth()

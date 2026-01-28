@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@/lib/utils'
+import { cn } from '@lib/utils'
 import { MinusIcon } from '@radix-ui/react-icons'
 import { OTPInput, OTPInputContext } from 'input-otp'
 import * as React from 'react'

@@ -1,7 +1,7 @@
 import { os } from '@orpc/server'
 
 // Define context type for oRPC procedures
-export interface Context {
+export type Context = {
   user?: {
     id: string
     email: string

@@ -1,59 +1,26 @@
-import { orpc } from '@/lib/orpc/server';
-import { OpenAPIHandler } from '@orpc/openapi/fetch';
-import { RPCHandler } from '@orpc/server/fetch';
-import { z } from 'zod';
+import { createContext } from '@server/context'
+import { appRouter } from '@server/routers'
+import { OpenAPIHandler } from '@orpc/openapi/fetch'
+import { RPCHandler } from '@orpc/server/fetch'
 
-// Define example procedures with OpenAPI metadata
-const router = orpc.router({
-  // Example: Hello procedure
-  // Demonstrates a simple GET-like procedure with no input
-  hello: orpc
-    .route({
-      // Use POST method by default
-      path: '/hello',
-      summary: 'Say hello',
-      description:
-        'Returns a simple greeting message. This is a basic example of an oRPC procedure without input parameters.',
-      tags: ['Examples'],
-    })
-    .handler(async () => {
-      return { message: 'Hello from oRPC!' };
-    }),
-
-  // Example: Echo procedure with input validation
-  // Demonstrates input validation using Zod schemas
-  echo: orpc
-    .route({
-      path: '/echo',
-      summary: 'Echo a message',
-      description:
-        'Echoes back the provided message. This demonstrates how to use input validation with Zod schemas and how they automatically generate OpenAPI request body schemas.',
-      tags: ['Examples'],
-    })
-    .input(
-      z.object({
-        message: z.string().describe('The message to echo back'),
-      }),
-    )
-    .handler(async ({ input }) => {
-      return { echo: input.message };
-    }),
-});
-
-export type AppRouter = typeof router;
+// Export router type for client-side type inference
+export type { AppRouter } from '@server/routers'
 
 // Export router for OpenAPI documentation generation
-export { router };
+export { appRouter as router }
 
 // Create handlers for both RPC and OpenAPI protocols
-const rpcHandler = new RPCHandler(router);
-const openAPIHandler = new OpenAPIHandler(router);
+const rpcHandler = new RPCHandler(appRouter)
+const openAPIHandler = new OpenAPIHandler(appRouter)
 
 async function handleRequest(request: Request) {
+  // Create context from request headers (includes authentication session)
+  const context = await createContext(request.headers);
+
   // Try RPC handler first (for oRPC client)
   const rpcResult = await rpcHandler.handle(request, {
     prefix: '/api/orpc',
-    context: {},
+    context,
   });
 
   if (rpcResult.response) {
@@ -63,7 +30,7 @@ async function handleRequest(request: Request) {
   // Fallback to OpenAPI handler (for REST/OpenAPI clients and documentation)
   const openAPIResult = await openAPIHandler.handle(request, {
     prefix: '/api/orpc',
-    context: {},
+    context,
   });
 
   if (openAPIResult.matched) {

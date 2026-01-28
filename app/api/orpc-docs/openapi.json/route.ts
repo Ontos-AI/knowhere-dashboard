@@ -1,5 +1,5 @@
 import { router } from '@/app/api/orpc/[...orpc]/route';
-import { env } from '@/lib/env';
+import { env } from '@lib/env';
 import { OpenAPIGenerator } from '@orpc/openapi';
 import { ZodToJsonSchemaConverter } from '@orpc/zod/zod4';
 

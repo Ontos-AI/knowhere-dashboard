@@ -1,7 +1,7 @@
 'use client'
 
-import { useToast } from '@/hooks/useToast'
-import { authClient } from '@/lib/betterAuthClient'
+import { useToast } from '@hooks/useToast'
+import { authClient } from '@lib/betterAuthClient'
 import { useTranslations } from 'next-intl'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense, useEffect } from 'react'

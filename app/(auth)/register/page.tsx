@@ -1,26 +1,24 @@
 'use client'
 
-import { OAuthButtons } from '@/components/auth/OAuthButtons'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { useAuth } from '@/hooks/useAuth'
-import { useToast } from '@/hooks/useToast'
-import { getPasswordStrength } from '@/lib/format'
+import { OAuthButtons } from '@/app/(auth)/_components/oauth-buttons'
+import { Button } from '@components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@components/ui/card'
+import { Input } from '@components/ui/input'
+import { Label } from '@components/ui/label'
+import { authClient } from '@lib/betterAuthClient'
+import { useToast } from '@hooks/useToast'
+import { getPasswordStrength } from '@utils/format'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [password, setPassword] = useState('')
-  const { register: registerUser } = useAuth()
   const toast = useToast()
   const router = useRouter()
   const t = useTranslations('Auth')
@@ -58,7 +56,18 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterForm) => {
     setIsLoading(true)
     try {
-      await registerUser(data.email, data.password, data.username)
+      // Use Better Auth directly for registration
+      const { error } = await authClient.signUp.email({
+        email: data.email,
+        password: data.password,
+        name: data.username,
+        callbackURL: '/usage',
+      })
+
+      if (error) {
+        throw new Error(error.message || t('registerFailed'))
+      }
+
       toast.success(t('registerSuccess'))
       router.push('/usage')
     } catch (error) {

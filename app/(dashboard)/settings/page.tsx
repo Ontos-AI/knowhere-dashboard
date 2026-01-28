@@ -1,25 +1,25 @@
 'use client'
 
-import { LoadingSpinner } from '@/components/common/LoadingSpinner'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { LoadingSpinner } from '@components/common/loading-spinner'
+import { Button } from '@components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@components/ui/card'
+import { Input } from '@components/ui/input'
+import { Label } from '@components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Separator } from '@/components/ui/separator'
-import { Switch } from '@/components/ui/switch'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useAuth } from '@/hooks/useAuth'
-import { useToast } from '@/hooks/useToast'
-import { type User, api } from '@/lib/api'
-import { authClient } from '@/lib/betterAuthClient'
-import { formatDate } from '@/lib/format'
+} from '@components/ui/select'
+import { Separator } from '@components/ui/separator'
+import { Switch } from '@components/ui/switch'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@components/ui/tabs'
+import { useAuth } from '@hooks/useAuth'
+import { useToast } from '@hooks/useToast'
+import { type User, api } from '@server/external-api/client'
+import { authClient } from '@lib/betterAuthClient'
+import { formatDate } from '@utils/format'
 import { usePathname, useRouter } from '@/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -37,7 +37,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-import { useTimezone } from '@/contexts/TimezoneContext'
+import { useTimezone } from '@hooks/use-timezone'
 
 const TIMEZONES = [
   'UTC',
@@ -118,14 +118,6 @@ export default function SettingsPage() {
     resolver: zodResolver(passwordSchema),
   })
 
-  // Initialize timezone from localStorage
-  useEffect(() => {
-    const storedTimezone = localStorage.getItem('timezone')
-    if (storedTimezone) {
-      setTimezone(storedTimezone)
-    }
-  }, [])
-
   // Sync user data to form when user loads
   useEffect(() => {
     if (user) {
@@ -135,11 +127,7 @@ export default function SettingsPage() {
       })
       setIsLoading(false)
     } else {
-      // If we don't have user yet, we might be loading or not authenticated
-      // But useAuth usually handles the initial loading state.
-      // We can keep isLoading true if user is null and we expect one?
-      // For now, let's rely on AuthContext's isLoading if needed, but here we just wait for user.
-      if (!user) setIsLoading(false) // Stop loading if no user (maybe error state or just not loaded)
+      setIsLoading(false)
     }
   }, [user, profileForm])
 
@@ -148,7 +136,7 @@ export default function SettingsPage() {
       setIsSaving(true)
 
       // 1. 同步更新 Better Auth 的用户信息 (前端 Session)
-      // 这是关键步骤：如果不更新 Session，AuthContext 会使用旧的 Session 信息(如旧邮箱)
+      // 这是关键步骤：如果不更新 Session，auth store 会使用旧的 Session 信息(如旧邮箱)
       // 去尝试同步后端，导致后端找不到用户或重新注册旧用户，从而使修改失效。
       /*
        * 暂时注释掉 Better Auth 更新，因为 /api/auth/user/update 报 404

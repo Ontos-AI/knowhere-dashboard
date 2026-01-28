@@ -1,8 +1,8 @@
 'use client'
 
-import { Header } from '@/components/dashboard/Header'
-import { Sidebar } from '@/components/dashboard/Sidebar'
-import { useAuth } from '@/hooks/useAuth'
+import { Header } from './_components/header'
+import { Sidebar } from './_components/sidebar'
+import { useAuth } from '@hooks/useAuth'
 import { useRouter } from '@/navigation'
 import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'

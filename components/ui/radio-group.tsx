@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@/lib/utils'
+import { cn } from '@lib/utils'
 import { DotFilledIcon } from '@radix-ui/react-icons'
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group'
 import * as React from 'react'

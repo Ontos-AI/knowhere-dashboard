@@ -1,6 +1,6 @@
 import { toast } from 'sonner'
 
-interface ToastMethods {
+type ToastMethods = {
   success: (message: string, description?: string) => void
   error: (message: string, description?: string) => void
   warning: (message: string, description?: string) => void

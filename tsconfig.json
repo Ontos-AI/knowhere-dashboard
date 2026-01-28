@@ -20,7 +20,17 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@app/*": ["app/*"],
+      "@server/*": ["server/*"],
+      "@components/*": ["components/*"],
+      "@hooks/*": ["hooks/*"],
+      "@lib/*": ["lib/*"],
+      "@utils/*": ["utils/*"],
+      "@store/*": ["store/*"],
+      "@providers/*": ["providers/*"],
+      "@constants/*": ["constants/*"],
+      "@types/*": ["types/*"]
     }
   },
   "include": [

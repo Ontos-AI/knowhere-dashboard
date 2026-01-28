@@ -13,7 +13,7 @@
  */
 
 // 配置类型
-export interface AppConfigType {
+export type AppConfigType = {
   companyName: string
   simpleCompanyName: string
   icpNumber: string
