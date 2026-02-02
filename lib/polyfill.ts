@@ -1,6 +1,8 @@
 // Polyfill for Node.js environments where File/FormData might be missing (Node < 20)
 // This fixes "ReferenceError: File is not defined" in Next.js server-side builds
 
+import { FormData as UndiciFormData } from "undici";
+
 const globalObject =
   typeof globalThis !== "undefined"
     ? globalThis
@@ -8,20 +10,36 @@ const globalObject =
       ? global
       : typeof window !== "undefined"
         ? window
-        : // biome-ignore lint/suspicious/noExplicitAny: Polyfill requires any to access global object properties
-          (this as any);
+        : (this as unknown as typeof globalThis);
 
 if (typeof globalObject !== "undefined") {
-  // biome-ignore lint/suspicious/noExplicitAny: Polyfill requires any to access global object properties
-  if (typeof (globalObject as any).File === "undefined") {
-    // biome-ignore lint/suspicious/noExplicitAny: Polyfill requires any to access global object properties
-    (globalObject as any).File = class File {};
+  if (typeof globalObject.File === "undefined") {
+    // Create a minimal File polyfill that extends Blob
+    // In Node.js 20+, File should be available globally, but this provides a fallback
+    class FilePolyfill extends Blob {
+      readonly name: string;
+      readonly lastModified: number;
+
+      constructor(fileBits: BlobPart[], fileName: string, options?: FilePropertyBag) {
+        super(fileBits, { type: options?.type });
+        this.name = fileName;
+        this.lastModified = options?.lastModified ?? Date.now();
+      }
+    }
+
+    Object.defineProperty(globalObject, "File", {
+      value: FilePolyfill,
+      writable: true,
+      configurable: true,
+    });
   }
-  // biome-ignore lint/suspicious/noExplicitAny: Polyfill requires any to access global object properties
-  if (typeof (globalObject as any).FormData === "undefined") {
-    // biome-ignore lint/suspicious/noExplicitAny: Polyfill requires any to access global object properties
-    (globalObject as any).FormData = class FormData {
-      append() {}
-    };
+
+  if (typeof globalObject.FormData === "undefined") {
+    // Use undici's FormData implementation
+    Object.defineProperty(globalObject, "FormData", {
+      value: UndiciFormData,
+      writable: true,
+      configurable: true,
+    });
   }
 }

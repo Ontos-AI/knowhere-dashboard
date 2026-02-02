@@ -9,8 +9,7 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL!,
   ssl: {
     rejectUnauthorized: true,
-    // biome-ignore lint/suspicious/noExplicitAny: pg Pool type definition requires any for ssl options
-  } as any,
+  },
 });
 
 // Merge all schemas for type-safe db.query.* helpers

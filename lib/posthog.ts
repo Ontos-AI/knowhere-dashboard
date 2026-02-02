@@ -3,6 +3,7 @@
  * Note: Uses 'any' types for PostHog SDK due to dynamic imports
  */
 
+import type { PostHog } from "posthog-js";
 import { env } from "@/lib/env";
 
 // PostHog 配置
@@ -10,8 +11,7 @@ const POSTHOG_KEY = env.NEXT_PUBLIC_POSTHOG_KEY;
 const POSTHOG_HOST = env.NEXT_PUBLIC_POSTHOG_HOST;
 
 // 只在客户端初始化PostHog
-// biome-ignore lint/suspicious/noExplicitAny: PostHog SDK types are not available before dynamic import
-let posthog: any = null;
+let posthog: PostHog | null = null;
 
 const initPostHog = () => {
   if (typeof window !== "undefined" && POSTHOG_KEY && !posthog) {
@@ -24,8 +24,7 @@ const initPostHog = () => {
           person_profiles: "identified_only",
           capture_pageview: false, // 手动控制页面浏览事件
           capture_pageleave: true,
-          // biome-ignore lint/suspicious/noExplicitAny: PostHog SDK callback parameter type
-          loaded: (_posthog: any) => {
+          loaded: (_posthog: PostHog) => {
             if (env.NODE_ENV === "development") {
               console.log("PostHog loaded");
             }
