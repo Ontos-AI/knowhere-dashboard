@@ -150,17 +150,23 @@ export const usersRouter = protectedProcedure.router({
     )
     .handler(async ({ input, context }) => {
       try {
-        console.log("[updateProfile] Input:", input);
-        console.log("[updateProfile] User ID:", context.user.id);
+        // Build update body with only defined fields
+        const updateBody: { name?: string; image?: string } = {};
+        if (input.name !== undefined) updateBody.name = input.name;
+        if (input.image !== undefined) updateBody.image = input.image;
+
+        // Check if there are fields to update
+        if (Object.keys(updateBody).length === 0) {
+          throw new ORPCError("BAD_REQUEST", {
+            message: "No fields to update",
+          });
+        }
 
         // Use better-auth's updateUser API which updates both database AND session cookie
         // This ensures the cookieCache is refreshed immediately
         const result = await auth.api.updateUser({
           headers: context.headers,
-          body: {
-            name: input.name,
-            image: input.image,
-          },
+          body: updateBody,
         });
 
         console.log("[updateProfile] Updated via better-auth:", result);

@@ -165,13 +165,25 @@ export default function SettingsPage() {
 
   const handleUpdateProfile = async (data: ProfileForm) => {
     try {
-      // Update profile
-      await updateProfileMutation.mutateAsync({
-        name: data.username,
-      });
+      // Check if any field has changed
+      const usernameChanged = data.username !== user?.name;
+      const emailChanged = data.email !== user?.email;
+
+      // Show warning if nothing changed
+      if (!usernameChanged && !emailChanged) {
+        toast.error(t("noChanges") || "No changes to save");
+        return;
+      }
+
+      // Update profile only if username changed
+      if (usernameChanged) {
+        await updateProfileMutation.mutateAsync({
+          name: data.username,
+        });
+      }
 
       // Update email separately if changed
-      if (data.email !== user?.email) {
+      if (emailChanged) {
         await updateEmailMutation.mutateAsync({ email: data.email });
       }
 
