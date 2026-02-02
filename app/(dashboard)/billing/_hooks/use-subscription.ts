@@ -1,4 +1,5 @@
 import { orpcQuery } from "@lib/orpc/client";
+import type { CreditsPackage, SubscriptionPlan } from "@server/external-api/subscriptions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 /**
@@ -14,8 +15,14 @@ export function useSubscription() {
 
 /**
  * Hook to fetch price configurations
- * Uses oRPC for type-safe API calls
+ * Uses oRPC for type-safe API calls with function overloads for type safety
  */
+export function usePriceConfigs(
+  productType: "credits_package"
+): ReturnType<typeof useQuery<unknown, Error, CreditsPackage[]>>;
+export function usePriceConfigs(
+  productType: "subscription"
+): ReturnType<typeof useQuery<unknown, Error, SubscriptionPlan[]>>;
 export function usePriceConfigs(productType: "subscription" | "credits_package") {
   return useQuery({
     ...orpcQuery.subscriptions.getPriceConfigs.queryOptions({ input: { productType } }),

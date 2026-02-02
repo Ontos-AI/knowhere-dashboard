@@ -14,13 +14,11 @@ const globalObject =
 if (typeof globalObject !== "undefined") {
   // biome-ignore lint/suspicious/noExplicitAny: Polyfill requires any to access global object properties
   if (typeof (globalObject as any).File === "undefined") {
-    // @ts-expect-error
     // biome-ignore lint/suspicious/noExplicitAny: Polyfill requires any to access global object properties
     (globalObject as any).File = class File {};
   }
   // biome-ignore lint/suspicious/noExplicitAny: Polyfill requires any to access global object properties
   if (typeof (globalObject as any).FormData === "undefined") {
-    // @ts-expect-error
     // biome-ignore lint/suspicious/noExplicitAny: Polyfill requires any to access global object properties
     (globalObject as any).FormData = class FormData {
       append() {}

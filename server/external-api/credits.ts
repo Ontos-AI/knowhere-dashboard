@@ -6,7 +6,7 @@ import { signedRequest } from "@server/external-api/request";
 // ============================================
 
 export type CreditsBalance = {
-  [key: string]: unknown;
+  credits_balance: number;
 };
 
 export type CreditPackage = {

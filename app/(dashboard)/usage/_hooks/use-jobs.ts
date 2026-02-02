@@ -76,14 +76,16 @@ function mapJobToUsageRecord(job: JobResponse): UsageRecord {
 
   let fileType = job.file_extension || job.source_type?.toUpperCase() || "UNKNOWN";
   if (!job.file_extension && (fileType === "FILE" || fileType === "URL")) {
-    const fileName = job.file_name || job.result_metadata?.file_name || "";
+    const metadataFileName = job.result_metadata?.file_name as string | undefined;
+    const fileName = job.file_name || metadataFileName || "";
     if (fileName) {
       const ext = fileName.split(".").pop()?.toUpperCase();
       if (ext) fileType = ext;
     }
   }
 
-  const fileName = job.file_name || job.result_metadata?.file_name || job.source_type || "Unknown";
+  const metadataFileName = job.result_metadata?.file_name as string | undefined;
+  const fileName = job.file_name || metadataFileName || job.source_type || "Unknown";
 
   return {
     id: job.job_id,
@@ -91,14 +93,14 @@ function mapJobToUsageRecord(job: JobResponse): UsageRecord {
     jobId: job.job_id,
     fileName: fileName,
     fileType: fileType,
-    model: job.model || job.result_metadata?.model || "-",
-    pages: job.result_metadata?.pages || 0,
-    ocr: job.ocr_enabled ?? job.result_metadata?.ocr ?? false,
+    model: job.model || (job.result_metadata?.model as string | undefined) || "-",
+    pages: (job.result_metadata?.pages as number | undefined) || 0,
+    ocr: job.ocr_enabled ?? (job.result_metadata?.ocr as boolean | undefined) ?? false,
     status: status,
     duration: job.duration_seconds
       ? `${job.duration_seconds.toFixed(2)}s`
-      : job.result_metadata?.duration || "-",
-    cost: job.credits_spent ?? job.result_metadata?.cost ?? 0,
+      : (job.result_metadata?.duration as string | undefined) || "-",
+    cost: job.credits_spent ?? (job.result_metadata?.cost as number | undefined) ?? 0,
     apiKey: "-",
     resultUrl: job.result_url,
   };

@@ -1,22 +1,6 @@
 import { orpcQuery } from "@lib/orpc/client";
+import type { ListAPIKeysResponse } from "@server/external-api/api-keys";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
-type APIKey = {
-  id: string;
-  name: string;
-  key_prefix: string;
-  api_key?: string;
-  enabled_modules: string[];
-  expires_at?: string;
-  last_used_at?: string;
-  created_at: string;
-  is_active: boolean;
-};
-
-type ApiKeysResponse = {
-  api_keys: APIKey[];
-  total: number;
-};
 
 /**
  * Hook to fetch API keys list
@@ -68,16 +52,18 @@ export function useToggleApiKey() {
       const previousData = queryClient.getQueryData(orpcQuery.apiKeys.list.queryKey());
 
       // Optimistically update to the new value
-      queryClient.setQueryData(orpcQuery.apiKeys.list.queryKey(), (old: unknown) => {
-        const data = old as ApiKeysResponse | undefined;
-        if (!data?.api_keys) return old;
-        return {
-          ...data,
-          api_keys: data.api_keys.map((key) =>
-            key.id === id ? { ...key, is_active: !key.is_active } : key
-          ),
-        };
-      });
+      queryClient.setQueryData(
+        orpcQuery.apiKeys.list.queryKey(),
+        (old: ListAPIKeysResponse | undefined) => {
+          if (!old?.api_keys) return old;
+          return {
+            ...old,
+            api_keys: old.api_keys.map((key) =>
+              key.id === id ? { ...key, is_active: !key.is_active } : key
+            ),
+          };
+        }
+      );
 
       // Return context object with the snapshot
       return { previousData };
@@ -116,14 +102,16 @@ export function useRevokeApiKey() {
       const previousData = queryClient.getQueryData(orpcQuery.apiKeys.list.queryKey());
 
       // Optimistically remove from list
-      queryClient.setQueryData(orpcQuery.apiKeys.list.queryKey(), (old: unknown) => {
-        const data = old as ApiKeysResponse | undefined;
-        if (!data?.api_keys) return old;
-        return {
-          ...data,
-          api_keys: data.api_keys.filter((key) => key.id !== id),
-        };
-      });
+      queryClient.setQueryData(
+        orpcQuery.apiKeys.list.queryKey(),
+        (old: ListAPIKeysResponse | undefined) => {
+          if (!old?.api_keys) return old;
+          return {
+            ...old,
+            api_keys: old.api_keys.filter((key) => key.id !== id),
+          };
+        }
+      );
 
       // Return context object with the snapshot
       return { previousData };
