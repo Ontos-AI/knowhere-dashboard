@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import { QueryProvider } from './query-provider'
-import { Toaster } from '@components/ui/sonner'
-import { TimezoneSync } from './timezone-sync'
-import { NuqsAdapter } from 'nuqs/adapters/next/app'
+import { Toaster } from "@components/ui/sonner";
+import { QueryProvider } from "@providers/query-provider";
+import { TimezoneSync } from "@providers/timezone-sync";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const content = (
@@ -14,7 +14,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <Toaster />
       </QueryProvider>
     </NuqsAdapter>
-  )
+  );
 
-  return content
+  return content;
 }

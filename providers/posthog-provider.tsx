@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 // 暂时禁用PostHog以解决构建问题
 // import { useEffect } from 'react'
@@ -6,12 +6,12 @@
 // import { initPostHogClient, trackPageView } from '@lib/posthog'
 
 type PostHogProviderProps = {
-  children: React.ReactNode
-}
+  children: React.ReactNode;
+};
 
 export default function PostHogProvider({ children }: PostHogProviderProps) {
   // 暂时直接返回children，不进行PostHog追踪
-  return <>{children}</>
+  return <>{children}</>;
 
   // const pathname = usePathname()
 

@@ -1,6 +1,10 @@
-'use client'
+"use client";
 
-import { Button } from '@components/ui/button'
+import {
+  useBuyCreditsPackage,
+  usePriceConfigs,
+} from "@app/(dashboard)/billing/_hooks/use-subscription";
+import { Button } from "@components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,172 +13,145 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@components/ui/dialog'
-import { Input } from '@components/ui/input'
-import { useToast } from '@hooks/useToast'
-import { type CreditsPackage, api } from '@server/external-api/client'
-import { cn } from '@lib/utils'
-import { Coins, Loader2 } from 'lucide-react'
-import { useTranslations } from 'next-intl'
-import { useEffect, useRef, useState } from 'react'
+} from "@components/ui/dialog";
+import { Input } from "@components/ui/input";
+import { cn } from "@lib/utils";
+import { Coins, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useEffect, useRef, useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 // Default minimum credits purchase if not specified
-const MIN_CREDITS_PURCHASE = 1
-const PRESET_AMOUNTS = [20, 50, 100, 500]
+const MIN_CREDITS_PURCHASE = 1;
+const PRESET_AMOUNTS = [20, 50, 100, 500];
 
 type BuyCreditsDialogProps = {
-  currentCredits?: number
-}
+  currentCredits?: number;
+};
 
 export function BuyCreditsDialog({ currentCredits = 0 }: BuyCreditsDialogProps) {
-  const t = useTranslations('BuyCredits')
-  const toast = useToast()
+  const t = useTranslations("BuyCredits");
+  const toast = useToast();
+
+  // Hooks
+  const { data: packages = [], isPending: isFetching } = usePriceConfigs("credits_package");
+  const buyMutation = useBuyCreditsPackage();
 
   // UI State
-  const [open, setOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-
-  // Data State
-  const [packages, setPackages] = useState<CreditsPackage[]>([])
-  const [isFetching, setIsFetching] = useState(false)
+  const [open, setOpen] = useState(false);
 
   // Selection State
-  const [selectedAmount, setSelectedAmount] = useState<number | null>(null)
-  const [isCustom, setIsCustom] = useState(false)
-  const [customAmountStr, setCustomAmountStr] = useState<string>('')
+  const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
+  const [isCustom, setIsCustom] = useState(false);
+  const [customAmountStr, setCustomAmountStr] = useState<string>("");
 
-  const customInputRef = useRef<HTMLInputElement>(null)
+  const customInputRef = useRef<HTMLInputElement>(null);
 
-  // Fetch packages on open
+  // Reset state on close
   useEffect(() => {
-    if (open) {
-      fetchPackages()
-    } else {
-      // Reset state on close
+    if (!open) {
       const timer = setTimeout(() => {
-        setIsCustom(false)
-        setCustomAmountStr('')
-        setSelectedAmount(PRESET_AMOUNTS[0]) // Default to first preset
-        setIsLoading(false)
-      }, 300)
-      return () => clearTimeout(timer)
+        setIsCustom(false);
+        setCustomAmountStr("");
+        setSelectedAmount(PRESET_AMOUNTS[0]); // Default to first preset
+      }, 300);
+      return () => clearTimeout(timer);
     }
-  }, [open])
+  }, [open]);
 
   // Focus custom input
   useEffect(() => {
     if (isCustom && customInputRef.current) {
-      customInputRef.current.focus()
+      customInputRef.current.focus();
     }
-  }, [isCustom])
-
-  const fetchPackages = async () => {
-    try {
-      setIsFetching(true)
-      const data = await api.getPriceConfigs('credits_package')
-      const pkgs = data.credits_packages || []
-      setPackages(pkgs)
-
-      // Default to first preset if not set
-      if (!isCustom && !selectedAmount) {
-        setSelectedAmount(PRESET_AMOUNTS[0])
-      }
-    } catch (error) {
-      console.error('Failed to fetch packages:', error)
-      toast.error('Failed to load credit packages')
-    } finally {
-      setIsFetching(false)
-    }
-  }
+  }, [isCustom]);
 
   // Helpers
   const handlePresetSelect = (amount: number) => {
-    setSelectedAmount(amount)
-    setIsCustom(false)
-    setCustomAmountStr('')
-  }
+    setSelectedAmount(amount);
+    setIsCustom(false);
+    setCustomAmountStr("");
+  };
 
   const handleCustomSelect = () => {
-    setIsCustom(true)
-    setSelectedAmount(null)
-    setCustomAmountStr('')
-  }
+    setIsCustom(true);
+    setSelectedAmount(null);
+    setCustomAmountStr("");
+  };
 
   const handleCustomInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
+    const value = e.target.value;
     // Allow empty or valid float/int
-    if (value === '' || /^\d*\.?\d*$/.test(value)) {
-      setCustomAmountStr(value)
+    if (value === "" || /^\d*\.?\d*$/.test(value)) {
+      setCustomAmountStr(value);
     }
-  }
+  };
 
   // Calculate Multiplier (based on first package's credits_amount)
   const getMultiplier = () => {
     if (packages.length > 0) {
-      return packages[0].credits_amount
+      return packages[0].credits_amount;
     }
-    return 1 // Default fallback if no packages loaded
-  }
+    return 1; // Default fallback if no packages loaded
+  };
 
-  const multiplier = getMultiplier()
+  const multiplier = getMultiplier();
 
   // Calculations
   const getDisplayAmount = () => {
     if (isCustom) {
-      return customAmountStr === '' ? '0' : customAmountStr
+      return customAmountStr === "" ? "0" : customAmountStr;
     }
     if (selectedAmount) {
-      return selectedAmount.toString()
+      return selectedAmount.toString();
     }
-    return '0'
-  }
+    return "0";
+  };
 
-  const displayAmount = getDisplayAmount()
+  const displayAmount = getDisplayAmount();
 
   // Validation for Custom Amount
-  const currentAmountNum = isCustom ? Number.parseFloat(customAmountStr) : selectedAmount || 0
+  const currentAmountNum = isCustom ? Number.parseFloat(customAmountStr) : selectedAmount || 0;
 
   // Calculate display credits (based on multiplier)
   const creditsToBuy = Number.isNaN(currentAmountNum)
     ? 0
-    : Math.floor(currentAmountNum * multiplier)
+    : Math.floor(currentAmountNum * multiplier);
   // Quantity for API (based on amount directly)
-  const quantity = Number.isNaN(currentAmountNum) ? 0 : Math.floor(currentAmountNum)
+  const quantity = Number.isNaN(currentAmountNum) ? 0 : Math.floor(currentAmountNum);
 
   const isValid = isCustom
     ? !Number.isNaN(currentAmountNum) && currentAmountNum >= MIN_CREDITS_PURCHASE
-    : !!selectedAmount
+    : !!selectedAmount;
 
   // Purchase Handlers
-  const handlePurchase = async () => {
-    if (!isValid) return
-
-    try {
-      setIsLoading(true)
-
-      // Use the first package ID from the API
+  const handlePurchase = () => {
+    if (!isValid || packages.length === 0) {
       if (packages.length === 0) {
-        toast.error('Price configuration not found')
-        setIsLoading(false)
-        return
+        toast.error("Price configuration not found");
       }
-
-      const priceId = packages[0].price_id
-
-      // Call api.buyCreditsPackage with the first priceId and the input amount as quantity
-      const response = await api.buyCreditsPackage(priceId, quantity)
-      if (response.checkout_url) {
-        window.location.href = response.checkout_url
-      } else {
-        toast.error('Failed to create checkout session')
-        setIsLoading(false)
-      }
-    } catch (error) {
-      console.error('Purchase failed:', error)
-      toast.error('Purchase failed')
-      setIsLoading(false)
+      return;
     }
-  }
+
+    const priceId = packages[0].price_id;
+
+    buyMutation.mutate(
+      { priceId, quantity },
+      {
+        onSuccess: (response) => {
+          if (response.checkout_url) {
+            window.location.href = response.checkout_url;
+          } else {
+            toast.error("Failed to create checkout session");
+          }
+        },
+        onError: (error) => {
+          console.error("Purchase failed:", error);
+          toast.error("Purchase failed");
+        },
+      }
+    );
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -182,15 +159,15 @@ export function BuyCreditsDialog({ currentCredits = 0 }: BuyCreditsDialogProps) 
         <Button variant="outline" className="gap-2">
           <Coins className="h-4 w-4" />
           <span>
-            {currentCredits.toLocaleString()} {t('credits')}
+            {currentCredits.toLocaleString()} {t("credits")}
           </span>
         </Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[425px] md:max-w-[550px] gap-6">
         <DialogHeader>
-          <DialogTitle className="text-xl">{t('title')}</DialogTitle>
-          <DialogDescription className="text-base pt-2">{t('description')}</DialogDescription>
+          <DialogTitle className="text-xl">{t("title")}</DialogTitle>
+          <DialogDescription className="text-base pt-2">{t("description")}</DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col items-center justify-center py-6 space-y-8">
@@ -206,35 +183,35 @@ export function BuyCreditsDialog({ currentCredits = 0 }: BuyCreditsDialogProps) 
             ) : (
               <>
                 {PRESET_AMOUNTS.map((amount) => {
-                  const isSelected = !isCustom && selectedAmount === amount
+                  const isSelected = !isCustom && selectedAmount === amount;
 
                   return (
                     <Button
                       key={amount}
-                      variant={isSelected ? 'default' : 'outline'}
+                      variant={isSelected ? "default" : "outline"}
                       className={cn(
-                        'w-[70px]',
+                        "w-[70px]",
                         isSelected
-                          ? 'bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black'
-                          : 'bg-transparent'
+                          ? "bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black"
+                          : "bg-transparent"
                       )}
                       onClick={() => handlePresetSelect(amount)}
                     >
                       ${amount}
                     </Button>
-                  )
+                  );
                 })}
                 <Button
-                  variant={isCustom ? 'default' : 'outline'}
+                  variant={isCustom ? "default" : "outline"}
                   className={cn(
-                    'w-[80px]',
+                    "w-[80px]",
                     isCustom
-                      ? 'bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black'
-                      : 'bg-transparent'
+                      ? "bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black"
+                      : "bg-transparent"
                   )}
                   onClick={handleCustomSelect}
                 >
-                  {t('custom')}
+                  {t("custom")}
                 </Button>
               </>
             )}
@@ -243,15 +220,15 @@ export function BuyCreditsDialog({ currentCredits = 0 }: BuyCreditsDialogProps) 
           {/* Custom Input Animation Container */}
           <div
             className={cn(
-              'w-full max-w-[200px] grid transition-[grid-template-rows] duration-300 ease-out',
-              isCustom ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+              "w-full max-w-[200px] grid transition-[grid-template-rows] duration-300 ease-out",
+              isCustom ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
             )}
           >
             <div className="overflow-hidden">
               <div
                 className={cn(
-                  'pt-4 px-1 transition-all duration-300',
-                  isCustom ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
+                  "pt-4 px-1 transition-all duration-300",
+                  isCustom ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
                 )}
               >
                 <div className="relative">
@@ -261,7 +238,7 @@ export function BuyCreditsDialog({ currentCredits = 0 }: BuyCreditsDialogProps) 
                   <Input
                     ref={customInputRef}
                     type="text"
-                    placeholder={t('amountPlaceholder') || 'Amount'}
+                    placeholder={t("amountPlaceholder") || "Amount"}
                     value={customAmountStr}
                     onChange={handleCustomInputChange}
                     className="pl-7"
@@ -270,14 +247,14 @@ export function BuyCreditsDialog({ currentCredits = 0 }: BuyCreditsDialogProps) 
                 </div>
                 <p
                   className={cn(
-                    'text-xs text-red-500 mt-2 text-center h-4 transition-opacity duration-200',
-                    !isValid && customAmountStr !== '' ? 'opacity-100' : 'opacity-0'
+                    "text-xs text-red-500 mt-2 text-center h-4 transition-opacity duration-200",
+                    !isValid && customAmountStr !== "" ? "opacity-100" : "opacity-0"
                   )}
                 >
-                  {t('minPurchaseError', { amount: MIN_CREDITS_PURCHASE })}
+                  {t("minPurchaseError", { amount: MIN_CREDITS_PURCHASE })}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1 text-center">
-                  {creditsToBuy > 0 ? `≈ ${creditsToBuy.toLocaleString()} Credits` : ''}
+                  {creditsToBuy > 0 ? `≈ ${creditsToBuy.toLocaleString()} Credits` : ""}
                 </p>
               </div>
             </div>
@@ -290,26 +267,28 @@ export function BuyCreditsDialog({ currentCredits = 0 }: BuyCreditsDialogProps) 
             variant="outline"
             onClick={() => setOpen(false)}
             className="h-10"
-            disabled={isLoading}
+            disabled={buyMutation.isPending}
           >
-            {t('cancel')}
+            {t("cancel")}
           </Button>
           <Button
             className="h-10 bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black min-w-[150px]"
-            disabled={(!isCustom && !selectedAmount) || (isCustom && !isValid) || isLoading}
+            disabled={
+              (!isCustom && !selectedAmount) || (isCustom && !isValid) || buyMutation.isPending
+            }
             onClick={handlePurchase}
           >
-            {isLoading ? (
+            {buyMutation.isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {t('processing')}
+                {t("processing")}
               </>
             ) : (
-              t('purchase')
+              t("purchase")
             )}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

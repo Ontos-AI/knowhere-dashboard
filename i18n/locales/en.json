@@ -94,21 +94,6 @@
     "rowsPerPage": "Rows per page",
     "totalRows": "Total: {total}"
   },
-  "BuyCredits": {
-    "title": "Buy Credits",
-    "description": "Purchase credits as a one-time top-up for your team's Knowhere API usage. Credits are valid for 3 months after purchase.",
-    "packages": "Packages",
-    "custom": "Custom",
-    "amountPlaceholder": "Amount",
-    "minAmount": "Minimum amount is ${minAmount}",
-    "minPurchaseError": "Minimum purchase is {amount} credits",
-    "cancel": "Cancel",
-    "processing": "Processing...",
-    "continueToPayment": "Continue to Payment",
-    "purchase": "Purchase",
-    "purchaseFailed": "Purchase failed",
-    "credits": "Credits"
-  },
   "Auth": {
     "login": "Sign in",
     "loginDesc": "Sign in to your Knowhere account",
@@ -222,6 +207,7 @@
     "language": "Language",
     "timezone": "Timezone",
     "saving": "Saving...",
+    "sending": "Sending...",
     "profileDesc": "Update your personal information",
     "passwordSettings": "Password Settings",
     "passwordDesc": "Update your password",
@@ -246,7 +232,26 @@
     "enUS": "English",
     "beijingTime": "Beijing Time",
     "timezoneUpdated": "Timezone updated",
-    "emailVerificationSent": "Verification email sent, please check your inbox"
+    "emailVerificationSent": "Verification email sent, please check your inbox",
+    "emailStatus": "Email Status",
+    "verified": "Verified",
+    "unverified": "Unverified",
+    "resendVerification": "Resend verification email",
+    "resendIn": "Resend in {seconds}s",
+    "verificationEmailSent": "Verification email sent! Please check your inbox.",
+    "checkSpamFolder": "Check your spam folder if you don't see it.",
+    "tooManyRequests": "Too many requests. Please try again later.",
+    "alreadyVerified": "Your email is already verified.",
+    "failedToSendEmail": "Failed to send verification email. Please try again."
+  },
+  "VerifyEmail": {
+    "verifying": "Verifying your email...",
+    "success": "Email Verified!",
+    "successMessage": "Your email has been successfully verified.",
+    "redirecting": "Redirecting to settings...",
+    "error": "Verification Failed",
+    "errorMessage": "This link is invalid or has expired. Please request a new verification email.",
+    "goToSettings": "Go to Settings"
   },
   "ApiKeys": {
     "title": "API Keys",

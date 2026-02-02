@@ -2,23 +2,28 @@
 // This fixes "ReferenceError: File is not defined" in Next.js server-side builds
 
 const globalObject =
-  typeof globalThis !== 'undefined'
+  typeof globalThis !== "undefined"
     ? globalThis
-    : typeof global !== 'undefined'
+    : typeof global !== "undefined"
       ? global
-      : typeof window !== 'undefined'
+      : typeof window !== "undefined"
         ? window
-        : (this as any)
+        : // biome-ignore lint/suspicious/noExplicitAny: Polyfill requires any to access global object properties
+          (this as any);
 
-if (typeof globalObject !== 'undefined') {
-  if (typeof (globalObject as any).File === 'undefined') {
-    // @ts-ignore
-    ;(globalObject as any).File = class File {}
+if (typeof globalObject !== "undefined") {
+  // biome-ignore lint/suspicious/noExplicitAny: Polyfill requires any to access global object properties
+  if (typeof (globalObject as any).File === "undefined") {
+    // @ts-expect-error
+    // biome-ignore lint/suspicious/noExplicitAny: Polyfill requires any to access global object properties
+    (globalObject as any).File = class File {};
   }
-  if (typeof (globalObject as any).FormData === 'undefined') {
-    // @ts-ignore
-    ;(globalObject as any).FormData = class FormData {
+  // biome-ignore lint/suspicious/noExplicitAny: Polyfill requires any to access global object properties
+  if (typeof (globalObject as any).FormData === "undefined") {
+    // @ts-expect-error
+    // biome-ignore lint/suspicious/noExplicitAny: Polyfill requires any to access global object properties
+    (globalObject as any).FormData = class FormData {
       append() {}
-    }
+    };
   }
 }

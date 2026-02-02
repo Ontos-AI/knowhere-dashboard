@@ -1,5 +1,13 @@
-import { z } from 'zod'
-import { protectedProcedure } from '@server/orpc'
+import {
+  createApiKey,
+  deleteApiKey,
+  listApiKeys,
+  revokeApiKey,
+  toggleApiKey,
+  updateApiKey,
+} from "@server/external-api/api-keys";
+import { protectedProcedure } from "@server/orpc";
+import { z } from "zod";
 
 // API Keys router
 // All API Keys operations require authentication
@@ -7,7 +15,7 @@ export const apiKeysRouter = protectedProcedure.router({
   // Get API Keys list - Protected endpoint
   // Returns all API keys for the current user
   list: protectedProcedure.handler(async ({ context }) => {
-    return context.api.listApiKeys()
+    return listApiKeys({ userId: context.user.id });
   }),
 
   // Create API Key - Protected endpoint
@@ -15,13 +23,13 @@ export const apiKeysRouter = protectedProcedure.router({
   create: protectedProcedure
     .input(
       z.object({
-        name: z.string().min(1, 'API key name is required'),
+        name: z.string().min(1, "API key name is required"),
         enabled_modules: z.array(z.string()).optional(),
         expires_at: z.string().optional(),
       })
     )
     .handler(async ({ input, context }) => {
-      return context.api.createApiKey(input)
+      return createApiKey({ userId: context.user.id, data: input });
     }),
 
   // Delete API Key - Protected endpoint
@@ -29,11 +37,11 @@ export const apiKeysRouter = protectedProcedure.router({
   delete: protectedProcedure
     .input(
       z.object({
-        id: z.string().min(1, 'API key ID is required'),
+        id: z.string().min(1, "API key ID is required"),
       })
     )
     .handler(async ({ input, context }) => {
-      return context.api.deleteApiKey(input.id)
+      return deleteApiKey({ userId: context.user.id, id: input.id });
     }),
 
   // Revoke API Key - Protected endpoint
@@ -41,11 +49,11 @@ export const apiKeysRouter = protectedProcedure.router({
   revoke: protectedProcedure
     .input(
       z.object({
-        id: z.string().min(1, 'API key ID is required'),
+        id: z.string().min(1, "API key ID is required"),
       })
     )
     .handler(async ({ input, context }) => {
-      return context.api.revokeApiKey(input.id)
+      return revokeApiKey({ userId: context.user.id, id: input.id });
     }),
 
   // Update API Key - Protected endpoint
@@ -53,14 +61,14 @@ export const apiKeysRouter = protectedProcedure.router({
   update: protectedProcedure
     .input(
       z.object({
-        id: z.string().min(1, 'API key ID is required'),
+        id: z.string().min(1, "API key ID is required"),
         is_active: z.boolean().optional(),
         name: z.string().optional(),
       })
     )
     .handler(async ({ input, context }) => {
-      const { id, ...data } = input
-      return context.api.updateApiKey(id, data)
+      const { id, ...data } = input;
+      return updateApiKey({ userId: context.user.id, id, data });
     }),
 
   // Toggle API Key status - Protected endpoint
@@ -68,10 +76,10 @@ export const apiKeysRouter = protectedProcedure.router({
   toggle: protectedProcedure
     .input(
       z.object({
-        id: z.string().min(1, 'API key ID is required'),
+        id: z.string().min(1, "API key ID is required"),
       })
     )
     .handler(async ({ input, context }) => {
-      return context.api.toggleApiKey(input.id)
+      return toggleApiKey({ userId: context.user.id, id: input.id });
     }),
-})
+});

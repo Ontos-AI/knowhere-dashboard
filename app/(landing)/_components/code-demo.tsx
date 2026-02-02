@@ -1,11 +1,11 @@
-'use client'
+"use client";
 
-import { Button } from '@components/ui/button'
-import { ScrollArea } from '@components/ui/scroll-area'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@components/ui/tabs'
-import { Check, Copy } from 'lucide-react'
-import { Highlight, themes } from 'prism-react-renderer'
-import { useState } from 'react'
+import { Button } from "@components/ui/button";
+import { ScrollArea } from "@components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
+import { Check, Copy } from "lucide-react";
+import { Highlight, themes } from "prism-react-renderer";
+import { useState } from "react";
 
 const pythonCode = `import requests
 
@@ -24,7 +24,7 @@ payload = {
 }
 
 response = requests.post(url, headers=headers, json=payload)
-print(response.json())`
+print(response.json())`;
 
 const curlCode = `curl -X POST https://api.knowhereto.ai/v1/jobs \\
   -H "Authorization: Bearer ***REMOVED***" \\
@@ -36,35 +36,37 @@ const curlCode = `curl -X POST https://api.knowhereto.ai/v1/jobs \\
       "model": "base",
       "ocr_enabled": true
     }
-  }'`
+  }'`;
 
 export function CodeDemo() {
-  const [copied, setCopied] = useState(false)
+  const [copied, setCopied] = useState(false);
 
   const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const CodeBlock = ({ code, language }: { code: string; language: string }) => (
     <Highlight theme={themes.vsDark} code={code} language={language}>
       {({ className, style, tokens, getLineProps, getTokenProps }) => (
         <pre
-          style={{ ...style, background: 'transparent' }}
+          style={{ ...style, background: "transparent" }}
           className={`${className} font-mono text-xs md:text-sm`}
         >
           {tokens.map((line, i) => (
-            <div key={i} {...getLineProps({ line })}>
-              {line.map((token, key) => (
-                <span key={key} {...getTokenProps({ token })} />
+            // biome-ignore lint/suspicious/noArrayIndexKey: prism-react-renderer tokens don't have unique IDs
+            <div key={`line-${i}`} {...getLineProps({ line })}>
+              {line.map((token, tokenIndex) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: prism-react-renderer tokens don't have unique IDs
+                <span key={`line-${i}-token-${tokenIndex}`} {...getTokenProps({ token })} />
               ))}
             </div>
           ))}
         </pre>
       )}
     </Highlight>
-  )
+  );
 
   return (
     <section className="py-16 md:py-24">
@@ -179,5 +181,5 @@ export function CodeDemo() {
         </div>
       </div>
     </section>
-  )
+  );
 }

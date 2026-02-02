@@ -1,35 +1,46 @@
-'use client'
+"use client";
 
-import { Button } from '@components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@components/ui/card'
-import { useCredits } from '@hooks/use-credits'
-import { CheckCircle2, XCircle } from 'lucide-react'
-import { useTranslations } from 'next-intl'
-import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
-import { Suspense, useEffect } from 'react'
-import { toast } from 'sonner'
+import { Button } from "@components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
+import { Skeleton } from "@components/ui/skeleton";
+import { useCredits } from "@hooks/use-credits";
+import { CheckCircle2, XCircle } from "lucide-react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Suspense, useEffect } from "react";
+import { toast } from "sonner";
+
+function BillingPageSkeleton() {
+  return (
+    <output className="container mx-auto py-10" aria-busy="true">
+      <Skeleton className="h-9 w-64 mx-auto mb-10" />
+      <Skeleton className="h-5 w-96 mx-auto" />
+      <span className="sr-only">Loading billing information...</span>
+    </output>
+  );
+}
 
 function BillingContent() {
-  const t = useTranslations('Pricing')
-  const searchParams = useSearchParams()
-  const { refetch: refreshCredits } = useCredits()
+  const t = useTranslations("Pricing");
+  const searchParams = useSearchParams();
+  const { refetch: refreshCredits } = useCredits();
 
   useEffect(() => {
     // Handle payment success/cancel callbacks
-    if (searchParams.get('success') === 'true') {
+    if (searchParams.get("success") === "true") {
       // Refresh credits if it's a credit package purchase
-      if (searchParams.get('type') === 'credits_package') {
-        refreshCredits()
+      if (searchParams.get("type") === "credits_package") {
+        refreshCredits();
       }
-      toast.success(t('toast.success'))
-    } else if (searchParams.get('canceled') === 'true') {
-      toast.error(t('toast.canceled'))
+      toast.success(t("toast.success"));
+    } else if (searchParams.get("canceled") === "true") {
+      toast.error(t("toast.canceled"));
     }
-  }, [searchParams, t, refreshCredits])
+  }, [searchParams, t, refreshCredits]);
 
-  const isSuccess = searchParams.get('success') === 'true'
-  const isCanceled = searchParams.get('canceled') === 'true'
+  const isSuccess = searchParams.get("success") === "true";
+  const isCanceled = searchParams.get("canceled") === "true";
 
   if (isSuccess) {
     return (
@@ -39,17 +50,17 @@ function BillingContent() {
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
               <CheckCircle2 className="h-6 w-6 text-green-600" />
             </div>
-            <CardTitle className="text-2xl">{t('success.title')}</CardTitle>
-            <CardDescription>{t('success.description')}</CardDescription>
+            <CardTitle className="text-2xl">{t("success.title")}</CardTitle>
+            <CardDescription>{t("success.description")}</CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center">
             <Button asChild>
-              <Link href="/usage">{t('buttons.returnToConsole')}</Link>
+              <Link href="/usage">{t("buttons.returnToConsole")}</Link>
             </Button>
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   if (isCanceled) {
@@ -60,31 +71,31 @@ function BillingContent() {
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
               <XCircle className="h-6 w-6 text-red-600" />
             </div>
-            <CardTitle className="text-2xl">{t('canceled.title')}</CardTitle>
-            <CardDescription>{t('canceled.description')}</CardDescription>
+            <CardTitle className="text-2xl">{t("canceled.title")}</CardTitle>
+            <CardDescription>{t("canceled.description")}</CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center">
             <Button asChild variant="outline">
-              <Link href="/usage">{t('buttons.returnToConsole')}</Link>
+              <Link href="/usage">{t("buttons.returnToConsole")}</Link>
             </Button>
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   return (
     <div className="container mx-auto py-10">
-      <h1 className="text-3xl font-bold text-center mb-10">{t('page.title')}</h1>
-      <div className="text-center text-muted-foreground">{t('page.instruction')}</div>
+      <h1 className="text-3xl font-bold text-center mb-10">{t("page.title")}</h1>
+      <div className="text-center text-muted-foreground">{t("page.instruction")}</div>
     </div>
-  )
+  );
 }
 
 export default function BillingPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<BillingPageSkeleton />}>
       <BillingContent />
     </Suspense>
-  )
+  );
 }

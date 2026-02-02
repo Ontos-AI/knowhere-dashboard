@@ -1,6 +1,6 @@
-import { z } from 'zod'
-import { protectedProcedure } from '@server/orpc'
-import { api } from '@server/external-api/client'
+import { getParseUsage, getTransactionHistory, getUsageStats } from "@server/external-api/usage";
+import { protectedProcedure } from "@server/orpc";
+import { z } from "zod";
 
 // Usage statistics router
 // All usage stats operations require authentication
@@ -10,17 +10,17 @@ export const usageRouter = protectedProcedure.router({
   getStats: protectedProcedure
     .input(
       z.object({
-        period: z.enum(['day', 'week', 'month', 'year']).default('month'),
+        period: z.enum(["day", "week", "month", "year"]).default("month"),
       })
     )
-    .handler(async ({ input }) => {
-      return api.getUsageStats(input.period)
+    .handler(async ({ input, context }) => {
+      return getUsageStats({ userId: context.user.id, period: input.period });
     }),
 
   // Get parse usage - Protected endpoint
   // Returns parsing service usage statistics
-  getParseUsage: protectedProcedure.handler(async () => {
-    return api.getParseUsage()
+  getParseUsage: protectedProcedure.handler(async ({ context }) => {
+    return getParseUsage({ userId: context.user.id });
   }),
 
   // Get transaction history - Protected endpoint
@@ -32,7 +32,11 @@ export const usageRouter = protectedProcedure.router({
         offset: z.number().min(0).default(0),
       })
     )
-    .handler(async ({ input }) => {
-      return api.getTransactionHistory(input.limit, input.offset)
+    .handler(async ({ input, context }) => {
+      return getTransactionHistory({
+        userId: context.user.id,
+        limit: input.limit,
+        offset: input.offset,
+      });
     }),
-})
+});

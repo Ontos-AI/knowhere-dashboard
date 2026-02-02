@@ -1,6 +1,11 @@
-import { z } from 'zod'
-import { publicProcedure, protectedProcedure } from '@server/orpc'
-import { api } from '@server/external-api/client'
+import {
+  cancelSubscription,
+  getCurrentSubscription,
+  getPriceConfigs,
+  subscribePlan,
+} from "@server/external-api/subscriptions";
+import { protectedProcedure, publicProcedure } from "@server/orpc";
+import { z } from "zod";
 
 // Subscriptions router
 // Manages user subscription plans and pricing
@@ -11,17 +16,17 @@ export const subscriptionsRouter = publicProcedure.router({
   getPriceConfigs: publicProcedure
     .input(
       z.object({
-        productType: z.enum(['subscription', 'credits_package']).optional(),
+        productType: z.enum(["subscription", "credits_package"]).optional(),
       })
     )
     .handler(async ({ input }) => {
-      return api.getPriceConfigs(input.productType)
+      return getPriceConfigs({ productType: input.productType });
     }),
 
   // Get current subscription - Protected endpoint
   // Returns the authenticated user's current subscription information
-  getCurrent: protectedProcedure.handler(async () => {
-    return api.getCurrentSubscription()
+  getCurrent: protectedProcedure.handler(async ({ context }) => {
+    return getCurrentSubscription({ userId: context.user.id });
   }),
 
   // Subscribe to a plan - Protected endpoint
@@ -29,16 +34,16 @@ export const subscriptionsRouter = publicProcedure.router({
   subscribe: protectedProcedure
     .input(
       z.object({
-        planId: z.string().min(1, 'Plan ID is required'),
+        planId: z.string().min(1, "Plan ID is required"),
       })
     )
-    .handler(async ({ input }) => {
-      return api.subscribePlan(input.planId)
+    .handler(async ({ input, context }) => {
+      return subscribePlan({ userId: context.user.id, planId: input.planId });
     }),
 
   // Cancel subscription - Protected endpoint
   // Cancels the user's current subscription
-  cancel: protectedProcedure.handler(async () => {
-    return api.cancelSubscription()
+  cancel: protectedProcedure.handler(async ({ context }) => {
+    return cancelSubscription({ userId: context.user.id });
   }),
-})
+});

@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { Button } from '@components/ui/button'
+import { Button } from "@components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -8,13 +8,13 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@components/ui/sheet'
-import { FileText, Menu } from 'lucide-react'
-import Link from 'next/link'
-import { useState } from 'react'
+} from "@components/ui/sheet";
+import { FileText, Menu } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 
 export function Navbar() {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-sm border-b">
@@ -127,5 +127,5 @@ export function Navbar() {
         </div>
       </div>
     </nav>
-  )
+  );
 }

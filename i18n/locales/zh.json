@@ -208,6 +208,7 @@
     "language": "语言",
     "timezone": "时区",
     "saving": "保存中...",
+    "sending": "发送中...",
     "profileDesc": "更新您的个人信息",
     "passwordSettings": "密码设置",
     "passwordDesc": "更新您的登录密码",
@@ -232,7 +233,26 @@
     "enUS": "English",
     "beijingTime": "北京时间",
     "timezoneUpdated": "时区已更新",
-    "emailVerificationSent": "验证邮件已发送，请检查您的邮箱"
+    "emailVerificationSent": "验证邮件已发送，请检查您的邮箱",
+    "emailStatus": "邮箱状态",
+    "verified": "已验证",
+    "unverified": "未验证",
+    "resendVerification": "重新发送验证邮件",
+    "resendIn": "{seconds}秒后可重发",
+    "verificationEmailSent": "验证邮件已发送!请查收邮箱。",
+    "checkSpamFolder": "如果没有收到,请检查垃圾邮件文件夹。",
+    "tooManyRequests": "请求过于频繁,请稍后再试。",
+    "alreadyVerified": "您的邮箱已经验证过了。",
+    "failedToSendEmail": "发送验证邮件失败,请重试。"
+  },
+  "VerifyEmail": {
+    "verifying": "正在验证邮箱...",
+    "success": "邮箱验证成功!",
+    "successMessage": "您的邮箱已成功验证。",
+    "redirecting": "正在跳转到设置页面...",
+    "error": "验证失败",
+    "errorMessage": "此链接无效或已过期,请重新申请验证邮件。",
+    "goToSettings": "前往设置"
   },
   "ApiKeys": {
     "title": "API Keys",

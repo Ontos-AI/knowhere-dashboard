@@ -1,5 +1,11 @@
-import { z } from 'zod'
-import { protectedProcedure } from '@server/orpc'
+import {
+  buyCredits,
+  buyCreditsPackage,
+  getCreditPackages,
+  getCreditsBalance,
+} from "@server/external-api/credits";
+import { protectedProcedure } from "@server/orpc";
+import { z } from "zod";
 
 // Credits router
 // All credits operations require authentication
@@ -7,7 +13,7 @@ export const creditsRouter = protectedProcedure.router({
   // Get credits balance - Protected endpoint
   // Returns current credits balance for the authenticated user
   getBalance: protectedProcedure.handler(async ({ context }) => {
-    return context.api.getCreditsBalance()
+    return getCreditsBalance({ userId: context.user.id });
   }),
 
   // Purchase credits - Protected endpoint
@@ -15,17 +21,17 @@ export const creditsRouter = protectedProcedure.router({
   purchase: protectedProcedure
     .input(
       z.object({
-        amount: z.number().min(1, 'Amount must be at least 1'),
+        amount: z.number().min(1, "Amount must be at least 1"),
       })
     )
     .handler(async ({ input, context }) => {
-      return context.api.buyCredits(input.amount)
+      return buyCredits({ userId: context.user.id, amount: input.amount });
     }),
 
   // Get credit packages - Protected endpoint
   // Returns available credit packages for purchase
   getPackages: protectedProcedure.handler(async ({ context }) => {
-    return context.api.getCreditPackages()
+    return getCreditPackages({ userId: context.user.id });
   }),
 
   // Buy credits package - Protected endpoint
@@ -33,11 +39,15 @@ export const creditsRouter = protectedProcedure.router({
   buyPackage: protectedProcedure
     .input(
       z.object({
-        priceId: z.string().min(1, 'Price ID is required'),
-        quantity: z.number().min(1, 'Quantity must be at least 1'),
+        priceId: z.string().min(1, "Price ID is required"),
+        quantity: z.number().min(1, "Quantity must be at least 1"),
       })
     )
     .handler(async ({ input, context }) => {
-      return context.api.buyCreditsPackage(input.priceId, input.quantity)
+      return buyCreditsPackage({
+        userId: context.user.id,
+        priceId: input.priceId,
+        quantity: input.quantity,
+      });
     }),
-})
+});

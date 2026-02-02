@@ -1,23 +1,23 @@
-'use client'
+"use client";
 
-import { useAppConfigContext } from '@providers/config-provider'
-import { ThemeToggle } from '@components/theme-toggle'
-import { useAuth } from '@hooks/useAuth'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { type ReactNode, useEffect } from 'react'
+import { ThemeToggle } from "@components/theme-toggle";
+import { useAppConfigContext } from "@providers/config-provider";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { type ReactNode, useEffect } from "react";
+import { useAuth } from "@/hooks/use-auth";
 
 export function AuthLayoutClient({ children }: { children: ReactNode }) {
-  const appConfig = useAppConfigContext()
-  const { isAuthenticated, isLoading } = useAuth()
-  const router = useRouter()
+  const appConfig = useAppConfigContext();
+  const { isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
 
   // 如果已登录，重定向到仪表板
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      router.push('/usage')
+      router.push("/usage");
     }
-  }, [isAuthenticated, isLoading, router])
+  }, [isAuthenticated, isLoading, router]);
 
   // 如果正在加载或已登录，显示加载状态
   if (isLoading || isAuthenticated) {
@@ -28,7 +28,7 @@ export function AuthLayoutClient({ children }: { children: ReactNode }) {
           <p>加载中...</p>
         </div>
       </div>
-    )
+    );
   }
   return (
     <div className="min-h-screen flex flex-col">
@@ -51,7 +51,7 @@ export function AuthLayoutClient({ children }: { children: ReactNode }) {
           &copy; {appConfig.copyrightYear} {appConfig.companyName}
           {appConfig.showIcp && (
             <>
-              {' '}
+              {" "}
               <a
                 href={appConfig.icpUrl}
                 target="_blank"
@@ -65,5 +65,5 @@ export function AuthLayoutClient({ children }: { children: ReactNode }) {
         </p>
       </footer>
     </div>
-  )
+  );
 }

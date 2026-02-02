@@ -6,5 +6,5 @@ export default function Loading() {
         <p className="text-sm text-muted-foreground animate-pulse">Loading...</p>
       </div>
     </div>
-  )
+  );
 }

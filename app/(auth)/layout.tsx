@@ -1,9 +1,9 @@
-import { AuthLayoutClient } from '@/app/(auth)/_components/auth-layout-client';
-import { ConfigProvider } from '@providers/config-provider';
-import { getDefaultConfig } from '@lib/config';
+import { getDefaultConfig } from "@lib/config";
+import { ConfigProvider } from "@providers/config-provider";
+import { AuthLayoutClient } from "@/app/(auth)/_components/auth-layout-client";
 
 // 强制动态渲染，确保每次请求时读取最新的环境变量
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 /**
  * 服务端 Layout 组件

@@ -1,60 +1,61 @@
-'use client'
+"use client";
 
-import { Button } from '@components/ui/button'
-import { useToast } from '@hooks/useToast'
-import { authClient } from '@lib/betterAuthClient'
-import { Github, Loader2 } from 'lucide-react'
-import { useTranslations } from 'next-intl'
-import { useState } from 'react'
+import { Button } from "@components/ui/button";
+import { Github, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { authClient } from "@/lib/better-auth-client";
 
 type OAuthButtonsProps = {
-  onSuccess?: () => void
-  onError?: (error: string) => void
-}
+  onSuccess?: () => void;
+  onError?: (error: string) => void;
+};
 
 export function OAuthButtons({ onSuccess, onError }: OAuthButtonsProps) {
-  const toast = useToast()
-  const [isLoading, setIsLoading] = useState(false)
-  const [clickedProvider, setClickedProvider] = useState<'google' | 'github' | null>(null)
-  const t = useTranslations('Auth')
+  const toast = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  const [clickedProvider, setClickedProvider] = useState<"google" | "github" | null>(null);
+  const t = useTranslations("Auth");
 
   // 使用 Better Auth 发起社交登录（重定向到提供商）
-  const signInWithProvider = async (provider: 'github' | 'google') => {
-    if (isLoading) return
-    setIsLoading(true)
-    setClickedProvider(provider)
+  const signInWithProvider = async (provider: "github" | "google") => {
+    if (isLoading) return;
+    setIsLoading(true);
+    setClickedProvider(provider);
     try {
       await authClient.signIn.social({
         provider,
-        callbackURL: '/usage',
-        errorCallbackURL: '/login?error=oauth',
-      })
+        callbackURL: "/usage",
+        errorCallbackURL: "/login?error=oauth",
+      });
       // 成功会通过回调重定向到 /usage，这里的回调仅用于本地提示
-      onSuccess?.()
+      onSuccess?.();
     } catch (error) {
-      const message = error instanceof Error ? error.message : t('loginFailed')
-      toast.error(t('oauthFailed'), message)
-      onError?.(message)
-      setIsLoading(false)
-      setClickedProvider(null)
+      const message = error instanceof Error ? error.message : t("loginFailed");
+      toast.error(t("oauthFailed"), message);
+      onError?.(message);
+      setIsLoading(false);
+      setClickedProvider(null);
     } finally {
       // 注意：成功时不重置 isLoading，因为页面即将跳转
       // 只有失败时在 catch 块中重置
     }
-  }
+  };
 
   return (
     <div className="space-y-3">
       <Button
         variant="outline"
-        onClick={() => signInWithProvider('google')}
+        onClick={() => signInWithProvider("google")}
         className="w-full h-11"
         disabled={isLoading}
       >
-        {isLoading && clickedProvider === 'google' ? (
+        {isLoading && clickedProvider === "google" ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
-          <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
+          <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" role="img" aria-label="Google">
+            <title>Google</title>
             <path
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
               fill="#4285F4"
@@ -73,21 +74,21 @@ export function OAuthButtons({ onSuccess, onError }: OAuthButtonsProps) {
             />
           </svg>
         )}
-        {t('continueWithGoogle')}
+        {t("continueWithGoogle")}
       </Button>
 
       <Button
         variant="outline"
-        onClick={() => signInWithProvider('github')}
+        onClick={() => signInWithProvider("github")}
         className="w-full h-11"
         disabled={isLoading}
       >
-        {isLoading && clickedProvider === 'github' ? (
+        {isLoading && clickedProvider === "github" ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
           <Github className="w-5 h-5 mr-2" />
         )}
-        {t('continueWithGithub')}
+        {t("continueWithGithub")}
       </Button>
 
       <div className="relative">
@@ -96,10 +97,10 @@ export function OAuthButtons({ onSuccess, onError }: OAuthButtonsProps) {
         </div>
         <div className="relative flex justify-center text-xs uppercase">
           <span className="bg-background px-2 text-muted-foreground">
-            {t('orContinueWithEmail')}
+            {t("orContinueWithEmail")}
           </span>
         </div>
       </div>
     </div>
-  )
+  );
 }
