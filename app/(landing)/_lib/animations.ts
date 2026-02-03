@@ -167,10 +167,7 @@ export const rotateScaleIn: Variants = {
   animate: {
     scale: 1,
     rotate: 0,
-    transition: {
-      duration: timings.slow,
-      ease: easings.spring,
-    },
+    transition: easings.spring,
   },
 };
 
