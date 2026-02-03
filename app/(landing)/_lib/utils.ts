@@ -65,13 +65,13 @@ export function animateNumber(
 /**
  * Debounce function
  */
-export function debounce<T extends (...args: unknown[]) => unknown>(
-  func: T,
+export function debounce<TArgs extends unknown[], TReturn>(
+  func: (...args: TArgs) => TReturn,
   wait: number
-): (...args: Parameters<T>) => void {
+): (...args: TArgs) => void {
   let timeout: ReturnType<typeof setTimeout> | null = null;
 
-  return function executedFunction(...args: Parameters<T>) {
+  return function executedFunction(...args: TArgs) {
     const later = () => {
       timeout = null;
       func(...args);
@@ -87,13 +87,13 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
 /**
  * Throttle function
  */
-export function throttle<T extends (...args: unknown[]) => unknown>(
-  func: T,
+export function throttle<TArgs extends unknown[], TReturn>(
+  func: (...args: TArgs) => TReturn,
   limit: number
-): (...args: Parameters<T>) => void {
+): (...args: TArgs) => void {
   let inThrottle: boolean;
 
-  return function executedFunction(...args: Parameters<T>) {
+  return function executedFunction(...args: TArgs) {
     if (!inThrottle) {
       func(...args);
       inThrottle = true;

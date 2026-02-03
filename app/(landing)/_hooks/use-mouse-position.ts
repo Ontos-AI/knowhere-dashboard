@@ -10,9 +10,11 @@ export function useMousePosition() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    const updatePosition = throttle((e: MouseEvent) => {
+    const handleMouseMove = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
-    }, 50);
+    };
+
+    const updatePosition = throttle(handleMouseMove, 50);
 
     window.addEventListener("mousemove", updatePosition);
 
