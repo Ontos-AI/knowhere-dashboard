@@ -1,35 +1,29 @@
-"use client";
+import { CodeDemo } from "@app/(landing)/_components/code-demo";
+import { CommunitySection } from "@app/(landing)/_components/community-section";
+import { CTASection } from "@app/(landing)/_components/cta-section";
+import { DataTransformationViz } from "@app/(landing)/_components/data-transformation-viz";
+import { EnhancedCapabilities } from "@app/(landing)/_components/enhanced-capabilities";
+import { Footer } from "@app/(landing)/_components/footer";
+import { HeroSection } from "@app/(landing)/_components/hero/hero-section";
+import { Navbar } from "@app/(landing)/_components/navbar";
+import { ProductComparison } from "@app/(landing)/_components/product-comparison";
+import { ScrollProgressBar } from "@app/(landing)/_components/scroll-progress-bar";
+import { TrustIndicators } from "@app/(landing)/_components/trust-indicators";
 
-import { LandingPage } from "@app/(landing)/_components/landing-page";
-import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
-import { useEffect } from "react";
-import { useAuth } from "@/hooks/use-auth";
-
-export default function Home() {
-  const { isAuthenticated, isLoading } = useAuth();
-  const router = useRouter();
-  const t = useTranslations("Common");
-
-  useEffect(() => {
-    if (!isLoading && isAuthenticated) {
-      router.push("/usage");
-    }
-  }, [isAuthenticated, isLoading, router]);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4" />
-          <p>{t("loading")}</p>
-        </div>
-      </div>
-    );
-  }
-
-  // 如果已登录，useEffect 会处理跳转
-  if (isAuthenticated) return null;
-
-  return <LandingPage />;
+export default function LandingPage() {
+  return (
+    <div className="flex flex-col gap-0">
+      <ScrollProgressBar />
+      <Navbar />
+      <HeroSection />
+      <TrustIndicators />
+      <ProductComparison />
+      <EnhancedCapabilities />
+      <DataTransformationViz />
+      <CodeDemo />
+      <CTASection />
+      <CommunitySection />
+      <Footer />
+    </div>
+  );
 }

@@ -40,7 +40,7 @@ export function Sidebar({ user, open, onOpenChange }: SidebarProps) {
     <div className="flex h-full flex-col">
       {/* Logo */}
       <div className="flex h-16 items-center justify-between px-6">
-        <Link href="/usage" className="flex items-center space-x-2">
+        <Link href="/" className="flex items-center space-x-2">
           <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
             <span className="text-primary-foreground font-bold text-sm">K</span>
           </div>

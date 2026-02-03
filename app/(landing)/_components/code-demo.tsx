@@ -52,7 +52,7 @@ export function CodeDemo() {
       {({ className, style, tokens, getLineProps, getTokenProps }) => (
         <pre
           style={{ ...style, background: "transparent" }}
-          className={`${className} font-mono text-xs md:text-sm`}
+          className={`${className} font-mono text-xs md:text-sm leading-relaxed overflow-x-auto`}
         >
           {tokens.map((line, i) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: prism-react-renderer tokens don't have unique IDs
@@ -72,7 +72,7 @@ export function CodeDemo() {
     <section className="py-16 md:py-24">
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
-          <div>
+          <div className="min-w-0">
             <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-4 md:mb-6">
               Integrate in minutes, not days
             </h2>
@@ -118,26 +118,26 @@ export function CodeDemo() {
             </div>
           </div>
 
-          <div className="relative mt-8 lg:mt-0">
-            <div className="absolute inset-0 bg-gradient-to-r from-primary to-purple-600 rounded-2xl blur-xl opacity-20" />
-            <div className="relative bg-card border rounded-xl overflow-hidden shadow-2xl bg-[#1e1e1e]">
+          <div className="relative mt-8 lg:mt-0 min-w-0 max-w-full">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary to-purple-600 rounded-xl md:rounded-2xl blur-lg md:blur-xl opacity-10 md:opacity-20" />
+            <div className="relative bg-card border rounded-lg md:rounded-xl overflow-hidden shadow-xl md:shadow-2xl bg-[#1e1e1e] max-w-full">
               <Tabs defaultValue="python" className="w-full">
-                <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5">
-                  <TabsList className="bg-white/5 border-0">
+                <div className="flex items-center justify-between px-3 md:px-4 py-2 md:py-2.5 border-b border-white/10 bg-white/5">
+                  <TabsList className="bg-white/5 border-0 h-auto">
                     <TabsTrigger
                       value="python"
-                      className="data-[state=active]:text-zinc-950 text-gray-400 hover:text-gray-200 transition-colors"
+                      className="text-gray-400 hover:text-gray-200 transition-colors py-2.5 px-4 min-h-[44px] touch-manipulation"
                     >
                       Python
                     </TabsTrigger>
                     <TabsTrigger
                       value="curl"
-                      className="data-[state=active]:text-zinc-950 text-gray-400 hover:text-gray-200 transition-colors"
+                      className="text-gray-400 hover:text-gray-200 transition-colors py-2.5 px-4 min-h-[44px] touch-manipulation"
                     >
                       cURL
                     </TabsTrigger>
                   </TabsList>
-                  <div className="flex gap-2">
+                  <div className="hidden md:flex gap-2">
                     <div className="h-3 w-3 rounded-full bg-red-500/20" />
                     <div className="h-3 w-3 rounded-full bg-yellow-500/20" />
                     <div className="h-3 w-3 rounded-full bg-green-500/20" />
@@ -149,13 +149,15 @@ export function CodeDemo() {
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="absolute top-4 right-4 h-8 w-8 text-gray-400 hover:text-white hover:bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute top-3 right-3 md:top-4 md:right-4 h-9 w-9 md:h-8 md:w-8 text-gray-400 hover:text-white hover:bg-white/10 md:opacity-0 md:group-hover:opacity-100 transition-all touch-manipulation active:scale-95 z-10"
                       onClick={() => copyToClipboard(pythonCode)}
                     >
                       {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                     </Button>
-                    <ScrollArea className="h-[300px] md:h-[400px] w-full p-4">
-                      <CodeBlock code={pythonCode} language="python" />
+                    <ScrollArea className="h-[280px] md:h-[400px] w-full">
+                      <div className="p-3 md:p-4">
+                        <CodeBlock code={pythonCode} language="python" />
+                      </div>
                     </ScrollArea>
                   </div>
                 </TabsContent>
@@ -165,13 +167,15 @@ export function CodeDemo() {
                     <Button
                       size="icon"
                       variant="ghost"
-                      className="absolute top-4 right-4 h-8 w-8 text-gray-400 hover:text-white hover:bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute top-3 right-3 md:top-4 md:right-4 h-9 w-9 md:h-8 md:w-8 text-gray-400 hover:text-white hover:bg-white/10 md:opacity-0 md:group-hover:opacity-100 transition-all touch-manipulation active:scale-95 z-10"
                       onClick={() => copyToClipboard(curlCode)}
                     >
                       {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                     </Button>
-                    <ScrollArea className="h-[300px] md:h-[400px] w-full p-4">
-                      <CodeBlock code={curlCode} language="bash" />
+                    <ScrollArea className="h-[280px] md:h-[400px] w-full">
+                      <div className="p-3 md:p-4">
+                        <CodeBlock code={curlCode} language="bash" />
+                      </div>
                     </ScrollArea>
                   </div>
                 </TabsContent>

@@ -12,8 +12,9 @@ import { getMessages } from "next-intl/server";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Knowhere - AI 知识库管理系统",
-  description: "基于 AI 的知识库管理和智能问答系统",
+  title: "Knowhere API - Transform Documents into Structured Data",
+  description:
+    "The most accurate document parsing API for AI agents. Extract tables, formulas, and structured data with unmatched precision.",
 };
 
 import { cookies } from "next/headers";
@@ -29,14 +30,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const messages = await getMessages();
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning className="dark">
       <body className={inter.className}>
         <NextIntlClientProvider messages={messages} locale={locale}>
           <ConfigProvider config={appConfig}>
             <ThemeProvider
               attribute="class"
-              defaultTheme="system"
-              enableSystem
+              defaultTheme="dark"
+              enableSystem={false}
               disableTransitionOnChange
             >
               <PostHogProvider>
