@@ -1,5 +1,6 @@
 import { CodeDemo } from "@app/(landing)/_components/code-demo";
 import { CommunitySection } from "@app/(landing)/_components/community-section";
+import { ComparisonTabs } from "@app/(landing)/_components/comparison-tabs";
 import { ComparisonCardStack } from "@app/(landing)/_components/comparison-variants/comparison-card-stack";
 import { CTASection } from "@app/(landing)/_components/cta-section";
 import { DataTransformationViz } from "@app/(landing)/_components/data-transformation-viz";
@@ -23,6 +24,7 @@ export default function LandingPage() {
       <HeroSection />
       <TrustIndicators />
       <ProductComparison />
+      <ComparisonTabs />
       <ComparisonCardStack enableAutoPlay={true} />
       <ComparisonCoverflow enableAutoPlay={true} />
       <ComparisonGrid enableAutoPlay={true} />
