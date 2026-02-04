@@ -1,3 +1,4 @@
+
 export default function Loading() {
   return (
     <div className="flex h-screen w-full items-center justify-center bg-background">
@@ -6,5 +7,5 @@ export default function Loading() {
         <p className="text-sm text-muted-foreground animate-pulse">Loading...</p>
       </div>
     </div>
-  );
+  )
 }

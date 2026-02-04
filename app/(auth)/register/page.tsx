@@ -1,115 +1,183 @@
-"use client";
+"use client"
 
-import { Button } from "@components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
-import { Input } from "@components/ui/input";
-import { Label } from "@components/ui/label";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { OAuthButtons } from "@/app/(auth)/_components/oauth-buttons";
-import { useToast } from "@/hooks/use-toast";
-import { authClient } from "@/lib/better-auth-client";
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useAuth } from '@/hooks/useAuth'
+import { useToast } from '@/hooks/useToast'
+import { OAuthButtons } from '@/components/auth/OAuthButtons'
+import { getPasswordStrength } from '@/lib/format'
+import { useTranslations } from 'next-intl'
+import { useMemo } from 'react'
 
-// Register page uses the same passwordless flow as login:
-// Magic Link automatically creates the user if they do not already exist.
 export default function RegisterPage() {
-  const [isLoading, setIsLoading] = useState(false);
-  const toast = useToast();
-  const router = useRouter();
-  const t = useTranslations("Auth");
+  const [isLoading, setIsLoading] = useState(false)
+  const [password, setPassword] = useState('')
+  const { register: registerUser } = useAuth()
+  const toast = useToast()
+  const router = useRouter()
+  const t = useTranslations('Auth')
 
-  // Magic Link only requires an email address — no password needed
-  const registerSchema = useMemo(
-    () =>
-      z.object({
-        email: z.string().email(t("emailInvalid")),
-      }),
-    [t]
-  );
+  const registerSchema = useMemo(() => z.object({
+    username: z.string().min(2, t('usernameMinLength')),
+    email: z.string().email(t('emailInvalid')),
+    password: z.string().min(8, t('passwordMinLength')),
+    confirmPassword: z.string(),
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: t('passwordMismatch'),
+    path: ['confirmPassword'],
+  }), [t])
 
-  type RegisterForm = z.infer<typeof registerSchema>;
+  type RegisterForm = z.infer<typeof registerSchema>
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
-  });
+  })
+
+  const watchedPassword = watch('password', '')
+  const passwordStrength = getPasswordStrength(watchedPassword)
 
   const onSubmit = async (data: RegisterForm) => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      // Trigger Magic Link — creates account automatically if email is new
-      const { error } = await authClient.signIn.magicLink({
-        email: data.email,
-        callbackURL: "/callback/magic-link",
-        errorCallbackURL: "/register?error=magic",
-        newUserCallbackURL: "/callback/magic-link",
-      });
-
-      if (error) {
-        throw new Error(error.message || t("magicLinkFailed"));
-      }
-
-      toast.success(t("magicLinkSent"));
+      await registerUser(data.email, data.password, data.username)
+      toast.success(t('registerSuccess'))
+      router.push('/usage')
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : t("registerFailed");
-      toast.error(t("registerFailed"), errorMessage);
+      const errorMessage = error instanceof Error ? error.message : t('registerFailed')
+      toast.error(t('registerFailed'), errorMessage)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleOAuthSuccess = () => {
-    router.push("/usage");
-  };
+    router.push('/usage')
+  }
 
   const handleOAuthError = (error: string) => {
-    toast.error(t("oauthFailed"), error);
-  };
+    toast.error(t('oauthFailed'), error)
+  }
 
   return (
     <Card className="w-full">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl text-center">{t("register")}</CardTitle>
-        <CardDescription className="text-center">{t("registerDesc")}</CardDescription>
+        <CardTitle className="text-2xl text-center">{t('register')}</CardTitle>
+        <CardDescription className="text-center">
+          {t('registerDesc')}
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* OAuth registration */}
+        {/* OAuth登录 */}
         <OAuthButtons onSuccess={handleOAuthSuccess} onError={handleOAuthError} />
 
-        {/* Magic Link registration form — email only */}
+        {/* 注册表单 */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">{t("email")}</Label>
+            <Label htmlFor="username">{t('username')}</Label>
+            <Input
+              id="username"
+              type="text"
+              placeholder={t('usernamePlaceholder')}
+              {...register('username')}
+              disabled={isLoading}
+            />
+            {errors.username && (
+              <p className="text-sm text-destructive">{errors.username.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="email">{t('email')}</Label>
             <Input
               id="email"
               type="email"
-              placeholder={t("emailPlaceholder")}
-              {...register("email")}
+              placeholder={t('emailPlaceholder')}
+              {...register('email')}
               disabled={isLoading}
             />
-            {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="text-sm text-destructive">{errors.email.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="password">{t('password')}</Label>
+            <Input
+              id="password"
+              type="password"
+              placeholder={t('passwordPlaceholder')}
+              {...register('password')}
+              disabled={isLoading}
+              onChange={(e) => {
+                setPassword(e.target.value)
+                register('password').onChange(e)
+              }}
+            />
+            {password && (
+              <div className="space-y-1">
+                <div className="flex items-center space-x-2">
+                  <div className="flex-1 bg-muted rounded-full h-2">
+                    <div
+                      className={`h-2 rounded-full transition-all ${
+                        passwordStrength.score <= 2
+                          ? 'bg-red-500'
+                          : passwordStrength.score <= 4
+                          ? 'bg-yellow-500'
+                          : 'bg-green-500'
+                      }`}
+                      style={{ width: `${(passwordStrength.score / 6) * 100}%` }}
+                    />
+                  </div>
+                  <span className={`text-xs ${passwordStrength.color}`}>
+                    {passwordStrength.label}
+                  </span>
+                </div>
+              </div>
+            )}
+            {errors.password && (
+              <p className="text-sm text-destructive">{errors.password.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              placeholder={t('confirmPasswordPlaceholder')}
+              {...register('confirmPassword')}
+              disabled={isLoading}
+            />
+            {errors.confirmPassword && (
+              <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>
+            )}
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? t("sending") : t("sendMagicLink")}
+            {isLoading ? t('registering') : t('register')}
           </Button>
         </form>
 
         <div className="text-center text-sm">
-          <span className="text-muted-foreground">{t("haveAccount")}</span>{" "}
+          <span className="text-muted-foreground">{t('haveAccount')}</span>{' '}
           <Link href="/login" className="text-primary hover:underline">
-            {t("loginNow")}
+            {t('loginNow')}
           </Link>
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

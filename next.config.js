@@ -12,19 +12,16 @@ const nextConfig = {
         source: '/api/auth/:path*',
         destination: '/api/auth/:path*',
       },
-      // 保留 oRPC 路由在本应用内处理
-      {
-        source: '/api/orpc/:path*',
-        destination: '/api/orpc/:path*',
-      },
       // 其余 /api/* 代理到外部后端 API
       {
         source: '/api/:path*',
-        destination: process.env.NEXT_PUBLIC_API_URL
-          ? `${process.env.NEXT_PUBLIC_API_URL}/:path*`
-          : 'http://218.17.187.47:5005/api/:path*',
+        destination: process.env.NEXT_PUBLIC_API_URL ? `${process.env.NEXT_PUBLIC_API_URL}/:path*` : 'http://218.17.187.47:5005/api/:path*',
       },
     ]
+  },
+  env: {
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://218.17.187.47:5005/api',
+    NEXT_PUBLIC_AUTH_BASE_URL: process.env.NEXT_PUBLIC_AUTH_BASE_URL || '/api/auth',
   },
 }
 
