@@ -74,7 +74,7 @@ export function ProductComparison() {
         });
 
   return (
-    <section className="py-16 md:py-24 bg-muted/20">
+    <section id="comparison" className="py-16 md:py-24 bg-muted/20">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <motion.div

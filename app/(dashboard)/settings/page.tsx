@@ -20,6 +20,7 @@ import { Switch } from "@components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTimezone } from "@hooks/use-timezone";
+import { setCookie } from "@utils/cookies";
 import { formatDate } from "@utils/format";
 import {
   AlertCircle,
@@ -446,8 +447,8 @@ export default function SettingsPage() {
                 <Label>{t("language")}</Label>
                 <Select
                   defaultValue={locale}
-                  onValueChange={(val) => {
-                    document.cookie = `NEXT_LOCALE=${val}; path=/; max-age=31536000; SameSite=Lax`;
+                  onValueChange={async (val) => {
+                    await setCookie("NEXT_LOCALE", val);
                     router.refresh();
                   }}
                 >

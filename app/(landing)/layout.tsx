@@ -1,3 +1,5 @@
+import { LenisProvider } from "@providers/lenis-provider";
+
 export default function LandingPageLayout({ children }: { children: React.ReactNode }) {
   return (
     <div
@@ -44,7 +46,7 @@ export default function LandingPageLayout({ children }: { children: React.ReactN
         } as React.CSSProperties
       }
     >
-      {children}
+      <LenisProvider>{children}</LenisProvider>
     </div>
   );
 }

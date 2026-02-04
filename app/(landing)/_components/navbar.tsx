@@ -81,17 +81,47 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {NAV_LINKS.map((link) => (
-              <button
-                type="button"
-                key={link.href}
-                onClick={() => scrollToSection(link.href)}
-                className="relative text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group"
-              >
-                {link.label}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent group-hover:w-full transition-all duration-300" />
-              </button>
-            ))}
+            {NAV_LINKS.map((link) => {
+              const isExternal = link.href.startsWith("https://");
+              const isAnchor = link.href.startsWith("#");
+
+              if (isExternal) {
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="relative text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group"
+                  >
+                    {link.label}
+                  </Link>
+                );
+              }
+
+              if (isAnchor) {
+                return (
+                  <button
+                    type="button"
+                    key={link.href}
+                    onClick={() => scrollToSection(link.href)}
+                    className="relative text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group"
+                  >
+                    {link.label}
+                  </button>
+                );
+              }
+
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="relative text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group"
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Desktop CTA */}
@@ -160,18 +190,64 @@ export function Navbar() {
                   <SheetDescription>Transform documents into structured data</SheetDescription>
                 </SheetHeader>
                 <div className="flex flex-col space-y-6 mt-8">
-                  {NAV_LINKS.map((link, index) => (
-                    <motion.button
-                      key={link.href}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      onClick={() => scrollToSection(link.href)}
-                      className="text-lg font-medium hover:text-primary transition-colors text-left"
-                    >
-                      {link.label}
-                    </motion.button>
-                  ))}
+                  {NAV_LINKS.map((link, index) => {
+                    const isExternal = link.href.startsWith("https://");
+                    const isAnchor = link.href.startsWith("#");
+
+                    if (isExternal) {
+                      return (
+                        <motion.div
+                          key={link.href}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                        >
+                          <Link
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-lg font-medium hover:text-primary transition-colors block"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            {link.label}
+                          </Link>
+                        </motion.div>
+                      );
+                    }
+
+                    if (isAnchor) {
+                      return (
+                        <motion.button
+                          type="button"
+                          key={link.href}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          onClick={() => scrollToSection(link.href)}
+                          className="text-lg font-medium hover:text-primary transition-colors text-left"
+                        >
+                          {link.label}
+                        </motion.button>
+                      );
+                    }
+
+                    return (
+                      <motion.div
+                        key={link.href}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                      >
+                        <Link
+                          href={link.href}
+                          className="text-lg font-medium hover:text-primary transition-colors block"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          {link.label}
+                        </Link>
+                      </motion.div>
+                    );
+                  })}
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}

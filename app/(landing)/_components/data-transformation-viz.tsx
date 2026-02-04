@@ -235,7 +235,7 @@ export function DataTransformationViz() {
             { label: "Accuracy Rate", value: "99.8%" },
             { label: "File Formats", value: "50+" },
             { label: "Daily Docs", value: "100K+" },
-          ].map((stat, index) => (
+          ].map((stat, _index) => (
             <motion.div
               key={stat.label}
               whileHover={{ scale: 1.05 }}

@@ -16,6 +16,7 @@ import { useIsMobile } from "@hooks/use-mobile";
 import { cn } from "@lib/utils";
 import { ViewVerticalIcon } from "@radix-ui/react-icons";
 import { Slot } from "@radix-ui/react-slot";
+import { setCookie } from "@utils/cookies";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 
@@ -84,7 +85,9 @@ const SidebarProvider = React.forwardRef<
         }
 
         // This sets the cookie to keep the sidebar state.
-        document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
+        setCookie(SIDEBAR_COOKIE_NAME, String(openState), {
+          maxAge: SIDEBAR_COOKIE_MAX_AGE,
+        });
       },
       [setOpenProp, open]
     );

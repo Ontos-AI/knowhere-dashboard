@@ -105,7 +105,7 @@ async function handleRequest(request: Request) {
       // If body has a "json" key, it's an RPC request
       // Otherwise, it's a REST API request (e.g., from Scalar UI)
       useRPCHandler = body && typeof body === "object" && "json" in body;
-    } catch (e) {
+    } catch (_e) {
       // If we can't parse JSON, let handlers decide
       useRPCHandler = false;
     }

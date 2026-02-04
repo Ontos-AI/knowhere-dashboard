@@ -56,10 +56,9 @@ export const SOCIAL_LINKS = {
 
 // Navigation links
 export const NAV_LINKS = [
-  { label: "Features", href: "#features" },
   { label: "Comparison", href: "#comparison" },
-  { label: "Docs", href: "#docs" },
   { label: "Pricing", href: "#pricing" },
+  { label: "Docs", href: "https://docs.knowhereto.ai/" },
 ] as const;
 
 // Trust metrics (to be updated with real data)

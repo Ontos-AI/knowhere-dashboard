@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
+import { setCookie } from "@utils/cookies";
 import { Languages } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
@@ -20,9 +21,9 @@ export function LanguageSwitcher() {
     zh: "中文",
   };
 
-  const switchLocale = (newLocale: string) => {
-    // Set cookie
-    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+  const switchLocale = async (newLocale: string) => {
+    // Set cookie using Cookie Store API with fallback
+    await setCookie("NEXT_LOCALE", newLocale);
     // Refresh page
     router.refresh();
   };
