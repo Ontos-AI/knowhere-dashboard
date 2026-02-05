@@ -6,19 +6,13 @@ RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001 -G nodejs
 WORKDIR /app
 
 # 复制 package.json 和 lock 文件
-COPY --chown=nextjs:nodejs package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml ./
 
-# 安装 pnpm
-RUN npm install -g pnpm
-
-# 切换到非 root 用户
-USER nextjs
-
-# 安装依赖
-RUN pnpm install --frozen-lockfile
+# 安装 pnpm 和依赖
+RUN npm install -g pnpm && pnpm i --frozen-lockfile
 
 # 复制源代码
-COPY --chown=nextjs:nodejs . .
+COPY  . .
 
 # 构建应用
 RUN pnpm build
