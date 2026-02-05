@@ -1,4 +1,4 @@
-import { signedRequest } from "@server/external-api/request";
+import { jwtRequest } from "@server/external-api/request";
 
 // ============================================
 // 类型定义
@@ -32,7 +32,7 @@ export type ListAPIKeysResponse = {
 // ============================================
 
 export async function listApiKeys({ userId }: { userId: string }): Promise<ListAPIKeysResponse> {
-  return signedRequest({ method: "GET", path: "/v1/auth/list", userId });
+  return jwtRequest({ method: "GET", path: "/v1/auth/list", userId });
 }
 
 export async function createApiKey({
@@ -42,11 +42,11 @@ export async function createApiKey({
   userId: string;
   data: CreateAPIKeyRequest;
 }): Promise<APIKey> {
-  return signedRequest({ method: "POST", path: "/v1/auth/create", userId, body: data });
+  return jwtRequest({ method: "POST", path: "/v1/auth/create", userId, body: data });
 }
 
 export async function deleteApiKey({ userId, id }: { userId: string; id: string }): Promise<void> {
-  return signedRequest({
+  return jwtRequest({
     method: "POST",
     path: "/v1/auth/revoke",
     userId,
@@ -67,7 +67,7 @@ export async function updateApiKey({
   id: string;
   data: { is_active?: boolean; name?: string };
 }): Promise<APIKey> {
-  return signedRequest({
+  return jwtRequest({
     method: "POST",
     path: "/v1/auth/update",
     userId,
@@ -82,5 +82,5 @@ export async function toggleApiKey({
   userId: string;
   id: string;
 }): Promise<APIKey> {
-  return signedRequest({ method: "PUT", path: `/v1/auth/${id}/toggle`, userId });
+  return jwtRequest({ method: "PUT", path: `/v1/auth/${id}/toggle`, userId });
 }

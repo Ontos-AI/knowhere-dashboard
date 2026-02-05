@@ -2,7 +2,7 @@ import "./polyfill";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { magicLink } from "better-auth/plugins";
+import { jwt, magicLink } from "better-auth/plugins";
 import { Resend } from "resend";
 import { ProxyAgent, setGlobalDispatcher } from "undici";
 import { db } from "@/lib/db";
@@ -80,6 +80,14 @@ export const auth = betterAuth({
       : {}),
   },
   plugins: [
+    jwt({
+      jwt: {
+        expirationTime: "15m", // JWT expires in 15 minutes
+        definePayload: ({ user }) => ({
+          id: user.id, // Only include userId to maintain single source of truth
+        }),
+      },
+    }),
     magicLink({
       sendMagicLink: async ({ email, url }) => {
         try {

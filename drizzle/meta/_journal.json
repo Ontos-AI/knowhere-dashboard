@@ -15,6 +15,13 @@
       "when": 1769747376322,
       "tag": "0001_sweet_fabian_cortez",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1770279625137,
+      "tag": "0002_old_warbird",
+      "breakpoints": true
     }
   ]
 }

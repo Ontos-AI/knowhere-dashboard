@@ -1,4 +1,4 @@
-import { signedRequest } from "@server/external-api/request";
+import { jwtRequest } from "@server/external-api/request";
 
 // ============================================
 // 类型定义
@@ -100,7 +100,7 @@ export async function createJob({
   data: JobCreate;
 }): Promise<JobResponse> {
   const { file, ...jobData } = data;
-  return signedRequest({ method: "POST", path: "/v1/jobs", userId, body: jobData });
+  return jwtRequest({ method: "POST", path: "/v1/jobs", userId, body: jobData });
 }
 
 export async function confirmUpload({
@@ -110,7 +110,7 @@ export async function confirmUpload({
   userId: string;
   jobId: string;
 }): Promise<JobResponse> {
-  return signedRequest({ method: "POST", path: `/v1/jobs/${jobId}/confirm-upload`, userId });
+  return jwtRequest({ method: "POST", path: `/v1/jobs/${jobId}/confirm-upload`, userId });
 }
 
 export async function getJobStatus({
@@ -120,7 +120,7 @@ export async function getJobStatus({
   userId: string;
   jobId: string;
 }): Promise<JobStatus> {
-  return signedRequest({ method: "GET", path: `/v1/jobs/${jobId}`, userId });
+  return jwtRequest({ method: "GET", path: `/v1/jobs/${jobId}`, userId });
 }
 
 export async function listJobs({
@@ -147,5 +147,5 @@ export async function listJobs({
   if (params?.end_time) queryParams.append("end_time", params.end_time);
 
   const query = queryParams.toString();
-  return signedRequest({ method: "GET", path: `/v1/jobs/page${query ? `?${query}` : ""}`, userId });
+  return jwtRequest({ method: "GET", path: `/v1/jobs/page${query ? `?${query}` : ""}`, userId });
 }

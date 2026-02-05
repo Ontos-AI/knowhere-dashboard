@@ -1,5 +1,5 @@
 import type { CheckoutSessionResponse } from "@server/external-api/request";
-import { signedRequest } from "@server/external-api/request";
+import { jwtRequest } from "@server/external-api/request";
 
 // ============================================
 // 类型定义
@@ -22,7 +22,7 @@ export type CreditPackage = {
 // ============================================
 
 export async function getCreditsBalance({ userId }: { userId: string }): Promise<CreditsBalance> {
-  return signedRequest({ method: "GET", path: "/v1/billing/credits", userId });
+  return jwtRequest({ method: "GET", path: "/v1/billing/credits", userId });
 }
 
 export async function buyCredits({
@@ -32,7 +32,7 @@ export async function buyCredits({
   userId: string;
   amount: number;
 }): Promise<CheckoutSessionResponse> {
-  return signedRequest({
+  return jwtRequest({
     method: "POST",
     path: "/v1/billing/buy-credits",
     userId,
@@ -41,7 +41,7 @@ export async function buyCredits({
 }
 
 export async function getCreditPackages({ userId }: { userId: string }): Promise<CreditPackage[]> {
-  return signedRequest({ method: "GET", path: "/v1/billing/credit-packages", userId });
+  return jwtRequest({ method: "GET", path: "/v1/billing/credit-packages", userId });
 }
 
 export async function buyCreditsPackage({
@@ -53,7 +53,7 @@ export async function buyCreditsPackage({
   priceId: string;
   quantity: number;
 }): Promise<CheckoutSessionResponse> {
-  return signedRequest({
+  return jwtRequest({
     method: "POST",
     path: "/v1/billing/buy-credits-package",
     userId,

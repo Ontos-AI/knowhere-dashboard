@@ -1,4 +1,4 @@
-import { signedRequest } from "@server/external-api/request";
+import { jwtRequest } from "@server/external-api/request";
 
 // ============================================
 // 类型定义
@@ -32,11 +32,11 @@ export async function getUsageStats({
   userId: string;
   period?: string;
 }): Promise<UsageStats> {
-  return signedRequest({ method: "GET", path: `/v1/billing/usage?period=${period}`, userId });
+  return jwtRequest({ method: "GET", path: `/v1/billing/usage?period=${period}`, userId });
 }
 
 export async function getParseUsage({ userId }: { userId: string }): Promise<ParseUsageResponse> {
-  return signedRequest({ method: "GET", path: "/v1/billing/parse-usage", userId });
+  return jwtRequest({ method: "GET", path: "/v1/billing/parse-usage", userId });
 }
 
 export async function getTransactionHistory({
@@ -48,7 +48,7 @@ export async function getTransactionHistory({
   limit?: number;
   offset?: number;
 }): Promise<{ transactions: Transaction[]; total: number }> {
-  return signedRequest({
+  return jwtRequest({
     method: "GET",
     path: `/v1/user/credits/transactions?limit=${limit}&offset=${offset}`,
     userId,

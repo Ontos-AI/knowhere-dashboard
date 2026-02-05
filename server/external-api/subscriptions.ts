@@ -1,5 +1,5 @@
 import type { CheckoutSessionResponse } from "@server/external-api/request";
-import { publicRequest, signedRequest } from "@server/external-api/request";
+import { jwtRequest, publicRequest } from "@server/external-api/request";
 
 // ============================================
 // 类型定义
@@ -67,7 +67,7 @@ export async function getCurrentSubscription({
 }: {
   userId: string;
 }): Promise<Subscription> {
-  return signedRequest({ method: "GET", path: "/v1/billing/subscription", userId });
+  return jwtRequest({ method: "GET", path: "/v1/billing/subscription", userId });
 }
 
 export async function subscribePlan({
@@ -77,7 +77,7 @@ export async function subscribePlan({
   userId: string;
   planId: string;
 }): Promise<CheckoutSessionResponse> {
-  return signedRequest({
+  return jwtRequest({
     method: "POST",
     path: "/v1/billing/subscribe",
     userId,
@@ -86,5 +86,5 @@ export async function subscribePlan({
 }
 
 export async function cancelSubscription({ userId }: { userId: string }): Promise<void> {
-  return signedRequest({ method: "POST", path: "/v1/billing/cancel-subscription", userId });
+  return jwtRequest({ method: "POST", path: "/v1/billing/cancel-subscription", userId });
 }

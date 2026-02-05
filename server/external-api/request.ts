@@ -1,6 +1,5 @@
-import crypto from "node:crypto";
-
 import { env } from "@lib/env";
+import { auth } from "@/lib/auth";
 
 // ============================================
 // 共享类型
@@ -28,19 +27,10 @@ export class ApiError extends Error {
 }
 
 // ============================================
-// 签名逻辑（内部不可见）
-// ============================================
-
-function signRequest(userId: string, timestamp: number): string {
-  const payload = `${userId}:${timestamp}`;
-  return crypto.createHmac("sha256", env.INTERNAL_API_SECRET).update(payload).digest("hex");
-}
-
-// ============================================
 // 核心请求函数
 // ============================================
 
-export async function signedRequest<T = unknown>({
+export async function jwtRequest<T = unknown>({
   method,
   path,
   userId,
@@ -52,14 +42,18 @@ export async function signedRequest<T = unknown>({
   body?: unknown;
 }): Promise<T> {
   const url = `${env.NEXT_PUBLIC_API_URL}${path}`;
-  const timestamp = Date.now();
-  const signature = signRequest(userId, timestamp);
+
+  // Generate JWT token using Better Auth
+  // Call the internal signJWT endpoint
+  const { token } = await auth.api.signJWT({
+    body: {
+      payload: { id: userId },
+    },
+  });
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    "X-User-ID": userId,
-    "X-Timestamp": String(timestamp),
-    "X-Signature": signature,
+    Authorization: `Bearer ${token}`,
   };
 
   const response = await fetch(url, {

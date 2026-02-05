@@ -81,6 +81,16 @@ export const emailVerificationToken = pgTable("emailVerificationToken", {
   createdAt: timestamp("createdAt", { withTimezone: true }).notNull().defaultNow(),
 });
 
+// JWKS table - stores JSON Web Key Sets for JWT authentication
+export const jwks = pgTable("jwks", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  publicKey: text("publicKey").notNull(),
+  privateKey: text("privateKey").notNull(),
+  createdAt: timestamp("createdAt", { withTimezone: true }).notNull().defaultNow(),
+});
+
 // Relations for Better Auth joins optimization
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
