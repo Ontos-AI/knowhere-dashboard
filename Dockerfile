@@ -6,6 +6,12 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml* ./
 RUN npm install -g pnpm && pnpm i --frozen-lockfile
 
+# 创建生产依赖阶段
+FROM base AS prod-deps
+WORKDIR /app
+COPY package.json pnpm-lock.yaml* ./
+RUN npm install -g pnpm && pnpm i --prod --frozen-lockfile
+
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
@@ -14,17 +20,11 @@ COPY . .
 
 # 验证 .env.production 文件存在
 RUN echo "=== Checking for .env.production file ===" && \
-    ls -la .env.production || echo "WARNING: .env.production not found in listing" && \
     if [ -f .env.production ]; then \
       echo "✅ .env.production file exists"; \
       echo "File size: $(wc -l < .env.production) lines"; \
-      echo "RESEND_API_KEY in file: $(grep -q RESEND_API_KEY .env.production && echo '✅ Found' || echo '❌ Not found')"; \
-      echo "First few lines:"; \
-      head -5 .env.production; \
     else \
       echo "❌ ERROR: .env.production file not found!"; \
-      echo "Current directory contents:"; \
-      ls -la; \
       exit 1; \
     fi
 
@@ -39,20 +39,21 @@ ENV PORT=3000
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
+# 从 prod-deps 阶段复制生产依赖
+COPY --from=prod-deps --chown=nextjs:nodejs /app/node_modules ./node_modules
+
+# 复制构建产物
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Copy migration files and script
-# Note: These should already be included via outputFileTracingIncludes in next.config.js
-# But we copy them explicitly as a safety measure
+# 复制迁移相关文件
 COPY --from=builder --chown=nextjs:nodejs /app/drizzle ./drizzle
 COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
+COPY --from=builder --chown=nextjs:nodejs /app/drizzle.config.ts ./drizzle.config.ts 2>/dev/null || echo "No drizzle.config.ts found"
 
 USER nextjs
 
 EXPOSE 3000
 
-# Run migration then start the app
+# 运行迁移然后启动应用
 CMD ["sh", "-c", "node scripts/migrate.js && node server.js"]
