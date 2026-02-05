@@ -102,9 +102,11 @@ async function handleRequest(request: Request) {
       const clonedRequest = request.clone();
       const body = await clonedRequest.json();
 
-      // If body has a "json" key, it's an RPC request
-      // Otherwise, it's a REST API request (e.g., from Scalar UI)
-      useRPCHandler = body && typeof body === "object" && "json" in body;
+      // If body is empty {} or has a "json" key, it's an RPC request
+      // If body has other keys without "json", it's a REST API request
+      const isEmptyObject = body && typeof body === "object" && Object.keys(body).length === 0;
+      const hasJsonKey = body && typeof body === "object" && "json" in body;
+      useRPCHandler = isEmptyObject || hasJsonKey;
     } catch (_e) {
       // If we can't parse JSON, let handlers decide
       useRPCHandler = false;
