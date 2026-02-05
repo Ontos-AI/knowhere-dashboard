@@ -24,4 +24,4 @@ ENV PORT=3000
 EXPOSE 3000
 
 # 启动命令
-CMD ["sh", "-c", "pnpm db:migrate && pnpm start"]
+CMD ["sh", "-c", "pnpm db:generate && pnpm db:migrate && pnpm start"]
