@@ -1,14 +1,14 @@
 FROM node:22-alpine
 
-# 创建非 root 用户
-RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001 -G nodejs
+# 安装必要的工具
+RUN apk update && apk add --no-cache ca-certificates wget && rm -rf /var/cache/apk/*
 
-WORKDIR /app
+# 下载 AWS RDS 根证书（全球证书）
+RUN wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt \
+    https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem
 
-FROM node:22-alpine
-
-# 安装 CA 证书（包含 AWS RDS 证书）
-RUN apk update && apk add --no-cache ca-certificates && rm -rf /var/cache/apk/*
+# RUN wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt \
+#     https://truststore.pki.rds.amazonaws.com/us-east-1/us-east-1-bundle.pem
 
 # 更新 CA 证书
 RUN update-ca-certificates
@@ -20,6 +20,9 @@ COPY package.json pnpm-lock.yaml ./
 
 # 安装 pnpm
 RUN npm install -g pnpm && pnpm i --frozen-lockfile
+
+# 安装依赖
+RUN pnpm install --frozen-lockfile
 
 # 复制源代码
 COPY . .
