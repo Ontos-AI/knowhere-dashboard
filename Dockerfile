@@ -33,17 +33,19 @@ ENV PORT=3000
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# 从 deps 阶段复制 node_modules（包含所有依赖）
-COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
+# 确保 /app 目录为空
+RUN rm -rf /app/*
 
-# 复制 package.json 用于参考
-COPY --chown=nextjs:nodejs package.json ./
+# 直接从 builder 复制 standalone 输出到当前目录
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone/. ./
 
-# 复制构建产物
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+# 复制 static 目录
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# 复制迁移相关文件
+# 从 deps 阶段复制 node_modules
+COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
+
+# 复制迁移相关文件（覆盖 standalone 中已有的版本）
 COPY --from=builder --chown=nextjs:nodejs /app/drizzle ./drizzle
 COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
 
