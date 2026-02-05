@@ -1,17 +1,13 @@
 FROM node:22-alpine
 
-# 安装必要的工具
-RUN apk update && apk add --no-cache ca-certificates wget && rm -rf /var/cache/apk/*
-
-# 下载 AWS RDS 根证书（全球证书）
-RUN wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt \
-    https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem
-
-# RUN wget -O /usr/local/share/ca-certificates/rds-ca-2019-root.crt \
-#     https://truststore.pki.rds.amazonaws.com/us-east-1/us-east-1-bundle.pem
-
-# 更新 CA 证书
-RUN update-ca-certificates
+# 安装必要的工具和 CA 证书
+RUN apk update && apk add --no-cache \
+    ca-certificates \
+    postgresql-client \
+    wget \
+    openssl \
+    && rm -rf /var/cache/apk/* \
+    && update-ca-certificates
 
 WORKDIR /app
 
@@ -20,6 +16,7 @@ COPY package.json pnpm-lock.yaml ./
 
 # 安装 pnpm
 RUN npm install -g pnpm && pnpm i --frozen-lockfile
+
 
 # 安装依赖
 RUN pnpm install --frozen-lockfile
@@ -33,6 +30,8 @@ RUN pnpm build
 # 环境变量
 ENV NODE_ENV=production
 ENV PORT=3000
+# 告诉 Node.js 使用系统 CA 证书
+ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
 
 EXPOSE 3000
 
