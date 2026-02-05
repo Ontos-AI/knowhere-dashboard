@@ -8,12 +8,12 @@ import { useAuth } from "@/hooks/use-auth";
  * Uses oRPC for type-safe API calls
  */
 export function useCredits() {
-  const { user } = useAuth();
+  const { user, isLoading: isAuthLoading } = useAuth();
 
   return useQuery({
     ...orpcQuery.credits.getBalance.queryOptions(),
-    select: (data: CreditsBalance) => data.credits_balance,
-    enabled: !!user,
+    select: (data: CreditsBalance) => data.credits_balance ?? 0,
+    enabled: !isAuthLoading && !!user,
     staleTime: 30 * 1000, // 30 seconds
   });
 }
