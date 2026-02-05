@@ -6,12 +6,6 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml* ./
 RUN npm install -g pnpm && pnpm i --frozen-lockfile
 
-# 创建生产依赖阶段
-FROM base AS prod-deps
-WORKDIR /app
-COPY package.json pnpm-lock.yaml* ./
-RUN npm install -g pnpm && pnpm i --prod --frozen-lockfile
-
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
@@ -39,8 +33,11 @@ ENV PORT=3000
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# 从 prod-deps 阶段复制生产依赖
-COPY --from=prod-deps --chown=nextjs:nodejs /app/node_modules ./node_modules
+# 从 deps 阶段复制 node_modules（包含所有依赖）
+COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
+
+# 复制 package.json 用于参考
+COPY --chown=nextjs:nodejs package.json ./
 
 # 复制构建产物
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
