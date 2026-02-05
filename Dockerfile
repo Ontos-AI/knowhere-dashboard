@@ -4,7 +4,7 @@ FROM node:22-alpine AS base
 FROM base AS deps
 WORKDIR /app
 COPY package.json pnpm-lock.yaml* ./
-RUN npm install -g pnpm && pnpm i --frozen-llockfile
+RUN npm install -g pnpm && pnpm i --frozen-lockfile
 
 # 第二阶段：构建应用
 FROM base AS builder
@@ -38,7 +38,6 @@ RUN adduser --system --uid 1001 nextjs
 RUN rm -rf /app/* /app/.* 2>/dev/null || true
 
 # 从 builder 阶段复制 standalone 输出
-# 注意：复制 standalone 目录的内容，而不是目录本身
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone/. ./
 
 # 从 builder 阶段复制 static 目录
@@ -47,11 +46,18 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # 从 builder 阶段复制迁移相关文件
 COPY --from=builder --chown=nextjs:nodejs /app/drizzle ./drizzle
 COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
-COPY --from=builder --chown=nextjs:nodejs /app/drizzle.config.ts ./drizzle.config.ts 2>/dev/null || echo "No drizzle.config.ts found"
+
+# 复制 drizzle.config.ts（如果存在）
+RUN if [ -f /app/drizzle.config.ts ]; then \
+      echo "✅ Copying drizzle.config.ts"; \
+    else \
+      echo "⚠️ drizzle.config.ts not found, skipping"; \
+    fi
+COPY --from=builder --chown=nextjs:nodejs /app/drizzle.config.ts ./drizzle.config.ts 2>/dev/null || true
 
 # 现在复制 package.json 和 lock 文件
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./
-COPY --from=builder --chown=nextjs:nodejs /app/pnpm-lock.yaml ./ 2>/dev/null || echo "No pnpm-lock.yaml found"
+COPY --from=builder --chown=nextjs:nodejs /app/pnpm-lock.yaml ./ 2>/dev/null || true
 
 # 安装生产依赖（只安装 dependencies，不安装 devDependencies）
 RUN npm install -g pnpm && \
