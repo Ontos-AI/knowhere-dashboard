@@ -14,12 +14,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, ArrowUp, Check, Zap } from "lucide-react";
 import { useState } from "react";
 import { HTMLShowcaseViewer } from "@/app/(landing)/_components/comparison-variants/html-showcase-viewer";
-import { LightboxPatternSelector } from "@/app/(landing)/_components/comparison-variants/lightbox-pattern-selector";
-import { LightboxComparison } from "@/app/(landing)/_components/comparison-variants/lightbox-variants/lightbox-comparison";
-import { LightboxFullscreen } from "@/app/(landing)/_components/comparison-variants/lightbox-variants/lightbox-fullscreen";
 import { LightboxGallery } from "@/app/(landing)/_components/comparison-variants/lightbox-variants/lightbox-gallery";
 import type { ComparisonImage } from "@/app/(landing)/_components/comparison-variants/lightbox-variants/types";
-import { useLightboxStore } from "@/store/lightbox-store";
 
 // Type definitions
 type CompetitorMetric = {
@@ -224,10 +220,9 @@ function MetricCard({ metric, index }: { metric: CompetitorMetric; index: number
 export function ComparisonTabs({ className }: ComparisonTabsProps) {
   const [activeTab, setActiveTab] = useState(competitorComparisons[0].id);
 
-  // Lightbox state - uses Zustand store for cross-component sync
+  // Lightbox state
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const { pattern: lightboxPattern, setPattern: setLightboxPattern } = useLightboxStore();
 
   const activeComparison = competitorComparisons.find((c) => c.id === activeTab);
 
@@ -275,7 +270,7 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
 
   const allImages: ComparisonImage[] = [originalImageData, ...resultImages];
 
-  // Handle image click - uses current selected pattern
+  // Handle image click
   const handleImageClick = (index: number) => {
     setSelectedImageIndex(index);
     setLightboxOpen(true);
@@ -599,31 +594,12 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
         </div>
       </div>
 
-      {/* Lightbox Components */}
-      <LightboxFullscreen
-        images={allImages}
-        initialIndex={selectedImageIndex}
-        isOpen={lightboxOpen && lightboxPattern === "fullscreen"}
-        onClose={() => setLightboxOpen(false)}
-      />
-      <LightboxComparison
-        originalImage={originalImageData}
-        resultImages={resultImages}
-        initialResultIndex={Math.max(0, selectedImageIndex - 1)}
-        isOpen={lightboxOpen && lightboxPattern === "comparison"}
-        onClose={() => setLightboxOpen(false)}
-      />
+      {/* Lightbox Gallery */}
       <LightboxGallery
         images={allImages}
         initialIndex={selectedImageIndex}
-        isOpen={lightboxOpen && lightboxPattern === "gallery"}
+        isOpen={lightboxOpen}
         onClose={() => setLightboxOpen(false)}
-      />
-
-      {/* Pattern Selector for testing */}
-      <LightboxPatternSelector
-        currentPattern={lightboxPattern}
-        onPatternChange={setLightboxPattern}
       />
     </section>
   );

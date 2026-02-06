@@ -11,7 +11,6 @@ import { PricingSection } from "@app/(landing)/_components/pricing-section";
 import { ProductComparison } from "@app/(landing)/_components/product-comparison";
 import { ScrollProgressBar } from "@app/(landing)/_components/scroll-progress-bar";
 import { TrustIndicators } from "@app/(landing)/_components/trust-indicators";
-import { ComparisonCoverflow } from "@/app/(landing)/_components/comparison-variants/comparison-coverflow";
 
 export default function LandingPage() {
   return (
@@ -23,7 +22,7 @@ export default function LandingPage() {
       <ProductComparison />
       <ComparisonTabs />
       {/* <ComparisonCardStack enableAutoPlay={true} /> */}
-      <ComparisonCoverflow enableAutoPlay={true} />
+      {/* <ComparisonCoverflow enableAutoPlay={true} /> */}
       {/* <ComparisonGrid enableAutoPlay={true} /> */}
       {/* <ComparisonSlider enableAutoPlay={true} /> */}
       <EnhancedCapabilities />

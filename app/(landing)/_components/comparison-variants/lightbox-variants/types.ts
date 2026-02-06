@@ -1,5 +1,5 @@
 /**
- * Shared types for lightbox components
+ * Shared types for lightbox gallery component
  */
 
 export type ComparisonImage = {
@@ -22,13 +22,3 @@ export type LightboxProps = {
   isOpen: boolean;
   onClose: () => void;
 };
-
-export type ComparisonLightboxProps = {
-  originalImage: ComparisonImage;
-  resultImages: ComparisonImage[];
-  initialResultIndex: number;
-  isOpen: boolean;
-  onClose: () => void;
-};
-
-export type LightboxPattern = "fullscreen" | "comparison" | "gallery";
