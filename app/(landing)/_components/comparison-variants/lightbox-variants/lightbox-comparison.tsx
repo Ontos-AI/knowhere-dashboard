@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
+import { HTMLShowcaseViewer } from "@/app/(landing)/_components/comparison-variants/html-showcase-viewer";
 import type { ComparisonLightboxProps } from "@/app/(landing)/_components/comparison-variants/lightbox-variants/types";
 
 export const LightboxComparison = ({
@@ -120,23 +121,33 @@ export const LightboxComparison = ({
           {/* Main comparison container */}
           <button
             type="button"
-            className="flex h-full w-full items-center justify-center gap-4 p-24"
+            className="flex h-full w-full items-center justify-center gap-4 p-24 overflow-auto"
             onClick={(e) => e.stopPropagation()}
             aria-label="Comparison display area"
           >
             {/* Left side - Original Image (fixed) */}
             <div className="flex h-full w-1/2 flex-col items-center justify-center">
-              <div className="relative flex max-h-full max-w-full flex-col items-center">
+              <div className="relative flex max-h-full max-w-full flex-col items-center w-full">
                 <div className="mb-2 rounded-full bg-blue-500/20 px-3 py-1 text-sm font-medium text-blue-300">
                   Before
                 </div>
-                <Image
-                  src={originalImage.src}
-                  alt={originalImage.alt}
-                  width={800}
-                  height={600}
-                  className="max-h-[calc(100vh-16rem)] w-auto max-w-full rounded-lg object-contain shadow-2xl"
-                />
+                {originalImage.useHTML && originalImage.productId ? (
+                  <div className="w-full h-[calc(100vh-12rem)] rounded-lg overflow-auto shadow-2xl bg-background">
+                    <HTMLShowcaseViewer
+                      productId={originalImage.productId}
+                      className="w-full h-full min-h-full"
+                      onMinimize={onClose}
+                    />
+                  </div>
+                ) : (
+                  <Image
+                    src={originalImage.src}
+                    alt={originalImage.alt}
+                    width={800}
+                    height={600}
+                    className="max-h-[calc(100vh-16rem)] w-auto max-w-full rounded-lg object-contain shadow-2xl"
+                  />
+                )}
                 <div className="mt-4 text-center">
                   <h3 className="text-lg font-semibold text-white">{originalImage.label}</h3>
                   {originalImage.metrics && (
@@ -172,18 +183,28 @@ export const LightboxComparison = ({
                     x: { type: "spring", stiffness: 300, damping: 30 },
                     opacity: { duration: 0.2 },
                   }}
-                  className="flex max-h-full max-w-full flex-col items-center"
+                  className="flex max-h-full max-w-full flex-col items-center w-full"
                 >
                   <div className="mb-2 rounded-full bg-green-500/20 px-3 py-1 text-sm font-medium text-green-300">
                     After
                   </div>
-                  <Image
-                    src={currentResult.src}
-                    alt={currentResult.alt}
-                    width={800}
-                    height={600}
-                    className="max-h-[calc(100vh-16rem)] w-auto max-w-full rounded-lg object-contain shadow-2xl"
-                  />
+                  {currentResult.useHTML && currentResult.productId ? (
+                    <div className="w-full h-[calc(100vh-12rem)] rounded-lg overflow-auto shadow-2xl bg-background">
+                      <HTMLShowcaseViewer
+                        productId={currentResult.productId}
+                        className="w-full h-full min-h-full"
+                        onMinimize={onClose}
+                      />
+                    </div>
+                  ) : (
+                    <Image
+                      src={currentResult.src}
+                      alt={currentResult.alt}
+                      width={800}
+                      height={600}
+                      className="max-h-[calc(100vh-16rem)] w-auto max-w-full rounded-lg object-contain shadow-2xl"
+                    />
+                  )}
                   <div className="mt-4 text-center">
                     <h3 className="text-lg font-semibold text-white">{currentResult.label}</h3>
                     {currentResult.metrics && (

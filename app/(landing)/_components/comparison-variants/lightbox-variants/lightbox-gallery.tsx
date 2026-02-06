@@ -1,9 +1,10 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Table, X } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
+import { HTMLShowcaseViewer } from "@/app/(landing)/_components/comparison-variants/html-showcase-viewer";
 import type { LightboxProps } from "@/app/(landing)/_components/comparison-variants/lightbox-variants/types";
 
 export const LightboxGallery = ({ images, initialIndex, isOpen, onClose }: LightboxProps) => {
@@ -117,7 +118,7 @@ export const LightboxGallery = ({ images, initialIndex, isOpen, onClose }: Light
           </div>
 
           {/* Main image area - div to avoid button nesting (prev/next are buttons) */}
-          <div className="relative flex flex-1 items-center justify-center overflow-hidden px-16 pb-4">
+          <div className="relative flex flex-1 items-center justify-center overflow-auto px-16 pb-4">
             {/* Navigation buttons */}
             {images.length > 1 && (
               <>
@@ -160,16 +161,26 @@ export const LightboxGallery = ({ images, initialIndex, isOpen, onClose }: Light
                   x: { type: "spring", stiffness: 300, damping: 30 },
                   opacity: { duration: 0.2 },
                 }}
-                className="flex max-h-full max-w-full flex-col items-center"
+                className="flex max-h-full max-w-full flex-col items-center w-full"
               >
-                <Image
-                  src={currentImage.src}
-                  alt={currentImage.alt}
-                  width={1200}
-                  height={900}
-                  className="max-h-full w-auto max-w-full rounded-lg object-contain shadow-2xl"
-                  loading="lazy"
-                />
+                {currentImage.useHTML && currentImage.productId ? (
+                  <div className="w-full h-[calc(100vh-16rem)] rounded-lg overflow-auto shadow-2xl bg-background">
+                    <HTMLShowcaseViewer
+                      productId={currentImage.productId}
+                      className="w-full h-full min-h-full"
+                      onMinimize={onClose}
+                    />
+                  </div>
+                ) : (
+                  <Image
+                    src={currentImage.src}
+                    alt={currentImage.alt}
+                    width={1200}
+                    height={900}
+                    className="max-h-full w-auto max-w-full rounded-lg object-contain shadow-2xl"
+                    loading="lazy"
+                  />
+                )}
                 <div className="mt-4 text-center">
                   <h3 className="text-xl font-semibold text-white">{currentImage.label}</h3>
                   {currentImage.metrics && (
@@ -210,13 +221,21 @@ export const LightboxGallery = ({ images, initialIndex, isOpen, onClose }: Light
                   }`}
                   aria-label={`View ${image.label}`}
                 >
-                  <Image
-                    src={image.src}
-                    alt={image.alt}
-                    width={96}
-                    height={96}
-                    className="h-24 w-24 object-cover"
-                  />
+                  {image.useHTML ? (
+                    // HTML content thumbnail - show icon placeholder
+                    <div className="flex h-24 w-24 items-center justify-center bg-gradient-to-br from-blue-500/20 to-purple-500/20">
+                      <Table className="h-10 w-10 text-white/60" />
+                    </div>
+                  ) : (
+                    // Normal image thumbnail
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      width={96}
+                      height={96}
+                      className="h-24 w-24 object-cover"
+                    />
+                  )}
                   {images.indexOf(image) === currentIndex && (
                     <div className="absolute inset-0 bg-blue-500/20" />
                   )}

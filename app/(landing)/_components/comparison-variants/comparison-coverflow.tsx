@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
+import { HTMLShowcaseViewer } from "@/app/(landing)/_components/comparison-variants/html-showcase-viewer";
 import { LightboxPatternSelector } from "@/app/(landing)/_components/comparison-variants/lightbox-pattern-selector";
 import { LightboxComparison } from "@/app/(landing)/_components/comparison-variants/lightbox-variants/lightbox-comparison";
 import { LightboxFullscreen } from "@/app/(landing)/_components/comparison-variants/lightbox-variants/lightbox-fullscreen";
@@ -29,7 +30,7 @@ const products: ComparisonProduct[] = [
       processingTime: "187ms",
       accuracy: "99.8%",
     },
-    resultImage: "/placeholder-knowhere.jpg",
+    resultImage: "/comparison/knowhere.html",
     isOurProduct: true,
   },
   {
@@ -39,7 +40,7 @@ const products: ComparisonProduct[] = [
       processingTime: "420ms",
       accuracy: "87.3%",
     },
-    resultImage: "/placeholder-unstructured.jpg",
+    resultImage: "/comparison/unstructured.html",
     isOurProduct: false,
   },
   {
@@ -49,20 +50,15 @@ const products: ComparisonProduct[] = [
       processingTime: "356ms",
       accuracy: "82.1%",
     },
-    resultImage: "/placeholder-markitdown.jpg",
-    isOurProduct: false,
-  },
-  {
-    id: "mineru",
-    name: "MinerU",
-    metrics: {
-      processingTime: "298ms",
-      accuracy: "85.6%",
-    },
-    resultImage: "/placeholder-mineru.jpg",
+    resultImage: "/comparison/markitdown.html",
     isOurProduct: false,
   },
 ];
+
+// Helper function to check if product has HTML showcase
+const hasHTMLShowcase = (productId: string) => {
+  return ["knowhere", "markitdown", "unstructured"].includes(productId);
+};
 
 type ComparisonCoverflowProps = {
   enableAutoPlay?: boolean;
@@ -95,11 +91,13 @@ export function ComparisonCoverflow({
 
   // Prepare image data for lightbox
   const originalImage: ComparisonImage = {
-    src: "/placeholder-original.jpg",
+    src: "/comparison/original-input.html",
     alt: "Original Document",
     label: "Original Input",
+    productId: "original-input",
+    useHTML: true, // Original input uses HTML showcase (converted from Excel)
     metrics: {
-      description: "Complex table with merged cells",
+      description: "Labor Cost Calculation - Complex table with merged cells",
     },
   };
 
@@ -107,6 +105,8 @@ export function ComparisonCoverflow({
     src: product.resultImage,
     alt: `${product.name} Output`,
     label: product.name,
+    productId: product.id,
+    useHTML: hasHTMLShowcase(product.id), // Use HTML for products with showcases
     metrics: {
       processingTime: product.metrics.processingTime,
       accuracy: product.metrics.accuracy,
@@ -229,7 +229,7 @@ export function ComparisonCoverflow({
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6 }}
-            className="w-full lg:w-2/5"
+            className="w-full lg:w-[48%]"
           >
             <div className="sticky top-24">
               <h3 className="text-xl font-semibold mb-4 text-center lg:text-left">
@@ -243,10 +243,17 @@ export function ComparisonCoverflow({
               >
                 <div className="relative">
                   <div className="absolute inset-0 bg-primary/10 rounded-lg blur-xl opacity-50" />
-                  <ImagePlaceholder label="Original Document" className="relative" />
+                  <div className="relative h-[500px]">
+                    <HTMLShowcaseViewer
+                      productId="original-input"
+                      onMaximize={() => handleImageClick(0)}
+                      defaultZoom={50}
+                      className="w-full h-full"
+                    />
+                  </div>
                 </div>
                 <p className="text-sm text-muted-foreground mt-4 text-center">
-                  Complex table with merged cells
+                  Labor Cost Calculation - Complex table with merged cells
                 </p>
               </motion.div>
             </div>
@@ -333,7 +340,22 @@ export function ComparisonCoverflow({
 
                       {/* Result Image */}
                       <div className="relative h-[240px] md:h-[300px] bg-muted/30">
-                        <ImagePlaceholder label={`${product.name} Output`} />
+                        {hasHTMLShowcase(product.id) ? (
+                          <HTMLShowcaseViewer
+                            productId={product.id}
+                            onMaximize={() => {
+                              if (isActive) {
+                                handleImageClick(index + 1);
+                              } else {
+                                handleCardClick(index);
+                              }
+                            }}
+                            defaultZoom={50}
+                            className="w-full h-full"
+                          />
+                        ) : (
+                          <ImagePlaceholder label={`${product.name} Output`} />
+                        )}
 
                         {/* Product Name Badge */}
                         <div className="absolute top-4 left-4 glass rounded-lg px-3 py-1.5 border border-border/50">

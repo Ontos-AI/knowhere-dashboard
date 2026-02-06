@@ -75,7 +75,7 @@ export const LightboxPatternSelector = ({
       <motion.button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-8 right-8 z-40 rounded-full bg-primary p-4 text-white shadow-2xl hover:bg-primary/90 ${className}`}
+        className={`fixed bottom-8 right-8 z-[60] rounded-full bg-primary p-4 text-white shadow-2xl hover:bg-primary/90 ${className}`}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         aria-label="Toggle lightbox pattern selector"
@@ -92,7 +92,7 @@ export const LightboxPatternSelector = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm"
+              className="fixed inset-0 z-[55] bg-black/50 backdrop-blur-sm"
               onClick={() => setIsOpen(false)}
             />
 
@@ -102,7 +102,7 @@ export const LightboxPatternSelector = ({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="fixed bottom-28 right-8 z-40 w-full max-w-md rounded-2xl border border-border/50 bg-card p-6 shadow-2xl"
+              className="fixed bottom-28 right-8 z-[60] w-full max-w-md rounded-2xl border border-border/50 bg-card p-6 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <h3 className="mb-2 text-xl font-bold">Choose Lightbox Pattern</h3>

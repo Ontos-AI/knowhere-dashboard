@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
+import { HTMLShowcaseViewer } from "@/app/(landing)/_components/comparison-variants/html-showcase-viewer";
 import { LightboxPatternSelector } from "@/app/(landing)/_components/comparison-variants/lightbox-pattern-selector";
 import { LightboxComparison } from "@/app/(landing)/_components/comparison-variants/lightbox-variants/lightbox-comparison";
 import { LightboxFullscreen } from "@/app/(landing)/_components/comparison-variants/lightbox-variants/lightbox-fullscreen";
@@ -29,7 +30,7 @@ const products: ComparisonProduct[] = [
       processingTime: "187ms",
       accuracy: "99.8%",
     },
-    resultImage: "/placeholder-knowhere.jpg",
+    resultImage: "/comparison/knowhere.html",
     isOurProduct: true,
   },
   {
@@ -39,7 +40,7 @@ const products: ComparisonProduct[] = [
       processingTime: "420ms",
       accuracy: "87.3%",
     },
-    resultImage: "/placeholder-unstructured.jpg",
+    resultImage: "/comparison/unstructured.html",
     isOurProduct: false,
   },
   {
@@ -49,20 +50,15 @@ const products: ComparisonProduct[] = [
       processingTime: "356ms",
       accuracy: "82.1%",
     },
-    resultImage: "/placeholder-markitdown.jpg",
-    isOurProduct: false,
-  },
-  {
-    id: "mineru",
-    name: "MinerU",
-    metrics: {
-      processingTime: "298ms",
-      accuracy: "85.6%",
-    },
-    resultImage: "/placeholder-mineru.jpg",
+    resultImage: "/comparison/markitdown.html",
     isOurProduct: false,
   },
 ];
+
+// Helper function to check if product has HTML showcase
+const hasHTMLShowcase = (productId: string) => {
+  return ["knowhere", "markitdown", "unstructured"].includes(productId);
+};
 
 type ComparisonGridProps = {
   enableAutoPlay?: boolean;
@@ -98,6 +94,7 @@ export function ComparisonGrid({
     src: "/placeholder-original.jpg",
     alt: "Original Document",
     label: "Original Input",
+    useHTML: false, // Original input uses placeholder image for now
     metrics: {
       description: "Complex table with merged cells",
     },
@@ -107,6 +104,8 @@ export function ComparisonGrid({
     src: product.resultImage,
     alt: `${product.name} Output`,
     label: product.name,
+    productId: product.id,
+    useHTML: hasHTMLShowcase(product.id), // Use HTML for products with showcases
     metrics: {
       processingTime: product.metrics.processingTime,
       accuracy: product.metrics.accuracy,
@@ -267,7 +266,15 @@ export function ComparisonGrid({
 
                       {/* Result Image */}
                       <div className="relative h-[200px] md:h-[240px] bg-muted/30">
-                        <ImagePlaceholder label={`${product.name} Output`} />
+                        {hasHTMLShowcase(product.id) ? (
+                          <HTMLShowcaseViewer
+                            productId={product.id}
+                            onMaximize={() => handleImageClick(index + 1)}
+                            className="w-full h-full"
+                          />
+                        ) : (
+                          <ImagePlaceholder label={`${product.name} Output`} />
+                        )}
 
                         {/* Product Name Overlay */}
                         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">

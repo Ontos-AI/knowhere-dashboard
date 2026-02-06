@@ -2,8 +2,8 @@
 // This script runs before the Next.js app starts in Docker
 // Uses only 'pg' package which is already included in Next.js standalone
 const { Pool } = require("pg");
-const fs = require("fs");
-const path = require("path");
+const fs = require("node:fs");
+const path = require("node:path");
 
 async function runMigrations() {
   console.log("🔄 Running database migrations...");

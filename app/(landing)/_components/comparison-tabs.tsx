@@ -13,6 +13,7 @@ import { cn } from "@lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, ArrowUp, Check, Zap } from "lucide-react";
 import { useState } from "react";
+import { HTMLShowcaseViewer } from "@/app/(landing)/_components/comparison-variants/html-showcase-viewer";
 import { LightboxPatternSelector } from "@/app/(landing)/_components/comparison-variants/lightbox-pattern-selector";
 import { LightboxComparison } from "@/app/(landing)/_components/comparison-variants/lightbox-variants/lightbox-comparison";
 import { LightboxFullscreen } from "@/app/(landing)/_components/comparison-variants/lightbox-variants/lightbox-fullscreen";
@@ -49,7 +50,7 @@ const competitorComparisons: CompetitorComparison[] = [
     id: "knowhere",
     name: "Knowhere",
     tabLabel: "Knowhere",
-    resultImage: "/placeholder-knowhere.jpg",
+    resultImage: "/comparison/knowhere.html",
     isOurProduct: true,
     metrics: [
       {
@@ -81,7 +82,7 @@ const competitorComparisons: CompetitorComparison[] = [
     id: "unstructured",
     name: "Unstructured",
     tabLabel: "Unstructured",
-    resultImage: "/placeholder-unstructured.jpg",
+    resultImage: "/comparison/unstructured.html",
     metrics: [
       {
         id: "processing-time",
@@ -111,7 +112,7 @@ const competitorComparisons: CompetitorComparison[] = [
     id: "markitdown",
     name: "Markitdown",
     tabLabel: "Markitdown",
-    resultImage: "/placeholder-markitdown.jpg",
+    resultImage: "/comparison/markitdown.html",
     metrics: [
       {
         id: "processing-time",
@@ -137,40 +138,15 @@ const competitorComparisons: CompetitorComparison[] = [
     ],
     description: "Markitdown - Markdown conversion tool",
   },
-  {
-    id: "mineru",
-    name: "MinerU",
-    tabLabel: "MinerU",
-    resultImage: "/placeholder-mineru.jpg",
-    metrics: [
-      {
-        id: "processing-time",
-        label: "Processing Time",
-        value: "298ms",
-        improvement: "",
-        icon: "zap",
-      },
-      {
-        id: "accuracy",
-        label: "Accuracy",
-        value: "85.6%",
-        improvement: "",
-        icon: "check",
-      },
-      {
-        id: "formula-support",
-        label: "Formula Support",
-        value: "Good",
-        improvement: "",
-        icon: "check",
-      },
-    ],
-    description: "MinerU - Academic document processing tool",
-  },
 ];
 
-// Original input image
-const originalImage = "/placeholder-original.jpg";
+// Original input - Excel file converted to HTML
+const originalInput = "/comparison/original-input.html";
+
+// Helper function to check if product has HTML showcase
+const hasHTMLShowcase = (productId: string) => {
+  return ["knowhere", "markitdown", "unstructured"].includes(productId);
+};
 
 // Icon mapping
 const iconMap = {
@@ -257,11 +233,13 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
 
   // Prepare image data for lightbox
   const originalImageData: ComparisonImage = {
-    src: originalImage,
+    src: originalInput,
     alt: "Original Document",
     label: "Original Input",
+    productId: "original-input",
+    useHTML: true, // Original input uses HTML showcase (converted from Excel)
     metrics: {
-      description: "Complex document with tables and formatting",
+      description: "Labor Cost Calculation - Complex table with merged cells",
     },
   };
 
@@ -285,6 +263,8 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
       src: comparison.resultImage,
       alt: `${comparison.name} Output`,
       label: comparison.name,
+      productId: comparison.id,
+      useHTML: hasHTMLShowcase(comparison.id), // Use HTML for products with showcases
       metrics: {
         processingTime,
         accuracy,
@@ -338,7 +318,7 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6 }}
-            className="w-full lg:w-2/5 lg:mt-[12%]"
+            className="w-full lg:w-[68%]"
           >
             <div>
               <h3 className="text-xl font-semibold mb-4 text-center lg:text-left">
@@ -349,9 +329,10 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
                 transition={{ duration: 0.3 }}
                 className="glass rounded-2xl border border-border/50 p-4 hover:border-primary/50 transition-all group"
               >
-                <button
-                  type="button"
-                  className="relative w-full border-0 p-0 bg-transparent cursor-pointer text-left"
+                <div
+                  role="button"
+                  tabIndex={0}
+                  className="relative w-full cursor-pointer"
                   onClick={() => handleImageClick(0)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
@@ -364,11 +345,18 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
                   <div className="relative">
                     {/* Glow effect */}
                     <div className="absolute inset-0 bg-primary/10 rounded-lg blur-xl opacity-50" />
-                    <ImagePlaceholder label="Original Document" className="relative" />
+                    <div className="relative h-[500px]">
+                      <HTMLShowcaseViewer
+                        productId="original-input"
+                        onMaximize={() => handleImageClick(0)}
+                        defaultZoom={50}
+                        className="w-full h-full"
+                      />
+                    </div>
                   </div>
-                </button>
+                </div>
                 <p className="text-sm text-muted-foreground mt-4 text-center">
-                  Complex document with tables and formatting
+                  Labor Cost Calculation - Complex table with merged cells
                 </p>
               </motion.div>
             </div>
@@ -380,7 +368,7 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6 }}
-            className="w-full lg:w-3/5"
+            className="w-full lg:w-4/5"
           >
             {/* Header with Show More button */}
             <div className="flex items-center justify-between mb-4">
@@ -406,7 +394,7 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
             {/* Desktop: Tabs */}
             <div className="hidden md:block">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-4 mb-6 bg-muted/50 backdrop-blur-sm border border-border/50 p-1 rounded-xl">
+                <TabsList className="grid w-full grid-cols-3 mb-6 bg-muted/50 backdrop-blur-sm border border-border/50 p-1 rounded-xl">
                   {competitorComparisons.map((comparison) => (
                     <TabsTrigger
                       key={comparison.id}
@@ -441,9 +429,10 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
                         >
                           {/* Result Image */}
                           <div className="glass rounded-2xl border border-border/50 p-4 group">
-                            <button
-                              type="button"
-                              className="relative w-full border-0 p-0 bg-transparent cursor-pointer text-left"
+                            <div
+                              role="button"
+                              tabIndex={0}
+                              className="relative w-full cursor-pointer"
                               onClick={() => {
                                 const comparisonIndex =
                                   competitorComparisons.findIndex((c) => c.id === comparison.id) +
@@ -463,12 +452,28 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
                             >
                               <div className="relative">
                                 <div className="absolute inset-0 bg-accent/10 rounded-lg blur-xl opacity-50" />
-                                <ImagePlaceholder
-                                  label={`${comparison.name} Result`}
-                                  className="relative"
-                                />
+                                {hasHTMLShowcase(comparison.id) ? (
+                                  <div className="relative h-[500px]">
+                                    <HTMLShowcaseViewer
+                                      productId={comparison.id}
+                                      onMaximize={() => {
+                                        const comparisonIndex =
+                                          competitorComparisons.findIndex(
+                                            (c) => c.id === comparison.id
+                                          ) + 1;
+                                        handleImageClick(comparisonIndex);
+                                      }}
+                                      className="w-full h-full"
+                                    />
+                                  </div>
+                                ) : (
+                                  <ImagePlaceholder
+                                    label={`${comparison.name} Result`}
+                                    className="relative"
+                                  />
+                                )}
                               </div>
-                            </button>
+                            </div>
                             {comparison.description && (
                               <p className="text-sm text-muted-foreground mt-4 text-center">
                                 {comparison.description}
@@ -525,9 +530,10 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
                     >
                       {/* Result Image */}
                       <div className="glass rounded-2xl border border-border/50 p-4 group">
-                        <button
-                          type="button"
-                          className="relative w-full border-0 p-0 bg-transparent cursor-pointer text-left"
+                        <div
+                          role="button"
+                          tabIndex={0}
+                          className="relative w-full cursor-pointer"
                           onClick={() => {
                             const comparisonIndex =
                               competitorComparisons.findIndex((c) => c.id === activeComparison.id) +
@@ -548,12 +554,29 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
                         >
                           <div className="relative">
                             <div className="absolute inset-0 bg-accent/10 rounded-lg blur-xl opacity-50" />
-                            <ImagePlaceholder
-                              label={`${activeComparison.name} Result`}
-                              className="relative"
-                            />
+                            {hasHTMLShowcase(activeComparison.id) ? (
+                              <div className="relative h-[500px]">
+                                <HTMLShowcaseViewer
+                                  productId={activeComparison.id}
+                                  label={activeComparison.name}
+                                  onMaximize={() => {
+                                    const comparisonIndex =
+                                      competitorComparisons.findIndex(
+                                        (c) => c.id === activeComparison.id
+                                      ) + 1;
+                                    handleImageClick(comparisonIndex);
+                                  }}
+                                  className="w-full h-full"
+                                />
+                              </div>
+                            ) : (
+                              <ImagePlaceholder
+                                label={`${activeComparison.name} Result`}
+                                className="relative"
+                              />
+                            )}
                           </div>
-                        </button>
+                        </div>
                         {activeComparison.description && (
                           <p className="text-sm text-muted-foreground mt-4 text-center">
                             {activeComparison.description}

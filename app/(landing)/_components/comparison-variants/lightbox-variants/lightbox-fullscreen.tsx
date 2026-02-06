@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
+import { HTMLShowcaseViewer } from "@/app/(landing)/_components/comparison-variants/html-showcase-viewer";
 import type { LightboxProps } from "@/app/(landing)/_components/comparison-variants/lightbox-variants/types";
 
 export const LightboxFullscreen = ({ images, initialIndex, isOpen, onClose }: LightboxProps) => {
@@ -140,7 +141,7 @@ export const LightboxFullscreen = ({ images, initialIndex, isOpen, onClose }: Li
           {/* Image container */}
           <button
             type="button"
-            className="relative flex h-full w-full items-center justify-center overflow-hidden p-16"
+            className="relative flex h-full w-full items-center justify-center overflow-auto p-16"
             onClick={(e) => e.stopPropagation()}
             aria-label="Image display area"
           >
@@ -156,17 +157,27 @@ export const LightboxFullscreen = ({ images, initialIndex, isOpen, onClose }: Li
                   x: { type: "spring", stiffness: 300, damping: 30 },
                   opacity: { duration: 0.2 },
                 }}
-                className="flex max-h-full max-w-full flex-col items-center"
+                className="flex max-h-full max-w-full flex-col items-center w-full"
               >
-                {/* Image */}
-                <Image
-                  src={currentImage.src}
-                  alt={currentImage.alt}
-                  width={1200}
-                  height={900}
-                  className="max-h-[calc(100vh-12rem)] w-auto max-w-full rounded-lg object-contain shadow-2xl"
-                  loading="lazy"
-                />
+                {/* Image or HTML */}
+                {currentImage.useHTML && currentImage.productId ? (
+                  <div className="w-full max-w-[90vw] h-[calc(100vh-8rem)] rounded-lg overflow-auto shadow-2xl bg-background">
+                    <HTMLShowcaseViewer
+                      productId={currentImage.productId}
+                      className="w-full h-full min-h-full"
+                      onMinimize={onClose}
+                    />
+                  </div>
+                ) : (
+                  <Image
+                    src={currentImage.src}
+                    alt={currentImage.alt}
+                    width={1200}
+                    height={900}
+                    className="max-h-[calc(100vh-12rem)] w-auto max-w-full rounded-lg object-contain shadow-2xl"
+                    loading="lazy"
+                  />
+                )}
 
                 {/* Image label and metrics */}
                 <div className="mt-4 text-center">

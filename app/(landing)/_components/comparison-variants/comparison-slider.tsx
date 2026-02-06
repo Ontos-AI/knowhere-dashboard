@@ -52,16 +52,6 @@ const products: ComparisonProduct[] = [
     resultImage: "/placeholder-markitdown.jpg",
     isOurProduct: false,
   },
-  {
-    id: "mineru",
-    name: "MinerU",
-    metrics: {
-      processingTime: "298ms",
-      accuracy: "85.6%",
-    },
-    resultImage: "/placeholder-mineru.jpg",
-    isOurProduct: false,
-  },
 ];
 
 type ComparisonSliderProps = {
