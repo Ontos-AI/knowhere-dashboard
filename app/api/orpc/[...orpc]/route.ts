@@ -94,19 +94,60 @@ async function handleRequest(request: Request) {
   const context = await createContext(request.headers);
 
   // Determine which handler to use based on request body format
-  // RPC client sends {"json": {...}}, REST API sends {...} directly
+  // RPC client sends {"json": {...}} or {} (for no-param methods), REST API sends {...} directly
   let useRPCHandler = false;
 
   if (request.method !== "GET") {
     try {
-      const clonedRequest = request.clone();
-      const body = await clonedRequest.json();
+      // Check Content-Type header
+      const contentType = request.headers.get("content-type");
+      const isJsonContent = contentType?.includes("application/json");
 
-      // If body is empty {} or has a "json" key, it's an RPC request
-      // If body has other keys without "json", it's a REST API request
-      const isEmptyObject = body && typeof body === "object" && Object.keys(body).length === 0;
-      const hasJsonKey = body && typeof body === "object" && "json" in body;
-      useRPCHandler = isEmptyObject || hasJsonKey;
+      // Only parse JSON if Content-Type indicates JSON
+      if (!isJsonContent) {
+        useRPCHandler = false;
+      } else {
+        const clonedRequest = request.clone();
+        const body = await clonedRequest.json();
+
+        // Ensure body is a plain object (not array, Date, etc.)
+        const isPlainObject =
+          body !== null &&
+          typeof body === "object" &&
+          !Array.isArray(body) &&
+          Object.prototype.toString.call(body) === "[object Object]";
+
+        if (isPlainObject) {
+          // Check if it's an empty object {} (no-param RPC call)
+          const keys = Object.keys(body);
+          const isEmptyObject = keys.length === 0;
+
+          // Check if it has "json" key (standard RPC call with params)
+          // Use hasOwnProperty to avoid prototype chain pollution
+          const hasJsonKey = Object.hasOwn(body, "json");
+
+          if (hasJsonKey) {
+            // Verify that json value is an object (not null, array, or primitive)
+            const jsonValue = body.json;
+            const isJsonValueValid =
+              jsonValue !== null &&
+              typeof jsonValue === "object" &&
+              !Array.isArray(jsonValue) &&
+              Object.prototype.toString.call(jsonValue) === "[object Object]";
+
+            // Only treat as RPC if json value is valid
+            useRPCHandler = isJsonValueValid;
+
+            // Optionally: warn about extra keys (but still allow)
+            if (useRPCHandler && keys.length > 1) {
+              console.warn("[oRPC] Request contains extra keys besides 'json':", keys);
+            }
+          } else {
+            // Empty object without json key - valid no-param RPC call
+            useRPCHandler = isEmptyObject;
+          }
+        }
+      }
     } catch (_e) {
       // If we can't parse JSON, let handlers decide
       useRPCHandler = false;
