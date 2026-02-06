@@ -13,6 +13,12 @@ import { cn } from "@lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, ArrowUp, Check, Zap } from "lucide-react";
 import { useState } from "react";
+import { LightboxPatternSelector } from "@/app/(landing)/_components/comparison-variants/lightbox-pattern-selector";
+import { LightboxComparison } from "@/app/(landing)/_components/comparison-variants/lightbox-variants/lightbox-comparison";
+import { LightboxFullscreen } from "@/app/(landing)/_components/comparison-variants/lightbox-variants/lightbox-fullscreen";
+import { LightboxGallery } from "@/app/(landing)/_components/comparison-variants/lightbox-variants/lightbox-gallery";
+import type { ComparisonImage } from "@/app/(landing)/_components/comparison-variants/lightbox-variants/types";
+import { useLightboxStore } from "@/store/lightbox-store";
 
 // Type definitions
 type CompetitorMetric = {
@@ -242,7 +248,58 @@ function MetricCard({ metric, index }: { metric: CompetitorMetric; index: number
 export function ComparisonTabs({ className }: ComparisonTabsProps) {
   const [activeTab, setActiveTab] = useState(competitorComparisons[0].id);
 
+  // Lightbox state - uses Zustand store for cross-component sync
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const { pattern: lightboxPattern, setPattern: setLightboxPattern } = useLightboxStore();
+
   const activeComparison = competitorComparisons.find((c) => c.id === activeTab);
+
+  // Prepare image data for lightbox
+  const originalImageData: ComparisonImage = {
+    src: originalImage,
+    alt: "Original Document",
+    label: "Original Input",
+    metrics: {
+      description: "Complex document with tables and formatting",
+    },
+  };
+
+  const resultImages: ComparisonImage[] = competitorComparisons.map((comparison) => {
+    // Find main metrics
+    const processingTime = comparison.metrics.find((m) => m.id === "processing-time")?.value;
+    const accuracy = comparison.metrics.find((m) => m.id === "accuracy")?.value;
+
+    // Collect other metrics dynamically
+    const otherMetrics = comparison.metrics.reduce(
+      (acc, metric) => {
+        if (metric.id !== "processing-time" && metric.id !== "accuracy") {
+          acc[metric.label] = metric.value;
+        }
+        return acc;
+      },
+      {} as Record<string, string>
+    );
+
+    return {
+      src: comparison.resultImage,
+      alt: `${comparison.name} Output`,
+      label: comparison.name,
+      metrics: {
+        processingTime,
+        accuracy,
+        ...otherMetrics,
+      },
+    };
+  });
+
+  const allImages: ComparisonImage[] = [originalImageData, ...resultImages];
+
+  // Handle image click - uses current selected pattern
+  const handleImageClick = (index: number) => {
+    setSelectedImageIndex(index);
+    setLightboxOpen(true);
+  };
 
   const handleShowMore = () => {
     console.log(`Show more details for: ${activeTab}`);
@@ -290,13 +347,26 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
               <motion.div
                 whileHover={{ y: -5 }}
                 transition={{ duration: 0.3 }}
-                className="glass rounded-2xl border border-border/50 p-4 hover:border-primary/50 transition-all"
+                className="glass rounded-2xl border border-border/50 p-4 hover:border-primary/50 transition-all group"
               >
-                <div className="relative">
-                  {/* Glow effect */}
-                  <div className="absolute inset-0 bg-primary/10 rounded-lg blur-xl opacity-50" />
-                  <ImagePlaceholder label="Original Document" className="relative" />
-                </div>
+                <button
+                  type="button"
+                  className="relative w-full border-0 p-0 bg-transparent cursor-pointer text-left"
+                  onClick={() => handleImageClick(0)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleImageClick(0);
+                    }
+                  }}
+                  aria-label="View original document in lightbox"
+                >
+                  <div className="relative">
+                    {/* Glow effect */}
+                    <div className="absolute inset-0 bg-primary/10 rounded-lg blur-xl opacity-50" />
+                    <ImagePlaceholder label="Original Document" className="relative" />
+                  </div>
+                </button>
                 <p className="text-sm text-muted-foreground mt-4 text-center">
                   Complex document with tables and formatting
                 </p>
@@ -370,14 +440,35 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
                           className="space-y-6"
                         >
                           {/* Result Image */}
-                          <div className="glass rounded-2xl border border-border/50 p-4">
-                            <div className="relative">
-                              <div className="absolute inset-0 bg-accent/10 rounded-lg blur-xl opacity-50" />
-                              <ImagePlaceholder
-                                label={`${comparison.name} Result`}
-                                className="relative"
-                              />
-                            </div>
+                          <div className="glass rounded-2xl border border-border/50 p-4 group">
+                            <button
+                              type="button"
+                              className="relative w-full border-0 p-0 bg-transparent cursor-pointer text-left"
+                              onClick={() => {
+                                const comparisonIndex =
+                                  competitorComparisons.findIndex((c) => c.id === comparison.id) +
+                                  1;
+                                handleImageClick(comparisonIndex);
+                              }}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                  e.preventDefault();
+                                  const comparisonIndex =
+                                    competitorComparisons.findIndex((c) => c.id === comparison.id) +
+                                    1;
+                                  handleImageClick(comparisonIndex);
+                                }
+                              }}
+                              aria-label={`View ${comparison.name} output in lightbox`}
+                            >
+                              <div className="relative">
+                                <div className="absolute inset-0 bg-accent/10 rounded-lg blur-xl opacity-50" />
+                                <ImagePlaceholder
+                                  label={`${comparison.name} Result`}
+                                  className="relative"
+                                />
+                              </div>
+                            </button>
                             {comparison.description && (
                               <p className="text-sm text-muted-foreground mt-4 text-center">
                                 {comparison.description}
@@ -433,14 +524,36 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
                       className="space-y-6"
                     >
                       {/* Result Image */}
-                      <div className="glass rounded-2xl border border-border/50 p-4">
-                        <div className="relative">
-                          <div className="absolute inset-0 bg-accent/10 rounded-lg blur-xl opacity-50" />
-                          <ImagePlaceholder
-                            label={`${activeComparison.name} Result`}
-                            className="relative"
-                          />
-                        </div>
+                      <div className="glass rounded-2xl border border-border/50 p-4 group">
+                        <button
+                          type="button"
+                          className="relative w-full border-0 p-0 bg-transparent cursor-pointer text-left"
+                          onClick={() => {
+                            const comparisonIndex =
+                              competitorComparisons.findIndex((c) => c.id === activeComparison.id) +
+                              1;
+                            handleImageClick(comparisonIndex);
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              const comparisonIndex =
+                                competitorComparisons.findIndex(
+                                  (c) => c.id === activeComparison.id
+                                ) + 1;
+                              handleImageClick(comparisonIndex);
+                            }
+                          }}
+                          aria-label={`View ${activeComparison.name} output in lightbox`}
+                        >
+                          <div className="relative">
+                            <div className="absolute inset-0 bg-accent/10 rounded-lg blur-xl opacity-50" />
+                            <ImagePlaceholder
+                              label={`${activeComparison.name} Result`}
+                              className="relative"
+                            />
+                          </div>
+                        </button>
                         {activeComparison.description && (
                           <p className="text-sm text-muted-foreground mt-4 text-center">
                             {activeComparison.description}
@@ -462,6 +575,33 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
           </motion.div>
         </div>
       </div>
+
+      {/* Lightbox Components */}
+      <LightboxFullscreen
+        images={allImages}
+        initialIndex={selectedImageIndex}
+        isOpen={lightboxOpen && lightboxPattern === "fullscreen"}
+        onClose={() => setLightboxOpen(false)}
+      />
+      <LightboxComparison
+        originalImage={originalImageData}
+        resultImages={resultImages}
+        initialResultIndex={Math.max(0, selectedImageIndex - 1)}
+        isOpen={lightboxOpen && lightboxPattern === "comparison"}
+        onClose={() => setLightboxOpen(false)}
+      />
+      <LightboxGallery
+        images={allImages}
+        initialIndex={selectedImageIndex}
+        isOpen={lightboxOpen && lightboxPattern === "gallery"}
+        onClose={() => setLightboxOpen(false)}
+      />
+
+      {/* Pattern Selector for testing */}
+      <LightboxPatternSelector
+        currentPattern={lightboxPattern}
+        onPatternChange={setLightboxPattern}
+      />
     </section>
   );
 }
