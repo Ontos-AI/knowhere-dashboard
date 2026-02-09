@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@components/ui/button";
 import {
   Select,
   SelectContent,
@@ -11,7 +10,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { cn } from "@lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, ArrowUp, Check, Zap } from "lucide-react";
+import { ArrowUp, Check, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { HTMLShowcaseViewer } from "@/app/(landing)/_components/comparison-variants/html-showcase-viewer";
@@ -219,11 +218,6 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
 
   const activeComparison = competitorComparisons.find((c) => c.id === activeTab);
 
-  const handleShowMore = () => {
-    console.log(`Show more details for: ${activeTab}`);
-    // TODO: Navigate to /versus/${activeTab} in Phase 2
-  };
-
   return (
     <section
       className={cn("relative w-full py-16 md:py-24 overflow-hidden", "bg-muted/20", className)}
@@ -297,26 +291,10 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
             transition={{ duration: 0.6 }}
             className="w-full lg:w-4/5"
           >
-            {/* Header with Show More button */}
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-semibold text-center lg:text-left">
-                Competitor Comparison
-              </h3>
-              <Button
-                onClick={handleShowMore}
-                variant="default"
-                size="sm"
-                className="group relative overflow-hidden bg-gradient-to-r from-primary to-accent hover:shadow-lg hover:shadow-primary/50 transition-all duration-300"
-              >
-                <span className="relative z-10 flex items-center gap-1 md:gap-2 text-sm md:text-base">
-                  <span className="hidden sm:inline">Show More</span>
-                  <span className="inline sm:hidden">More</span>
-                  <ArrowRight className="w-3 h-3 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" />
-                </span>
-                {/* Button glow */}
-                <div className="absolute inset-0 bg-gradient-to-r from-accent to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </Button>
-            </div>
+            {/* Header */}
+            <h3 className="text-xl font-semibold text-center lg:text-left mb-4">
+              Competitor Comparison
+            </h3>
 
             {/* Desktop: Tabs */}
             <div className="hidden md:block">
