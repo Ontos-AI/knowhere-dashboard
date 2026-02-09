@@ -1,64 +1,32 @@
 "use client";
 
+import { Tabs, TabsList, TabsTrigger } from "@components/ui/tabs";
+import { cn } from "@lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { X } from "lucide-react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { Check, X } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { parseAsStringLiteral, useQueryState } from "nuqs";
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { HTMLShowcaseViewer } from "@/app/(landing)/_components/comparison-variants/html-showcase-viewer";
-import {
-  isValidProductId,
-  type ProductId,
-  parseZoomLevel,
-} from "@/app/(landing)/_types/comparison";
+import { allProducts } from "@/app/(landing)/_data/product-advantages";
+import type { CompetitorProductId } from "@/app/(landing)/_types/comparison";
+import { isValidProductId } from "@/app/(landing)/_types/comparison";
 
-// Get all comparison data (same as in comparison-tabs.tsx)
-const competitorComparisons = [
-  {
-    id: "knowhere",
-    name: "Knowhere",
-    resultImage: "/comparison/knowhere.html",
-    isOurProduct: true,
-    metrics: [
-      { id: "processing-time", label: "Processing Time", value: "187ms", improvement: "" },
-      { id: "accuracy", label: "Accuracy", value: "99.8%", improvement: "" },
-      { id: "table-support", label: "Table Support", value: "Excellent", improvement: "" },
-    ],
-    description:
-      "Knowhere - A professional document parsing engine that provides high accuracy and high-performance parsing services",
-  },
-  {
-    id: "unstructured",
-    name: "Unstructured",
-    resultImage: "/comparison/unstructured.html",
-    metrics: [
-      { id: "processing-time", label: "Processing Time", value: "420ms", improvement: "" },
-      { id: "accuracy", label: "Accuracy", value: "87.3%", improvement: "" },
-      { id: "table-support", label: "Table Support", value: "Fair", improvement: "" },
-    ],
-    description: "Unstructured - An open-source document processing tool",
-  },
-  {
-    id: "markitdown",
-    name: "Markitdown",
-    resultImage: "/comparison/markitdown.html",
-    metrics: [
-      { id: "processing-time", label: "Processing Time", value: "356ms", improvement: "" },
-      { id: "accuracy", label: "Accuracy", value: "82.1%", improvement: "" },
-      { id: "markdown-quality", label: "Markdown Quality", value: "Medium", improvement: "" },
-    ],
-    description: "Markitdown - Markdown conversion tool",
-  },
-];
+// Tab parser for nuqs
+const tabParser = parseAsStringLiteral(["knowhere", "unstructured", "markitdown"] as const);
 
 export default function ComparisonModal() {
   const router = useRouter();
   const params = useParams();
-  const searchParams = useSearchParams();
   const [mounted, setMounted] = useState(false);
 
   const productId = params.productId as string;
-  const isValid = isValidProductId(productId);
+  const isValid = isValidProductId(productId) && productId !== "original";
+
+  // Use nuqs for tab state management (default to productId if it's a competitor)
+  const defaultTab = productId === "original" ? "knowhere" : (productId as CompetitorProductId);
+  const [activeTab, setActiveTab] = useQueryState("tab", tabParser.withDefault(defaultTab));
 
   // Set mounted state for portal
   useEffect(() => {
@@ -66,25 +34,15 @@ export default function ComparisonModal() {
     return () => setMounted(false);
   }, []);
 
-  // Redirect if invalid productId
+  // Redirect if invalid productId or original
   useEffect(() => {
     if (!isValid) {
       router.push("/");
     }
   }, [isValid, router]);
 
-  const currentProductId = (isValid ? productId : "knowhere") as ProductId;
-  const zoomLevel = parseZoomLevel(searchParams.get("zoom") ?? undefined);
-
-  // Get current product data
-  const currentProduct =
-    currentProductId === "original"
-      ? {
-          id: "original",
-          name: "Original Input",
-          description: "Labor Cost Calculation - Complex table with merged cells",
-        }
-      : competitorComparisons.find((c) => c.id === currentProductId) || competitorComparisons[0];
+  // Get current product data based on active tab
+  const currentProduct = allProducts.find((p) => p.id === activeTab);
 
   // Close modal - use router.back() for intercepted routes
   const handleClose = useCallback(
@@ -107,8 +65,16 @@ export default function ComparisonModal() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleClose]);
 
+  // Type-safe tab change handler
+  const handleTabChange = (value: string) => {
+    const product = allProducts.find((p) => p.id === value);
+    if (product) {
+      setActiveTab(product.id);
+    }
+  };
+
   // Don't render if invalid productId or not mounted
-  if (!isValid || !mounted) {
+  if (!isValid || !mounted || !currentProduct) {
     return null;
   }
 
@@ -122,9 +88,9 @@ export default function ComparisonModal() {
         className="fixed inset-0 z-50 flex flex-col bg-black/90"
         onClick={handleClose}
       >
-        {/* Header with title and close button */}
+        {/* Header with close button */}
         <header className="flex items-center justify-between p-4">
-          <h2 className="text-lg font-semibold text-white">{currentProduct.name}</h2>
+          <h2 className="text-lg font-semibold text-white">Comparison Results</h2>
           <button
             type="button"
             onClick={handleClose}
@@ -136,40 +102,105 @@ export default function ComparisonModal() {
         </header>
 
         {/* Main content area */}
-        <section className="relative flex flex-1 items-center justify-center overflow-auto px-4 pb-4">
-          {/* Content display */}
-          <motion.div
-            key={currentProductId}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-            className="flex max-h-full max-w-full flex-col items-center w-full"
-          >
-            <div className="w-full h-[calc(100vh-8rem)] rounded-lg overflow-auto shadow-2xl bg-background">
-              <HTMLShowcaseViewer
-                productId={currentProductId === "original" ? "original-input" : currentProductId}
-                className="w-full h-full min-h-full"
-                onMinimize={handleClose}
-                defaultZoom={zoomLevel}
-              />
-            </div>
-            <div className="mt-4 text-center">
-              <h3 className="text-xl font-semibold text-white">{currentProduct.name}</h3>
-              {currentProduct.description && (
-                <p className="mt-2 text-sm text-white/70">{currentProduct.description}</p>
-              )}
-              {currentProductId !== "original" && "metrics" in currentProduct && (
-                <div className="mt-2 flex gap-4 text-sm text-white/70 justify-center">
-                  {currentProduct.metrics.map((metric) => (
-                    <span key={metric.id}>
-                      {metric.label}: {metric.value}
-                    </span>
+        {/* biome-ignore lint/a11y/useKeyWithClickEvents: Stop propagation requires click handler */}
+        {/* biome-ignore lint/a11y/noStaticElementInteractions: Stop propagation requires click handler */}
+        <section
+          className="relative flex flex-1 flex-col overflow-auto px-4 pb-4"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="mx-auto w-full max-w-6xl flex flex-col flex-1 gap-4">
+            {/* Top: Tab Navigation */}
+            <div className="flex-shrink-0">
+              <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+                <TabsList className="flex w-full max-w-md mx-auto bg-white/5 backdrop-blur-sm border border-white/10 p-1 rounded-xl">
+                  {allProducts.map((product) => (
+                    <TabsTrigger
+                      key={product.id}
+                      value={product.id}
+                      className={cn(
+                        "relative flex-1 text-white/70 data-[state=active]:text-white",
+                        "data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:shadow-lg",
+                        "transition-all duration-300"
+                      )}
+                    >
+                      {product.tabLabel}
+                      {/* Active indicator glow */}
+                      {activeTab === product.id && (
+                        <motion.div
+                          layoutId="activeModalTab"
+                          className="absolute inset-0 bg-gradient-to-r from-primary to-accent rounded-lg blur-md opacity-50 -z-10"
+                          transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                        />
+                      )}
+                    </TabsTrigger>
                   ))}
-                </div>
-              )}
+                </TabsList>
+              </Tabs>
             </div>
-          </motion.div>
+
+            {/* Middle: HTML Content */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+                className="flex-1 min-h-0"
+              >
+                <div className="w-full h-[calc(100vh-22rem)] rounded-lg overflow-auto shadow-2xl bg-background">
+                  <HTMLShowcaseViewer
+                    productId={currentProduct.id}
+                    className="w-full h-full min-h-full"
+                    onMinimize={handleClose}
+                    defaultZoom={100}
+                  />
+                </div>
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Bottom: Description and Advantages */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`desc-${activeTab}`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2, delay: 0.05 }}
+                className="flex-shrink-0 rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm p-4"
+              >
+                <h3 className="text-lg font-semibold text-white mb-2">{currentProduct.name}</h3>
+                <p className="text-sm text-white/70 mb-3">{currentProduct.description}</p>
+
+                {/* Advantages list */}
+                {currentProduct.advantages.length > 0 && (
+                  <div className="space-y-2">
+                    {currentProduct.advantages.map((advantage) => (
+                      <div key={advantage} className="flex items-start gap-2">
+                        <div className="flex-shrink-0 mt-0.5">
+                          <div className="w-4 h-4 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
+                            <Check className="w-2.5 h-2.5 text-primary" />
+                          </div>
+                        </div>
+                        <span className="text-sm text-white/80">{advantage}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Metrics if available */}
+                {currentProduct.metrics.length > 0 && (
+                  <div className="mt-3 flex gap-4 text-sm text-white/70">
+                    {currentProduct.metrics.map((metric) => (
+                      <span key={metric.id}>
+                        {metric.label}: {metric.value}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </section>
       </motion.div>
     </AnimatePresence>,

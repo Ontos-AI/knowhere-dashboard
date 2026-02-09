@@ -5,6 +5,33 @@
 // Product IDs
 export type ProductId = "original" | "knowhere" | "unstructured" | "markitdown";
 
+// Competitor product IDs (excluding "original")
+export type CompetitorProductId = "knowhere" | "unstructured" | "markitdown";
+
+// Metric icon types
+export type MetricIcon = "arrow-up" | "zap" | "check";
+
+// Competitor metric type
+export type CompetitorMetric = {
+  id: string;
+  label: string;
+  value: string;
+  improvement: string;
+  icon: MetricIcon;
+};
+
+// Product advantage type
+export type ProductAdvantage = {
+  id: CompetitorProductId;
+  name: string;
+  tabLabel: string;
+  description: string;
+  advantages: string[];
+  metrics: CompetitorMetric[];
+  resultImage: string;
+  isOurProduct?: boolean;
+};
+
 export const PRODUCT_IDS = ["original", "knowhere", "unstructured", "markitdown"] as const;
 
 // Map productId to image index (for navigation)

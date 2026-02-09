@@ -1,5 +1,3 @@
-import { LenisProvider } from "@providers/lenis-provider";
-
 export default function LandingPageLayout({
   children,
   modal,
@@ -52,10 +50,8 @@ export default function LandingPageLayout({
         } as React.CSSProperties
       }
     >
-      <LenisProvider>
-        {children}
-        {modal}
-      </LenisProvider>
+      {children}
+      {modal}
     </div>
   );
 }

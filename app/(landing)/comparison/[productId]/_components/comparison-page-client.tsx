@@ -1,74 +1,31 @@
 "use client";
 
+import { Tabs, TabsList, TabsTrigger } from "@components/ui/tabs";
+import { cn } from "@lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { Sparkles, X } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { parseAsStringLiteral, useQueryState } from "nuqs";
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { HTMLShowcaseViewer } from "@/app/(landing)/_components/comparison-variants/html-showcase-viewer";
-import type { ComparisonImage } from "@/app/(landing)/_components/comparison-variants/lightbox-variants/types";
-import {
-  PRODUCT_INDEX_MAP,
-  type ProductId,
-  parseZoomLevel,
-} from "@/app/(landing)/_types/comparison";
-
-// Get all comparison data
-const competitorComparisons = [
-  {
-    id: "knowhere",
-    name: "Knowhere",
-    resultImage: "/comparison/knowhere.html",
-    isOurProduct: true,
-    metrics: [
-      { id: "processing-time", label: "Processing Time", value: "187ms", improvement: "" },
-      { id: "accuracy", label: "Accuracy", value: "99.8%", improvement: "" },
-      { id: "table-support", label: "Table Support", value: "Excellent", improvement: "" },
-    ],
-    description:
-      "Knowhere - A professional document parsing engine that provides high accuracy and high-performance parsing services",
-  },
-  {
-    id: "unstructured",
-    name: "Unstructured",
-    resultImage: "/comparison/unstructured.html",
-    metrics: [
-      { id: "processing-time", label: "Processing Time", value: "420ms", improvement: "" },
-      { id: "accuracy", label: "Accuracy", value: "87.3%", improvement: "" },
-      { id: "table-support", label: "Table Support", value: "Fair", improvement: "" },
-    ],
-    description: "Unstructured - An open-source document processing tool",
-  },
-  {
-    id: "markitdown",
-    name: "Markitdown",
-    resultImage: "/comparison/markitdown.html",
-    metrics: [
-      { id: "processing-time", label: "Processing Time", value: "356ms", improvement: "" },
-      { id: "accuracy", label: "Accuracy", value: "82.1%", improvement: "" },
-      { id: "markdown-quality", label: "Markdown Quality", value: "Medium", improvement: "" },
-    ],
-    description: "Markitdown - Markdown conversion tool",
-  },
-];
-
-const originalInput = "/comparison/original-input.html";
-
-const hasHTMLShowcase = (productId: string) => {
-  return ["knowhere", "markitdown", "unstructured"].includes(productId);
-};
+import { allProducts } from "@/app/(landing)/_data/product-advantages";
+import type { CompetitorProductId, ProductId } from "@/app/(landing)/_types/comparison";
 
 type ComparisonPageClientProps = {
   productId: ProductId;
 };
 
+// Tab parser for nuqs
+const tabParser = parseAsStringLiteral(["knowhere", "unstructured", "markitdown"] as const);
+
 export function ComparisonPageClient({ productId }: ComparisonPageClientProps) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [mounted, setMounted] = useState(false);
+
+  // Use nuqs for tab state management (default to productId if it's a competitor)
+  const defaultTab = productId === "original" ? "knowhere" : (productId as CompetitorProductId);
+  const [currentTab, setCurrentTab] = useQueryState("tab", tabParser.withDefault(defaultTab));
 
   // Set mounted state for portal
   useEffect(() => {
@@ -76,64 +33,16 @@ export function ComparisonPageClient({ productId }: ComparisonPageClientProps) {
     return () => setMounted(false);
   }, []);
 
-  const currentProductId = productId;
-  const zoomLevel = parseZoomLevel(searchParams.get("zoom") ?? undefined);
+  // Get current comparison data based on active tab
+  const currentComparison = allProducts.find((c) => c.id === currentTab);
 
-  // Get current comparison data
-  const currentComparison =
-    currentProductId === "original"
-      ? null
-      : competitorComparisons.find((c) => c.id === currentProductId);
-
-  // Prepare image data for display
-  const originalImageData: ComparisonImage = {
-    src: originalInput,
-    alt: "Original Document",
-    label: "Original Input",
-    productId: "original-input",
-    useHTML: true,
-    metrics: {},
+  // Type-safe tab change handler
+  const handleTabChange = (value: string) => {
+    const product = allProducts.find((p) => p.id === value);
+    if (product) {
+      setCurrentTab(product.id);
+    }
   };
-
-  const resultImages: ComparisonImage[] = competitorComparisons.map((comparison) => {
-    const processingTime = comparison.metrics.find((m) => m.id === "processing-time")?.value;
-    const accuracy = comparison.metrics.find((m) => m.id === "accuracy")?.value;
-    const otherMetrics = comparison.metrics.reduce(
-      (acc, metric) => {
-        if (metric.id !== "processing-time" && metric.id !== "accuracy") {
-          acc[metric.label] = metric.value;
-        }
-        return acc;
-      },
-      {} as Record<string, string>
-    );
-
-    return {
-      src: comparison.resultImage,
-      alt: `${comparison.name} Output`,
-      label: comparison.name,
-      productId: comparison.id,
-      useHTML: hasHTMLShowcase(comparison.id),
-      metrics: {
-        processingTime,
-        accuracy,
-        ...otherMetrics,
-      },
-    };
-  });
-
-  const allImages: ComparisonImage[] = [originalImageData, ...resultImages];
-  const currentIndex = PRODUCT_INDEX_MAP[currentProductId];
-  const currentImage = allImages[currentIndex];
-
-  // Navigate to specific product (for "Other Comparisons" section)
-  const goToProduct = useCallback(
-    (targetProductId: string) => {
-      // Use router.push to ensure full page navigation instead of modal
-      router.push(`/comparison/${targetProductId}`);
-    },
-    [router]
-  );
 
   // Fullscreen modal handlers
   const openFullscreen = useCallback(() => {
@@ -143,6 +52,10 @@ export function ComparisonPageClient({ productId }: ComparisonPageClientProps) {
   const closeFullscreen = useCallback(() => {
     setIsFullscreen(false);
   }, []);
+
+  if (!currentComparison) {
+    return null;
+  }
 
   return (
     <>
@@ -181,118 +94,84 @@ export function ComparisonPageClient({ productId }: ComparisonPageClientProps) {
           </div>
         </header>
 
-        {/* Title - centered to viewport */}
-        <h1 className="text-2xl font-semibold absolute left-1/2 -translate-x-1/2">
-          {currentImage.label}
-        </h1>
-
         {/* Main content area */}
-        <main className="container mx-auto px-4 py-8 max-w-7xl">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Main image area - left side (2/3 width) */}
-            <div className="lg:col-span-2">
-              <div className="rounded-2xl border border-border/50 bg-card p-4">
-                {currentImage.useHTML && currentImage.productId ? (
-                  <div className="w-full h-[calc(100vh-16rem)] rounded-lg overflow-auto shadow-2xl">
-                    <HTMLShowcaseViewer
-                      productId={currentImage.productId}
-                      className="w-full h-full min-h-full"
-                      defaultZoom={zoomLevel}
-                      onMaximize={openFullscreen}
-                    />
-                  </div>
-                ) : (
-                  <Image
-                    src={currentImage.src}
-                    alt={currentImage.alt}
-                    width={1600}
-                    height={1200}
-                    className="w-full h-auto rounded-lg object-contain"
-                    priority
-                  />
-                )}
-              </div>
-            </div>
-
-            {/* Info sidebar - right side (1/3 width) */}
-            <div className="lg:col-span-1 space-y-6">
-              {/* Product info card */}
-              <div className="rounded-2xl border border-border/50 bg-card p-6">
-                <h2 className="text-2xl font-bold mb-4">{currentImage.label}</h2>
-
-                {/* Description */}
-                {currentProductId === "original" ? (
-                  <p className="text-sm text-muted-foreground mb-6">
-                    Labor Cost Calculation - Complex table with merged cells. This is the original
-                    Excel document converted to HTML format.
-                  </p>
-                ) : (
-                  currentComparison && (
-                    <p className="text-sm text-muted-foreground mb-6">
-                      {currentComparison.description}
-                    </p>
-                  )
-                )}
-
-                {/* Metrics */}
-                {currentImage.metrics && Object.keys(currentImage.metrics).length > 0 && (
-                  <div className="space-y-3">
-                    <h3 className="text-sm font-semibold text-muted-foreground uppercase">
-                      Performance Metrics
-                    </h3>
-                    {Object.entries(currentImage.metrics).map(
-                      ([key, value]) =>
-                        value && (
-                          <div
-                            key={key}
-                            className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
-                          >
-                            <span className="text-sm text-muted-foreground">{key}</span>
-                            <span className="text-lg font-semibold">{value}</span>
-                          </div>
-                        )
+        <main className="mx-auto px-4 py-8 max-w-[1600px]">
+          {/* Tab Navigation */}
+          <div className="mb-6">
+            <Tabs value={currentTab} onValueChange={handleTabChange} className="w-full">
+              <TabsList className="flex w-full max-w-md mx-auto  bg-muted/50 backdrop-blur-sm border border-border/50 p-1 rounded-xl">
+                {allProducts.map((product) => (
+                  <TabsTrigger
+                    key={product.id}
+                    value={product.id}
+                    className={cn(
+                      "relative flex-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all duration-300"
                     )}
-                  </div>
-                )}
-              </div>
+                  >
+                    {product.tabLabel}
+                    {/* Active indicator glow */}
+                    {currentTab === product.id && (
+                      <motion.div
+                        layoutId="activeDetailTab"
+                        className="absolute inset-0 bg-gradient-to-r from-primary to-accent rounded-lg blur-md opacity-50 -z-10"
+                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      />
+                    )}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+          </div>
 
-              {/* Other products navigation */}
-              <div className="rounded-2xl border border-border/50 bg-card p-6">
-                <h3 className="text-sm font-semibold text-muted-foreground uppercase mb-4">
-                  Other Comparisons
-                </h3>
-                <div className="space-y-2">
-                  {allImages.map((image, index) => {
-                    const imageProductId =
-                      image.productId === "original-input" ? "original" : image.productId;
-                    const isActive = index === currentIndex;
-                    return (
-                      <button
-                        type="button"
-                        key={image.src}
-                        onClick={() => !isActive && imageProductId && goToProduct(imageProductId)}
-                        disabled={isActive}
-                        className={`block w-full p-3 rounded-lg transition-colors text-left ${
-                          isActive
-                            ? "bg-primary text-primary-foreground cursor-default"
-                            : "bg-muted/50 hover:bg-muted cursor-pointer"
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">{image.label}</span>
-                          {isActive && (
-                            <span className="text-xs bg-primary-foreground/20 px-2 py-1 rounded">
-                              Current
-                            </span>
-                          )}
-                        </div>
-                      </button>
-                    );
-                  })}
+          {/* Content Area */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentTab}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-6"
+            >
+              {/* HTML Showcase - Wider display */}
+              <div className="rounded-2xl border border-border/50 bg-card p-4">
+                <div className="w-full h-[calc(100vh-20rem)] rounded-lg overflow-auto shadow-2xl">
+                  <HTMLShowcaseViewer
+                    productId={currentComparison.id}
+                    className="w-full h-full min-h-full"
+                    defaultZoom={100}
+                    onMaximize={openFullscreen}
+                  />
                 </div>
               </div>
-            </div>
-          </div>
+
+              {/* Product Info and Metrics */}
+              <div className="rounded-2xl  border border-border/50 bg-card p-6">
+                <h2 className="text-2xl font-bold mb-2">{currentComparison.name}</h2>
+                <p className="text-sm text-muted-foreground mb-6">
+                  {currentComparison.description}
+                </p>
+
+                {/* Metrics */}
+                {/* <div className='space-y-3'>
+                  <h3 className='text-sm font-semibold text-muted-foreground uppercase'>
+                    Performance Metrics
+                  </h3>
+                  <div className='grid grid-cols-1 md:grid-cols-3 gap-3'>
+                    {currentComparison.metrics.map((metric) => (
+                      <div
+                        key={metric.id}
+                        className='flex items-center justify-between p-3 rounded-lg bg-muted/50'
+                      >
+                        <span className='text-sm text-muted-foreground'>{metric.label}</span>
+                        <span className='text-lg font-semibold'>{metric.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div> */}
+              </div>
+            </motion.div>
+          </AnimatePresence>
         </main>
       </div>
 
@@ -310,7 +189,7 @@ export function ComparisonPageClient({ productId }: ComparisonPageClientProps) {
             >
               {/* Header with title and close button */}
               <header className="flex items-center justify-between p-4">
-                <h2 className="text-lg font-semibold text-white">{currentImage.label}</h2>
+                <h2 className="text-lg font-semibold text-white">{currentComparison.name}</h2>
                 <button
                   type="button"
                   onClick={closeFullscreen}
@@ -333,34 +212,22 @@ export function ComparisonPageClient({ productId }: ComparisonPageClientProps) {
                 >
                   <div className="w-full h-[calc(100vh-8rem)] rounded-lg overflow-auto shadow-2xl bg-background">
                     <HTMLShowcaseViewer
-                      productId={currentImage.productId || "knowhere"}
+                      productId={currentComparison.id}
                       className="w-full h-full min-h-full"
                       onMinimize={closeFullscreen}
-                      defaultZoom={zoomLevel}
+                      defaultZoom={100}
                     />
                   </div>
                   <div className="mt-4 text-center">
-                    <h3 className="text-xl font-semibold text-white">{currentImage.label}</h3>
-                    {currentProductId === "original" ? (
-                      <p className="mt-2 text-sm text-white/70">
-                        Labor Cost Calculation - Complex table with merged cells
-                      </p>
-                    ) : (
-                      currentComparison && (
-                        <>
-                          <p className="mt-2 text-sm text-white/70">
-                            {currentComparison.description}
-                          </p>
-                          <div className="mt-2 flex gap-4 text-sm text-white/70 justify-center">
-                            {currentComparison.metrics.map((metric) => (
-                              <span key={metric.id}>
-                                {metric.label}: {metric.value}
-                              </span>
-                            ))}
-                          </div>
-                        </>
-                      )
-                    )}
+                    <h3 className="text-xl font-semibold text-white">{currentComparison.name}</h3>
+                    <p className="mt-2 text-sm text-white/70">{currentComparison.description}</p>
+                    <div className="mt-2 flex gap-4 text-sm text-white/70 justify-center">
+                      {currentComparison.metrics.map((metric) => (
+                        <span key={metric.id}>
+                          {metric.label}: {metric.value}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </motion.div>
               </section>
