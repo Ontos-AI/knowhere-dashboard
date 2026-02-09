@@ -87,9 +87,13 @@ export default function ComparisonModal() {
       : competitorComparisons.find((c) => c.id === currentProductId) || competitorComparisons[0];
 
   // Close modal - use router.back() for intercepted routes
-  const handleClose = useCallback(() => {
-    router.back();
-  }, [router]);
+  const handleClose = useCallback(
+    (e?: React.MouseEvent) => {
+      e?.stopPropagation();
+      router.back();
+    },
+    [router]
+  );
 
   // Handle ESC key press
   useEffect(() => {
