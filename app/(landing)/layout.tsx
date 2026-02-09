@@ -1,6 +1,12 @@
 import { LenisProvider } from "@providers/lenis-provider";
 
-export default function LandingPageLayout({ children }: { children: React.ReactNode }) {
+export default function LandingPageLayout({
+  children,
+  modal,
+}: {
+  children: React.ReactNode;
+  modal?: React.ReactNode;
+}) {
   return (
     <div
       className="dark min-h-screen bg-background text-foreground"
@@ -46,7 +52,10 @@ export default function LandingPageLayout({ children }: { children: React.ReactN
         } as React.CSSProperties
       }
     >
-      <LenisProvider>{children}</LenisProvider>
+      <LenisProvider>
+        {children}
+        {modal}
+      </LenisProvider>
     </div>
   );
 }

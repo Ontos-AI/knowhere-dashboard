@@ -1,5 +1,5 @@
 /**
- * Shared types for lightbox gallery component
+ * Shared types for comparison components
  */
 
 export type ComparisonImage = {
@@ -14,11 +14,4 @@ export type ComparisonImage = {
     description?: string;
     [key: string]: string | undefined;
   };
-};
-
-export type LightboxProps = {
-  images: ComparisonImage[];
-  initialIndex: number;
-  isOpen: boolean;
-  onClose: () => void;
 };

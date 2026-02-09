@@ -12,10 +12,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { cn } from "@lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, ArrowUp, Check, Zap } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { HTMLShowcaseViewer } from "@/app/(landing)/_components/comparison-variants/html-showcase-viewer";
-import { LightboxGallery } from "@/app/(landing)/_components/comparison-variants/lightbox-variants/lightbox-gallery";
-import type { ComparisonImage } from "@/app/(landing)/_components/comparison-variants/lightbox-variants/types";
 
 // Type definitions
 type CompetitorMetric = {
@@ -136,9 +135,6 @@ const competitorComparisons: CompetitorComparison[] = [
   },
 ];
 
-// Original input - Excel file converted to HTML
-const originalInput = "/comparison/original-input.html";
-
 // Helper function to check if product has HTML showcase
 const hasHTMLShowcase = (productId: string) => {
   return ["knowhere", "markitdown", "unstructured"].includes(productId);
@@ -219,62 +215,9 @@ function MetricCard({ metric, index }: { metric: CompetitorMetric; index: number
 // Main component
 export function ComparisonTabs({ className }: ComparisonTabsProps) {
   const [activeTab, setActiveTab] = useState(competitorComparisons[0].id);
-
-  // Lightbox state
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const router = useRouter();
 
   const activeComparison = competitorComparisons.find((c) => c.id === activeTab);
-
-  // Prepare image data for lightbox
-  const originalImageData: ComparisonImage = {
-    src: originalInput,
-    alt: "Original Document",
-    label: "Original Input",
-    productId: "original-input",
-    useHTML: true, // Original input uses HTML showcase (converted from Excel)
-    metrics: {
-      description: "Labor Cost Calculation - Complex table with merged cells",
-    },
-  };
-
-  const resultImages: ComparisonImage[] = competitorComparisons.map((comparison) => {
-    // Find main metrics
-    const processingTime = comparison.metrics.find((m) => m.id === "processing-time")?.value;
-    const accuracy = comparison.metrics.find((m) => m.id === "accuracy")?.value;
-
-    // Collect other metrics dynamically
-    const otherMetrics = comparison.metrics.reduce(
-      (acc, metric) => {
-        if (metric.id !== "processing-time" && metric.id !== "accuracy") {
-          acc[metric.label] = metric.value;
-        }
-        return acc;
-      },
-      {} as Record<string, string>
-    );
-
-    return {
-      src: comparison.resultImage,
-      alt: `${comparison.name} Output`,
-      label: comparison.name,
-      productId: comparison.id,
-      useHTML: hasHTMLShowcase(comparison.id), // Use HTML for products with showcases
-      metrics: {
-        processingTime,
-        accuracy,
-        ...otherMetrics,
-      },
-    };
-  });
-
-  const allImages: ComparisonImage[] = [originalImageData, ...resultImages];
-
-  // Handle image click
-  const handleImageClick = (index: number) => {
-    setSelectedImageIndex(index);
-    setLightboxOpen(true);
-  };
 
   const handleShowMore = () => {
     console.log(`Show more details for: ${activeTab}`);
@@ -322,32 +265,21 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
               <motion.div
                 whileHover={{ y: -5 }}
                 transition={{ duration: 0.3 }}
-                className="glass rounded-2xl border border-border/50 p-4 hover:border-primary/50 transition-all group"
+                className="glass rounded-2xl border border-border/50 p-4 hover:border-primary/50 transition-all group cursor-pointer"
+                onClick={() => router.push("/comparison/original")}
               >
-                <div
-                  role="button"
-                  tabIndex={0}
-                  className="relative w-full cursor-pointer"
-                  onClick={() => handleImageClick(0)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      handleImageClick(0);
-                    }
-                  }}
-                  aria-label="View original document in lightbox"
-                >
-                  <div className="relative">
-                    {/* Glow effect */}
-                    <div className="absolute inset-0 bg-primary/10 rounded-lg blur-xl opacity-50" />
-                    <div className="relative h-[500px]">
-                      <HTMLShowcaseViewer
-                        productId="original-input"
-                        onMaximize={() => handleImageClick(0)}
-                        defaultZoom={50}
-                        className="w-full h-full"
-                      />
-                    </div>
+                <div className="relative">
+                  {/* Glow effect */}
+                  <div className="absolute inset-0 bg-primary/10 rounded-lg blur-xl opacity-50" />
+                  <div className="relative h-[500px]">
+                    <HTMLShowcaseViewer
+                      productId="original-input"
+                      onMaximize={() => {
+                        router.push("/comparison/original");
+                      }}
+                      defaultZoom={50}
+                      className="w-full h-full"
+                    />
                   </div>
                 </div>
                 <p className="text-sm text-muted-foreground mt-4 text-center">
@@ -423,51 +355,36 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
                           className="space-y-6"
                         >
                           {/* Result Image */}
-                          <div className="glass rounded-2xl border border-border/50 p-4 group">
-                            <div
-                              role="button"
-                              tabIndex={0}
-                              className="relative w-full cursor-pointer"
-                              onClick={() => {
-                                const comparisonIndex =
-                                  competitorComparisons.findIndex((c) => c.id === comparison.id) +
-                                  1;
-                                handleImageClick(comparisonIndex);
-                              }}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter" || e.key === " ") {
-                                  e.preventDefault();
-                                  const comparisonIndex =
-                                    competitorComparisons.findIndex((c) => c.id === comparison.id) +
-                                    1;
-                                  handleImageClick(comparisonIndex);
-                                }
-                              }}
-                              aria-label={`View ${comparison.name} output in lightbox`}
-                            >
-                              <div className="relative">
-                                <div className="absolute inset-0 bg-accent/10 rounded-lg blur-xl opacity-50" />
-                                {hasHTMLShowcase(comparison.id) ? (
-                                  <div className="relative h-[500px]">
-                                    <HTMLShowcaseViewer
-                                      productId={comparison.id}
-                                      onMaximize={() => {
-                                        const comparisonIndex =
-                                          competitorComparisons.findIndex(
-                                            (c) => c.id === comparison.id
-                                          ) + 1;
-                                        handleImageClick(comparisonIndex);
-                                      }}
-                                      className="w-full h-full"
-                                    />
-                                  </div>
-                                ) : (
-                                  <ImagePlaceholder
-                                    label={`${comparison.name} Result`}
-                                    className="relative"
+                          <div
+                            role="button"
+                            tabIndex={0}
+                            className="glass rounded-2xl border border-border/50 p-4 group cursor-pointer"
+                            onClick={() => router.push(`/comparison/${comparison.id}`)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                router.push(`/comparison/${comparison.id}`);
+                              }
+                            }}
+                          >
+                            <div className="relative">
+                              <div className="absolute inset-0 bg-accent/10 rounded-lg blur-xl opacity-50" />
+                              {hasHTMLShowcase(comparison.id) ? (
+                                <div className="relative h-[500px]">
+                                  <HTMLShowcaseViewer
+                                    productId={comparison.id}
+                                    onMaximize={() => {
+                                      router.push(`/comparison/${comparison.id}`);
+                                    }}
+                                    className="w-full h-full"
                                   />
-                                )}
-                              </div>
+                                </div>
+                              ) : (
+                                <ImagePlaceholder
+                                  label={`${comparison.name} Result`}
+                                  className="relative"
+                                />
+                              )}
                             </div>
                             {comparison.description && (
                               <p className="text-sm text-muted-foreground mt-4 text-center">
@@ -524,53 +441,37 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
                       className="space-y-6"
                     >
                       {/* Result Image */}
-                      <div className="glass rounded-2xl border border-border/50 p-4 group">
-                        <div
-                          role="button"
-                          tabIndex={0}
-                          className="relative w-full cursor-pointer"
-                          onClick={() => {
-                            const comparisonIndex =
-                              competitorComparisons.findIndex((c) => c.id === activeComparison.id) +
-                              1;
-                            handleImageClick(comparisonIndex);
-                          }}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" || e.key === " ") {
-                              e.preventDefault();
-                              const comparisonIndex =
-                                competitorComparisons.findIndex(
-                                  (c) => c.id === activeComparison.id
-                                ) + 1;
-                              handleImageClick(comparisonIndex);
-                            }
-                          }}
-                          aria-label={`View ${activeComparison.name} output in lightbox`}
-                        >
-                          <div className="relative">
-                            <div className="absolute inset-0 bg-accent/10 rounded-lg blur-xl opacity-50" />
-                            {hasHTMLShowcase(activeComparison.id) ? (
-                              <div className="relative h-[500px]">
-                                <HTMLShowcaseViewer
-                                  productId={activeComparison.id}
-                                  label={activeComparison.name}
-                                  onMaximize={() => {
-                                    const comparisonIndex =
-                                      competitorComparisons.findIndex(
-                                        (c) => c.id === activeComparison.id
-                                      ) + 1;
-                                    handleImageClick(comparisonIndex);
-                                  }}
-                                  className="w-full h-full"
-                                />
-                              </div>
-                            ) : (
-                              <ImagePlaceholder
-                                label={`${activeComparison.name} Result`}
-                                className="relative"
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        className="glass rounded-2xl border border-border/50 p-4 group cursor-pointer"
+                        onClick={() => router.push(`/comparison/${activeComparison.id}`)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            router.push(`/comparison/${activeComparison.id}`);
+                          }
+                        }}
+                      >
+                        <div className="relative">
+                          <div className="absolute inset-0 bg-accent/10 rounded-lg blur-xl opacity-50" />
+                          {hasHTMLShowcase(activeComparison.id) ? (
+                            <div className="relative h-[500px]">
+                              <HTMLShowcaseViewer
+                                productId={activeComparison.id}
+                                label={activeComparison.name}
+                                onMaximize={() => {
+                                  router.push(`/comparison/${activeComparison.id}`);
+                                }}
+                                className="w-full h-full"
                               />
-                            )}
-                          </div>
+                            </div>
+                          ) : (
+                            <ImagePlaceholder
+                              label={`${activeComparison.name} Result`}
+                              className="relative"
+                            />
+                          )}
                         </div>
                         {activeComparison.description && (
                           <p className="text-sm text-muted-foreground mt-4 text-center">
@@ -593,14 +494,6 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
           </motion.div>
         </div>
       </div>
-
-      {/* Lightbox Gallery */}
-      <LightboxGallery
-        images={allImages}
-        initialIndex={selectedImageIndex}
-        isOpen={lightboxOpen}
-        onClose={() => setLightboxOpen(false)}
-      />
     </section>
   );
 }

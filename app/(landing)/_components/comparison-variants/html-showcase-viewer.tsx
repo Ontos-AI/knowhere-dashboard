@@ -28,6 +28,7 @@ export function HTMLShowcaseViewer({
   maxZoom = 200,
 }: HTMLShowcaseViewerProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [zoom, setZoom] = useState(defaultZoom);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -36,6 +37,45 @@ export function HTMLShowcaseViewer({
 
   // HTML showcase source
   const htmlSrc = `/comparison/${productId}.html`;
+
+  // Storage key for scroll position
+  const scrollStorageKey = `html-viewer-scroll-${productId}`;
+
+  // Save scroll position to sessionStorage
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const scrollTop = container.scrollTop;
+      const scrollLeft = container.scrollLeft;
+      sessionStorage.setItem(scrollStorageKey, JSON.stringify({ scrollTop, scrollLeft }));
+    };
+
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, [scrollStorageKey]);
+
+  // Restore scroll position from sessionStorage
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const savedPosition = sessionStorage.getItem(scrollStorageKey);
+    if (savedPosition) {
+      try {
+        const { scrollTop, scrollLeft } = JSON.parse(savedPosition);
+        // Restore scroll position after a short delay to ensure content is loaded
+        const timer = setTimeout(() => {
+          container.scrollTop = scrollTop;
+          container.scrollLeft = scrollLeft;
+        }, 100);
+        return () => clearTimeout(timer);
+      } catch (error) {
+        console.error("Failed to restore scroll position:", error);
+      }
+    }
+  }, [scrollStorageKey]);
 
   // Zoom controls
   const handleZoomIn = (e: React.MouseEvent) => {
@@ -75,8 +115,7 @@ export function HTMLShowcaseViewer({
   }, [zoom]); // Re-apply when zoom changes
 
   return (
-    <div
-      role="region"
+    <section
       aria-label="HTML showcase viewer"
       className={cn("relative w-full h-full group", className)}
       onMouseEnter={() => setIsHovered(true)}
@@ -95,6 +134,7 @@ export function HTMLShowcaseViewer({
         animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : -10 }}
         transition={{ duration: 0.2 }}
         className="absolute top-2 right-2 z-10 flex items-center gap-1 bg-background/90 backdrop-blur-sm rounded-md border border-border/50 p-1"
+        onClick={(e) => e.stopPropagation()}
       >
         <Button
           variant="ghost"
@@ -149,7 +189,10 @@ export function HTMLShowcaseViewer({
       )}
 
       {/* iframe container */}
-      <div className="relative w-full h-full overflow-auto rounded-lg border border-border/50 bg-background">
+      <div
+        ref={containerRef}
+        className="relative w-full h-full overflow-auto rounded-lg border border-border/50 bg-background"
+      >
         <iframe
           ref={iframeRef}
           src={htmlSrc}
@@ -167,6 +210,6 @@ export function HTMLShowcaseViewer({
           }}
         />
       </div>
-    </div>
+    </section>
   );
 }
