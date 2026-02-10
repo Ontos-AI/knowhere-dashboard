@@ -1,4 +1,4 @@
-import { signedRequest } from "@server/external-api/request";
+import { jwtRequest } from "@server/external-api/request";
 
 // ============================================
 // Type definitions
@@ -34,7 +34,7 @@ export async function listWebhookSecrets({
 }: {
   userId: string;
 }): Promise<SecretListResponse> {
-  return signedRequest({ method: "GET", path: "/v1/webhooks/secrets", userId });
+  return jwtRequest({ method: "GET", path: "/v1/webhooks/secrets", userId });
 }
 
 export async function createWebhookSecret({
@@ -44,7 +44,7 @@ export async function createWebhookSecret({
   userId: string;
   data: SecretCreateRequest;
 }): Promise<WebhookSecretFull> {
-  return signedRequest({ method: "POST", path: "/v1/webhooks/secrets", userId, body: data });
+  return jwtRequest({ method: "POST", path: "/v1/webhooks/secrets", userId, body: data });
 }
 
 export async function revokeWebhookSecret({
@@ -54,5 +54,5 @@ export async function revokeWebhookSecret({
   userId: string;
   id: string;
 }): Promise<void> {
-  return signedRequest({ method: "DELETE", path: `/v1/webhooks/secrets/${id}`, userId });
+  return jwtRequest({ method: "DELETE", path: `/v1/webhooks/secrets/${id}`, userId });
 }
