@@ -5,6 +5,7 @@ import { jobsRouter } from "@server/routers/jobs";
 import { subscriptionsRouter } from "@server/routers/subscriptions";
 import { usageRouter } from "@server/routers/usage";
 import { usersRouter } from "@server/routers/users";
+import { webhookSecretsRouter } from "@server/routers/webhook-secrets";
 
 // Main application router — combines all sub-routers into a single oRPC router
 export const appRouter = base.router({
@@ -14,6 +15,7 @@ export const appRouter = base.router({
   subscriptions: subscriptionsRouter,
   usage: usageRouter,
   jobs: jobsRouter,
+  webhookSecrets: webhookSecretsRouter,
 });
 
 // Export the router type for client-side type inference

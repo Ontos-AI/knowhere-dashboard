@@ -6,7 +6,7 @@ import { ScrollArea } from "@components/ui/scroll-area";
 import { Separator } from "@components/ui/separator";
 import { Sheet, SheetContent } from "@components/ui/sheet";
 import { cn } from "@lib/utils";
-import { Key, LayoutDashboard, LogOut, Settings } from "lucide-react";
+import { Key, LayoutDashboard, LogOut, Settings, Webhook } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -28,6 +28,7 @@ export function Sidebar({ user, open, onOpenChange }: SidebarProps) {
   const navigation = [
     { name: t("usage"), href: "/usage", icon: LayoutDashboard },
     { name: t("apiKeys"), href: "/api-keys", icon: Key },
+    { name: t("webhooks"), href: "/webhooks/secrets", icon: Webhook },
     { name: t("settings"), href: "/settings", icon: Settings },
   ];
 
@@ -53,7 +54,7 @@ export function Sidebar({ user, open, onOpenChange }: SidebarProps) {
       <ScrollArea className="flex-1 px-3 py-4">
         <nav className="space-y-1">
           {navigation.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
             const IconComponent = item.icon;
             return (
               <Link
