@@ -1,9 +1,13 @@
 "use client";
 
 import { Button } from "@components/ui/button";
-import { CheckCircle2, ExternalLink, XCircle } from "lucide-react";
+import { CheckCircle2, Eye, XCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { LiveDemoConfig } from "@/app/(landing)/_data/versus-pages";
+import {
+  type DemoContent,
+  DemoDetailModal,
+} from "@/app/(landing)/versus/[product]/_components/demo-detail-modal";
 import { usePreloadHtml } from "@/app/(landing)/versus/[product]/_hooks/use-preload-html";
 
 type LiveDemoSectionProps = {
@@ -17,9 +21,17 @@ type IframeViewProps = {
   highlights: string[];
   isKnowhere?: boolean;
   shouldLoad: boolean;
+  onViewDetails: () => void;
 };
 
-function IframeView({ title, src, highlights, isKnowhere, shouldLoad }: IframeViewProps) {
+function IframeView({
+  title,
+  src,
+  highlights,
+  isKnowhere,
+  shouldLoad,
+  onViewDetails,
+}: IframeViewProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
@@ -36,11 +48,14 @@ function IframeView({ title, src, highlights, isKnowhere, shouldLoad }: IframeVi
         >
           {title}
         </h3>
-        <Button asChild variant="outline" size="sm" className="gap-2 hover:border-primary/50">
-          <a href={src} target="_blank" rel="noopener noreferrer">
-            <ExternalLink className="w-4 h-4" />
-            Open in New Tab
-          </a>
+        <Button
+          onClick={onViewDetails}
+          variant="outline"
+          size="sm"
+          className="gap-2 hover:border-primary/50"
+        >
+          <Eye className="w-4 h-4" />
+          View Details
         </Button>
       </div>
 
@@ -65,11 +80,9 @@ function IframeView({ title, src, highlights, isKnowhere, shouldLoad }: IframeVi
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-card/80 backdrop-blur-sm">
             <div className="text-center space-y-3">
               <p className="text-sm text-destructive">Failed to load demo</p>
-              <Button asChild variant="outline" size="sm">
-                <a href={src} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  View in New Tab
-                </a>
+              <Button onClick={onViewDetails} variant="outline" size="sm">
+                <Eye className="w-4 h-4 mr-2" />
+                View Details
               </Button>
             </div>
           </div>
@@ -117,6 +130,10 @@ export function LiveDemoSection({ data, competitorName }: LiveDemoSectionProps) 
   const [shouldLoadDemo, setShouldLoadDemo] = useState(false);
   const demoRef = useRef<HTMLDivElement>(null);
 
+  // Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState<DemoContent | null>(null);
+
   // Intersection Observer for lazy loading
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -140,6 +157,43 @@ export function LiveDemoSection({ data, competitorName }: LiveDemoSectionProps) 
     shouldLoadDemo ? [data.originalFile, data.knowhereOutput, data.competitorOutput] : []
   );
 
+  // Modal handlers
+  const handleOpenKnowhereDetails = () => {
+    setModalContent({
+      title: "Knowhere",
+      htmlUrl: data.knowhereOutput,
+      highlights: data.highlights.knowhere,
+      isKnowhere: true,
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleOpenCompetitorDetails = () => {
+    setModalContent({
+      title: competitorName,
+      htmlUrl: data.competitorOutput,
+      highlights: data.highlights.competitor,
+      isKnowhere: false,
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleOpenOriginalDocument = () => {
+    setModalContent({
+      title: "Original Input Document",
+      htmlUrl: data.originalFile,
+      highlights: [],
+      isKnowhere: false,
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    // Clear content after animation completes
+    setTimeout(() => setModalContent(null), 200);
+  };
+
   return (
     <section className="relative w-full py-16 md:py-24 overflow-hidden">
       <div className="container mx-auto px-4">
@@ -161,12 +215,14 @@ export function LiveDemoSection({ data, competitorName }: LiveDemoSectionProps) 
               highlights={data.highlights.knowhere}
               isKnowhere
               shouldLoad={shouldLoadDemo}
+              onViewDetails={handleOpenKnowhereDetails}
             />
             <IframeView
               title={competitorName}
               src={data.competitorOutput}
               highlights={data.highlights.competitor}
               shouldLoad={shouldLoadDemo}
+              onViewDetails={handleOpenCompetitorDetails}
             />
           </div>
 
@@ -178,29 +234,32 @@ export function LiveDemoSection({ data, competitorName }: LiveDemoSectionProps) 
               highlights={data.highlights.knowhere}
               isKnowhere
               shouldLoad={shouldLoadDemo}
+              onViewDetails={handleOpenKnowhereDetails}
             />
             <IframeView
               title={competitorName}
               src={data.competitorOutput}
               highlights={data.highlights.competitor}
               shouldLoad={shouldLoadDemo}
+              onViewDetails={handleOpenCompetitorDetails}
             />
           </div>
 
           {/* View Original Input button */}
           <div className="mt-8 text-center">
             <Button
-              asChild
+              onClick={handleOpenOriginalDocument}
               variant="outline"
               className="gap-2 hover:border-primary/50 hover:bg-card/50"
             >
-              <a href={data.originalFile} target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="w-4 h-4" />
-                View Original Input Document
-              </a>
+              <Eye className="w-4 h-4" />
+              View Original Input Document
             </Button>
           </div>
         </div>
+
+        {/* Demo Detail Modal */}
+        <DemoDetailModal isOpen={isModalOpen} onClose={handleCloseModal} content={modalContent} />
       </div>
     </section>
   );
