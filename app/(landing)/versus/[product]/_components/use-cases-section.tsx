@@ -29,7 +29,7 @@ type UseCaseCardProps = {
 function UseCaseCard({ useCase, competitorName }: UseCaseCardProps) {
   // Get icon component dynamically
   const IconComponent =
-    (LucideIcons as Record<string, typeof LucideIcons.FileText>)[useCase.icon] ||
+    (LucideIcons as unknown as Record<string, typeof LucideIcons.FileText>)[useCase.icon] ||
     LucideIcons.FileText;
 
   return (
