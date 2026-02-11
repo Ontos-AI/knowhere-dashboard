@@ -104,20 +104,14 @@ export function EnhancedCapabilities() {
             >
               <div className="h-full glass rounded-2xl border border-border/50 p-6 hover:border-primary/50 transition-all duration-300 cursor-pointer">
                 {/* Hover Glow Effect */}
-                <motion.div
+                <div
                   className={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-xl ${
                     capability.color === "primary" ? "bg-primary/20" : "bg-accent/20"
                   }`}
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.3 }}
                 />
 
-                {/* Icon with Animation */}
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
-                  transition={{ duration: 0.5 }}
-                  className="mb-4"
-                >
+                {/* Icon */}
+                <div className="mb-4">
                   <div className="relative inline-block">
                     <div
                       className={`absolute inset-0 rounded-lg blur-md ${
@@ -138,7 +132,7 @@ export function EnhancedCapabilities() {
                       />
                     </div>
                   </div>
-                </motion.div>
+                </div>
 
                 {/* Content */}
                 <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
@@ -147,25 +141,6 @@ export function EnhancedCapabilities() {
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {capability.description}
                 </p>
-
-                {/* Hover Indicator */}
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  whileHover={{ opacity: 1, y: 0 }}
-                  className="mt-4 text-sm font-medium text-primary flex items-center gap-2"
-                >
-                  Learn more
-                  <motion.span
-                    animate={{ x: [0, 4, 0] }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Number.POSITIVE_INFINITY,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    →
-                  </motion.span>
-                </motion.div>
               </div>
             </motion.div>
           ))}

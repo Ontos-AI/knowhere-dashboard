@@ -58,7 +58,7 @@ export function AdvantageDescription({
 
         {/* Show More button */}
         <Button
-          onClick={() => router.push(`/comparison/${productId}`, { scroll: false })}
+          onClick={() => router.push(`/versus/${productId}`, { scroll: false })}
           className="ml-auto flex-shrink-0 h-auto px-4 py-3 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl group"
         >
           <span>Show More</span>

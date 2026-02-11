@@ -38,25 +38,6 @@ const stages: Stage[] = [
   },
 ];
 
-function FlowingParticle({ delay }: { delay: number }) {
-  return (
-    <motion.div
-      className="absolute top-1/2 left-0 w-2 h-2 rounded-full bg-primary/60"
-      initial={{ x: 0, opacity: 0 }}
-      animate={{
-        x: ["0%", "100%"],
-        opacity: [0, 1, 1, 0],
-      }}
-      transition={{
-        duration: 3,
-        delay,
-        repeat: Number.POSITIVE_INFINITY,
-        ease: "linear",
-      }}
-    />
-  );
-}
-
 export function DataTransformationViz() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.3 });
@@ -86,51 +67,32 @@ export function DataTransformationViz() {
         {/* Desktop: Horizontal Flow */}
         <div className="hidden lg:block">
           <div className="relative">
-            {/* Connecting Lines with Flowing Particles */}
+            {/* Connecting Line */}
             <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-border via-primary/50 to-border -translate-y-1/2 z-0" />
-
-            {/* Animated Particles */}
-            {isInView && (
-              <>
-                <FlowingParticle delay={0} />
-                <FlowingParticle delay={0.5} />
-                <FlowingParticle delay={1} />
-                <FlowingParticle delay={1.5} />
-                <FlowingParticle delay={2} />
-              </>
-            )}
 
             <div className="grid grid-cols-4 gap-8 relative z-10">
               {stages.map((stage, index) => (
                 <motion.div
                   key={stage.title}
-                  initial={{ opacity: 0, y: 40, scale: 0.8 }}
-                  animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.6, delay: index * 0.15 }}
                   className="relative"
                 >
                   {/* Stage Card */}
-                  <motion.div
-                    whileHover={{ scale: 1.05, y: -5 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                    className="group glass rounded-2xl border border-border/50 p-6 hover:border-primary/50 transition-all duration-300 cursor-pointer"
-                  >
+                  <div className="group glass rounded-2xl border border-border/50 p-6 hover:border-primary/50 transition-all duration-300 cursor-pointer">
                     {/* Glow Effect */}
                     <div className="absolute inset-0 rounded-2xl bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity blur-xl -z-10" />
 
                     {/* Icon */}
-                    <motion.div
-                      whileHover={{ rotate: [0, -10, 10, 0] }}
-                      transition={{ duration: 0.5 }}
-                      className="mb-4"
-                    >
+                    <div className="mb-4">
                       <div className="relative inline-block">
                         <div className="absolute inset-0 bg-primary/30 rounded-full blur-lg" />
                         <div className="relative h-16 w-16 rounded-full bg-card border border-primary/20 flex items-center justify-center group-hover:border-primary/50 transition-colors">
                           <stage.icon className={`h-8 w-8 ${stage.color}`} />
                         </div>
                       </div>
-                    </motion.div>
+                    </div>
 
                     {/* Content */}
                     <h3 className="text-xl font-semibold font-heading mb-2">{stage.title}</h3>
@@ -140,24 +102,18 @@ export function DataTransformationViz() {
                     <div className="absolute top-4 right-4 h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
                       <span className="text-sm font-bold font-mono text-primary">{index + 1}</span>
                     </div>
-                  </motion.div>
+                  </div>
 
                   {/* Arrow (except last) */}
                   {index < stages.length - 1 && (
                     <motion.div
                       initial={{ opacity: 0, x: -20 }}
                       animate={isInView ? { opacity: 1, x: 0 } : {}}
-                      transition={{ duration: 0.6, delay: index * 0.2 + 0.3 }}
+                      transition={{ duration: 0.6, delay: index * 0.15 + 0.2 }}
                       className="absolute top-1/2 -right-4 -translate-y-1/2 z-20"
                     >
                       <div className="text-primary/50">
-                        <svg
-                          width="32"
-                          height="32"
-                          viewBox="0 0 32 32"
-                          fill="none"
-                          className="animate-pulse"
-                        >
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
                           <title>Arrow</title>
                           <path
                             d="M8 16H24M24 16L18 10M24 16L18 22"
@@ -235,15 +191,14 @@ export function DataTransformationViz() {
             { label: "Accuracy Rate", value: "99.8%" },
             { label: "File Formats", value: "50+" },
             { label: "Daily Docs", value: "100K+" },
-          ].map((stat, _index) => (
-            <motion.div
+          ].map((stat) => (
+            <div
               key={stat.label}
-              whileHover={{ scale: 1.05 }}
-              className="text-center p-4 rounded-lg glass border border-border/50"
+              className="text-center p-4 rounded-lg glass border border-border/50 hover:border-primary/30 transition-colors"
             >
               <div className="text-2xl font-bold font-mono text-primary mb-1">{stat.value}</div>
               <div className="text-xs text-muted-foreground">{stat.label}</div>
-            </motion.div>
+            </div>
           ))}
         </motion.div>
       </div>

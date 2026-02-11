@@ -23,19 +23,19 @@ export const ANIMATION_DURATION = {
 // Particle system configuration
 export const PARTICLE_CONFIG = {
   desktop: {
-    count: 150,
+    count: 180,
     speed: 0.5,
-    connectionDistance: 100,
+    connectionDistance: 120,
   },
   tablet: {
-    count: 75,
+    count: 90,
     speed: 0.3,
-    connectionDistance: 80,
+    connectionDistance: 100,
   },
   mobile: {
-    count: 30,
+    count: 40,
     speed: 0.2,
-    connectionDistance: 60,
+    connectionDistance: 80,
   },
 } as const;
 

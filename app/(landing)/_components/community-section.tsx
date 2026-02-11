@@ -71,21 +71,16 @@ export function CommunitySection() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
-              whileHover={{ scale: 1.05, y: -5 }}
               className="glass rounded-2xl border border-border/50 p-6 text-center hover:border-primary/50 transition-all cursor-pointer"
             >
-              <motion.div
-                whileHover={{ rotate: [0, -10, 10, 0] }}
-                transition={{ duration: 0.5 }}
-                className="mb-3"
-              >
+              <div className="mb-3">
                 <div className="relative inline-block">
                   <div className="absolute inset-0 bg-primary/30 rounded-lg blur-md" />
                   <div className="relative h-10 w-10 mx-auto rounded-lg bg-card border border-primary/20 flex items-center justify-center">
                     <stat.icon className="h-5 w-5 text-primary" />
                   </div>
                 </div>
-              </motion.div>
+              </div>
               <div className="text-2xl font-bold font-mono text-foreground mb-1">{stat.value}</div>
               <div className="text-xs text-muted-foreground">{stat.label}</div>
             </motion.div>
@@ -125,15 +120,15 @@ export function CommunitySection() {
 
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
-                <div className="text-xl font-bold font-mono text-accent mb-1">⭐ 53.6K</div>
+                <div className="text-xl font-bold font-mono text-accent mb-1">53.6K</div>
                 <div className="text-xs text-muted-foreground">Stars</div>
               </div>
               <div>
-                <div className="text-xl font-bold font-mono text-primary mb-1">🍴 1.2K</div>
+                <div className="text-xl font-bold font-mono text-primary mb-1">1.2K</div>
                 <div className="text-xs text-muted-foreground">Forks</div>
               </div>
               <div>
-                <div className="text-xl font-bold font-mono text-accent mb-1">📊 Active</div>
+                <div className="text-xl font-bold font-mono text-accent mb-1">Active</div>
                 <div className="text-xs text-muted-foreground">Development</div>
               </div>
             </div>
@@ -149,18 +144,17 @@ export function CommunitySection() {
           className="flex flex-wrap items-center justify-center gap-4"
         >
           {socialLinks.map((link) => (
-            <motion.div key={link.name} whileHover={{ scale: 1.05 }}>
-              <Button
-                variant="outline"
-                className={`h-12 px-6 border-border/50 hover:border-primary/50 ${link.color} transition-colors`}
-                asChild
-              >
-                <Link href={link.href} target="_blank" rel="noopener noreferrer">
-                  <link.icon className="h-5 w-5 mr-2" />
-                  {link.name}
-                </Link>
-              </Button>
-            </motion.div>
+            <Button
+              key={link.name}
+              variant="outline"
+              className={`h-12 px-6 border-border/50 hover:border-primary/50 ${link.color} transition-colors`}
+              asChild
+            >
+              <Link href={link.href} target="_blank" rel="noopener noreferrer">
+                <link.icon className="h-5 w-5 mr-2" />
+                {link.name}
+              </Link>
+            </Button>
           ))}
         </motion.div>
       </div>

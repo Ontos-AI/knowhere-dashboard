@@ -68,17 +68,14 @@ function MetricCard({ metric, index }: MetricCardProps) {
         {/* Value and improvement */}
         <div className="flex flex-col items-center">
           {/* Gradient number */}
-          <motion.span
-            initial={{ scale: 1 }}
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 0.6, delay: index * 0.1 + 0.2 }}
+          <span
             className="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent whitespace-nowrap"
             style={{
               backgroundSize: "200% 100%",
             }}
           >
             {metric.value}
-          </motion.span>
+          </span>
           <span className="text-xs text-muted-foreground font-medium whitespace-nowrap">
             {metric.improvement}
           </span>
@@ -245,7 +242,7 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
                     {/* Show More button - full width on mobile */}
                     <Button
                       onClick={() =>
-                        router.push(`/comparison/${activeComparison.id}`, { scroll: false })
+                        router.push(`/versus/${activeComparison.id}`, { scroll: false })
                       }
                       className="w-full h-auto px-4 py-3 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl group"
                     >

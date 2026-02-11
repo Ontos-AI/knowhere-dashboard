@@ -50,7 +50,7 @@ export function ParticleBackground() {
         vx: (Math.random() - 0.5) * config.speed,
         vy: (Math.random() - 0.5) * config.speed,
         radius: Math.random() * 2 + 1,
-        alpha: Math.random() * 0.5 + 0.2,
+        alpha: Math.random() * 0.5 + 0.3,
       });
     }
 
@@ -117,7 +117,7 @@ export function ParticleBackground() {
             ctx.beginPath();
             ctx.moveTo(particle.x, particle.y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            const alpha = (1 - distance / config.connectionDistance) * 0.3;
+            const alpha = (1 - distance / config.connectionDistance) * 0.5;
             ctx.strokeStyle = `hsla(200, 100%, 45%, ${alpha})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
@@ -145,7 +145,7 @@ export function ParticleBackground() {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 pointer-events-none"
-      style={{ opacity: 0.6 }}
+      style={{ opacity: 0.8 }}
     />
   );
 }

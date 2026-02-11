@@ -185,10 +185,7 @@ export function ProductComparison() {
 
                   {/* Knowhere Status */}
                   <div className="flex items-center justify-center">
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      className="flex items-center gap-2 text-accent"
-                    >
+                    <div className="flex items-center gap-2 text-accent">
                       <div className="relative">
                         <div className="absolute inset-0 bg-accent/20 rounded-full blur-md group-hover:bg-accent/30 transition-colors" />
                         <Check className="h-5 w-5 relative" />
@@ -196,7 +193,7 @@ export function ProductComparison() {
                       <span className="text-sm font-medium hidden sm:inline">
                         {item.knowhere === "excellent" ? "Excellent" : "Good"}
                       </span>
-                    </motion.div>
+                    </div>
                   </div>
                 </motion.div>
               ))}
@@ -204,27 +201,18 @@ export function ProductComparison() {
 
             {/* Stats Footer */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 bg-card/30 border-t border-border/50">
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="text-center p-4 rounded-lg bg-accent/10 border border-accent/20"
-              >
+              <div className="text-center p-4 rounded-lg bg-accent/10 border border-accent/20 hover:border-accent/30 transition-colors">
                 <div className="text-2xl font-bold font-mono text-accent mb-1">+23%</div>
                 <div className="text-sm text-muted-foreground">Higher Accuracy</div>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="text-center p-4 rounded-lg bg-primary/10 border border-primary/20"
-              >
+              </div>
+              <div className="text-center p-4 rounded-lg bg-primary/10 border border-primary/20 hover:border-primary/30 transition-colors">
                 <div className="text-2xl font-bold font-mono text-primary mb-1">2.5x</div>
                 <div className="text-sm text-muted-foreground">Faster Processing</div>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="text-center p-4 rounded-lg bg-accent/10 border border-accent/20"
-              >
+              </div>
+              <div className="text-center p-4 rounded-lg bg-accent/10 border border-accent/20 hover:border-accent/30 transition-colors">
                 <div className="text-2xl font-bold font-mono text-accent mb-1">99.8%</div>
                 <div className="text-sm text-muted-foreground">Quality Score</div>
-              </motion.div>
+              </div>
             </div>
           </div>
         </motion.div>
