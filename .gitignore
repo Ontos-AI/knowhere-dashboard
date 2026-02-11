@@ -39,6 +39,6 @@ pnpm-debug.log*
 .claude
 .cursor
 CLAUDE.md
-/spec
+.spec
 
 .playwright*

@@ -2,7 +2,7 @@
 
 import { cn } from "@lib/utils";
 import { motion } from "framer-motion";
-import { Check, ChevronRight } from "lucide-react";
+import { Check, ChevronRight, ExternalLink } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
@@ -62,7 +62,7 @@ export function AdvantageDescription({
           className="ml-auto flex-shrink-0 h-auto px-4 py-3 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl group"
         >
           <span>Show More</span>
-          <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+          <ExternalLink className="w-4 h-4" />
         </Button>
       </div>
     </motion.div>

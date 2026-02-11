@@ -11,7 +11,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { cn } from "@lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUp, Check, ChevronRight, Zap } from "lucide-react";
+import { ArrowUp, Check, ExternalLink, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AdvantageDescription } from "@/app/(landing)/_components/advantage-description";
@@ -247,7 +247,7 @@ export function ComparisonTabs({ className }: ComparisonTabsProps) {
                       className="w-full h-auto px-4 py-3 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl group"
                     >
                       <span>Show More</span>
-                      <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                      <ExternalLink className="w-4 h-4" />
                     </Button>
                   </motion.div>
                 )}
