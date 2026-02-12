@@ -20,7 +20,7 @@ export const HeroSection = () => {
             <div className="space-y-8">
               {/* ASCII Art Header */}
               <div className="font-mono text-pixel-fg leading-tight overflow-x-hidden flex items-center justify-center">
-                <pre className="text-[11.5px] sm:text-xs md:text-sm scale-[0.72] sm:scale-80 md:scale-100 origin-center">
+                <pre className="text-[11px] sm:text-xs md:text-sm scale-[0.72] sm:scale-80 md:scale-100 origin-center">
                   {`
   ██╗  ██╗███╗   ██╗ ██████╗ ██╗    ██╗██╗  ██╗███████╗██████╗ ███████╗
   ██║ ██╔╝████╗  ██║██╔═══██╗██║    ██║██║  ██║██╔════╝██╔══██╗██╔════╝
@@ -61,7 +61,7 @@ export const HeroSection = () => {
             </div>
 
             {/* Pixel Art Illustration */}
-            <div className="relative md:py-12 py-14">
+            <div className="relative md:py-12 py-[60px]">
               <div className="flex items-center justify-center gap-8 flex-wrap">
                 {/* Input Data Box */}
                 <div className="pixel-card p-6 space-y-2">

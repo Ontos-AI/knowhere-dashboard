@@ -34,12 +34,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className={inter.className}>
         <NextIntlClientProvider messages={messages} locale={locale}>
           <ConfigProvider config={appConfig}>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="dark"
-              enableSystem={false}
-              disableTransitionOnChange
-            >
+            <ThemeProvider attribute="class" enableSystem={true} disableTransitionOnChange>
               <PostHogProvider>
                 <Providers>
                   <div className="min-h-screen bg-background">{children}</div>
