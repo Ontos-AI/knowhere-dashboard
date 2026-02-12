@@ -132,7 +132,13 @@ export const Navbar = ({ customLinks }: NavbarProps = {}) => {
             >
               GitHub
             </Link>
-            <PixelButton variant="primary" asChild>
+            <PixelButton
+              variant="primary"
+              style={{
+                boxShadow: "4px 4px 0 var(--pixel-fg)",
+              }}
+              asChild
+            >
               <Link href="/login">GET API KEY</Link>
             </PixelButton>
           </div>
@@ -142,10 +148,10 @@ export const Navbar = ({ customLinks }: NavbarProps = {}) => {
             <button
               type="button"
               onClick={() => setIsOpen(!isOpen)}
-              className="pixel-btn-secondary px-3 py-2 font-pixel"
+              className="pixel-menu-btn"
               aria-label="Toggle menu"
             >
-              {isOpen ? "✕" : "☰"}
+              <div className="mb-1 text-base">{isOpen ? "✕" : "☰"}</div>
             </button>
           </div>
         </div>

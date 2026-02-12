@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Press_Start_2P } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@components/theme-provider";
 import { getDefaultConfig } from "@lib/config";
@@ -10,6 +10,12 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 
 const inter = Inter({ subsets: ["latin"] });
+const pressStart2P = Press_Start_2P({
+  weight: "400",
+  subsets: ["latin"],
+  display: "block",
+  variable: "--font-pixel-primary",
+});
 
 export const metadata: Metadata = {
   title: "Knowhere API - Transform Documents into Structured Data",
@@ -30,7 +36,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const messages = await getMessages();
 
   return (
-    <html lang={locale} suppressHydrationWarning className="dark">
+    <html lang={locale} suppressHydrationWarning className={`dark ${pressStart2P.variable}`}>
       <body className={inter.className}>
         <NextIntlClientProvider messages={messages} locale={locale}>
           <ConfigProvider config={appConfig}>

@@ -59,8 +59,18 @@ export function Footer() {
                   required
                   disabled={isSubmitting || submitted}
                   className="flex-1 pixel-border bg-pixel-bg text-pixel-fg font-sans text-sm px-3 py-2 focus:outline-none focus:border-pixel-green disabled:opacity-50"
+                  style={{
+                    boxShadow: "4px 4px 0 var(--pixel-fg)",
+                  }}
                 />
-                <PixelButton type="submit" disabled={isSubmitting || submitted} variant="primary">
+                <PixelButton
+                  type="submit"
+                  style={{
+                    boxShadow: "4px 4px 0 var(--pixel-fg)",
+                  }}
+                  disabled={isSubmitting || submitted}
+                  variant="primary"
+                >
                   {submitted ? "✓" : <PixelIcon icon="arrow-right" color="default" size={16} />}
                 </PixelButton>
               </form>

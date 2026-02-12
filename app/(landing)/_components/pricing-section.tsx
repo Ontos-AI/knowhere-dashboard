@@ -131,10 +131,7 @@ export function PricingSection() {
             {/* Pricing Examples */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto mb-8">
               {examples.map((example) => (
-                <div
-                  key={example.pages}
-                  className="pixel-border bg-pixel-bg p-4 hover:translate-x-[2px] hover:translate-y-[2px] transition-transform"
-                >
+                <div key={example.pages} className="pixel-border bg-pixel-bg p-4">
                   <div className="text-sm text-pixel-muted font-sans mb-1">{example.pages}</div>
                   <div className="text-2xl font-bold font-mono text-pixel-green">
                     {example.cost}
@@ -248,10 +245,7 @@ export function PricingSection() {
 
           <div className="space-y-4">
             {faqs.map((faq) => (
-              <PixelCard
-                key={faq.question}
-                className="hover:translate-x-[2px] hover:translate-y-[2px] transition-transform"
-              >
+              <PixelCard key={faq.question}>
                 <div className="p-6">
                   <h4 className="text-sm font-semibold mb-2 font-sans text-[var(--pixel-text-muted)]">
                     {faq.question}

@@ -168,25 +168,25 @@ function SyntaxHighlighter({ code, language }: { code: string; language: "python
         let className = "";
         switch (token.type) {
           case "keyword":
-            className = "text-[#569CD6]"; // VS Code blue
+            className = "text-[#0070C1]"; // Deep blue for light background
             break;
           case "string":
-            className = "text-[#CE9178]"; // VS Code orange
+            className = "text-[#A31515]"; // Deep red for light background
             break;
           case "number":
-            className = "text-[#B5CEA8]"; // VS Code light green
+            className = "text-[#098658]"; // Deep green for light background
             break;
           case "comment":
-            className = "text-[#6A9955]"; // VS Code green
+            className = "text-[#6A737D]"; // Gray for light background
             break;
           case "function":
-            className = "text-[#DCDCAA]"; // VS Code yellow
+            className = "text-[#795E26]"; // Deep brown for light background
             break;
           case "operator":
-            className = "text-[#C586C0]"; // VS Code purple
+            className = "text-[#AF00DB]"; // Deep purple for light background
             break;
           case "text":
-            className = "text-[#D4D4D4]"; // VS Code light gray
+            className = "text-[#24292E]"; // Dark gray/black for light background
             break;
         }
         return (
@@ -257,27 +257,39 @@ export function CodeDemo() {
 
             <div className="space-y-4">
               <div className="flex items-start gap-4">
-                <PixelBadge color="green">1</PixelBadge>
+                <PixelBadge color="green" className="shrink-0">
+                  1
+                </PixelBadge>
                 <div>
-                  <h3 className="font-pixel text-[10px] mb-1 leading-relaxed">GET YOUR API KEY</h3>
+                  <h3 className="font-pixel text-[10px] mb-1 leading-relaxed text-[var(--pixel-fg)] font-bold">
+                    GET YOUR API KEY
+                  </h3>
                   <p className="text-sm text-pixel-muted font-sans">
                     Sign up and generate your secure API key from the dashboard.
                   </p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
-                <PixelBadge color="green">2</PixelBadge>
+                <PixelBadge color="green" className="shrink-0">
+                  2
+                </PixelBadge>
                 <div>
-                  <h3 className="font-pixel text-[10px] mb-1 leading-relaxed">SUBMIT A JOB</h3>
+                  <h3 className="font-pixel text-[10px] mb-1 leading-relaxed text-[var(--pixel-fg)] font-bold">
+                    SUBMIT A JOB
+                  </h3>
                   <p className="text-sm text-pixel-muted font-sans">
                     Send a URL or upload a file to our processing queue.
                   </p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
-                <PixelBadge color="green">3</PixelBadge>
+                <PixelBadge color="green" className="shrink-0">
+                  3
+                </PixelBadge>
                 <div>
-                  <h3 className="font-pixel text-[10px] mb-1 leading-relaxed">RECEIVE RESULTS</h3>
+                  <h3 className="font-pixel text-[10px] mb-1 leading-relaxed text-[var(--pixel-fg)] font-bold">
+                    RECEIVE RESULTS
+                  </h3>
                   <p className="text-sm text-pixel-muted font-sans">
                     Get structured JSON data via webhook or polling.
                   </p>
@@ -287,19 +299,28 @@ export function CodeDemo() {
           </div>
 
           <div className="relative mt-8 lg:mt-0 min-w-0 max-w-full">
-            {/* Terminal Window */}
-            <div className="pixel-border-double bg-pixel-fg overflow-hidden max-w-full">
-              {/* Terminal Header */}
-              <div className="flex items-center justify-between px-4 py-3 border-b-2 border-pixel-border">
-                {/* Tab Buttons */}
-                <div className="flex gap-2">
+            {/* macOS Window - Brutalist Style */}
+            <div className="border-4 border-pixel-fg bg-white overflow-hidden max-w-full shadow-[12px_12px_0_#000]">
+              {/* macOS Window Header */}
+              <div className="flex items-center px-4 py-3 bg-white border-b-4 border-pixel-fg">
+                {/* macOS Traffic Lights */}
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-[#FF5F57] border-2 border-pixel-fg" />
+                  <div className="w-3 h-3 rounded-full bg-[#FFBD2E] border-2 border-pixel-fg" />
+                  <div className="w-3 h-3 rounded-full bg-[#28CA42] border-2 border-pixel-fg" />
+                </div>
+              </div>
+
+              {/* Tab Bar */}
+              <div className="flex items-center justify-between px-2 py-2 bg-[#f8f6f0] border-b-2 border-pixel-border">
+                <div className="flex items-center gap-1">
                   <button
                     type="button"
                     onClick={() => setActiveTab("python")}
-                    className={`font-pixel text-[10px] px-3 py-1 transition-none ${
+                    className={`font-pixel text-[9px] px-3 py-1.5 border-2 border-pixel-fg transition-colors ${
                       activeTab === "python"
-                        ? "text-pixel-green"
-                        : "text-pixel-muted hover:text-pixel-bg"
+                        ? "bg-pixel-green text-white shadow-[3px_3px_0_#000]"
+                        : "bg-white text-pixel-fg hover:bg-pixel-border"
                     }`}
                   >
                     PYTHON
@@ -307,10 +328,10 @@ export function CodeDemo() {
                   <button
                     type="button"
                     onClick={() => setActiveTab("curl")}
-                    className={`font-pixel text-[10px] px-3 py-1 transition-none ${
+                    className={`font-pixel text-[9px] px-3 py-1.5 border-2 border-pixel-fg transition-colors ${
                       activeTab === "curl"
-                        ? "text-pixel-green"
-                        : "text-pixel-muted hover:text-pixel-bg"
+                        ? "bg-pixel-green text-white shadow-[3px_3px_0_#000]"
+                        : "bg-white text-pixel-fg hover:bg-pixel-border"
                     }`}
                   >
                     CURL
@@ -321,22 +342,20 @@ export function CodeDemo() {
                 <button
                   type="button"
                   onClick={() => copyToClipboard(currentCode)}
-                  className="font-pixel text-[8px] text-pixel-yellow hover:text-pixel-bg transition-none"
+                  className="font-pixel text-[8px] text-pixel-fg mr-1 hover:text-pixel-green transition-colors"
                 >
-                  {copied ? "COPIED!" : "COPY"}
+                  {copied ? "✓ COPIED" : "COPY"}
                 </button>
               </div>
 
               {/* Code Content */}
-              <div className="p-4 overflow-x-auto">
+              <div className="p-4 bg-[#f8f6f0] overflow-x-auto">
                 <pre className="font-mono text-xs md:text-sm leading-relaxed">
                   <SyntaxHighlighter
                     code={currentCode}
                     language={activeTab === "python" ? "python" : "bash"}
                   />
-                  <span className="inline-block w-2 h-4 bg-[#D4D4D4] ml-1 animate-pixel-blink">
-                    █
-                  </span>
+                  <span className="inline-block w-[4px] h-[18px] bg-[#24292E] ml-1 translate-y-[3px] animate-pixel-blink" />
                 </pre>
               </div>
             </div>

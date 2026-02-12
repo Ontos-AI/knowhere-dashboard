@@ -52,10 +52,7 @@ export function CommunitySection() {
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 max-w-4xl mx-auto">
           {stats.map((stat) => (
-            <PixelCard
-              key={stat.label}
-              className="hover:translate-x-[2px] hover:translate-y-[2px] transition-transform cursor-pointer"
-            >
+            <PixelCard key={stat.label}>
               <div className="text-center p-6">
                 <div className="mb-3">
                   <PixelIcon icon={stat.icon} color="green" size={24} />
@@ -133,7 +130,7 @@ export function CommunitySection() {
                   alt={`${link.name} icon`}
                   width={16}
                   height={16}
-                  className={link.iconSize.className}
+                  className={`${link.iconSize.className} social-icon`}
                 />
                 {link.name}
               </Link>
