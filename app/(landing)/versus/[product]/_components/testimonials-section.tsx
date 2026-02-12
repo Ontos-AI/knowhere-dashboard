@@ -1,7 +1,9 @@
 "use client";
 
-import { Star } from "lucide-react";
 import Image from "next/image";
+import { PixelCard } from "@/app/(landing)/_components/pixel/pixel-card";
+import { PixelHeading } from "@/app/(landing)/_components/pixel/pixel-heading";
+import { PixelIcon } from "@/app/(landing)/_components/pixel/pixel-icon";
 import type { Testimonial, VersusPageData } from "@/app/(landing)/_data/versus-pages";
 
 type TestimonialsSectionProps = {
@@ -14,65 +16,65 @@ type TestimonialCardProps = {
 
 function TestimonialCard({ testimonial }: TestimonialCardProps) {
   return (
-    <div className="rounded-xl border border-border/50 bg-card/30 backdrop-blur-sm p-6 hover:border-primary/50 hover:bg-card/50 transition-colors">
-      <div className="space-y-4">
+    <PixelCard className="p-6 hover:translate-x-[2px] hover:translate-y-[2px] transition-transform">
+      <div className="flex flex-col h-full">
         {/* Rating stars */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 mb-4">
           {Array.from({ length: 5 }).map((_, index) => (
-            <Star
+            <PixelIcon
               key={`star-${testimonial.id}-${index}`}
-              className={`w-4 h-4 ${
-                index < testimonial.rating
-                  ? "text-yellow-500 fill-yellow-500"
-                  : "text-muted-foreground/30"
-              }`}
+              icon="star"
+              size={16}
+              color={index < testimonial.rating ? "yellow" : "default"}
             />
           ))}
         </div>
 
         {/* Quote */}
-        <blockquote className="text-muted-foreground leading-relaxed">
+        <blockquote className="text-[var(--pixel-text-muted)] font-sans leading-relaxed mb-4 flex-1">
           "{testimonial.quote}"
         </blockquote>
 
         {/* Author info */}
-        <div className="flex items-center gap-3 pt-4 border-t border-border/30">
+        <div className="flex items-center gap-3 pt-4 border-t-2 border-pixel-border mt-auto">
           {testimonial.avatar ? (
             <Image
               src={testimonial.avatar}
               alt={testimonial.author}
               width={40}
               height={40}
-              className="rounded-full"
+              className="pixel-image border-2 border-pixel-border"
             />
           ) : (
-            <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
-              <span className="text-primary font-semibold text-sm">
+            <div className="w-10 h-10 border-2 border-pixel-border bg-pixel-border flex items-center justify-center">
+              <span className="text-pixel-fg font-pixel text-pixel-xs">
                 {testimonial.author.charAt(0)}
               </span>
             </div>
           )}
           <div>
-            <div className="text-sm font-semibold text-foreground">{testimonial.author}</div>
-            <div className="text-xs text-muted-foreground">
+            <div className="text-sm font-sans font-semibold text-pixel-fg">
+              {testimonial.author}
+            </div>
+            <div className="text-xs font-sans text-[var(--pixel-text-muted)] text-nowrap">
               {testimonial.role} at {testimonial.company}
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </PixelCard>
   );
 }
 
 export function TestimonialsSection({ data }: TestimonialsSectionProps) {
   return (
-    <section className="relative w-full py-16 md:py-24 overflow-hidden bg-muted/20">
+    <section className="py-16 md:py-24 bg-pixel-bg">
       <div className="container mx-auto px-4">
         {/* Section header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold font-heading mb-4">
+          <PixelHeading as="h2" size="lg" className="mb-4">
             {data.title}
-          </h2>
+          </PixelHeading>
         </div>
 
         {/* Testimonials grid */}

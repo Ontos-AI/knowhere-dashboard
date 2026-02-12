@@ -1,111 +1,88 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Award, GitFork, Star, TrendingUp, Users, Zap } from "lucide-react";
+import { PixelIcon } from "@app/(landing)/_components/pixel/pixel-icon";
 
 type MetricItem = {
-  icon: React.ElementType;
+  icon: "star" | "database" | "badge" | "cloud" | "security" | "performance";
   value: string;
   label: string;
 };
 
 const metrics: MetricItem[] = [
   {
-    icon: Star,
+    icon: "star",
     value: "53K+",
     label: "GitHub Stars",
   },
   {
-    icon: TrendingUp,
+    icon: "database",
     value: "2M+",
     label: "Docs Processed",
   },
   {
-    icon: Award,
+    icon: "badge",
     value: "99.8%",
     label: "Accuracy",
   },
   {
-    icon: Users,
+    icon: "cloud",
     value: "100+",
     label: "Integrations",
   },
   {
-    icon: GitFork,
+    icon: "security",
     value: "SOC2",
     label: "Certified",
   },
   {
-    icon: Zap,
+    icon: "performance",
     value: "<200ms",
     label: "Response Time",
   },
 ];
 
-export function TrustIndicators() {
+export const TrustIndicators = () => {
   return (
-    <section className="py-12 md:py-16 border-y border-border/50">
+    <section className="py-8 md:py-12 bg-pixel-bg border-y-2 border-pixel-border">
       <div className="container mx-auto px-4">
         {/* Desktop/Tablet: Grid Layout */}
-        <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-6">
-          {metrics.map((metric, index) => (
-            <motion.div
-              key={metric.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group"
-            >
+        <div className="hidden md:grid md:grid-cols-3 lg:grid-cols-6 gap-6">
+          {metrics.map((metric) => (
+            <div key={metric.label} className="group">
               <div className="flex flex-col items-center text-center space-y-3">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-primary/20 rounded-lg blur-xl group-hover:bg-primary/30 transition-colors" />
-                  <div className="relative h-12 w-12 rounded-lg bg-card border border-primary/20 flex items-center justify-center group-hover:border-primary/40 transition-colors">
-                    <metric.icon className="h-6 w-6 text-primary" />
-                  </div>
+                <div className="pixel-border p-3 bg-pixel-bg group-hover:bg-pixel-border/20 transition-colors">
+                  <PixelIcon icon={metric.icon} size={32} className="text-pixel-fg" />
                 </div>
                 <div>
-                  <div className="text-2xl lg:text-3xl font-bold font-mono text-foreground mb-1">
-                    {metric.value}
-                  </div>
-                  <div className="text-sm text-muted-foreground">{metric.label}</div>
+                  <div className="font-pixel text-pixel-sm text-pixel-fg mb-1">{metric.value}</div>
+                  <div className="font-sans text-xs text-pixel-muted">{metric.label}</div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
 
         {/* Mobile: Horizontal Scroll */}
         <div className="md:hidden overflow-x-auto hide-scrollbar">
-          <div className="flex gap-6 pb-2">
-            {metrics.map((metric, index) => (
-              <motion.div
-                key={metric.label}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 0.5, delay: index * 0.05 }}
-                className="flex-shrink-0 w-[140px]"
-              >
-                <div className="flex flex-col items-center text-center space-y-3 p-4 rounded-lg bg-card/50 border border-border">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-primary/20 rounded-lg blur-lg" />
-                    <div className="relative h-10 w-10 rounded-lg bg-card border border-primary/20 flex items-center justify-center">
-                      <metric.icon className="h-5 w-5 text-primary" />
+          <div className="flex gap-4 pb-2">
+            {metrics.map((metric) => (
+              <div key={metric.label} className="flex-shrink-0 w-[120px]">
+                <div className="pixel-border p-4 bg-pixel-bg">
+                  <div className="flex flex-col items-center text-center space-y-2">
+                    <PixelIcon icon={metric.icon} size={24} className="text-pixel-fg" />
+                    <div>
+                      <div className="font-pixel text-pixel-xs text-pixel-fg mb-1">
+                        {metric.value}
+                      </div>
+                      <div className="font-sans text-xs text-pixel-muted">{metric.label}</div>
                     </div>
-                  </div>
-                  <div>
-                    <div className="text-xl font-bold font-mono text-foreground mb-1">
-                      {metric.value}
-                    </div>
-                    <div className="text-xs text-muted-foreground">{metric.label}</div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
       </div>
     </section>
   );
-}
+};

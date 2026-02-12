@@ -52,8 +52,8 @@ export function VersusPageClient({ data }: VersusPageClientProps) {
       {/* Scroll Progress Bar */}
       <ScrollProgressBar />
 
-      {/* Navbar */}
-      <Navbar />
+      {/* Navbar with custom links */}
+      <Navbar customLinks={data.headerNav} />
 
       {/* Main Content */}
       <main className="min-h-screen">
@@ -65,17 +65,6 @@ export function VersusPageClient({ data }: VersusPageClientProps) {
 
         {/* Live Demo Section */}
         <LiveDemoSection data={data.liveDemo} competitorName={data.productName} />
-
-        {/* Phase 2 sections divider */}
-        {(data.featureTable ||
-          data.technicalDeepDive ||
-          data.useCases ||
-          data.faq ||
-          data.testimonials) && (
-          <div className="container mx-auto px-4 py-8">
-            <div className="max-w-4xl mx-auto border-t border-border/30" />
-          </div>
-        )}
 
         {/* Feature Table Section (Phase 2) */}
         {data.featureTable && (

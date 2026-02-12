@@ -84,6 +84,12 @@ export type VersusPageData = {
   productId: VersusProductId;
   productName: string; // "Unstructured" or "Markitdown"
 
+  // Header navigation (optional - overrides global nav links)
+  headerNav?: Array<{
+    label: string;
+    href: string;
+  }>;
+
   // Hero section
   hero: {
     title: string; // e.g., "Knowhere vs Unstructured"
@@ -177,6 +183,9 @@ export type VersusPageData = {
 export const versusUnstructured: VersusPageData = {
   productId: "unstructured",
   productName: "Unstructured",
+
+  // Empty header nav - no COMPARISON, PRICING, DOCS links
+  headerNav: [],
 
   hero: {
     title: "Knowhere vs Unstructured",
@@ -543,6 +552,9 @@ export const versusUnstructured: VersusPageData = {
 export const versusMarkitdown: VersusPageData = {
   productId: "markitdown",
   productName: "Markitdown",
+
+  // Empty header nav - no COMPARISON, PRICING, DOCS links
+  headerNav: [],
 
   hero: {
     title: "Knowhere vs Markitdown",

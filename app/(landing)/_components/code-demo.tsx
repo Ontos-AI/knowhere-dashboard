@@ -1,11 +1,203 @@
 "use client";
 
-import { Button } from "@components/ui/button";
-import { ScrollArea } from "@components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
-import { Check, Copy } from "lucide-react";
-import { Highlight, themes } from "prism-react-renderer";
+import { PixelBadge } from "@app/(landing)/_components/pixel/pixel-badge";
+import { PixelHeading } from "@app/(landing)/_components/pixel/pixel-heading";
 import { useState } from "react";
+
+type Token = {
+  type: "keyword" | "string" | "number" | "comment" | "function" | "operator" | "text";
+  value: string;
+};
+
+function highlightPython(code: string): Token[] {
+  const tokens: Token[] = [];
+  const keywords =
+    /\b(import|from|def|class|if|elif|else|for|while|return|yield|try|except|finally|with|as|in|is|and|or|not|True|False|None|print)\b/g;
+  const strings = /(["'])(?:(?=(\\?))\2.)*?\1/g;
+  const numbers = /\b\d+\.?\d*\b/g;
+  const comments = /#.*/g;
+  const functions = /\b([a-zA-Z_][a-zA-Z0-9_]*)\s*(?=\()/g;
+
+  let lastIndex = 0;
+  const matches: Array<{ index: number; length: number; type: Token["type"]; value: string }> = [];
+
+  // Collect all matches
+  let match: RegExpExecArray | null = null;
+
+  match = strings.exec(code);
+  while (match !== null) {
+    matches.push({ index: match.index, length: match[0].length, type: "string", value: match[0] });
+    match = strings.exec(code);
+  }
+
+  match = comments.exec(code);
+  while (match !== null) {
+    matches.push({ index: match.index, length: match[0].length, type: "comment", value: match[0] });
+    match = comments.exec(code);
+  }
+
+  match = keywords.exec(code);
+  while (match !== null) {
+    matches.push({ index: match.index, length: match[0].length, type: "keyword", value: match[0] });
+    match = keywords.exec(code);
+  }
+
+  match = numbers.exec(code);
+  while (match !== null) {
+    matches.push({ index: match.index, length: match[0].length, type: "number", value: match[0] });
+    match = numbers.exec(code);
+  }
+
+  match = functions.exec(code);
+  while (match !== null) {
+    matches.push({
+      index: match.index,
+      length: match[1].length,
+      type: "function",
+      value: match[1],
+    });
+    match = functions.exec(code);
+  }
+
+  // Sort by index
+  matches.sort((a, b) => a.index - b.index);
+
+  // Remove overlapping matches (keep the first one)
+  const filtered: typeof matches = [];
+  let maxEnd = 0;
+  for (const m of matches) {
+    if (m.index >= maxEnd) {
+      filtered.push(m);
+      maxEnd = m.index + m.length;
+    }
+  }
+
+  // Build tokens
+  lastIndex = 0;
+  for (const m of filtered) {
+    if (m.index > lastIndex) {
+      tokens.push({ type: "text", value: code.substring(lastIndex, m.index) });
+    }
+    tokens.push({ type: m.type, value: m.value });
+    lastIndex = m.index + m.length;
+  }
+  if (lastIndex < code.length) {
+    tokens.push({ type: "text", value: code.substring(lastIndex) });
+  }
+
+  return tokens;
+}
+
+function highlightBash(code: string): Token[] {
+  const tokens: Token[] = [];
+  const keywords = /\b(curl|wget|echo|cat|grep|sed|awk|cd|ls|mkdir|rm|cp|mv)\b/g;
+  const strings = /(["'])(?:(?=(\\?))\2.)*?\1/g;
+  const comments = /#.*/g;
+  const flags = /\s(-[a-zA-Z]|--[a-zA-Z-]+)/g;
+
+  let lastIndex = 0;
+  const matches: Array<{ index: number; length: number; type: Token["type"]; value: string }> = [];
+
+  // Collect all matches
+  let match: RegExpExecArray | null = null;
+
+  match = strings.exec(code);
+  while (match !== null) {
+    matches.push({ index: match.index, length: match[0].length, type: "string", value: match[0] });
+    match = strings.exec(code);
+  }
+
+  match = comments.exec(code);
+  while (match !== null) {
+    matches.push({ index: match.index, length: match[0].length, type: "comment", value: match[0] });
+    match = comments.exec(code);
+  }
+
+  match = keywords.exec(code);
+  while (match !== null) {
+    matches.push({ index: match.index, length: match[0].length, type: "keyword", value: match[0] });
+    match = keywords.exec(code);
+  }
+
+  match = flags.exec(code);
+  while (match !== null) {
+    matches.push({
+      index: match.index + 1,
+      length: match[1].length,
+      type: "operator",
+      value: match[1],
+    });
+    match = flags.exec(code);
+  }
+
+  // Sort by index
+  matches.sort((a, b) => a.index - b.index);
+
+  // Remove overlapping matches
+  const filtered: typeof matches = [];
+  let maxEnd = 0;
+  for (const m of matches) {
+    if (m.index >= maxEnd) {
+      filtered.push(m);
+      maxEnd = m.index + m.length;
+    }
+  }
+
+  // Build tokens
+  lastIndex = 0;
+  for (const m of filtered) {
+    if (m.index > lastIndex) {
+      tokens.push({ type: "text", value: code.substring(lastIndex, m.index) });
+    }
+    tokens.push({ type: m.type, value: m.value });
+    lastIndex = m.index + m.length;
+  }
+  if (lastIndex < code.length) {
+    tokens.push({ type: "text", value: code.substring(lastIndex) });
+  }
+
+  return tokens;
+}
+
+function SyntaxHighlighter({ code, language }: { code: string; language: "python" | "bash" }) {
+  const tokens = language === "python" ? highlightPython(code) : highlightBash(code);
+
+  return (
+    <>
+      {tokens.map((token, i) => {
+        let className = "";
+        switch (token.type) {
+          case "keyword":
+            className = "text-[#569CD6]"; // VS Code blue
+            break;
+          case "string":
+            className = "text-[#CE9178]"; // VS Code orange
+            break;
+          case "number":
+            className = "text-[#B5CEA8]"; // VS Code light green
+            break;
+          case "comment":
+            className = "text-[#6A9955]"; // VS Code green
+            break;
+          case "function":
+            className = "text-[#DCDCAA]"; // VS Code yellow
+            break;
+          case "operator":
+            className = "text-[#C586C0]"; // VS Code purple
+            break;
+          case "text":
+            className = "text-[#D4D4D4]"; // VS Code light gray
+            break;
+        }
+        return (
+          <span key={`${token.type}-${token.value}-${i}`} className={className}>
+            {token.value}
+          </span>
+        );
+      })}
+    </>
+  );
+}
 
 const pythonCode = `import requests
 
@@ -39,6 +231,7 @@ const curlCode = `curl -X POST https://api.knowhereto.ai/v1/jobs \\
   }'`;
 
 export function CodeDemo() {
+  const [activeTab, setActiveTab] = useState<"python" | "curl">("python");
   const [copied, setCopied] = useState(false);
 
   const copyToClipboard = (text: string) => {
@@ -47,70 +240,45 @@ export function CodeDemo() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const CodeBlock = ({ code, language }: { code: string; language: string }) => (
-    <Highlight theme={themes.vsDark} code={code} language={language}>
-      {({ className, style, tokens, getLineProps, getTokenProps }) => (
-        <pre
-          style={{ ...style, background: "transparent" }}
-          className={`${className} font-mono text-xs md:text-sm leading-relaxed overflow-x-auto`}
-        >
-          {tokens.map((line, i) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: prism-react-renderer tokens don't have unique IDs
-            <div key={`line-${i}`} {...getLineProps({ line })}>
-              {line.map((token, tokenIndex) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: prism-react-renderer tokens don't have unique IDs
-                <span key={`line-${i}-token-${tokenIndex}`} {...getTokenProps({ token })} />
-              ))}
-            </div>
-          ))}
-        </pre>
-      )}
-    </Highlight>
-  );
+  const currentCode = activeTab === "python" ? pythonCode : curlCode;
 
   return (
-    <section className="py-16 md:py-24">
+    <section className="py-16 md:py-24 bg-pixel-bg">
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
           <div className="min-w-0">
-            <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-4 md:mb-6">
-              Integrate in minutes, not days
-            </h2>
-            <p className="text-base md:text-lg text-muted-foreground mb-6 md:mb-8">
-              Our API is designed to be intuitive and easy to use. Whether you're using Python,
+            <PixelHeading as="h3" className="mb-4">
+              INTEGRATE IN MINUTES
+            </PixelHeading>
+            <p className="text-base text-pixel-muted font-sans mb-6 md:mb-8">
+              Our API is designed to be intuitive and easy to use. Whether you&apos;re using Python,
               Node.js, or raw cURL, you can get started with just a few lines of code.
             </p>
 
             <div className="space-y-4">
               <div className="flex items-start gap-4">
-                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-1">
-                  <span className="font-bold text-primary">1</span>
-                </div>
+                <PixelBadge color="green">1</PixelBadge>
                 <div>
-                  <h3 className="font-semibold mb-1">Get your API Key</h3>
-                  <p className="text-sm md:text-base text-muted-foreground">
+                  <h3 className="font-pixel text-[10px] mb-1 leading-relaxed">GET YOUR API KEY</h3>
+                  <p className="text-sm text-pixel-muted font-sans">
                     Sign up and generate your secure API key from the dashboard.
                   </p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
-                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-1">
-                  <span className="font-bold text-primary">2</span>
-                </div>
+                <PixelBadge color="green">2</PixelBadge>
                 <div>
-                  <h3 className="font-semibold mb-1">Submit a Job</h3>
-                  <p className="text-sm md:text-base text-muted-foreground">
+                  <h3 className="font-pixel text-[10px] mb-1 leading-relaxed">SUBMIT A JOB</h3>
+                  <p className="text-sm text-pixel-muted font-sans">
                     Send a URL or upload a file to our processing queue.
                   </p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
-                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-1">
-                  <span className="font-bold text-primary">3</span>
-                </div>
+                <PixelBadge color="green">3</PixelBadge>
                 <div>
-                  <h3 className="font-semibold mb-1">Receive Results</h3>
-                  <p className="text-sm md:text-base text-muted-foreground">
+                  <h3 className="font-pixel text-[10px] mb-1 leading-relaxed">RECEIVE RESULTS</h3>
+                  <p className="text-sm text-pixel-muted font-sans">
                     Get structured JSON data via webhook or polling.
                   </p>
                 </div>
@@ -119,67 +287,58 @@ export function CodeDemo() {
           </div>
 
           <div className="relative mt-8 lg:mt-0 min-w-0 max-w-full">
-            <div className="absolute inset-0 bg-gradient-to-r from-primary to-purple-600 rounded-xl md:rounded-2xl blur-lg md:blur-xl opacity-10 md:opacity-20" />
-            <div className="relative bg-card border rounded-lg md:rounded-xl overflow-hidden shadow-xl md:shadow-2xl bg-[#1e1e1e] max-w-full">
-              <Tabs defaultValue="python" className="w-full">
-                <div className="flex items-center justify-between px-3 md:px-4 py-2 md:py-2.5 border-b border-white/10 bg-white/5">
-                  <TabsList className="bg-white/5 border-0 h-auto">
-                    <TabsTrigger
-                      value="python"
-                      className="text-gray-400 hover:text-gray-200 transition-colors py-2.5 px-4 min-h-[44px] touch-manipulation"
-                    >
-                      Python
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="curl"
-                      className="text-gray-400 hover:text-gray-200 transition-colors py-2.5 px-4 min-h-[44px] touch-manipulation"
-                    >
-                      cURL
-                    </TabsTrigger>
-                  </TabsList>
-                  <div className="hidden md:flex gap-2">
-                    <div className="h-3 w-3 rounded-full bg-red-500/20" />
-                    <div className="h-3 w-3 rounded-full bg-yellow-500/20" />
-                    <div className="h-3 w-3 rounded-full bg-green-500/20" />
-                  </div>
+            {/* Terminal Window */}
+            <div className="pixel-border-double bg-pixel-fg overflow-hidden max-w-full">
+              {/* Terminal Header */}
+              <div className="flex items-center justify-between px-4 py-3 border-b-2 border-pixel-border">
+                {/* Tab Buttons */}
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("python")}
+                    className={`font-pixel text-[10px] px-3 py-1 transition-none ${
+                      activeTab === "python"
+                        ? "text-pixel-green"
+                        : "text-pixel-muted hover:text-pixel-bg"
+                    }`}
+                  >
+                    PYTHON
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("curl")}
+                    className={`font-pixel text-[10px] px-3 py-1 transition-none ${
+                      activeTab === "curl"
+                        ? "text-pixel-green"
+                        : "text-pixel-muted hover:text-pixel-bg"
+                    }`}
+                  >
+                    CURL
+                  </button>
                 </div>
 
-                <TabsContent value="python" className="mt-0">
-                  <div className="relative group">
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="absolute top-3 right-3 md:top-4 md:right-4 h-9 w-9 md:h-8 md:w-8 text-gray-400 hover:text-white hover:bg-white/10 md:opacity-0 md:group-hover:opacity-100 transition-all touch-manipulation active:scale-95 z-10"
-                      onClick={() => copyToClipboard(pythonCode)}
-                    >
-                      {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                    </Button>
-                    <ScrollArea className="h-[280px] md:h-[400px] w-full">
-                      <div className="p-3 md:p-4">
-                        <CodeBlock code={pythonCode} language="python" />
-                      </div>
-                    </ScrollArea>
-                  </div>
-                </TabsContent>
+                {/* Copy Button */}
+                <button
+                  type="button"
+                  onClick={() => copyToClipboard(currentCode)}
+                  className="font-pixel text-[8px] text-pixel-yellow hover:text-pixel-bg transition-none"
+                >
+                  {copied ? "COPIED!" : "COPY"}
+                </button>
+              </div>
 
-                <TabsContent value="curl" className="mt-0">
-                  <div className="relative group">
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="absolute top-3 right-3 md:top-4 md:right-4 h-9 w-9 md:h-8 md:w-8 text-gray-400 hover:text-white hover:bg-white/10 md:opacity-0 md:group-hover:opacity-100 transition-all touch-manipulation active:scale-95 z-10"
-                      onClick={() => copyToClipboard(curlCode)}
-                    >
-                      {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                    </Button>
-                    <ScrollArea className="h-[280px] md:h-[400px] w-full">
-                      <div className="p-3 md:p-4">
-                        <CodeBlock code={curlCode} language="bash" />
-                      </div>
-                    </ScrollArea>
-                  </div>
-                </TabsContent>
-              </Tabs>
+              {/* Code Content */}
+              <div className="p-4 overflow-x-auto">
+                <pre className="font-mono text-xs md:text-sm leading-relaxed">
+                  <SyntaxHighlighter
+                    code={currentCode}
+                    language={activeTab === "python" ? "python" : "bash"}
+                  />
+                  <span className="inline-block w-2 h-4 bg-[#D4D4D4] ml-1 animate-pixel-blink">
+                    █
+                  </span>
+                </pre>
+              </div>
             </div>
           </div>
         </div>

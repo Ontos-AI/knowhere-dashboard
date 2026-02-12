@@ -1,8 +1,9 @@
 "use client";
 
-import { Button } from "@components/ui/button";
-import { CheckCircle2, Eye, XCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { PixelButton } from "@/app/(landing)/_components/pixel/pixel-button";
+import { PixelHeading } from "@/app/(landing)/_components/pixel/pixel-heading";
+import { PixelIcon } from "@/app/(landing)/_components/pixel/pixel-icon";
 import type { LiveDemoConfig } from "@/app/(landing)/_data/versus-pages";
 import {
   type DemoContent,
@@ -40,50 +41,41 @@ function IframeView({
       {/* Header */}
       <div className="flex items-center justify-between">
         <h3
-          className={`text-xl font-semibold ${
-            isKnowhere
-              ? "bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent"
-              : "text-foreground"
-          }`}
+          className={`font-sans text-base font-semibold ${isKnowhere ? "text-pixel-green" : "text-pixel-fg"}`}
         >
           {title}
         </h3>
-        <Button
-          onClick={onViewDetails}
-          variant="outline"
-          size="sm"
-          className="gap-2 hover:border-primary/50"
-        >
-          <Eye className="w-4 h-4" />
-          View Details
-        </Button>
+        <PixelButton onClick={onViewDetails} variant="secondary">
+          VIEW DETAILS
+        </PixelButton>
       </div>
 
       {/* Iframe container */}
-      <div className="relative w-full aspect-[4/3] rounded-lg border border-border/50 bg-card/30 overflow-auto">
+      <div className="relative w-full aspect-[4/3] pixel-border bg-pixel-bg overflow-auto">
         {!shouldLoad && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-card/80 backdrop-blur-sm">
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-pixel-bg">
             <div className="text-center">
-              <div className="animate-pulse text-muted-foreground">Preparing demo...</div>
+              <div className="font-sans text-sm text-[var(--pixel-text-muted)]">
+                Preparing demo...
+              </div>
             </div>
           </div>
         )}
         {shouldLoad && isLoading && !hasError && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-card/80 backdrop-blur-sm">
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-pixel-bg">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2" />
-              <p className="text-sm text-muted-foreground">Loading demo...</p>
+              <div className="w-8 h-8 border-2 border-pixel-fg border-t-transparent animate-spin mx-auto mb-2" />
+              <p className="text-sm text-[var(--pixel-text-muted)] font-sans">Loading demo...</p>
             </div>
           </div>
         )}
         {hasError && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-card/80 backdrop-blur-sm">
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-pixel-bg">
             <div className="text-center space-y-3">
-              <p className="text-sm text-destructive">Failed to load demo</p>
-              <Button onClick={onViewDetails} variant="outline" size="sm">
-                <Eye className="w-4 h-4 mr-2" />
-                View Details
-              </Button>
+              <p className="text-sm text-pixel-red font-sans">Failed to load demo</p>
+              <PixelButton onClick={onViewDetails} variant="secondary">
+                VIEW DETAILS
+              </PixelButton>
             </div>
           </div>
         )}
@@ -108,13 +100,13 @@ function IframeView({
             highlight.startsWith("✅") ||
             highlight.includes("Perfect") ||
             highlight.includes("Correct");
-          const Icon = isPositive ? CheckCircle2 : XCircle;
-          const colorClass = isPositive ? "text-green-500" : "text-red-500";
+          const icon = isPositive ? "check" : "cross";
+          const color = isPositive ? "green" : "red";
 
           return (
             <div key={highlight} className="flex items-start gap-3">
-              <Icon className={`w-5 h-5 flex-shrink-0 mt-0.5 ${colorClass}`} />
-              <p className="text-sm text-muted-foreground flex-1">
+              <PixelIcon icon={icon} size={16} color={color} className="flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-[var(--pixel-text-muted)] font-sans flex-1">
                 {highlight.replace(/^[✅❌]\s*/, "")}
               </p>
             </div>
@@ -195,14 +187,16 @@ export function LiveDemoSection({ data, competitorName }: LiveDemoSectionProps) 
   };
 
   return (
-    <section className="relative w-full py-16 md:py-24 overflow-hidden">
+    <section className="py-16 md:py-24 bg-pixel-bg">
       <div className="container mx-auto px-4">
         {/* Section header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold font-heading mb-4">
-            See the Difference in Action
-          </h2>
-          <p className="text-lg text-muted-foreground">Real parsing results side-by-side</p>
+          <PixelHeading as="h2" size="lg" className="mb-4">
+            SEE THE DIFFERENCE IN ACTION
+          </PixelHeading>
+          <p className="text-base text-[var(--pixel-text-muted)] font-sans">
+            Real parsing results side-by-side
+          </p>
         </div>
 
         {/* Demo container */}
@@ -247,14 +241,9 @@ export function LiveDemoSection({ data, competitorName }: LiveDemoSectionProps) 
 
           {/* View Original Input button */}
           <div className="mt-8 text-center">
-            <Button
-              onClick={handleOpenOriginalDocument}
-              variant="outline"
-              className="gap-2 hover:border-primary/50 hover:bg-card/50"
-            >
-              <Eye className="w-4 h-4" />
-              View Original Input Document
-            </Button>
+            <PixelButton onClick={handleOpenOriginalDocument} variant="secondary">
+              VIEW ORIGINAL INPUT DOCUMENT
+            </PixelButton>
           </div>
         </div>
 

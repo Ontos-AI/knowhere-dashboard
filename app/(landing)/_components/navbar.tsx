@@ -1,28 +1,28 @@
 "use client";
 
-import { NAV_LINKS, SCROLL_THRESHOLDS } from "@app/(landing)/_lib/constants";
-import { cn } from "@app/(landing)/_lib/utils";
-import { Button } from "@components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@components/ui/sheet";
-import { AnimatePresence, motion } from "framer-motion";
-import { Menu, Sparkles, X } from "lucide-react";
+import { NAV_LINKS } from "@app/(landing)/_lib/constants";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
+import { PixelButton } from "./pixel/pixel-button";
 
-export function Navbar() {
+type NavbarProps = {
+  customLinks?: Array<{
+    label: string;
+    href: string;
+  }>;
+};
+
+export const Navbar = ({ customLinks }: NavbarProps = {}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
+  // Use custom links if provided, otherwise use default NAV_LINKS
+  const navLinks = customLinks !== undefined ? customLinks : NAV_LINKS;
+
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > SCROLL_THRESHOLDS.navbarShrink);
+      setIsScrolled(window.scrollY > 50);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -40,48 +40,46 @@ export function Navbar() {
   };
 
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+    <nav
       className={cn(
-        "fixed top-0 w-full z-50 transition-all duration-300",
-        isScrolled
-          ? "glass border-b border-border/50 shadow-lg"
-          : "bg-background/50 backdrop-blur-sm border-b border-transparent"
+        "fixed top-0 w-full z-50 transition-none",
+        "bg-pixel-bg border-b-2 border-pixel-border",
+        isScrolled && "shadow-[0_4px_0_var(--pixel-shadow)]"
       )}
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 group">
-            <motion.div
-              className="relative"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Sparkles className="h-6 w-6 text-primary group-hover:text-accent" />
-              <motion.div
-                className="absolute inset-0 bg-primary/20 blur-xl rounded-full"
-                animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.3, 0.5, 0.3],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Number.POSITIVE_INFINITY,
-                  ease: "easeInOut",
-                }}
-              />
-            </motion.div>
-            <span className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
-              Knowhere API
-            </span>
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="flex items-center">
+              {/* Pixel art logo icon */}
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                className="pixel-image"
+                role="img"
+                aria-label="Knowhere Logo"
+              >
+                <rect x="6" y="4" width="12" height="2" fill="currentColor" />
+                <rect x="4" y="6" width="2" height="12" fill="currentColor" />
+                <rect x="18" y="6" width="2" height="12" fill="currentColor" />
+                <rect x="6" y="18" width="12" height="2" fill="currentColor" />
+                <rect x="10" y="8" width="4" height="2" fill="currentColor" />
+                <rect x="8" y="10" width="2" height="4" fill="currentColor" />
+                <rect x="14" y="10" width="2" height="4" fill="currentColor" />
+                <rect x="10" y="14" width="4" height="2" fill="currentColor" />
+              </svg>
+              <span className="ml-2 font-pixel text-pixel-sm text-pixel-fg tracking-wider">
+                KNOWHERE
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {NAV_LINKS.map((link) => {
+          <div className="hidden md:flex items-center gap-8">
+            {navLinks.map((link) => {
               const isExternal = link.href.startsWith("https://");
               const isAnchor = link.href.startsWith("#");
 
@@ -92,7 +90,7 @@ export function Navbar() {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="relative text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group"
+                    className="font-pixel text-pixel-xs text-pixel-muted hover:text-pixel-fg transition-none uppercase tracking-wider"
                   >
                     {link.label}
                   </Link>
@@ -105,7 +103,7 @@ export function Navbar() {
                     type="button"
                     key={link.href}
                     onClick={() => scrollToSection(link.href)}
-                    className="relative text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group"
+                    className="font-pixel text-pixel-xs text-pixel-muted hover:text-pixel-fg transition-none uppercase tracking-wider"
                   >
                     {link.label}
                   </button>
@@ -116,7 +114,7 @@ export function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="relative text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group"
+                  className="font-pixel text-pixel-xs text-pixel-muted hover:text-pixel-fg transition-none uppercase tracking-wider"
                 >
                   {link.label}
                 </Link>
@@ -125,175 +123,98 @@ export function Navbar() {
           </div>
 
           {/* Desktop CTA */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center gap-4">
             <Link
               href="https://github.com/knowhereapi"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="font-pixel text-pixel-xs text-pixel-muted hover:text-pixel-fg transition-none uppercase tracking-wider"
             >
               GitHub
             </Link>
-            <Button asChild size="default" className="relative overflow-hidden group">
-              <Link href="/login">
-                <span className="relative z-10">Get API Key</span>
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-primary-light to-accent opacity-0 group-hover:opacity-100 transition-opacity"
-                  initial={false}
-                />
-              </Link>
-            </Button>
+            <PixelButton variant="primary" asChild>
+              <Link href="/login">GET API KEY</Link>
+            </PixelButton>
           </div>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">
-            <Sheet open={isOpen} onOpenChange={setIsOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative">
-                  <AnimatePresence mode="wait">
-                    {isOpen ? (
-                      <motion.div
-                        key="close"
-                        initial={{ rotate: -90, opacity: 0 }}
-                        animate={{ rotate: 0, opacity: 1 }}
-                        exit={{ rotate: 90, opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <X className="h-6 w-6" />
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="menu"
-                        initial={{ rotate: 90, opacity: 0 }}
-                        animate={{ rotate: 0, opacity: 1 }}
-                        exit={{ rotate: -90, opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <Menu className="h-6 w-6" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                  <span className="sr-only">Toggle menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent
-                side="right"
-                className="w-[300px] sm:w-[400px] glass border-l border-border/50"
-              >
-                <SheetHeader className="text-left">
-                  <SheetTitle className="flex items-center gap-2">
-                    <Sparkles className="h-5 w-5 text-primary" />
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
-                      Knowhere API
-                    </span>
-                  </SheetTitle>
-                  <SheetDescription>Transform documents into structured data</SheetDescription>
-                </SheetHeader>
-                <div className="flex flex-col space-y-6 mt-8">
-                  {NAV_LINKS.map((link, index) => {
-                    const isExternal = link.href.startsWith("https://");
-                    const isAnchor = link.href.startsWith("#");
-
-                    if (isExternal) {
-                      return (
-                        <motion.div
-                          key={link.href}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: index * 0.1 }}
-                        >
-                          <Link
-                            href={link.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-lg font-medium hover:text-primary transition-colors block"
-                            onClick={() => setIsOpen(false)}
-                          >
-                            {link.label}
-                          </Link>
-                        </motion.div>
-                      );
-                    }
-
-                    if (isAnchor) {
-                      return (
-                        <motion.button
-                          type="button"
-                          key={link.href}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: index * 0.1 }}
-                          onClick={() => scrollToSection(link.href)}
-                          className="text-lg font-medium hover:text-primary transition-colors text-left"
-                        >
-                          {link.label}
-                        </motion.button>
-                      );
-                    }
-
-                    return (
-                      <motion.div
-                        key={link.href}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                      >
-                        <Link
-                          href={link.href}
-                          className="text-lg font-medium hover:text-primary transition-colors block"
-                          onClick={() => setIsOpen(false)}
-                        >
-                          {link.label}
-                        </Link>
-                      </motion.div>
-                    );
-                  })}
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: NAV_LINKS.length * 0.1 }}
-                  >
-                    <Link
-                      href="https://github.com/knowhereapi"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-lg font-medium hover:text-primary transition-colors block"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      GitHub
-                    </Link>
-                  </motion.div>
-                  <motion.div
-                    className="pt-4 border-t border-border/50 flex flex-col gap-3"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: (NAV_LINKS.length + 1) * 0.1 }}
-                  >
-                    <Button
-                      variant="outline"
-                      className="w-full"
-                      asChild
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <Link href="/login">Login</Link>
-                    </Button>
-                    <Button
-                      className="w-full relative overflow-hidden group"
-                      asChild
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <Link href="/login">
-                        <span className="relative z-10">Get API Key</span>
-                        <div className="absolute inset-0 bg-gradient-to-r from-primary-light to-accent opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </Link>
-                    </Button>
-                  </motion.div>
-                </div>
-              </SheetContent>
-            </Sheet>
+            <button
+              type="button"
+              onClick={() => setIsOpen(!isOpen)}
+              className="pixel-btn-secondary px-3 py-2 font-pixel"
+              aria-label="Toggle menu"
+            >
+              {isOpen ? "✕" : "☰"}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {isOpen && (
+          <div className="md:hidden border-t-2 border-pixel-border py-4">
+            <div className="flex flex-col gap-4">
+              {navLinks.map((link) => {
+                const isExternal = link.href.startsWith("https://");
+                const isAnchor = link.href.startsWith("#");
+
+                if (isExternal) {
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-pixel text-pixel-xs text-pixel-muted hover:text-pixel-fg transition-none uppercase tracking-wider"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {link.label}
+                    </Link>
+                  );
+                }
+
+                if (isAnchor) {
+                  return (
+                    <button
+                      type="button"
+                      key={link.href}
+                      onClick={() => scrollToSection(link.href)}
+                      className="font-pixel text-pixel-xs text-pixel-muted hover:text-pixel-fg transition-none text-left uppercase tracking-wider"
+                    >
+                      {link.label}
+                    </button>
+                  );
+                }
+
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="font-pixel text-pixel-xs text-pixel-muted hover:text-pixel-fg transition-none uppercase tracking-wider"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+              <Link
+                href="https://github.com/knowhereapi"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-pixel text-pixel-xs text-pixel-muted hover:text-pixel-fg transition-none uppercase tracking-wider"
+                onClick={() => setIsOpen(false)}
+              >
+                GitHub
+              </Link>
+              <div className="pt-4 border-t-2 border-pixel-border">
+                <PixelButton variant="primary" className="w-full" asChild>
+                  <Link href="/login">GET API KEY</Link>
+                </PixelButton>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-    </motion.nav>
+    </nav>
   );
-}
+};

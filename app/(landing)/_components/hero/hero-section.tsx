@@ -1,147 +1,125 @@
 "use client";
 
-import { ParticleBackground } from "@app/(landing)/_components/hero/particle-background";
-import { UploadZone } from "@app/(landing)/_components/hero/upload-zone";
-import { Button } from "@components/ui/button";
-import { motion } from "framer-motion";
-import { ArrowRight, Sparkles, Zap } from "lucide-react";
 import Link from "next/link";
+import { PixelButton } from "../pixel/pixel-button";
+import { PixelHeading } from "../pixel/pixel-heading";
+import { PixelIcon } from "../pixel/pixel-icon";
 
-export function HeroSection() {
+export const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Particle Background */}
-      <ParticleBackground />
-
-      {/* Subtle Background Gradient */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div
-          className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl opacity-20"
-          style={{ background: "radial-gradient(circle, rgba(0,255,255,0.3) 0%, transparent 70%)" }}
-        />
-        <div
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full blur-3xl opacity-20"
-          style={{ background: "radial-gradient(circle, rgba(255,0,255,0.3) 0%, transparent 70%)" }}
-        />
-      </div>
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-16 bg-pixel-bg">
+      {/* Pixel Grid Background (subtle) */}
+      <div className="absolute inset-0 pixel-grid-bg pointer-events-none" />
 
       {/* Content */}
-      <div className="container mx-auto px-4 relative z-10 pt-24 sm:pt-28 lg:pt-0">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Left Column - Text Content */}
-          <div className="text-center lg:text-left">
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center mb-8"
-            >
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent rounded-full blur-lg opacity-50 group-hover:opacity-75 transition-opacity" />
-                <div className="relative flex items-center gap-2 px-4 py-2 rounded-full glass border border-primary/40">
-                  <Sparkles className="h-4 w-4 text-secondary" />
-                  <span className="text-sm font-semibold text-foreground">
-                    Processing 1K+ Documents Monthly
-                  </span>
-                </div>
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="max-w-5xl mx-auto">
+          {/* Main Content - Centered */}
+          <div className="text-center space-y-12">
+            {/* Pixel Art Logo/Title */}
+            <div className="space-y-8">
+              {/* ASCII Art Header */}
+              <div className="font-mono text-pixel-fg leading-tight overflow-x-hidden flex items-center justify-center">
+                <pre className="text-[11.5px] sm:text-xs md:text-sm scale-[0.72] sm:scale-80 md:scale-100 origin-center">
+                  {`
+  ██╗  ██╗███╗   ██╗ ██████╗ ██╗    ██╗██╗  ██╗███████╗██████╗ ███████╗
+  ██║ ██╔╝████╗  ██║██╔═══██╗██║    ██║██║  ██║██╔════╝██╔══██╗██╔════╝
+  █████╔╝ ██╔██╗ ██║██║   ██║██║ █╗ ██║███████║█████╗  ██████╔╝█████╗
+  ██╔═██╗ ██║╚██╗██║██║   ██║██║███╗██║██╔══██║██╔══╝  ██╔══██╗██╔══╝
+  ██║  ██╗██║ ╚████║╚██████╔╝╚███╔███╔╝██║  ██║███████╗██║  ██║███████╗
+  ╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝  ╚══╝╚══╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚══════╝
+                  `}
+                </pre>
               </div>
-            </motion.div>
 
-            {/* Main Heading */}
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold mb-6 leading-tight font-heading"
-            >
-              <span className="block text-foreground">Transform</span>
-              <span className="block bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-cyan-600">
-                Chaos
-              </span>
-              <span className="block text-foreground">
-                into{" "}
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-magenta-400 to-magenta-600">
-                  Clarity
+              {/* Main Heading */}
+              <PixelHeading as="h1" size="lg" className="text-pixel-fg uppercase">
+                API Platform
+              </PixelHeading>
+
+              {/* Tagline */}
+              <p className="font-sans text-lg sm:text-xl text-pixel-muted max-w-3xl mx-auto">
+                Transform unstructured documents into clean, structured data.
+                <br />
+                <span className="text-pixel-fg font-medium">
+                  Extract tables, formulas, and layouts with pixel-perfect precision.
                 </span>
-              </span>
-            </motion.h1>
-
-            {/* Subtitle */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-lg sm:text-xl lg:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto lg:mx-0"
-            >
-              The most accurate document parsing API for AI agents.{" "}
-              <span className="text-foreground font-semibold">
-                Extract tables, formulas, and structured data
-              </span>{" "}
-              with unmatched precision.
-            </motion.p>
+              </p>
+            </div>
 
             {/* CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4"
-            >
-              <Button size="lg" className="group h-14 px-8 text-lg" asChild>
-                <Link href="/login">
-                  <span className="flex items-center gap-2">
-                    Start Free Trial
-                    <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-                  </span>
-                </Link>
-              </Button>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <PixelButton variant="primary" asChild>
+                <Link href="/login">Start Free Trial</Link>
+              </PixelButton>
 
-              <Button
-                size="lg"
-                variant="outline"
-                className="h-14 px-8 text-lg border-primary/50 hover:border-primary hover:bg-transparent"
-                asChild
-              >
+              <PixelButton variant="secondary" asChild>
                 <Link href="https://docs.knowhereto.ai/" target="_blank">
-                  <span>View Documentation</span>
+                  View Docs
                 </Link>
-              </Button>
-            </motion.div>
+              </PixelButton>
+            </div>
+
+            {/* Pixel Art Illustration */}
+            <div className="relative md:py-12 py-14">
+              <div className="flex items-center justify-center gap-8 flex-wrap">
+                {/* Input Data Box */}
+                <div className="pixel-card p-6 space-y-2">
+                  <PixelIcon icon="docs" size={32} className="text-pixel-fg mx-auto" />
+                  <PixelHeading as="h3" size="xs" className="text-center">
+                    INPUT
+                  </PixelHeading>
+                  <p className="font-sans text-xs text-pixel-muted text-center">Documents</p>
+                </div>
+
+                {/* Arrow */}
+                <div className="flex items-center gap-2">
+                  <div className="font-pixel text-pixel-md text-pixel-fg">→</div>
+                </div>
+
+                {/* API Box */}
+                <div className="pixel-card pixel-card-accent p-6 space-y-2">
+                  <PixelIcon icon="api" size={32} className="text-pixel-green mx-auto" />
+                  <PixelHeading as="h3" size="xs" className="text-center text-pixel-green">
+                    API
+                  </PixelHeading>
+                  <p className="font-sans text-xs text-pixel-muted text-center">Processing</p>
+                </div>
+
+                {/* Arrow */}
+                <div className="flex items-center gap-2">
+                  <div className="font-pixel text-pixel-md text-pixel-fg">→</div>
+                </div>
+
+                {/* Output Data Box */}
+                <div className="pixel-card p-6 space-y-2">
+                  <PixelIcon icon="database" size={32} className="text-pixel-fg mx-auto" />
+                  <PixelHeading as="h3" size="xs" className="text-center">
+                    OUTPUT
+                  </PixelHeading>
+                  <p className="font-sans text-xs text-pixel-muted text-center">Clean JSON</p>
+                </div>
+              </div>
+            </div>
 
             {/* Trust Indicators */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.8 }}
-              className="mt-12 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-sm text-muted-foreground"
-            >
+            <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-pixel text-pixel-muted">
               <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-accent" />
-                <span>No credit card required</span>
+                <PixelIcon icon="check" size={16} className="text-pixel-green" />
+                <span>No Card Required</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-primary" />
-                <span>99.8% accuracy</span>
+                <PixelIcon icon="check" size={16} className="text-pixel-green" />
+                <span>99.8% Accuracy</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-accent" />
-                <span>&lt;200ms response time</span>
+                <PixelIcon icon="performance" size={16} className="text-pixel-green" />
+                <span>&lt;200ms Speed</span>
               </div>
-            </motion.div>
+            </div>
           </div>
-
-          {/* Right Column - Interactive Upload Zone */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="relative"
-          >
-            <UploadZone />
-          </motion.div>
         </div>
       </div>
     </section>
   );
-}
+};

@@ -1,9 +1,10 @@
 "use client";
 
+import { PixelButton } from "@app/(landing)/_components/pixel/pixel-button";
+import { PixelDivider } from "@app/(landing)/_components/pixel/pixel-divider";
+import { PixelIcon } from "@app/(landing)/_components/pixel/pixel-icon";
 import { FOOTER_LINKS, SOCIAL_LINKS } from "@app/(landing)/_lib/constants";
-import { Button } from "@components/ui/button";
-import { Input } from "@components/ui/input";
-import { Github, Linkedin, Mail, Sparkles, Twitter } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -30,50 +31,42 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border/50 bg-background">
+    <footer className="border-t-2 border-pixel-border bg-pixel-bg">
       <div className="container mx-auto px-4 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 md:gap-12">
           {/* Brand Column */}
           <div className="lg:col-span-2 space-y-4 flex flex-col items-center md:items-start text-center md:text-left">
             <Link href="/" className="flex items-center space-x-2 group">
-              <div>
-                <Sparkles className="h-6 w-6 text-primary" />
-              </div>
-              <span className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
-                Knowhere API
-              </span>
+              <PixelIcon icon="sparkles" color="green" size={24} />
+              <span className="font-pixel text-[12px] text-pixel-fg">KNOWHERE API</span>
             </Link>
-            <p className="text-sm text-muted-foreground max-w-sm">
+            <p className="text-sm text-pixel-muted font-sans max-w-sm">
               The most accurate document parsing API for AI agents. Transform complex documents into
               structured data optimized for RAG.
             </p>
 
             {/* Newsletter */}
             <div className="w-full max-w-sm">
-              <h4 className="text-sm font-semibold mb-3">Stay Updated</h4>
+              <h4 className="text-[10px] font-pixel mb-3 text-[var(--pixel-text-muted)]">
+                STAY UPDATED
+              </h4>
               <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
-                <Input
+                <input
                   type="email"
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   disabled={isSubmitting || submitted}
-                  className="flex-1"
+                  className="flex-1 pixel-border bg-pixel-bg text-pixel-fg font-sans text-sm px-3 py-2 focus:outline-none focus:border-pixel-green disabled:opacity-50"
                 />
-                <Button
-                  type="submit"
-                  disabled={isSubmitting || submitted}
-                  className="relative overflow-hidden"
-                >
-                  {submitted ? (
-                    <span className="flex items-center gap-1">✓</span>
-                  ) : (
-                    <Mail className="h-4 w-4" />
-                  )}
-                </Button>
+                <PixelButton type="submit" disabled={isSubmitting || submitted} variant="primary">
+                  {submitted ? "✓" : <PixelIcon icon="arrow-right" color="default" size={16} />}
+                </PixelButton>
               </form>
-              {submitted && <p className="text-xs text-accent mt-2">Thanks for subscribing!</p>}
+              {submitted && (
+                <p className="text-xs text-pixel-green font-sans mt-2">Thanks for subscribing!</p>
+              )}
             </div>
 
             {/* Social Links */}
@@ -82,41 +75,41 @@ export function Footer() {
                 href={SOCIAL_LINKS.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="text-pixel-muted hover:text-pixel-green transition-colors"
               >
-                <Github className="h-5 w-5" />
+                <Image src="/images/social/github.svg" alt="GitHub icon" width={32} height={32} />
                 <span className="sr-only">GitHub</span>
+              </Link>
+              <Link
+                href={SOCIAL_LINKS.discord}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-pixel-muted hover:text-pixel-green transition-colors"
+              >
+                <Image src="/images/social/discord.svg" alt="Discord icon" width={32} height={32} />
+                <span className="sr-only">Discord</span>
               </Link>
               <Link
                 href={SOCIAL_LINKS.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="text-pixel-muted hover:text-pixel-green transition-colors"
               >
-                <Twitter className="h-5 w-5" />
+                <Image src="/images/social/x.svg" alt="Twitter icon" width={25} height={25} />
                 <span className="sr-only">Twitter</span>
-              </Link>
-              <Link
-                href={SOCIAL_LINKS.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
-              >
-                <Linkedin className="h-5 w-5" />
-                <span className="sr-only">LinkedIn</span>
               </Link>
             </div>
           </div>
 
           {/* Product Links */}
           <div className="text-center md:text-left">
-            <h3 className="font-semibold mb-4 text-sm">Product</h3>
-            <ul className="space-y-3 text-sm text-muted-foreground">
+            <h3 className="font-pixel text-[10px] mb-4 text-[var(--pixel-text-muted)]">PRODUCT</h3>
+            <ul className="space-y-3 text-sm text-pixel-muted font-sans">
               {FOOTER_LINKS.product.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="hover:text-primary transition-colors inline-block"
+                    className="hover:text-pixel-green transition-colors inline-block"
                   >
                     {link.label}
                   </Link>
@@ -127,13 +120,13 @@ export function Footer() {
 
           {/* Company Links */}
           <div className="text-center md:text-left">
-            <h3 className="font-semibold mb-4 text-sm">Company</h3>
-            <ul className="space-y-3 text-sm text-muted-foreground">
+            <h3 className="font-pixel text-[10px] mb-4 text-[var(--pixel-text-muted)]">COMPANY</h3>
+            <ul className="space-y-3 text-sm text-pixel-muted font-sans">
               {FOOTER_LINKS.company.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="hover:text-primary transition-colors inline-block"
+                    className="hover:text-pixel-green transition-colors inline-block"
                   >
                     {link.label}
                   </Link>
@@ -144,13 +137,13 @@ export function Footer() {
 
           {/* Legal Links */}
           <div className="text-center md:text-left">
-            <h3 className="font-semibold mb-4 text-sm">Legal</h3>
-            <ul className="space-y-3 text-sm text-muted-foreground">
+            <h3 className="font-pixel text-[10px] mb-4 text-[var(--pixel-text-muted)]">LEGAL</h3>
+            <ul className="space-y-3 text-sm text-pixel-muted font-sans">
               {FOOTER_LINKS.legal.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="hover:text-primary transition-colors inline-block"
+                    className="hover:text-pixel-green transition-colors inline-block"
                   >
                     {link.label}
                   </Link>
@@ -161,14 +154,12 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-border/50 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-          <p className="text-sm text-muted-foreground">
-            &copy; {currentYear} Knowhere API. All rights reserved.
-          </p>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <span className="flex items-center gap-2">
-              Built with <span className="text-red-500">♥</span> for developers
-            </span>
+        <div className="mt-12">
+          <PixelDivider />
+          <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+            <p className="text-sm text-pixel-muted font-sans">
+              &copy; {currentYear} Knowhere API. All rights reserved.
+            </p>
           </div>
         </div>
       </div>

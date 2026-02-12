@@ -1,7 +1,9 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { PixelCard } from "@/app/(landing)/_components/pixel/pixel-card";
+import { PixelHeading } from "@/app/(landing)/_components/pixel/pixel-heading";
+import { PixelIcon } from "@/app/(landing)/_components/pixel/pixel-icon";
 import type { FAQItem, VersusPageData } from "@/app/(landing)/_data/versus-pages";
 
 type FAQSectionProps = {
@@ -16,22 +18,17 @@ type FAQItemComponentProps = {
 
 function FAQItemComponent({ item, isOpen, onToggle }: FAQItemComponentProps) {
   return (
-    <div className="rounded-lg border border-border/50 bg-card/30 backdrop-blur-sm overflow-hidden">
+    <PixelCard className="overflow-hidden">
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
         aria-controls={`faq-answer-${item.id}`}
         id={`faq-question-${item.id}`}
-        className="w-full flex items-center justify-between gap-4 p-6 text-left hover:bg-card/50 transition-colors"
+        className="w-full flex items-center justify-between gap-4 p-6 text-left hover:bg-pixel-border/10 transition-colors"
       >
-        <span className="text-lg font-semibold text-foreground">{item.question}</span>
-        <ChevronDown
-          className={`w-5 h-5 text-muted-foreground flex-shrink-0 transition-transform ${
-            isOpen ? "rotate-180" : ""
-          }`}
-          aria-hidden="true"
-        />
+        <span className="text-sm font-sans font-semibold text-pixel-fg">{item.question}</span>
+        <PixelIcon icon={isOpen ? "arrow-up" : "arrow-down"} size={16} className="flex-shrink-0" />
       </button>
       {isOpen && (
         <div
@@ -40,10 +37,10 @@ function FAQItemComponent({ item, isOpen, onToggle }: FAQItemComponentProps) {
           aria-labelledby={`faq-question-${item.id}`}
           className="px-6 pb-6"
         >
-          <p className="text-muted-foreground leading-relaxed">{item.answer}</p>
+          <p className="text-[var(--pixel-text-muted)] font-sans leading-relaxed">{item.answer}</p>
         </div>
       )}
-    </div>
+    </PixelCard>
   );
 }
 
@@ -71,20 +68,20 @@ export function FAQSection({ data }: FAQSectionProps) {
 
   // Category labels
   const categoryLabels: Record<string, string> = {
-    general: "General",
-    technical: "Technical",
-    pricing: "Pricing",
-    migration: "Migration",
+    general: "GENERAL",
+    technical: "TECHNICAL",
+    pricing: "PRICING",
+    migration: "MIGRATION",
   };
 
   return (
-    <section className="relative w-full py-16 md:py-24 overflow-hidden">
+    <section className="py-16 md:py-24 bg-pixel-bg">
       <div className="container mx-auto px-4">
         {/* Section header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold font-heading mb-4">
+          <PixelHeading as="h2" size="lg" className="mb-4">
             {data.title}
-          </h2>
+          </PixelHeading>
         </div>
 
         {/* Category filter */}
@@ -93,24 +90,36 @@ export function FAQSection({ data }: FAQSectionProps) {
             <button
               type="button"
               onClick={() => setActiveCategory(null)}
-              className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+              className={`px-4 py-2 border-2 font-pixel text-pixel-xs transition-transform ${
                 activeCategory === null
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground"
+                  ? "bg-pixel-green text-pixel-bg border-pixel-fg hover:translate-x-[2px] hover:translate-y-[2px]"
+                  : "bg-pixel-bg text-pixel-fg border-pixel-border hover:translate-x-[2px] hover:translate-y-[2px]"
               }`}
+              style={{
+                boxShadow:
+                  activeCategory === null
+                    ? "2px 2px 0 var(--pixel-fg)"
+                    : "2px 2px 0 var(--pixel-shadow)",
+              }}
             >
-              All
+              ALL
             </button>
             {categories.map((category) => (
               <button
                 type="button"
                 key={category}
                 onClick={() => setActiveCategory(category)}
-                className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+                className={`px-4 py-2 border-2 font-pixel text-pixel-xs transition-transform ${
                   activeCategory === category
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-card/50 text-muted-foreground hover:bg-card hover:text-foreground"
+                    ? "bg-pixel-green text-pixel-bg border-pixel-fg hover:translate-x-[2px] hover:translate-y-[2px]"
+                    : "bg-pixel-bg text-pixel-fg border-pixel-border hover:translate-x-[2px] hover:translate-y-[2px]"
                 }`}
+                style={{
+                  boxShadow:
+                    activeCategory === category
+                      ? "2px 2px 0 var(--pixel-fg)"
+                      : "2px 2px 0 var(--pixel-shadow)",
+                }}
               >
                 {categoryLabels[category]}
               </button>

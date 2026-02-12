@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Press+Start+2P&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -6,6 +6,47 @@
 
 @layer base {
   :root {
+    /* Pixel Art Theme Colors */
+    --pixel-bg: #fafafa;
+    --pixel-fg: #0a0a0a;
+    --pixel-border: #d4d4d4;
+    --pixel-shadow: #737373;
+    --pixel-text-muted: #3a3a3a;
+    --pixel-accent-green: #22c55e;
+    --pixel-accent-yellow: #eab308;
+    --pixel-accent-red: #ef4444;
+
+    /* Pixel Fonts */
+    --font-pixel-primary: "Press Start 2P", "Courier New", monospace;
+    --font-mono: "JetBrains Mono", "Courier New", monospace;
+    --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+
+    /* Pixel Font Sizes */
+    --text-pixel-xs: 8px;
+    --text-pixel-sm: 10px;
+    --text-pixel-md: 12px;
+    --text-pixel-lg: 16px;
+    --text-pixel-xl: 24px;
+    --text-pixel-2xl: 32px;
+
+    /* Mono Font Sizes */
+    --text-mono-sm: 12px;
+    --text-mono-md: 14px;
+    --text-mono-lg: 16px;
+
+    /* Sans Font Sizes */
+    --text-sans-sm: 14px;
+    --text-sans-md: 16px;
+    --text-sans-lg: 18px;
+
+    /* Pixel Spacing (8px grid system) */
+    --space-1: 8px;
+    --space-2: 16px;
+    --space-3: 24px;
+    --space-4: 32px;
+    --space-6: 48px;
+    --space-8: 64px;
+
     /* Light mode (fallback - we primarily use dark mode) */
     --background: 0 0% 100%;
     --foreground: 220 18% 8%;
@@ -326,6 +367,246 @@
 
   .holographic {
     animation: holographic 3s ease-in-out infinite;
+  }
+
+  /* ===== PIXEL ART UTILITIES ===== */
+
+  /* Pixel Border System */
+  .pixel-border {
+    border: 2px solid var(--pixel-border);
+    box-shadow: 4px 4px 0 var(--pixel-shadow);
+  }
+
+  .pixel-border-double {
+    border: 2px solid var(--pixel-fg);
+    outline: 2px solid var(--pixel-border);
+    outline-offset: 4px;
+    box-shadow: 6px 6px 0 var(--pixel-shadow);
+  }
+
+  /* Pixel Corners */
+  .pixel-corners {
+    position: relative;
+  }
+
+  .pixel-corners::before,
+  .pixel-corners::after {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border: 2px solid var(--pixel-fg);
+  }
+
+  .pixel-corners::before {
+    top: -2px;
+    left: -2px;
+    border-right: none;
+    border-bottom: none;
+  }
+
+  .pixel-corners::after {
+    bottom: -2px;
+    right: -2px;
+    border-left: none;
+    border-top: none;
+  }
+
+  /* Pixel Button Styles */
+  .pixel-btn {
+    font-family: var(--font-pixel-primary);
+    font-size: var(--text-pixel-sm);
+    padding: 12px 24px;
+    border: 2px solid var(--pixel-fg);
+    transition: none;
+    image-rendering: pixelated;
+    line-height: 1.6;
+  }
+
+  .pixel-btn-primary {
+    background: var(--pixel-accent-green);
+    color: var(--pixel-bg);
+    border: 2px solid var(--pixel-fg);
+    box-shadow: 4px 4px 0 var(--pixel-fg);
+  }
+
+  .pixel-btn-primary:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--pixel-fg);
+  }
+
+  .pixel-btn-primary:active {
+    transform: translate(4px, 4px);
+    box-shadow: none;
+  }
+
+  .pixel-btn-secondary {
+    background: transparent;
+    color: var(--pixel-fg);
+    border: 2px solid var(--pixel-fg);
+    box-shadow: 4px 4px 0 var(--pixel-shadow);
+  }
+
+  .pixel-btn-secondary:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--pixel-shadow);
+  }
+
+  .pixel-btn-secondary:active {
+    transform: translate(4px, 4px);
+    box-shadow: none;
+  }
+
+  /* Pixel Card Component */
+  .pixel-card {
+    background: var(--pixel-bg);
+    border: 2px solid var(--pixel-border);
+    box-shadow:
+      4px 4px 0 var(--pixel-shadow),
+      inset 2px 2px 0 rgba(255, 255, 255, 0.5);
+    padding: 24px;
+  }
+
+  .pixel-card-accent {
+    position: relative;
+  }
+
+  .pixel-card-accent::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--pixel-accent-green);
+  }
+
+  /* Pixel Dividers */
+  .pixel-divider {
+    height: 2px;
+    background-image: repeating-linear-gradient(
+      to right,
+      var(--pixel-border) 0px,
+      var(--pixel-border) 4px,
+      transparent 4px,
+      transparent 8px
+    );
+  }
+
+  .pixel-divider-dash {
+    height: 2px;
+    background-image: repeating-linear-gradient(
+      to right,
+      var(--pixel-fg) 0px,
+      var(--pixel-fg) 12px,
+      transparent 12px,
+      transparent 20px
+    );
+  }
+
+  /* Pixel Grid Background */
+  .pixel-grid-bg {
+    background-image:
+      linear-gradient(var(--pixel-border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--pixel-border) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.3;
+  }
+
+  /* Pixel Scanlines Effect */
+  .pixel-scanlines {
+    position: relative;
+  }
+
+  .pixel-scanlines::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.03) 0px,
+      rgba(0, 0, 0, 0.03) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+    pointer-events: none;
+  }
+
+  /* Pixel Animations */
+  @keyframes pixel-blink {
+    0%,
+    49% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .pixel-cursor {
+    animation: pixel-blink 1s steps(2) infinite;
+  }
+
+  @keyframes pixel-bounce {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  .pixel-bounce {
+    animation: pixel-bounce 0.6s steps(3) infinite;
+  }
+
+  @keyframes pixel-scroll {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: -100px 0;
+    }
+  }
+
+  .pixel-scroll-bg {
+    animation: pixel-scroll 4s linear infinite;
+  }
+
+  /* Pixel Image Rendering */
+  .pixel-image {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+  }
+
+  /* Pixel Text Styles */
+  .pixel-text {
+    font-family: var(--font-pixel-primary);
+    line-height: 1.6;
+    image-rendering: pixelated;
+    color: var(--pixel-fg);
+  }
+
+  .pixel-text-xs {
+    font-size: var(--text-pixel-xs);
+  }
+  .pixel-text-sm {
+    font-size: var(--text-pixel-sm);
+  }
+  .pixel-text-md {
+    font-size: var(--text-pixel-md);
+  }
+  .pixel-text-lg {
+    font-size: var(--text-pixel-lg);
+  }
+  .pixel-text-xl {
+    font-size: var(--text-pixel-xl);
+  }
+  .pixel-text-2xl {
+    font-size: var(--text-pixel-2xl);
   }
 
   /* Reduce motion for accessibility */

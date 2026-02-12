@@ -1,9 +1,9 @@
 "use client";
 
-import { Button } from "@components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@components/ui/dialog";
-import { CheckCircle2, Download, Loader2, Minus, Plus, RotateCcw, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
+import { PixelButton } from "@/app/(landing)/_components/pixel/pixel-button";
+import { PixelIcon } from "@/app/(landing)/_components/pixel/pixel-icon";
 import { useFetchHtml } from "@/app/(landing)/versus/[product]/_hooks/use-fetch-html";
 
 export type DemoContent = {
@@ -64,17 +64,17 @@ export function DemoDetailModal({ isOpen, onClose, content }: DemoDetailModalPro
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[80vw] max-h-[80vh] p-0 gap-0 flex flex-col">
+      <DialogContent className="max-w-[80vw] max-h-[80vh] p-0 gap-0 flex flex-col border-2 border-pixel-border bg-pixel-bg">
         {/* Header */}
-        <DialogHeader className="px-6 pt-6 pb-4 border-b shrink-0">
+        <DialogHeader className="px-6 pt-6 pb-4 border-b-2 border-pixel-border shrink-0">
           <DialogTitle
             className={
               content.isKnowhere
-                ? "text-2xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent"
-                : "text-2xl"
+                ? "text-xl font-pixel text-pixel-green"
+                : "text-xl font-pixel text-pixel-fg"
             }
           >
-            {content.title}
+            {content.title.toUpperCase()}
           </DialogTitle>
         </DialogHeader>
 
@@ -83,24 +83,28 @@ export function DemoDetailModal({ isOpen, onClose, content }: DemoDetailModalPro
           {/* Left: HTML Content (70%) */}
           <div className="flex-[7] flex flex-col gap-4 min-w-0">
             {/* HTML Render Area */}
-            <div className="flex-1 rounded-lg border border-border/50 bg-card/30 overflow-auto relative">
+            <div className="flex-1 border-2 border-pixel-border bg-pixel-bg overflow-auto relative">
               {isLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-card/80 backdrop-blur-sm z-10">
+                <div className="absolute inset-0 flex items-center justify-center bg-pixel-bg z-10">
                   <div className="text-center">
-                    <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-2" />
-                    <p className="text-sm text-muted-foreground">Loading content...</p>
+                    <div className="w-8 h-8 border-2 border-pixel-fg border-t-transparent animate-spin mx-auto mb-2" />
+                    <p className="text-sm text-[var(--pixel-text-muted)] font-sans">
+                      Loading content...
+                    </p>
                   </div>
                 </div>
               )}
 
               {error && (
-                <div className="absolute inset-0 flex items-center justify-center bg-card/80 backdrop-blur-sm z-10">
+                <div className="absolute inset-0 flex items-center justify-center bg-pixel-bg z-10">
                   <div className="text-center space-y-3">
-                    <p className="text-sm text-destructive">Failed to load content</p>
-                    <p className="text-xs text-muted-foreground">{error.message}</p>
-                    <Button onClick={refetch} variant="outline" size="sm">
-                      Retry
-                    </Button>
+                    <p className="text-sm text-pixel-red font-sans">Failed to load content</p>
+                    <p className="text-xs text-[var(--pixel-text-muted)] font-sans">
+                      {error.message}
+                    </p>
+                    <PixelButton onClick={refetch} variant="secondary">
+                      RETRY
+                    </PixelButton>
                   </div>
                 </div>
               )}
@@ -116,67 +120,55 @@ export function DemoDetailModal({ isOpen, onClose, content }: DemoDetailModalPro
             </div>
 
             {/* Toolbar */}
-            <div className="flex items-center justify-between gap-4 px-4 py-3 bg-card/50 rounded-lg border border-border/50">
+            <div className="flex items-center justify-between gap-4 px-4 py-3 border-2 border-pixel-border bg-pixel-bg">
               <div className="flex items-center gap-2">
-                <Button
+                <PixelButton
                   onClick={handleZoomOut}
                   disabled={zoom <= MIN_ZOOM}
-                  variant="outline"
-                  size="sm"
-                  className="gap-1"
+                  variant="secondary"
                 >
-                  <Minus className="w-4 h-4" />
-                </Button>
-                <Button
-                  onClick={handleZoomReset}
-                  variant="outline"
-                  size="sm"
-                  className="gap-1 min-w-[80px]"
-                >
-                  <RotateCcw className="w-4 h-4" />
+                  -
+                </PixelButton>
+                <PixelButton onClick={handleZoomReset} variant="secondary">
                   {Math.round(zoom * 100)}%
-                </Button>
-                <Button
-                  onClick={handleZoomIn}
-                  disabled={zoom >= MAX_ZOOM}
-                  variant="outline"
-                  size="sm"
-                  className="gap-1"
-                >
-                  <Plus className="w-4 h-4" />
-                </Button>
+                </PixelButton>
+                <PixelButton onClick={handleZoomIn} disabled={zoom >= MAX_ZOOM} variant="secondary">
+                  +
+                </PixelButton>
               </div>
 
-              <Button
+              <PixelButton
                 onClick={handleDownload}
                 disabled={!html || isLoading || !!error}
-                variant="outline"
-                size="sm"
-                className="gap-2"
+                variant="secondary"
               >
-                <Download className="w-4 h-4" />
-                Download
-              </Button>
+                DOWNLOAD
+              </PixelButton>
             </div>
           </div>
 
           {/* Right: Highlights Sidebar (30%) */}
           <div className="flex-[3] flex flex-col gap-4 min-w-0">
-            <div className="flex-1 rounded-lg border border-border/50 bg-card/30 p-6 overflow-auto">
-              <h3 className="text-lg font-semibold mb-4">Highlights</h3>
+            <div className="flex-1 border-2 border-pixel-border bg-pixel-bg p-6 overflow-auto">
+              <h3 className="text-sm font-pixel text-pixel-fg mb-4">HIGHLIGHTS</h3>
               <div className="space-y-3">
                 {content.highlights.map((highlight) => {
                   const isPositive =
                     highlight.startsWith("✅") ||
                     highlight.includes("Perfect") ||
                     highlight.includes("Correct");
-                  const Icon = isPositive ? CheckCircle2 : XCircle;
-                  const colorClass = isPositive ? "text-green-500" : "text-red-500";
+                  const icon = isPositive ? "check" : "cross";
+                  const color = isPositive ? "green" : "red";
 
                   return (
                     <div key={highlight} className="flex items-start gap-3">
-                      <Icon className={`w-5 h-5 flex-shrink-0 mt-0.5 ${colorClass}`} />
-                      <p className="text-sm text-muted-foreground flex-1">
+                      <PixelIcon
+                        icon={icon}
+                        size={16}
+                        color={color}
+                        className="flex-shrink-0 mt-0.5"
+                      />
+                      <p className="text-sm text-[var(--pixel-text-muted)] font-sans flex-1">
                         {highlight.replace(/^[✅❌]\s*/, "")}
                       </p>
                     </div>

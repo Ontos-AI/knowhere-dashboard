@@ -12,7 +12,8 @@ const config: Config = {
   		fontFamily: {
   			sans: ['IBM Plex Sans', 'system-ui', 'sans-serif'],
   			mono: ['JetBrains Mono', 'monospace'],
-  			heading: ['JetBrains Mono', 'monospace']
+  			heading: ['JetBrains Mono', 'monospace'],
+  			pixel: ['Press Start 2P', 'Courier New', 'monospace']
   		},
   		colors: {
   			border: 'hsl(var(--border))',
@@ -61,12 +62,30 @@ const config: Config = {
   				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
   				border: 'hsl(var(--sidebar-border))',
   				ring: 'hsl(var(--sidebar-ring))'
+  			},
+  			pixel: {
+  				bg: 'var(--pixel-bg)',
+  				fg: 'var(--pixel-fg)',
+  				border: 'var(--pixel-border)',
+  				shadow: 'var(--pixel-shadow)',
+  				muted: 'var(--pixel-text-muted)',
+  				green: 'var(--pixel-accent-green)',
+  				yellow: 'var(--pixel-accent-yellow)',
+  				red: 'var(--pixel-accent-red)'
   			}
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
+  		},
+  		spacing: {
+  			'pixel-1': 'var(--space-1)',
+  			'pixel-2': 'var(--space-2)',
+  			'pixel-3': 'var(--space-3)',
+  			'pixel-4': 'var(--space-4)',
+  			'pixel-6': 'var(--space-6)',
+  			'pixel-8': 'var(--space-8)'
   		},
   		keyframes: {
   			'accordion-down': {
@@ -211,6 +230,30 @@ const config: Config = {
   				'50%': {
   					filter: 'hue-rotate(20deg)'
   				}
+  			},
+  			'pixel-blink': {
+  				'0%, 49%': {
+  					opacity: '1'
+  				},
+  				'50%, 100%': {
+  					opacity: '0'
+  				}
+  			},
+  			'pixel-bounce': {
+  				'0%, 100%': {
+  					transform: 'translateY(0)'
+  				},
+  				'50%': {
+  					transform: 'translateY(-8px)'
+  				}
+  			},
+  			'pixel-scroll': {
+  				'0%': {
+  					backgroundPosition: '0 0'
+  				},
+  				'100%': {
+  					backgroundPosition: '-100px 0'
+  				}
   			}
   		},
   		animation: {
@@ -229,7 +272,10 @@ const config: Config = {
   			'scale-in': 'scale-in 0.3s ease-out',
   			glitch: 'glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite',
   			'neon-pulse': 'neon-pulse 2s ease-in-out infinite',
-  			holographic: 'holographic 3s ease-in-out infinite'
+  			holographic: 'holographic 3s ease-in-out infinite',
+  			'pixel-blink': 'pixel-blink 1s steps(2) infinite',
+  			'pixel-bounce': 'pixel-bounce 0.6s steps(3) infinite',
+  			'pixel-scroll': 'pixel-scroll 4s linear infinite'
   		},
   		backgroundImage: {
   			'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

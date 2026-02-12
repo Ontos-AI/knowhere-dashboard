@@ -1,9 +1,10 @@
 "use client";
 
-import { Button } from "@components/ui/button";
-import { motion } from "framer-motion";
-import { Check, X } from "lucide-react";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { PixelDivider } from "./pixel/pixel-divider";
+import { PixelHeading } from "./pixel/pixel-heading";
+import { PixelIcon } from "./pixel/pixel-icon";
 
 type ComparisonData = {
   category: string;
@@ -58,9 +59,9 @@ const comparisonData: ComparisonData[] = [
   },
 ];
 
-const tabs = ["All Features", "Tables", "Formulas", "Performance"];
+const tabs = ["All", "Tables", "Formulas", "Speed"];
 
-export function ProductComparison() {
+export const ProductComparison = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   const filteredData =
@@ -74,88 +75,68 @@ export function ProductComparison() {
         });
 
   return (
-    <section id="comparison" className="py-16 md:py-24 bg-muted/20">
+    <section id="comparison" className="py-16 md:py-24 bg-pixel-bg">
       <div className="container mx-auto px-4">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6 }}
-          className="text-center max-w-3xl mx-auto mb-12"
-        >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold font-heading mb-4">
-            See The{" "}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
-              Difference
-            </span>
-          </h2>
-          <p className="text-lg text-muted-foreground">
-            Real-world comparisons showing why developers choose Knowhere API over competitors
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <PixelIcon icon="arrow-down" size={16} className="text-pixel-fg" />
+            <PixelHeading as="h2" size="md" className="uppercase">
+              How We Compare
+            </PixelHeading>
+          </div>
+          <PixelDivider variant="dashed" className="mb-6 max-w-md mx-auto" />
+          <p className="font-sans text-lg text-pixel-muted">
+            Real-world comparisons showing why developers choose Knowhere API
           </p>
-        </motion.div>
+        </div>
 
         {/* Tabs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex flex-wrap justify-center gap-2 mb-8"
-        >
+        <div className="flex flex-wrap justify-center gap-2 mb-8">
           {tabs.map((tab, index) => (
-            <Button
+            <button
               key={tab}
-              variant={activeTab === index ? "default" : "outline"}
+              type="button"
               onClick={() => setActiveTab(index)}
-              className="relative overflow-hidden transition-all"
-            >
-              {activeTab === index && (
-                <motion.div
-                  layoutId="activeTab"
-                  className="absolute inset-0 bg-primary"
-                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                />
+              className={cn(
+                "font-pixel text-pixel-xs px-4 py-2 border-2 transition-none",
+                activeTab === index
+                  ? "bg-pixel-green text-pixel-bg border-pixel-fg shadow-[2px_2px_0_var(--pixel-fg)]"
+                  : "bg-pixel-bg text-pixel-fg border-pixel-border hover:border-pixel-fg"
               )}
-              <span className="relative z-10">{tab}</span>
-            </Button>
+            >
+              {tab}
+            </button>
           ))}
-        </motion.div>
+        </div>
 
         {/* Comparison Table */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="max-w-4xl mx-auto"
-        >
-          <div className="glass rounded-2xl border border-border/50 overflow-hidden">
+        <div className="max-w-4xl mx-auto">
+          <div className="pixel-border bg-pixel-bg">
             {/* Table Header */}
-            <div className="grid grid-cols-3 gap-4 p-4 md:p-6 bg-card/50 border-b border-border/50">
-              <div className="text-sm font-medium text-muted-foreground">Feature</div>
-              <div className="text-sm font-medium text-muted-foreground text-center">
-                Competitors
-              </div>
-              <div className="text-sm font-medium text-primary text-center">Knowhere API</div>
+            <div className="grid grid-cols-3 gap-4 p-4 md:p-6 bg-pixel-border/20 border-b-2 border-pixel-border">
+              <div className="font-pixel text-pixel-xs text-pixel-muted">Feature</div>
+              <div className="font-pixel text-pixel-xs text-pixel-muted text-center">Others</div>
+              <div className="font-pixel text-pixel-xs text-pixel-green text-center">Knowhere</div>
             </div>
 
             {/* Table Body */}
-            <div className="divide-y divide-border/50">
+            <div>
               {filteredData.map((item, index) => (
-                <motion.div
+                <div
                   key={`${item.feature}-${index}`}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.4, delay: index * 0.05 }}
-                  className="grid grid-cols-3 gap-4 p-4 md:p-6 hover:bg-card/30 transition-colors group"
+                  className={cn(
+                    "grid grid-cols-3 gap-4 p-4 md:p-6 hover:bg-pixel-border/10 transition-colors",
+                    index !== filteredData.length - 1 && "border-b-2 border-pixel-border/50"
+                  )}
                 >
                   {/* Feature Name */}
                   <div>
-                    <div className="font-medium text-foreground mb-1">{item.feature}</div>
+                    <div className="font-sans text-sm font-medium text-pixel-fg mb-1">
+                      {item.feature}
+                    </div>
                     {item.description && (
-                      <div className="text-sm text-muted-foreground hidden md:block">
+                      <div className="font-sans text-xs text-pixel-muted hidden md:block">
                         {item.description}
                       </div>
                     )}
@@ -164,59 +145,52 @@ export function ProductComparison() {
                   {/* Competitor Status */}
                   <div className="flex items-center justify-center">
                     {item.competitor === "good" && (
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Check className="h-5 w-5" />
-                        <span className="text-sm hidden sm:inline">Good</span>
+                      <div className="flex items-center gap-2 text-pixel-muted">
+                        <PixelIcon icon="check" size={16} />
+                        <span className="font-pixel text-pixel-xs hidden sm:inline">OK</span>
                       </div>
                     )}
-                    {item.competitor === "poor" && (
-                      <div className="flex items-center gap-2 text-destructive/70">
-                        <X className="h-5 w-5" />
-                        <span className="text-sm hidden sm:inline">Poor</span>
-                      </div>
-                    )}
-                    {item.competitor === "missing" && (
-                      <div className="flex items-center gap-2 text-destructive/70">
-                        <X className="h-5 w-5" />
-                        <span className="text-sm hidden sm:inline">Missing</span>
+                    {(item.competitor === "poor" || item.competitor === "missing") && (
+                      <div className="flex items-center gap-2 text-pixel-red">
+                        <PixelIcon icon="cross" size={16} />
+                        <span className="font-pixel text-pixel-xs hidden sm:inline">
+                          {item.competitor === "missing" ? "NO" : "BAD"}
+                        </span>
                       </div>
                     )}
                   </div>
 
                   {/* Knowhere Status */}
                   <div className="flex items-center justify-center">
-                    <div className="flex items-center gap-2 text-accent">
-                      <div className="relative">
-                        <div className="absolute inset-0 bg-accent/20 rounded-full blur-md group-hover:bg-accent/30 transition-colors" />
-                        <Check className="h-5 w-5 relative" />
-                      </div>
-                      <span className="text-sm font-medium hidden sm:inline">
-                        {item.knowhere === "excellent" ? "Excellent" : "Good"}
+                    <div className="flex items-center gap-2 text-pixel-green">
+                      <PixelIcon icon="check" size={16} />
+                      <span className="font-pixel text-pixel-xs font-medium hidden sm:inline">
+                        YES
                       </span>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
 
             {/* Stats Footer */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 bg-card/30 border-t border-border/50">
-              <div className="text-center p-4 rounded-lg bg-accent/10 border border-accent/20 hover:border-accent/30 transition-colors">
-                <div className="text-2xl font-bold font-mono text-accent mb-1">+23%</div>
-                <div className="text-sm text-muted-foreground">Higher Accuracy</div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 bg-pixel-border/20 border-t-2 border-pixel-border">
+              <div className="pixel-border p-4 bg-pixel-bg text-center">
+                <div className="font-pixel text-pixel-md text-pixel-green mb-1">+23%</div>
+                <div className="font-sans text-xs text-pixel-muted">Accuracy</div>
               </div>
-              <div className="text-center p-4 rounded-lg bg-primary/10 border border-primary/20 hover:border-primary/30 transition-colors">
-                <div className="text-2xl font-bold font-mono text-primary mb-1">2.5x</div>
-                <div className="text-sm text-muted-foreground">Faster Processing</div>
+              <div className="pixel-border p-4 bg-pixel-bg text-center">
+                <div className="font-pixel text-pixel-md text-pixel-green mb-1">2.5x</div>
+                <div className="font-sans text-xs text-pixel-muted">Faster</div>
               </div>
-              <div className="text-center p-4 rounded-lg bg-accent/10 border border-accent/20 hover:border-accent/30 transition-colors">
-                <div className="text-2xl font-bold font-mono text-accent mb-1">99.8%</div>
-                <div className="text-sm text-muted-foreground">Quality Score</div>
+              <div className="pixel-border p-4 bg-pixel-bg text-center">
+                <div className="font-pixel text-pixel-md text-pixel-green mb-1">99.8%</div>
+                <div className="font-sans text-xs text-pixel-muted">Quality</div>
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
-}
+};

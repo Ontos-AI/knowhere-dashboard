@@ -1,6 +1,9 @@
 "use client";
 
-import * as LucideIcons from "lucide-react";
+import { PixelBadge } from "@/app/(landing)/_components/pixel/pixel-badge";
+import { PixelCard } from "@/app/(landing)/_components/pixel/pixel-card";
+import { PixelHeading } from "@/app/(landing)/_components/pixel/pixel-heading";
+import { PixelIcon } from "@/app/(landing)/_components/pixel/pixel-icon";
 import type { UseCase, VersusPageData } from "@/app/(landing)/_data/versus-pages";
 
 type UseCasesSectionProps = {
@@ -8,17 +11,22 @@ type UseCasesSectionProps = {
   competitorName: string;
 };
 
-// Impact badge colors
-const impactBadges = {
-  high: "bg-red-500/10 text-red-500 border-red-500/20",
-  medium: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
-  low: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+const impactLabels = {
+  high: "HIGH IMPACT",
+  medium: "MEDIUM",
+  low: "NICE TO HAVE",
 };
 
-const impactLabels = {
-  high: "High Impact",
-  medium: "Medium Impact",
-  low: "Nice to Have",
+// Map lucide icon names to pixel icon names
+const iconMap: Record<string, string> = {
+  FileText: "file",
+  BarChart: "chart",
+  Clock: "clock",
+  Database: "database",
+  Zap: "zap",
+  Shield: "shield",
+  Code: "code",
+  Layers: "layers",
 };
 
 type UseCaseCardProps = {
@@ -27,64 +35,82 @@ type UseCaseCardProps = {
 };
 
 function UseCaseCard({ useCase, competitorName }: UseCaseCardProps) {
-  // Get icon component dynamically
-  const IconComponent =
-    (LucideIcons as unknown as Record<string, typeof LucideIcons.FileText>)[useCase.icon] ||
-    LucideIcons.FileText;
+  const pixelIconName = iconMap[useCase.icon] || "file";
 
   return (
-    <div className="rounded-xl border border-border/50 bg-card/30 backdrop-blur-sm p-6 hover:border-primary/50 hover:bg-card/50 transition-colors">
+    <PixelCard className="p-6 hover:translate-x-[2px] hover:translate-y-[2px] transition-transform">
       <div className="space-y-4">
         {/* Icon and title */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
-              <IconComponent className="w-6 h-6 text-primary" />
+            <div
+              className="w-12 h-12 border-2 border-pixel-border bg-pixel-bg flex items-center justify-center flex-shrink-0"
+              style={{ boxShadow: "2px 2px 0 var(--pixel-shadow)" }}
+            >
+              <PixelIcon icon="file" className="text-[var(--pixel-text-muted)]" size={24} />
             </div>
-            <div>
-              <h3 className="text-lg font-semibold text-foreground">{useCase.title}</h3>
-              <p className="text-sm text-muted-foreground">{useCase.description}</p>
+            <div className="flex-1">
+              <h3 className="text-sm font-sans font-semibold text-pixel-fg">{useCase.title}</h3>
+              <p className="text-xs font-sans text-[var(--pixel-text-muted)]">
+                {useCase.description}
+              </p>
             </div>
           </div>
-          <span
-            className={`px-2.5 py-1 text-xs font-medium border rounded-full whitespace-nowrap ${impactBadges[useCase.impact]}`}
+          <PixelBadge
+            color={
+              useCase.impact === "high" ? "red" : useCase.impact === "medium" ? "yellow" : "gray"
+            }
           >
             {impactLabels[useCase.impact]}
-          </span>
+          </PixelBadge>
         </div>
 
         {/* Scenario */}
         <div>
-          <h4 className="text-sm font-semibold text-foreground mb-2">Scenario</h4>
-          <p className="text-sm text-muted-foreground">{useCase.scenario}</p>
+          <h4 className="text-xs font-pixel text-pixel-xs text-pixel-fg mb-2">SCENARIO</h4>
+          <p className="text-sm font-sans text-[var(--pixel-text-muted)]">{useCase.scenario}</p>
         </div>
 
         {/* Knowhere advantage */}
-        <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3">
-          <h4 className="text-sm font-semibold text-green-500 mb-1">Knowhere Advantage</h4>
-          <p className="text-sm text-muted-foreground">{useCase.knowhereAdvantage}</p>
+        <div
+          className="border-2 border-pixel-green bg-pixel-bg p-3"
+          style={{ boxShadow: "2px 2px 0 var(--pixel-shadow)" }}
+        >
+          <h4 className="text-xs font-pixel text-pixel-xs text-pixel-green mb-1">
+            KNOWHERE ADVANTAGE
+          </h4>
+          <p className="text-sm font-sans text-[var(--pixel-text-muted)]">
+            {useCase.knowhereAdvantage}
+          </p>
         </div>
 
         {/* Competitor limitation */}
-        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
-          <h4 className="text-sm font-semibold text-red-500 mb-1">{competitorName} Limitation</h4>
-          <p className="text-sm text-muted-foreground">{useCase.competitorLimitation}</p>
+        <div
+          className="border-2 border-pixel-red bg-pixel-bg p-3"
+          style={{ boxShadow: "2px 2px 0 var(--pixel-shadow)" }}
+        >
+          <h4 className="text-xs font-pixel text-pixel-xs text-pixel-red mb-1">
+            {competitorName.toUpperCase()} LIMITATION
+          </h4>
+          <p className="text-sm font-sans text-[var(--pixel-text-muted)]">
+            {useCase.competitorLimitation}
+          </p>
         </div>
       </div>
-    </div>
+    </PixelCard>
   );
 }
 
 export function UseCasesSection({ data, competitorName }: UseCasesSectionProps) {
   return (
-    <section className="relative w-full py-16 md:py-24 overflow-hidden bg-muted/20">
+    <section className="py-16 md:py-24 bg-pixel-bg">
       <div className="container mx-auto px-4">
         {/* Section header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold font-heading mb-4">
+          <PixelHeading as="h2" size="lg" className="mb-4">
             {data.title}
-          </h2>
-          <p className="text-lg text-muted-foreground">{data.subtitle}</p>
+          </PixelHeading>
+          <p className="text-base text-[var(--pixel-text-muted)] font-sans">{data.subtitle}</p>
         </div>
 
         {/* Use case cards */}
