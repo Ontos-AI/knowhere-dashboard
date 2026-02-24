@@ -1,6 +1,7 @@
 "use client";
 
 import { NAV_LINKS, SOCIAL_LINKS } from "@app/(landing)/_lib/constants";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -52,25 +53,14 @@ export const Navbar = ({ customLinks }: NavbarProps = {}) => {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
             <div className="flex items-center">
-              {/* Pixel art logo icon */}
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                className="pixel-image"
-                role="img"
-                aria-label="Knowhere Logo"
-              >
-                <rect x="6" y="4" width="12" height="2" fill="currentColor" />
-                <rect x="4" y="6" width="2" height="12" fill="currentColor" />
-                <rect x="18" y="6" width="2" height="12" fill="currentColor" />
-                <rect x="6" y="18" width="12" height="2" fill="currentColor" />
-                <rect x="10" y="8" width="4" height="2" fill="currentColor" />
-                <rect x="8" y="10" width="2" height="4" fill="currentColor" />
-                <rect x="14" y="10" width="2" height="4" fill="currentColor" />
-                <rect x="10" y="14" width="4" height="2" fill="currentColor" />
-              </svg>
+              {/*  Brand logo icon */}
+              <Image
+                src={"/images/brand/brand-logo.png"}
+                alt="brand logo"
+                width={24}
+                height={24}
+                className="rounded-[5px]"
+              />
               <span className="ml-2 font-pixel text-pixel-sm text-pixel-fg tracking-wider">
                 KNOWHERE
               </span>

@@ -7,6 +7,7 @@ import { Separator } from "@components/ui/separator";
 import { Sheet, SheetContent } from "@components/ui/sheet";
 import { cn } from "@lib/utils";
 import { Key, LayoutDashboard, LogOut, Settings, Webhook } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -42,9 +43,14 @@ export function Sidebar({ user, open, onOpenChange }: SidebarProps) {
       {/* Logo */}
       <div className="flex h-16 items-center justify-between px-6">
         <Link href="/" className="flex items-center space-x-2">
-          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-sm">K</span>
-          </div>
+          {/*  Brand logo icon */}
+          <Image
+            src={"/images/brand/brand-logo.png"}
+            alt="brand logo"
+            width={24}
+            height={24}
+            className="rounded-[5px]"
+          />
           <span className="text-xl font-bold">Knowhere</span>
         </Link>
         {/* <LanguageSwitcher /> */}

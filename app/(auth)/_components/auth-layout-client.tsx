@@ -2,6 +2,7 @@
 
 import { ThemeToggle } from "@components/theme-toggle";
 import { useAppConfigContext } from "@providers/config-provider";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type ReactNode, useEffect } from "react";
@@ -34,8 +35,16 @@ export function AuthLayoutClient({ children }: { children: ReactNode }) {
     <div className="min-h-screen flex flex-col">
       {/* 顶部导航 */}
       <header className="flex items-center justify-between p-6">
-        <Link href="/" className="text-2xl font-bold text-primary">
-          Knowhere API
+        <Link href="/" className="flex gap-2 justify-center items-center">
+          {/*  Brand logo icon */}
+          <Image
+            src={"/images/brand/brand-logo.png"}
+            alt="brand logo"
+            width={32}
+            height={32}
+            className="rounded-[5px] "
+          />
+          <div className="text-2xl font-bold text-primary">Knowhere API</div>
         </Link>
         <ThemeToggle />
       </header>
