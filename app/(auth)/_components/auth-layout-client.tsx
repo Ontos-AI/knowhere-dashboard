@@ -20,10 +20,15 @@ export function AuthLayoutClient({ children }: { children: ReactNode }) {
     }
   }, [isAuthenticated, isLoading, router]);
 
+  useEffect(() => {
+    document.body.classList.add("console-tone");
+    return () => document.body.classList.remove("console-tone");
+  }, []);
+
   // 如果正在加载或已登录，显示加载状态
   if (isLoading || isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="landing-tone min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4" />
           <p>加载中...</p>
@@ -32,9 +37,10 @@ export function AuthLayoutClient({ children }: { children: ReactNode }) {
     );
   }
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="landing-tone relative min-h-screen flex flex-col bg-background text-foreground">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(217,119,6,0.12),transparent_55%)]" />
       {/* 顶部导航 */}
-      <header className="flex items-center justify-between p-6">
+      <header className="relative z-10 flex items-center justify-between border-b border-border/70 bg-background/85 p-6 backdrop-blur-sm">
         <Link href="/" className="flex gap-2 justify-center items-center">
           {/*  Brand logo icon */}
           <Image
@@ -42,20 +48,20 @@ export function AuthLayoutClient({ children }: { children: ReactNode }) {
             alt="brand logo"
             width={32}
             height={32}
-            className="rounded-[5px] "
+            className="rounded-[5px]"
           />
-          <div className="text-2xl font-bold text-primary">Knowhere API</div>
+          <div className="text-2xl font-bold">Knowhere API</div>
         </Link>
         <ThemeToggle />
       </header>
 
       {/* 主要内容 */}
-      <main className="flex-1 flex items-center justify-center px-6 py-12">
+      <main className="relative z-10 flex-1 flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-md">{children}</div>
       </main>
 
       {/* 底部 */}
-      <footer className="text-center text-sm text-muted-foreground p-6">
+      <footer className="relative z-10 border-t border-border/70 text-center text-sm text-muted-foreground p-6">
         <p>
           &copy; {appConfig.copyrightYear} {appConfig.companyName}
           {appConfig.showIcp && (

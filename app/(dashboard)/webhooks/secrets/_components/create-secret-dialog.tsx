@@ -84,7 +84,7 @@ export function CreateSecretDialog({
               onChange={(e) => setEndpoint(e.target.value)}
               disabled={isPending}
             />
-            {validationError && <p className="text-sm text-red-500">{validationError}</p>}
+            {validationError && <p className="text-sm text-destructive">{validationError}</p>}
             <p className="text-sm text-muted-foreground">{t("endpointHint")}</p>
           </div>
         </div>

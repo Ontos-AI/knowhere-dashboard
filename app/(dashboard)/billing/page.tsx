@@ -47,8 +47,8 @@ function BillingContent() {
       <div className="flex min-h-[60vh] items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-              <CheckCircle2 className="h-6 w-6 text-green-600" />
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100/80">
+              <CheckCircle2 className="h-6 w-6 text-amber-700" />
             </div>
             <CardTitle className="text-2xl">{t("success.title")}</CardTitle>
             <CardDescription>{t("success.description")}</CardDescription>
@@ -68,8 +68,8 @@ function BillingContent() {
       <div className="flex min-h-[60vh] items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
-              <XCircle className="h-6 w-6 text-red-600" />
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-rose-100/80">
+              <XCircle className="h-6 w-6 text-rose-700" />
             </div>
             <CardTitle className="text-2xl">{t("canceled.title")}</CardTitle>
             <CardDescription>{t("canceled.description")}</CardDescription>

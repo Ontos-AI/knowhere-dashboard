@@ -500,8 +500,8 @@ export default function ApiKeysPage() {
                 </Button>
               </div>
             </div>
-            <div className="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-md">
-              <p className="text-sm text-yellow-800 dark:text-yellow-200">{t("securityWarning")}</p>
+            <div className="rounded-md border border-amber-300/70 bg-amber-50/80 p-3">
+              <p className="text-sm text-amber-800">{t("securityWarning")}</p>
             </div>
             <div className="flex justify-end">
               <Button onClick={() => setShowCreatedKey(false)}>{t("iHaveSaved")}</Button>

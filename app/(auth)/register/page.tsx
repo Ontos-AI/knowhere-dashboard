@@ -75,7 +75,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full border-border/80 bg-card/95 shadow-[0_14px_44px_-24px_rgba(146,64,14,0.35)]">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl text-center">{t("register")}</CardTitle>
         <CardDescription className="text-center">{t("registerDesc")}</CardDescription>

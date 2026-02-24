@@ -17,7 +17,7 @@ export function Header({ onMenuClick }: HeaderProps) {
   const t = useTranslations("Common");
 
   return (
-    <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b bg-background px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-border/70 bg-background/85 px-4 shadow-[0_8px_24px_-20px_rgba(15,23,42,0.35)] backdrop-blur-sm sm:gap-x-6 sm:px-6 lg:px-8">
       {/* 移动端菜单按钮 */}
       <Button variant="ghost" size="icon" className="lg:hidden" onClick={onMenuClick}>
         <Menu className="h-6 w-6" />

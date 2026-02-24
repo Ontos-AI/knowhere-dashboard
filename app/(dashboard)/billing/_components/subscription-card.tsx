@@ -71,7 +71,9 @@ export function SubscriptionCard({
   };
 
   return (
-    <Card className={`relative ${plan.popular ? "border-primary shadow-lg" : ""}`}>
+    <Card
+      className={`relative ${plan.popular ? "border-primary shadow-lg shadow-primary/15" : ""}`}
+    >
       {plan.popular && (
         <Badge className="absolute -top-2 left-1/2 transform -translate-x-1/2">
           {t("recommend")}
@@ -87,7 +89,7 @@ export function SubscriptionCard({
                 ? plan.price
                 : Number.parseFloat(String(plan.price || 0));
             if (price === 0 || Number.isNaN(price)) {
-              return <span className="text-2xl font-bold text-green-600">{t("free")}</span>;
+              return <span className="text-2xl font-bold text-amber-700">{t("free")}</span>;
             }
             const formattedPrice = price.toFixed(2);
             return (
@@ -118,7 +120,7 @@ export function SubscriptionCard({
           <ul className="space-y-2">
             {plan.features.map((feature) => (
               <li key={feature} className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                <Check className="h-4 w-4 text-amber-600 flex-shrink-0" />
                 <span className="text-sm">{feature}</span>
               </li>
             ))}

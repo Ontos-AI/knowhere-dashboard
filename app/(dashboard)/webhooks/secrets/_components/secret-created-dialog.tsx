@@ -51,7 +51,7 @@ export function SecretCreatedDialog({ open, onOpenChange, secret }: SecretCreate
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Check className="h-5 w-5 text-green-500" />
+            <Check className="h-5 w-5 text-amber-600" />
             {t("secretCreatedTitle")}
           </DialogTitle>
           <DialogDescription>{t("secretCreatedDescription")}</DialogDescription>
@@ -70,7 +70,7 @@ export function SecretCreatedDialog({ open, onOpenChange, secret }: SecretCreate
                 aria-label={t("copySecret")}
               >
                 {copied ? (
-                  <Check className="h-4 w-4 text-green-500" />
+                  <Check className="h-4 w-4 text-amber-600" />
                 ) : (
                   <Copy className="h-4 w-4" />
                 )}
@@ -79,15 +79,11 @@ export function SecretCreatedDialog({ open, onOpenChange, secret }: SecretCreate
           </div>
 
           {/* Warning Message */}
-          <div className="flex items-start gap-3 rounded-md border border-orange-200 bg-orange-50 p-4 dark:border-orange-800 dark:bg-orange-950/30">
-            <AlertTriangle className="h-5 w-5 text-orange-600 dark:text-orange-500 mt-0.5 shrink-0" />
+          <div className="flex items-start gap-3 rounded-md border border-amber-300/70 bg-amber-50/80 p-4">
+            <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5 shrink-0" />
             <div className="space-y-1">
-              <p className="text-sm font-medium text-orange-900 dark:text-orange-100">
-                {t("securityWarning")}
-              </p>
-              <p className="text-sm text-orange-800 dark:text-orange-200">
-                {t("securityWarningDescription")}
-              </p>
+              <p className="text-sm font-medium text-amber-900">{t("securityWarning")}</p>
+              <p className="text-sm text-amber-800">{t("securityWarningDescription")}</p>
             </div>
           </div>
         </div>

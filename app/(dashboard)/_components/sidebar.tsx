@@ -69,8 +69,8 @@ export function Sidebar({ user, open, onOpenChange }: SidebarProps) {
                 className={cn(
                   "flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors",
                   isActive
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    ? "bg-primary/90 text-primary-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/70"
                 )}
                 onClick={() => onOpenChange(false)}
               >
@@ -150,7 +150,7 @@ export function Sidebar({ user, open, onOpenChange }: SidebarProps) {
 
       {/* 桌面端侧边栏 */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-64 lg:flex-col">
-        <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r bg-background px-6 pb-4">
+        <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-border/70 bg-sidebar/90 px-6 pb-4 backdrop-blur-sm">
           <SidebarContent />
         </div>
       </div>

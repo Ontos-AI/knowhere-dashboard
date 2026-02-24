@@ -291,8 +291,7 @@ export default function UsagePage() {
                 size="sm"
                 className={cn(
                   "h-7 px-3 text-xs hover:bg-muted",
-                  activeRange === "1d" &&
-                    "bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black"
+                  activeRange === "1d" && "bg-primary text-primary-foreground hover:bg-primary/90"
                 )}
                 onClick={() => {
                   setDate({ from: subDays(new Date(), 1), to: new Date() });
@@ -307,8 +306,7 @@ export default function UsagePage() {
                 size="sm"
                 className={cn(
                   "h-7 px-3 text-xs hover:bg-muted",
-                  activeRange === "7d" &&
-                    "bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black"
+                  activeRange === "7d" && "bg-primary text-primary-foreground hover:bg-primary/90"
                 )}
                 onClick={() => {
                   setDate({ from: subDays(new Date(), 7), to: new Date() });
@@ -323,8 +321,7 @@ export default function UsagePage() {
                 size="sm"
                 className={cn(
                   "h-7 px-3 text-xs hover:bg-muted",
-                  activeRange === "30d" &&
-                    "bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black"
+                  activeRange === "30d" && "bg-primary text-primary-foreground hover:bg-primary/90"
                 )}
                 onClick={() => {
                   setDate({ from: subDays(new Date(), 30), to: new Date() });

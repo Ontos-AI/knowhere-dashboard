@@ -192,7 +192,7 @@ export function BuyCreditsDialog({ currentCredits = 0 }: BuyCreditsDialogProps) 
                       className={cn(
                         "w-[70px]",
                         isSelected
-                          ? "bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black"
+                          ? "bg-primary text-primary-foreground hover:bg-primary/90"
                           : "bg-transparent"
                       )}
                       onClick={() => handlePresetSelect(amount)}
@@ -206,7 +206,7 @@ export function BuyCreditsDialog({ currentCredits = 0 }: BuyCreditsDialogProps) 
                   className={cn(
                     "w-[80px]",
                     isCustom
-                      ? "bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black"
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
                       : "bg-transparent"
                   )}
                   onClick={handleCustomSelect}
@@ -247,7 +247,7 @@ export function BuyCreditsDialog({ currentCredits = 0 }: BuyCreditsDialogProps) 
                 </div>
                 <p
                   className={cn(
-                    "text-xs text-red-500 mt-2 text-center h-4 transition-opacity duration-200",
+                    "text-xs text-destructive mt-2 text-center h-4 transition-opacity duration-200",
                     !isValid && customAmountStr !== "" ? "opacity-100" : "opacity-0"
                   )}
                 >
@@ -272,7 +272,7 @@ export function BuyCreditsDialog({ currentCredits = 0 }: BuyCreditsDialogProps) 
             {t("cancel")}
           </Button>
           <Button
-            className="h-10 bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black min-w-[150px]"
+            className="h-10 min-w-[150px]"
             disabled={
               (!isCustom && !selectedAmount) || (isCustom && !isValid) || buyMutation.isPending
             }

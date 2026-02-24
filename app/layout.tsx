@@ -36,7 +36,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const messages = await getMessages();
 
   return (
-    <html lang={locale} suppressHydrationWarning className={`dark ${pressStart2P.variable}`}>
+    <html lang={locale} suppressHydrationWarning className={pressStart2P.variable}>
       <body className={inter.className}>
         <NextIntlClientProvider messages={messages} locale={locale}>
           <ConfigProvider config={appConfig}>

@@ -211,10 +211,10 @@ export function UsageTable({
 
           return (
             <div className="flex items-center gap-2">
-              {status === "Done" && <CheckCircle className="h-4 w-4 text-green-500" />}
-              {status === "Failed" && <XCircle className="h-4 w-4 text-red-500" />}
-              {status === "Running" && <Clock className="h-4 w-4 text-blue-500 animate-spin" />}
-              <span className={status === "Failed" ? "text-red-600" : ""}>{statusText}</span>
+              {status === "Done" && <CheckCircle className="h-4 w-4 text-amber-600" />}
+              {status === "Failed" && <XCircle className="h-4 w-4 text-rose-600" />}
+              {status === "Running" && <Clock className="h-4 w-4 text-primary animate-spin" />}
+              <span className={status === "Failed" ? "text-rose-700" : ""}>{statusText}</span>
             </div>
           );
         },

@@ -352,17 +352,14 @@ export default function SettingsPage() {
                     <div className="flex items-center gap-2">
                       <p className="text-sm font-mono">{user?.email}</p>
                       {user?.emailVerified ? (
-                        <Badge
-                          variant="secondary"
-                          className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
-                        >
+                        <Badge variant="secondary" className="text-xs bg-amber-100 text-amber-800">
                           <CheckCircle className="mr-1 h-3 w-3" />
                           {t("verified")}
                         </Badge>
                       ) : (
                         <Badge
                           variant="outline"
-                          className="text-xs border-yellow-500 text-yellow-700 dark:text-yellow-400"
+                          className="text-xs border-amber-500/70 text-amber-700"
                         >
                           <AlertCircle className="mr-1 h-3 w-3" />
                           {t("unverified")}
