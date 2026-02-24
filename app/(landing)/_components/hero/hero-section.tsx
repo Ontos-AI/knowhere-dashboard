@@ -19,8 +19,15 @@ export const HeroSection = () => {
             {/* Pixel Art Logo/Title */}
             <div className="space-y-8">
               {/* ASCII Art Header */}
-              <div className="font-mono text-pixel-fg leading-tight overflow-x-hidden flex items-center justify-center">
-                <pre className="text-[11px] sm:text-xs md:text-sm scale-[0.72] sm:scale-80 md:scale-100 origin-center">
+              <div className="font-mono text-pixel-fg leading-none overflow-x-hidden flex items-center justify-center">
+                <pre
+                  className="text-[7px] scale-[0.99] sm:text-[10px] md:text-[16px] lg:text-[19px] xl:text-[22px] leading-none tracking-normal"
+                  style={{
+                    fontFamily: '"Courier New", Courier, monospace',
+                    lineHeight: 1,
+                    letterSpacing: 0,
+                  }}
+                >
                   {`
   ██╗  ██╗███╗   ██╗ ██████╗ ██╗    ██╗██╗  ██╗███████╗██████╗ ███████╗
   ██║ ██╔╝████╗  ██║██╔═══██╗██║    ██║██║  ██║██╔════╝██╔══██╗██╔════╝
