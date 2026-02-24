@@ -6,6 +6,7 @@ import { PixelHeading } from "@app/(landing)/_components/pixel/pixel-heading";
 import { PixelIcon } from "@app/(landing)/_components/pixel/pixel-icon";
 import Image from "next/image";
 import Link from "next/link";
+import { SOCIAL_LINKS } from "@/app/(landing)/_lib/constants";
 
 export function CommunitySection() {
   const stats = [
@@ -20,7 +21,7 @@ export function CommunitySection() {
       name: "GitHub",
       iconSrc: "/images/social/github.svg",
       iconSize: { className: "size-6" },
-      href: "https://github.com/Ontos-AI",
+      href: SOCIAL_LINKS.github,
     },
     {
       name: "Discord",
@@ -87,11 +88,7 @@ export function CommunitySection() {
                   </div>
                 </div>
                 <PixelButton variant="secondary" asChild>
-                  <Link
-                    href="https://github.com/knowhere-api"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <Link href={SOCIAL_LINKS.github} target="_blank" rel="noopener noreferrer">
                     STAR
                   </Link>
                 </PixelButton>

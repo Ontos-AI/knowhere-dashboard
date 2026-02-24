@@ -1,6 +1,6 @@
 "use client";
 
-import { NAV_LINKS } from "@app/(landing)/_lib/constants";
+import { NAV_LINKS, SOCIAL_LINKS } from "@app/(landing)/_lib/constants";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -125,7 +125,7 @@ export const Navbar = ({ customLinks }: NavbarProps = {}) => {
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-4">
             <Link
-              href="https://github.com/knowhereapi"
+              href={SOCIAL_LINKS.github}
               target="_blank"
               rel="noopener noreferrer"
               className="font-pixel text-pixel-xs text-pixel-muted hover:text-pixel-fg transition-none uppercase tracking-wider"
@@ -204,7 +204,7 @@ export const Navbar = ({ customLinks }: NavbarProps = {}) => {
                 );
               })}
               <Link
-                href="https://github.com/knowhereapi"
+                href={SOCIAL_LINKS.github}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-pixel text-pixel-xs text-pixel-muted hover:text-pixel-fg transition-none uppercase tracking-wider"
