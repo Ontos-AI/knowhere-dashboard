@@ -16,50 +16,67 @@ type ComparisonData = {
 
 const comparisonData: ComparisonData[] = [
   {
-    category: "Table Recognition",
+    category: "Structures",
+    feature: "Hierarchy construction",
+    competitor: "poor",
+    knowhere: "excellent",
+    description:
+      "Automatically recognize and construct hierarchical data structures, such as multi-level section titles and multi-index headers",
+  },
+  {
+    category: "Tables",
     feature: "Complex merged cells",
     competitor: "poor",
     knowhere: "excellent",
-    description: "Accurately handles multi-level merged cells",
+    description: "Accurately handle multi-level merged cells in both doc files and tables",
   },
   {
-    category: "Table Recognition",
-    feature: "Cross-page tables",
+    category: "Tables",
+    feature: "Table boundary detection",
     competitor: "missing",
     knowhere: "excellent",
-    description: "Seamlessly processes tables spanning multiple pages",
+    description: "Automatically separate tables in one table sheet based on boundary detection",
   },
   {
-    category: "Formula Extraction",
-    feature: "LaTeX output",
-    competitor: "good",
-    knowhere: "excellent",
-    description: "Perfect LaTeX conversion with 99.8% accuracy",
-  },
-  {
-    category: "Formula Extraction",
-    feature: "Inline formulas",
+    category: "Interpretability",
+    feature: "Source traceability",
     competitor: "poor",
     knowhere: "excellent",
-    description: "Detects and extracts inline mathematical expressions",
+    description:
+      "Trace each information piece to its original section in the raw source with clear boundary",
   },
   {
-    category: "Performance",
-    feature: "Processing speed",
-    competitor: "good",
+    category: "Downstream Improvement",
+    feature: "Hierarchical memory & progressive disclosure",
+    competitor: "missing",
     knowhere: "excellent",
-    description: "2.5x faster than competitors",
+    description: "Naturally supports hierarchical memory and progressive disclosure",
   },
   {
-    category: "Performance",
-    feature: "Accuracy rate",
-    competitor: "good",
+    category: "Downstream Improvement",
+    feature: "Vectorless RAG & hybrid RAG",
+    competitor: "missing",
     knowhere: "excellent",
-    description: "+23% higher accuracy on complex documents",
+    description: "Naturally enables vectorless RAG and hybrid RAG",
+  },
+  {
+    category: "Downstream Improvement",
+    feature: "Top-K boost ~10%+ in production",
+    competitor: "missing",
+    knowhere: "excellent",
+    description:
+      "Boost Top-K by ~10%+ in production data when applying RAG pipelines to parsed data",
+  },
+  {
+    category: "Downstream Improvement",
+    feature: "50%+ token savings on graphs",
+    competitor: "missing",
+    knowhere: "excellent",
+    description: "Save 50%+ tokens when developing graphs",
   },
 ];
 
-const tabs = ["All", "Tables", "Formulas", "Speed"];
+const tabs = ["All", "Structures", "Tables", "Interpretability", "Downstream"];
 
 export const ProductComparison = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -68,9 +85,10 @@ export const ProductComparison = () => {
     activeTab === 0
       ? comparisonData
       : comparisonData.filter((item) => {
-          if (activeTab === 1) return item.category === "Table Recognition";
-          if (activeTab === 2) return item.category === "Formula Extraction";
-          if (activeTab === 3) return item.category === "Performance";
+          if (activeTab === 1) return item.category === "Structures";
+          if (activeTab === 2) return item.category === "Tables";
+          if (activeTab === 3) return item.category === "Interpretability";
+          if (activeTab === 4) return item.category === "Downstream Improvement";
           return true;
         });
 
@@ -176,16 +194,20 @@ export const ProductComparison = () => {
             {/* Stats Footer */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 bg-pixel-border/20 border-t-2 border-pixel-border">
               <div className="pixel-border p-4 bg-pixel-bg text-center">
-                <div className="font-pixel text-pixel-md text-pixel-green mb-1">+23%</div>
-                <div className="font-sans text-xs text-pixel-muted">Accuracy</div>
+                <div className="font-pixel text-pixel-md text-pixel-green mb-1">&gt;10%</div>
+                <div className="font-sans text-xs text-pixel-muted">
+                  Searching accuracy improvement in complex production data
+                </div>
               </div>
               <div className="pixel-border p-4 bg-pixel-bg text-center">
-                <div className="font-pixel text-pixel-md text-pixel-green mb-1">2.5x</div>
-                <div className="font-sans text-xs text-pixel-muted">Faster</div>
+                <div className="font-pixel text-pixel-md text-pixel-green mb-1">100%</div>
+                <div className="font-sans text-xs text-pixel-muted">Traceability</div>
               </div>
               <div className="pixel-border p-4 bg-pixel-bg text-center">
-                <div className="font-pixel text-pixel-md text-pixel-green mb-1">99.8%</div>
-                <div className="font-sans text-xs text-pixel-muted">Quality</div>
+                <div className="font-pixel text-pixel-md text-pixel-green mb-1">50%+</div>
+                <div className="font-sans text-xs text-pixel-muted">
+                  Token saving when developing knowledge graphs
+                </div>
               </div>
             </div>
           </div>

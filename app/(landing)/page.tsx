@@ -10,7 +10,7 @@ import { Navbar } from "@app/(landing)/_components/navbar";
 import { PricingSection } from "@app/(landing)/_components/pricing-section";
 import { ProductComparison } from "@app/(landing)/_components/product-comparison";
 import { ScrollProgressBar } from "@app/(landing)/_components/scroll-progress-bar";
-import { TrustIndicators } from "@app/(landing)/_components/trust-indicators";
+import { SupportedFormats } from "@app/(landing)/_components/supported-formats";
 
 export default function LandingPage() {
   return (
@@ -18,7 +18,7 @@ export default function LandingPage() {
       <ScrollProgressBar />
       <Navbar />
       <HeroSection />
-      <TrustIndicators />
+      <SupportedFormats />
       <ProductComparison />
       <ComparisonTabs />
       {/* <ComparisonCardStack enableAutoPlay={true} /> */}

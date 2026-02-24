@@ -125,10 +125,10 @@ export function DataTransformationViz() {
         {/* Stats Summary */}
         <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
           {[
-            { label: "Avg. Processing", value: "187ms" },
-            { label: "Accuracy Rate", value: "99.8%" },
-            { label: "File Formats", value: "50+" },
-            { label: "Daily Docs", value: "100K+" },
+            { label: "Source Traceability", value: "100%" },
+            { label: "Formula Accuracy", value: "~95%" },
+            { label: "File Formats", value: "20+" },
+            { label: "RAG Top-K Boost", value: ">10%" },
           ].map((stat) => (
             <PixelCard
               key={stat.label}

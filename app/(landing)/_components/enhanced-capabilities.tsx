@@ -13,57 +13,44 @@ type Capability = {
 const capabilities: Capability[] = [
   {
     icon: "grid",
-    title: "Advanced Table Recognition",
+    title: "Agentic-Native Structure",
     description:
-      "Parse complex tables with rotations, merged cells, and cross-page spans with industry-leading accuracy",
+      "Progressive disclosure and hierarchical memory natively designed for agentic engineering workflows",
     color: "green",
   },
   {
     icon: "sparkles",
-    title: "Precise Formula Recognition",
+    title: "Formula & Chemical Recognition",
     description:
-      "Extract mathematical formulas and convert to LaTeX/MathML with 99.8% accuracy using SOTA models",
+      "Extract mathematical formulas (LaTeX/MathML) and chemical structures with ~95% accuracy for scientific documents",
     color: "yellow",
   },
   {
     icon: "book",
     title: "Multi-format Support",
     description:
-      "Process 50+ file types: PDF, DOCX, XLSX, PPT, HTML, Images, and more with unified API",
+      "Process 20+ major file formats: PDF, DOCX, XLSX, PPT, HTML, Images, and more with unified API",
     color: "green",
-  },
-  {
-    icon: "atom",
-    title: "Chemical Structure Analysis",
-    description:
-      "State-of-the-art molecular detection and chemical reaction extraction for scientific documents",
-    color: "yellow",
   },
   {
     icon: "zap",
-    title: "Real-time Processing",
-    description: "Sub-200ms response time for most documents with async processing for large files",
-    color: "green",
+    title: "Full Provenance Tracing",
+    description:
+      "100% source traceability for every extracted element, making it easy to audit and verify AI-generated content",
+    color: "yellow",
   },
   {
     icon: "shield",
-    title: "Enterprise Security",
+    title: "On-premise Deployment",
     description:
-      "SOC2 compliant, zero data retention, end-to-end encryption, and role-based access control",
-    color: "yellow",
+      "Supports local deployment for enterprise long-tail needs: conflict detection, compliance auditing, risk identification, and more",
+    color: "green",
   },
   {
     icon: "code",
     title: "API First Design",
     description:
       "RESTful API with webhooks, comprehensive SDKs for all major languages, and detailed documentation",
-    color: "green",
-  },
-  {
-    icon: "globe",
-    title: "Global Infrastructure",
-    description:
-      "Multi-region deployment on AWS and Aliyun for <50ms latency worldwide with 99.9% uptime SLA",
     color: "yellow",
   },
 ];
@@ -83,7 +70,7 @@ export function EnhancedCapabilities() {
         </div>
 
         {/* Capabilities Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {capabilities.map((capability) => (
             <PixelCard
               key={capability.title}
