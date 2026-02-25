@@ -67,6 +67,46 @@ export function useGetJobStatus() {
 }
 
 /**
+ * Hook to fetch ALL jobs for CSV export (no pagination limit)
+ * Loops through all pages using a safe page size to avoid hitting external API limits
+ */
+export function useExportAllJobs() {
+  return useMutation({
+    mutationFn: async (params: {
+      total: number;
+      recentDays?: number;
+      startTime?: string;
+      endTime?: string;
+    }) => {
+      if (params.total === 0) return [];
+
+      // Use a conservative page size that the external API is known to support
+      const PAGE_SIZE = 100;
+      const allJobs: UsageRecord[] = [];
+      let page = 1;
+
+      while (true) {
+        const data = await orpcClient.jobs.list({
+          page,
+          page_size: PAGE_SIZE,
+          recent_days: params.recentDays as 1 | 7 | 30 | undefined,
+          start_time: params.startTime,
+          end_time: params.endTime,
+        });
+
+        allJobs.push(...data.jobs.map(mapJobToUsageRecord));
+
+        // Stop when all records are collected or the API returns an empty page
+        if (allJobs.length >= data.total || data.jobs.length === 0) break;
+        page++;
+      }
+
+      return allJobs;
+    },
+  });
+}
+
+/**
  * Helper function to map job response to usage record
  */
 function mapJobToUsageRecord(job: JobResponse): UsageRecord {

@@ -8,7 +8,7 @@ import { useCredits } from "@hooks/use-credits";
 import { useTimezone } from "@hooks/use-timezone";
 import { cn } from "@lib/utils";
 import { format, subDays } from "date-fns";
-import { Activity, CheckCircle2, CreditCard, Download } from "lucide-react";
+import { Activity, CheckCircle2, CreditCard, Download, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useQueryState } from "nuqs";
 import { useMemo, useState } from "react";
@@ -16,7 +16,7 @@ import type { DateRange } from "react-day-picker";
 import { BuyCreditsDialog } from "@/app/(dashboard)/billing/_components/buy-credits-dialog";
 import { DatePickerWithRange } from "@/app/(dashboard)/usage/_components/date-range-picker";
 import { UsageTable } from "@/app/(dashboard)/usage/_components/usage-table";
-import { useJobs } from "@/app/(dashboard)/usage/_hooks/use-jobs";
+import { useExportAllJobs, useJobs } from "@/app/(dashboard)/usage/_hooks/use-jobs";
 import { useParseUsage } from "@/app/(dashboard)/usage/_hooks/use-usage-stats";
 import { useToast } from "@/hooks/use-toast";
 
@@ -127,6 +127,7 @@ export default function UsagePage() {
   // Fetch data with TanStack Query
   const { data: jobsData, isPending: isPendingJobs } = useJobs(queryParams);
   const { data: usageStats, isPending: isPendingStats } = useParseUsage();
+  const { mutateAsync: fetchAllJobs, isPending: isExporting } = useExportAllJobs();
 
   const isPending = isPendingJobs || isPendingStats;
   const jobs = jobsData?.jobs || [];
@@ -156,7 +157,7 @@ export default function UsagePage() {
         ).toFixed(1)
       : "0";
 
-  const handleExportCSV = () => {
+  const handleExportCSV = async () => {
     // RFC 4180: wrap field in quotes if it contains comma, quote, or newline
     const escapeCSVField = (value: string | number | undefined | null): string => {
       const str = String(value ?? "");
@@ -165,6 +166,14 @@ export default function UsagePage() {
       }
       return str;
     };
+
+    // Fetch all records (not just the current page) for a complete export
+    const allJobs = await fetchAllJobs({
+      total: totalCount,
+      recentDays: queryParams.recentDays,
+      startTime: queryParams.startTime,
+      endTime: queryParams.endTime,
+    });
 
     // Define headers
     const headers = [
@@ -180,7 +189,7 @@ export default function UsagePage() {
     ];
 
     // Map data to rows
-    const rows = jobs.map((item) => [
+    const rows = allJobs.map((item) => [
       formatDate({ date: item.date, formatStr: "yyyy-MM-dd HH:mm:ss" }),
       item.jobId,
       item.fileName || "",
@@ -345,8 +354,17 @@ export default function UsagePage() {
               </Button>
             </div>
           </div>
-          <Button variant="outline" size="sm" onClick={handleExportCSV}>
-            <Download className="mr-2 h-4 w-4" />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportCSV}
+            disabled={isExporting || totalCount === 0}
+          >
+            {isExporting ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="mr-2 h-4 w-4" />
+            )}
             {t("exportCSV")}
           </Button>
         </div>
