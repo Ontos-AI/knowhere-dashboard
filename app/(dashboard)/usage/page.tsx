@@ -231,12 +231,14 @@ export default function UsagePage() {
 
   return (
     <div className="flex flex-col gap-6 p-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-col gap-2">
-          <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{t("title")}</h1>
           <p className="text-muted-foreground">{t("description")}</p>
         </div>
-        <BuyCreditsDialog currentCredits={credits || 0} />
+        <div className="self-start sm:self-auto">
+          <BuyCreditsDialog currentCredits={credits || 0} />
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
@@ -298,21 +300,22 @@ export default function UsagePage() {
       <Separator />
 
       <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
             <DatePickerWithRange
+              className="w-full sm:w-auto"
               date={date}
               setDate={(newDate) => {
                 setDate(newDate);
                 setActiveRange(null);
               }}
             />
-            <div className="flex items-center rounded-lg border bg-card p-1 text-card-foreground shadow-sm">
+            <div className="grid w-full grid-cols-3 items-center rounded-lg border bg-card p-1 text-card-foreground shadow-sm sm:flex sm:w-auto">
               <Button
                 variant="ghost"
                 size="sm"
                 className={cn(
-                  "h-7 px-3 text-xs hover:bg-muted",
+                  "h-8 px-2 text-xs hover:bg-muted sm:h-7 sm:px-3",
                   activeRange === "1d" && "bg-primary text-primary-foreground hover:bg-primary/90"
                 )}
                 onClick={() => {
@@ -322,12 +325,12 @@ export default function UsagePage() {
               >
                 {t("1d")}
               </Button>
-              <Separator orientation="vertical" className="h-4" />
+              <Separator orientation="vertical" className="hidden h-4 sm:block" />
               <Button
                 variant="ghost"
                 size="sm"
                 className={cn(
-                  "h-7 px-3 text-xs hover:bg-muted",
+                  "h-8 px-2 text-xs hover:bg-muted sm:h-7 sm:px-3",
                   activeRange === "7d" && "bg-primary text-primary-foreground hover:bg-primary/90"
                 )}
                 onClick={() => {
@@ -337,12 +340,12 @@ export default function UsagePage() {
               >
                 {t("7d")}
               </Button>
-              <Separator orientation="vertical" className="h-4" />
+              <Separator orientation="vertical" className="hidden h-4 sm:block" />
               <Button
                 variant="ghost"
                 size="sm"
                 className={cn(
-                  "h-7 px-3 text-xs hover:bg-muted",
+                  "h-8 px-2 text-xs hover:bg-muted sm:h-7 sm:px-3",
                   activeRange === "30d" && "bg-primary text-primary-foreground hover:bg-primary/90"
                 )}
                 onClick={() => {
@@ -357,6 +360,7 @@ export default function UsagePage() {
           <Button
             variant="outline"
             size="sm"
+            className="self-start lg:self-auto"
             onClick={handleExportCSV}
             disabled={isExporting || totalCount === 0}
           >
@@ -369,16 +373,18 @@ export default function UsagePage() {
           </Button>
         </div>
 
-        <UsageTable
-          data={jobs}
-          timeZone={timezone}
-          pageCount={Math.ceil(totalCount / Number(pageSize))}
-          pageIndex={Number(page) - 1}
-          pageSize={Number(pageSize)}
-          onPageChange={handlePageChange}
-          total={totalCount}
-          isLoading={isPending}
-        />
+        <div className="w-full">
+          <UsageTable
+            data={jobs}
+            timeZone={timezone}
+            pageCount={Math.ceil(totalCount / Number(pageSize))}
+            pageIndex={Number(page) - 1}
+            pageSize={Number(pageSize)}
+            onPageChange={handlePageChange}
+            total={totalCount}
+            isLoading={isPending}
+          />
+        </div>
       </div>
     </div>
   );

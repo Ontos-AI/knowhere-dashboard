@@ -358,12 +358,10 @@ export function UsageTable({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {t("totalRows", { total: total || 0 })}
-        </div>
-        <div className="flex items-center space-x-6 lg:space-x-8">
-          <div className="flex items-center space-x-2">
+      <div className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="text-sm text-muted-foreground">{t("totalRows", { total: total || 0 })}</div>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6 lg:gap-8">
+          <div className="flex items-center justify-between gap-2 sm:justify-start">
             <p className="text-sm font-medium">{t("rowsPerPage")}</p>
             <Select
               value={`${table.getState().pagination.pageSize}`}
@@ -373,7 +371,7 @@ export function UsageTable({
               }}
               disabled={isLoading}
             >
-              <SelectTrigger className="h-8 w-[70px]">
+              <SelectTrigger className="h-8 w-[76px]">
                 <SelectValue placeholder={table.getState().pagination.pageSize} />
               </SelectTrigger>
               <SelectContent side="top">
@@ -385,10 +383,11 @@ export function UsageTable({
               </SelectContent>
             </Select>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:space-x-2">
             <Button
               variant="outline"
               size="sm"
+              className="w-full sm:w-auto"
               onClick={() => {
                 setLoadingTarget("prev");
                 table.previousPage();
@@ -403,6 +402,7 @@ export function UsageTable({
             <Button
               variant="outline"
               size="sm"
+              className="w-full sm:w-auto"
               onClick={() => {
                 setLoadingTarget("next");
                 table.nextPage();

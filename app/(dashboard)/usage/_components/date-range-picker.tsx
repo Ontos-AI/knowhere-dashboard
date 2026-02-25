@@ -3,6 +3,7 @@
 import { Button } from "@components/ui/button";
 import { Calendar } from "@components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@components/ui/popover";
+import { useIsMobile } from "@hooks/use-mobile";
 import { cn } from "@lib/utils";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
@@ -19,15 +20,17 @@ export function DatePickerWithRange({
   setDate: (date: DateRange | undefined) => void;
 }) {
   const t = useTranslations("Usage");
+  const isMobile = useIsMobile();
+
   return (
-    <div className={cn("grid gap-2", className)}>
+    <div className={cn("grid w-full gap-2", className)}>
       <Popover>
         <PopoverTrigger asChild>
           <Button
             id="date"
             variant={"outline"}
             className={cn(
-              "w-[260px] justify-start text-left font-normal",
+              "w-full justify-start text-left font-normal sm:w-[260px]",
               !date && "text-muted-foreground"
             )}
           >
@@ -52,7 +55,7 @@ export function DatePickerWithRange({
             defaultMonth={date?.from}
             selected={date}
             onSelect={setDate}
-            numberOfMonths={2}
+            numberOfMonths={isMobile ? 1 : 2}
           />
         </PopoverContent>
       </Popover>
