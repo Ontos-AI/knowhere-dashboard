@@ -10,7 +10,12 @@ export function formatDate({
   locale?: string;
   timeZone?: string;
 }): string {
-  const d = new Date(date);
+  // Backend returns UTC datetimes without timezone indicator (e.g. "2026-02-06T02:52:49.927560").
+  // Without "Z" or "+HH:MM", browsers parse the string as local time instead of UTC.
+  // Append "Z" when no timezone info is present to force correct UTC interpretation.
+  const normalized =
+    typeof date === "string" && !/Z$|[+-]\d{2}:\d{2}$/.test(date) ? `${date}Z` : date;
+  const d = new Date(normalized);
 
   if (Number.isNaN(d.getTime())) {
     return "无效日期";

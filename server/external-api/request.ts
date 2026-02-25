@@ -27,6 +27,29 @@ export class ApiError extends Error {
 }
 
 // ============================================
+// Refine response
+// ============================================
+
+// ISO 8601 datetime without timezone indicator, e.g. "2026-02-25T06:28:46.283130"
+// The external API returns UTC datetimes without "Z", causing browsers to misparse
+// them as local time. We append "Z" at the API boundary so all downstream code
+// always receives a properly-formed UTC string.
+const UTC_DATETIME_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?$/;
+
+function normalizeUtcDates<T>(data: T): T {
+  if (typeof data === "string") {
+    return (UTC_DATETIME_RE.test(data) ? `${data}Z` : data) as T;
+  }
+  if (Array.isArray(data)) {
+    return data.map(normalizeUtcDates) as T;
+  }
+  if (data !== null && typeof data === "object") {
+    return Object.fromEntries(Object.entries(data).map(([k, v]) => [k, normalizeUtcDates(v)])) as T;
+  }
+  return data;
+}
+
+// ============================================
 // 核心请求函数
 // ============================================
 
@@ -73,7 +96,7 @@ export async function jwtRequest<T = unknown>({
     );
   }
 
-  return result;
+  return normalizeUtcDates(result);
 }
 
 export async function publicRequest<T = unknown>({
@@ -108,5 +131,5 @@ export async function publicRequest<T = unknown>({
     );
   }
 
-  return result;
+  return normalizeUtcDates(result);
 }
