@@ -22,15 +22,21 @@ export type ComparisonCard = {
   importance: "high" | "medium" | "low";
 };
 
-// Live demo configuration (iframe only - no screenshots needed)
-export type LiveDemoConfig = {
-  originalFile: string; // Path to original input HTML
+// A single demo comparison item (one tab)
+export type DemoItem = {
+  label: string; // Tab label shown to the user, e.g. "Text Flow"
   knowhereOutput: string; // Path to Knowhere output HTML
   competitorOutput: string; // Path to competitor output HTML
+  originalFile?: string; // Optional: path to original input document HTML
   highlights: {
     knowhere: string[]; // Key advantages to highlight
     competitor: string[]; // Key problems to highlight
   };
+};
+
+// Live demo configuration — supports multiple comparison tabs
+export type LiveDemoConfig = {
+  demos: DemoItem[];
 };
 
 // Feature comparison row (Phase 2)
@@ -94,6 +100,10 @@ export type VersusPageData = {
   hero: {
     title: string; // e.g., "Knowhere vs Unstructured"
     subtitle: string;
+    highlightMetrics?: Array<{
+      value: string;
+      label: string;
+    }>;
     highlightMetric?: {
       value: string;
       label: string;
@@ -190,10 +200,16 @@ export const versusUnstructured: VersusPageData = {
   hero: {
     title: "Knowhere vs Unstructured",
     subtitle: "Why Knowhere delivers superior document parsing for complex tables",
-    highlightMetric: {
-      value: "3x Better",
-      label: "Table Structure Accuracy",
-    },
+    highlightMetrics: [
+      {
+        value: "90%+",
+        label: "Complex Table Parsing Accuracy",
+      },
+      {
+        value: "Better",
+        label: "Nested Table Detection",
+      },
+    ],
   },
 
   quickComparison: {
@@ -205,8 +221,8 @@ export const versusUnstructured: VersusPageData = {
         title: "Multi-level Header Detection",
         knowhere: {
           status: "supported",
-          value: "99.8%",
-          description: "Perfectly identifies 3+ level headers with accurate rowspan/colspan",
+          value: "90%+",
+          description: "Accurately identifies 3+ level headers with preserved rowspan/colspan",
         },
         competitor: {
           status: "not-supported",
@@ -242,17 +258,15 @@ export const versusUnstructured: VersusPageData = {
         importance: "high",
       },
       {
-        id: "performance",
-        title: "Processing Speed",
+        id: "nested-table-detection",
+        title: "Nested Table Detection",
         knowhere: {
           status: "supported",
-          value: "187ms",
-          description: "3x faster than Unstructured with higher accuracy",
+          description: "Maintains nested table relationships inside parent table cells",
         },
         competitor: {
           status: "partial",
-          value: "420ms",
-          description: "Slower processing with lower quality output",
+          description: "Often flattens nested table structures and loses hierarchy",
         },
         importance: "medium",
       },
@@ -260,21 +274,60 @@ export const versusUnstructured: VersusPageData = {
   },
 
   liveDemo: {
-    originalFile: "/comparison/original-input.html",
-    knowhereOutput: "/comparison/knowhere.html",
-    competitorOutput: "/comparison/unstructured.html",
-    highlights: {
-      knowhere: [
-        "Perfect 3-level header structure with proper <th> tags",
-        "Three tables correctly separated",
-        "All merged cells preserved with rowspan/colspan",
-      ],
-      competitor: [
-        "All cells rendered as <td> - no semantic headers",
-        "Tables incorrectly merged into single structure",
-        "Merged cells lost, creating confusing layout",
-      ],
-    },
+    demos: [
+      {
+        label: "Text Flow",
+        knowhereOutput: "/comparison/text/knowhere_textflow_showcase.html",
+        competitorOutput: "/comparison/text/unstructured_textflow_showcase.html",
+        highlights: {
+          knowhere: [
+            "✅ 75 semantic headings correctly identified — 0% noise rate",
+            "✅ 925 focused output lines, coherent paragraph order throughout",
+            "✅ TOC tables preserved as structured HTML in the text stream",
+          ],
+          competitor: [
+            "❌ 37 spaced-letter noise lines promoted into heading positions",
+            "❌ 26% heading noise rate — 1 in 4 headings is garbage layout text",
+            "❌ 21 page-furniture markers pollute and fragment the text stream",
+          ],
+        },
+      },
+      {
+        label: "Document Structure",
+        knowhereOutput: "/comparison/text/knowhere_navigation_showcase.html",
+        competitorOutput: "/comparison/text/unstructured_navigation_showcase.html",
+        highlights: {
+          knowhere: [
+            "✅ Clean 4-level semantic tree with 73 navigable nodes",
+            "✅ Zero noise signals — every heading is real content",
+            "✅ Deterministic hierarchy enables reliable RAG chunk retrieval",
+          ],
+          competitor: [
+            "❌ Shallow 3-level tree polluted by 37 noisy heading entries",
+            "❌ Decorative page text mistakenly promoted as section headers",
+            "❌ Heading noise degrades retrieval accuracy in downstream pipelines",
+          ],
+        },
+      },
+      {
+        label: "Table Parsing",
+        originalFile: "/comparison/tables/original-input.html",
+        knowhereOutput: "/comparison/tables/knowhere.html",
+        competitorOutput: "/comparison/tables/unstructured.html",
+        highlights: {
+          knowhere: [
+            "✅ 3-level header structure with proper <th> tags",
+            "✅ Three tables correctly separated",
+            "✅ Merged cells preserved with rowspan/colspan",
+          ],
+          competitor: [
+            "❌ All cells rendered as <td> — no semantic headers",
+            "❌ Tables incorrectly merged into a single structure",
+            "❌ Merged cells lost, creating confusing layout",
+          ],
+        },
+      },
+    ],
   },
 
   cta: {
@@ -327,48 +380,28 @@ export const versusUnstructured: VersusPageData = {
         ],
       },
       {
-        name: "Performance",
+        name: "Output Quality",
         features: [
           {
-            id: "processing-speed",
-            feature: "Processing Speed",
-            knowhere: { supported: true, details: "187ms average" },
-            competitor: { supported: true, details: "420ms average" },
+            id: "structure-preservation",
+            feature: "Structure Preservation",
+            knowhere: { supported: true, details: "90%+ on complex tables" },
+            competitor: { supported: true, details: "Frequent structure loss in complex layouts" },
           },
           {
-            id: "accuracy",
-            feature: "Accuracy Rate",
-            knowhere: { supported: true, details: "99.8%" },
-            competitor: { supported: true, details: "87.3%" },
+            id: "content-order-consistency",
+            feature: "Content & Order Consistency",
+            knowhere: { supported: true, details: "90%+ consistency with source document" },
+            competitor: {
+              supported: true,
+              details: "Lower consistency with misplaced table content",
+            },
           },
-          {
-            id: "batch-processing",
-            feature: "Batch Processing",
-            knowhere: { supported: true, details: "Parallel processing" },
-            competitor: { supported: true, details: "Sequential only" },
-          },
-        ],
-      },
-      {
-        name: "Output Format",
-        features: [
           {
             id: "html-output",
             feature: "HTML Output",
             knowhere: { supported: true, details: "Semantic HTML" },
             competitor: { supported: true, details: "Basic HTML" },
-          },
-          {
-            id: "markdown-output",
-            feature: "Markdown Output",
-            knowhere: { supported: true, details: "Full markdown support" },
-            competitor: { supported: true, details: "Limited markdown" },
-          },
-          {
-            id: "json-output",
-            feature: "JSON Output",
-            knowhere: { supported: true, details: "Structured JSON" },
-            competitor: { supported: false },
           },
         ],
       },
@@ -382,7 +415,7 @@ export const versusUnstructured: VersusPageData = {
         id: "header-detection",
         heading: "Why Multi-level Headers Matter",
         content:
-          "Multi-level headers are essential for complex documents like financial reports and scientific papers. Knowhere uses advanced algorithms to detect header hierarchies, preserving the semantic structure that's critical for RAG applications.",
+          "Multi-level headers are essential for complex documents like financial reports and scientific papers. Knowhere identifies header hierarchies and preserves semantic structure so your RAG pipeline receives reliable context instead of flattened text.",
         codeExample: {
           language: "html",
           code: `<!-- Knowhere Output -->
@@ -405,7 +438,7 @@ export const versusUnstructured: VersusPageData = {
         id: "table-separation",
         heading: "Intelligent Table Separation",
         content:
-          "Unstructured often merges separate tables into one, losing critical context. Knowhere analyzes document layout and content to accurately identify table boundaries, ensuring each table maintains its independence.",
+          "Unstructured often merges separate tables into one, losing critical context. Knowhere analyzes layout and content together to detect table boundaries and preserve each table as an independent unit.",
       },
     ],
   },
@@ -415,43 +448,43 @@ export const versusUnstructured: VersusPageData = {
     subtitle: "See how Knowhere solves actual problems",
     cases: [
       {
+        id: "engineering-checklists",
+        title: "Engineering Checklist Sheets",
+        icon: "FileText",
+        description: "Handling spreadsheet sheets that contain multiple mixed tables",
+        scenario:
+          "An engineering team processes checklist spreadsheets where several unrelated tables appear in one sheet. Feeding raw extracted text directly to models often causes hallucinations.",
+        knowhereAdvantage:
+          "Separates each table block and keeps semantic structure in HTML + markdown outputs, so RAG retrieval maps answers to the correct table context",
+        competitorLimitation:
+          "Markdown conversion can flatten table boundaries and rely on first-row header assumptions, increasing hallucination risk in model-generated answers",
+        impact: "high",
+      },
+      {
         id: "financial-reports",
         title: "Financial Report Processing",
-        icon: "DollarSign",
-        description: "Extracting structured data from complex financial statements",
+        icon: "FileText",
+        description: "Extracting data from quarterly statements with complex table layouts",
         scenario:
-          "A fintech company needs to parse quarterly reports with multi-level headers and nested tables to extract key metrics for AI analysis.",
+          "A fintech company needs to parse reports with multi-level headers, merged cells, and nested tables to extract metrics for AI analysis.",
         knowhereAdvantage:
-          "Perfectly preserves table structure, enabling accurate metric extraction with 99.8% accuracy",
+          "Preserves hierarchy and header semantics with 95%+ structure preservation, so metric extraction remains reliable in downstream pipelines",
         competitorLimitation:
-          "Loses header semantics, requiring manual correction and reducing automation efficiency",
+          "Treats first row as headers by default and simplifies nested structure, requiring manual correction before analytics",
         impact: "high",
       },
       {
         id: "research-papers",
         title: "Scientific Research Papers",
-        icon: "Microscope",
-        description: "Processing academic papers with complex data tables",
+        icon: "FileText",
+        description: "Processing experimental tables with merged cells and layered headers",
         scenario:
-          "Researchers need to extract experimental results from papers containing tables with merged cells and multiple header levels.",
+          "Researchers extract experimental results from papers containing dense tables with merged cells and multiple header levels.",
         knowhereAdvantage:
-          "Maintains complete table structure, allowing automated data aggregation across papers",
+          "Maintains relationships across rows, columns, and nested sections, enabling accurate cross-paper aggregation with 98%+ content and order consistency",
         competitorLimitation:
-          "Flattens table structure, making it difficult to understand data relationships",
+          "Conversion output may contain broken characters and information loss, making data relationships ambiguous for retrieval and analysis",
         impact: "high",
-      },
-      {
-        id: "business-analytics",
-        title: "Business Analytics Dashboards",
-        icon: "BarChart3",
-        description: "Building automated analytics from document data",
-        scenario:
-          "A business intelligence team ingests reports from various sources to build unified dashboards.",
-        knowhereAdvantage:
-          "Fast processing (187ms) enables real-time dashboard updates with accurate data",
-        competitorLimitation:
-          "Slower processing (420ms) and lower accuracy create bottlenecks and errors",
-        impact: "medium",
       },
     ],
   },
@@ -463,7 +496,7 @@ export const versusUnstructured: VersusPageData = {
         id: "why-knowhere",
         question: "Why should I choose Knowhere over Unstructured?",
         answer:
-          "Knowhere delivers 3x better table structure accuracy (99.8% vs 87.3%), perfect multi-level header detection, and 2x faster processing. For RAG applications where accuracy is critical, Knowhere ensures your AI has access to properly structured data.",
+          "Knowhere focuses on structure quality for RAG: 90%+ complex table parsing accuracy, stronger nested-table detection, and better preservation of header relationships. This gives your AI cleaner, more reliable context.",
         category: "general",
       },
       {
@@ -491,7 +524,7 @@ export const versusUnstructured: VersusPageData = {
         id: "table-separation",
         question: "What makes Knowhere better at separating tables?",
         answer:
-          "Unlike Unstructured which uses simple heuristics, Knowhere employs machine learning models trained on thousands of documents to understand table boundaries. This results in accurate separation even in complex layouts.",
+          "Knowhere combines layout analysis with semantic cues to identify true table boundaries. This helps keep neighboring tables independent even when they appear close together in complex documents.",
         category: "technical",
       },
     ],
@@ -525,7 +558,7 @@ export const versusUnstructured: VersusPageData = {
         company: "DataAnalytics Pro",
         rating: 5,
         quote:
-          "The speed and accuracy of Knowhere have allowed us to scale our document processing pipeline 10x without adding infrastructure costs.",
+          "Knowhere's structure quality has made our extraction pipeline far more reliable, and we've reduced manual fixes across our reporting workflow.",
       },
     ],
   },
@@ -533,7 +566,7 @@ export const versusUnstructured: VersusPageData = {
   seo: {
     title: "Knowhere vs Unstructured: Document Parsing Comparison | Knowhere",
     description:
-      "Compare Knowhere and Unstructured for document parsing. Knowhere delivers 3x better table accuracy, perfect header detection, and faster processing.",
+      "Compare Knowhere and Unstructured for document parsing. Knowhere delivers 90%+ complex table parsing accuracy with stronger nested-table and header-structure preservation.",
     keywords: [
       "knowhere vs unstructured",
       "document parsing comparison",
@@ -559,10 +592,16 @@ export const versusMarkitdown: VersusPageData = {
   hero: {
     title: "Knowhere vs Markitdown",
     subtitle: "Why Knowhere is the superior choice for markdown conversion",
-    highlightMetric: {
-      value: "5x Better",
-      label: "Complex Table Handling",
-    },
+    highlightMetrics: [
+      {
+        value: "95%+",
+        label: "Structure Preservation",
+      },
+      {
+        value: "98%+",
+        label: "Content & Order Consistency",
+      },
+    ],
   },
 
   quickComparison: {
@@ -574,7 +613,7 @@ export const versusMarkitdown: VersusPageData = {
         title: "Table Structure Preservation",
         knowhere: {
           status: "supported",
-          value: "100%",
+          value: "95%+",
           description: "Preserves complex table structures with merged cells and headers",
         },
         competitor: {
@@ -606,7 +645,7 @@ export const versusMarkitdown: VersusPageData = {
         },
         competitor: {
           status: "partial",
-          description: "Basic header detection with limited accuracy",
+          description: "Treats first row as headers by default, no sophisticated parsing",
         },
         importance: "high",
       },
@@ -615,13 +654,13 @@ export const versusMarkitdown: VersusPageData = {
         title: "Output Quality",
         knowhere: {
           status: "supported",
-          value: "98.5%",
-          description: "High-fidelity output preserving original structure",
+          value: "98%+",
+          description: "98%+ content and order consistency with the original document",
         },
         competitor: {
           status: "partial",
           value: "72%",
-          description: "Simplified output with information loss",
+          description: "Can produce broken characters and information loss in conversion output",
         },
         importance: "medium",
       },
@@ -629,21 +668,60 @@ export const versusMarkitdown: VersusPageData = {
   },
 
   liveDemo: {
-    originalFile: "/comparison/original-input.html",
-    knowhereOutput: "/comparison/knowhere.html",
-    competitorOutput: "/comparison/markitdown.html",
-    highlights: {
-      knowhere: [
-        "Complete table structure preservation with all semantics",
-        "Accurate multi-level header detection",
-        "Perfect handling of merged cells and complex layouts",
-      ],
-      competitor: [
-        "Table structure simplified in markdown conversion",
-        "Loss of header hierarchy information",
-        "Merged cells not properly represented",
-      ],
-    },
+    demos: [
+      {
+        label: "Text Flow",
+        knowhereOutput: "/comparison/text/knowhere_textflow_showcase.html",
+        competitorOutput: "/comparison/text/markitdown_textflow_showcase.html",
+        highlights: {
+          knowhere: [
+            "✅ 75 semantic headings correctly identified — 0 noise lines",
+            "✅ 925 lean output lines with full paragraph coherence",
+            "✅ TOC tables preserved as structured HTML, not broken characters",
+          ],
+          competitor: [
+            "❌ Zero markdown headings detected — no structural navigation at all",
+            "❌ 704 single-character noise lines from vertical decorative text",
+            "❌ 4001 output lines — 4× more noise than actual document content",
+          ],
+        },
+      },
+      {
+        label: "Document Structure",
+        knowhereOutput: "/comparison/text/knowhere_navigation_showcase.html",
+        competitorOutput: "/comparison/text/markitdown_navigation_showcase.html",
+        highlights: {
+          knowhere: [
+            "✅ 4-level semantic document tree with 73 navigable nodes",
+            "✅ Zero noise signals — every heading is real content",
+            "✅ Enables accurate, deterministic RAG chunk retrieval",
+          ],
+          competitor: [
+            "❌ No heading tree structure generated at all",
+            "❌ 704 noise signals make section navigation impossible",
+            "❌ All section titles appear as plain text, indistinguishable from body",
+          ],
+        },
+      },
+      {
+        label: "Table Parsing",
+        originalFile: "/comparison/tables/original-input.html",
+        knowhereOutput: "/comparison/tables/knowhere.html",
+        competitorOutput: "/comparison/tables/markitdown.html",
+        highlights: {
+          knowhere: [
+            "✅ Complete table structure preservation with semantic relationships",
+            "✅ Accurate multi-level header detection",
+            "✅ Handles merged cells and complex layouts reliably",
+          ],
+          competitor: [
+            "❌ Table structure simplified during markdown conversion",
+            "❌ Header hierarchy information is often lost",
+            "❌ Broken characters and information loss may appear in output",
+          ],
+        },
+      },
+    ],
   },
 
   cta: {
@@ -667,77 +745,46 @@ export const versusMarkitdown: VersusPageData = {
     subtitle: "Detailed breakdown of all capabilities",
     categories: [
       {
-        name: "Table Processing",
+        name: "Structure Quality",
         features: [
           {
             id: "table-structure",
             feature: "Table Structure Preservation",
-            knowhere: { supported: true, details: "100% preservation" },
-            competitor: { supported: true, details: "40% preservation" },
+            knowhere: { supported: true, details: "95%+ preservation" },
+            competitor: {
+              supported: true,
+              details: "Basic preservation with frequent simplification",
+            },
           },
           {
-            id: "semantic-markup",
-            feature: "Semantic HTML Output",
-            knowhere: { supported: true, details: "Full semantic tags" },
-            competitor: { supported: false, details: "Plain markdown only" },
+            id: "content-order-consistency",
+            feature: "Content & Order Consistency",
+            knowhere: { supported: true, details: "98%+ consistency with source content order" },
+            competitor: {
+              supported: true,
+              details: "Lower consistency with occasional character corruption",
+            },
           },
           {
             id: "header-hierarchy",
             feature: "Header Hierarchy",
             knowhere: { supported: true, details: "Multi-level support" },
-            competitor: { supported: true, details: "Basic detection" },
+            competitor: { supported: true, details: "First-row default heuristic" },
           },
           {
-            id: "complex-layouts",
-            feature: "Complex Layouts",
-            knowhere: { supported: true, details: "Advanced handling" },
-            competitor: { supported: false, details: "Simplified output" },
-          },
-        ],
-      },
-      {
-        name: "Output Quality",
-        features: [
-          {
-            id: "fidelity",
-            feature: "Output Fidelity",
-            knowhere: { supported: true, details: "98.5% accuracy" },
-            competitor: { supported: true, details: "72% accuracy" },
+            id: "nested-tables",
+            feature: "Nested Table Detection",
+            knowhere: { supported: true, details: "Preserves nested tables inside cells" },
+            competitor: { supported: false, details: "No sophisticated nested-table parsing" },
           },
           {
-            id: "structure-loss",
-            feature: "Structure Loss",
-            knowhere: { supported: true, details: "Minimal loss" },
-            competitor: { supported: false, details: "Significant loss" },
-          },
-          {
-            id: "readability",
-            feature: "Human Readability",
-            knowhere: { supported: true, details: "Excellent" },
-            competitor: { supported: true, details: "Good" },
-          },
-        ],
-      },
-      {
-        name: "Format Support",
-        features: [
-          {
-            id: "html",
+            id: "semantic-markup",
             feature: "HTML Output",
-            knowhere: { supported: true, details: "Semantic HTML5" },
-            competitor: { supported: false },
-          },
-          {
-            id: "markdown",
-            feature: "Markdown Output",
-            knowhere: { supported: true, details: "Full markdown" },
-            competitor: { supported: true, details: "Basic markdown" },
-          },
-          {
-            id: "json",
-            feature: "JSON Output",
-            knowhere: { supported: true, details: "Structured data" },
-            competitor: { supported: false },
+            knowhere: { supported: true, details: "Semantic HTML alongside markdown output" },
+            competitor: {
+              supported: false,
+              details: "Markdown-focused output with limited semantics",
+            },
           },
         ],
       },
@@ -751,7 +798,7 @@ export const versusMarkitdown: VersusPageData = {
         id: "structure-preservation",
         heading: "Why Structure Preservation Matters",
         content:
-          "Markdown conversion often simplifies complex table structures, losing critical information. Knowhere maintains semantic HTML output alongside markdown, preserving 100% of the original structure for maximum data fidelity.",
+          "Markdown conversion often simplifies complex table structures and drops semantic relationships. Knowhere keeps semantic HTML output alongside markdown, preserving critical hierarchy for higher-fidelity RAG ingestion.",
         codeExample: {
           language: "markdown",
           code: `<!-- Knowhere preserves this structure -->
@@ -767,7 +814,7 @@ export const versusMarkitdown: VersusPageData = {
         id: "semantic-output",
         heading: "Semantic HTML Advantage",
         content:
-          "Unlike Markitdown which only outputs markdown, Knowhere provides semantic HTML that maintains all structural information. This is crucial for RAG applications that need to understand document hierarchy and relationships.",
+          "Unlike markdown-first converters, Knowhere provides semantic HTML that preserves table hierarchy, headers, and relationships. This is critical for RAG applications that depend on structural context.",
       },
     ],
   },
@@ -777,41 +824,42 @@ export const versusMarkitdown: VersusPageData = {
     subtitle: "See how Knowhere solves actual problems",
     cases: [
       {
-        id: "documentation",
-        title: "Technical Documentation",
+        id: "engineering-checklists",
+        title: "Engineering Checklist Sheets",
         icon: "FileText",
-        description: "Converting documentation with complex tables to markdown",
+        description: "Handling spreadsheet sheets that contain multiple mixed tables",
         scenario:
-          "A documentation team needs to convert technical specs with intricate table layouts to markdown for a static site generator.",
+          "An engineering team processes checklist spreadsheets where several unrelated tables appear in one sheet. Feeding raw extracted text directly to models often causes hallucinations.",
         knowhereAdvantage:
-          "Preserves table structure perfectly, maintaining readability and data relationships",
+          "Separates each table block and preserves structure so downstream RAG retrieval maps answers to the right table context",
         competitorLimitation:
-          "Simplifies tables to basic markdown, losing nested headers and complex formatting",
+          "Can merge table boundaries or flatten structure, increasing hallucination risk in model-generated answers",
         impact: "high",
       },
       {
-        id: "knowledge-base",
-        title: "Knowledge Base Migration",
-        icon: "Database",
-        description: "Migrating knowledge base articles with tables",
+        id: "financial-reports",
+        title: "Financial Report Processing",
+        icon: "FileText",
+        description: "Extracting data from quarterly statements with complex table layouts",
         scenario:
-          "A company is migrating their knowledge base to a new platform that requires markdown input while preserving table structure.",
+          "A fintech company needs to parse reports with multi-level headers, merged cells, and nested tables to extract metrics for AI analysis.",
         knowhereAdvantage:
-          "Maintains semantic HTML alongside markdown, allowing platform flexibility",
+          "Preserves table hierarchy and header semantics, supporting reliable metric extraction with 90%+ complex-table accuracy",
         competitorLimitation:
-          "Loses semantic information, requiring manual restructuring of tables",
-        impact: "medium",
+          "Loses header relationships and can collapse nested structure, requiring manual correction before analytics",
+        impact: "high",
       },
       {
-        id: "content-management",
-        title: "Content Management Systems",
-        icon: "Layout",
-        description: "Processing CMS content with structured tables",
+        id: "research-papers",
+        title: "Scientific Research Papers",
+        icon: "FileText",
+        description: "Processing experimental tables with merged cells and layered headers",
         scenario:
-          "A CMS needs to display content in multiple formats while maintaining data integrity across complex table structures.",
+          "Researchers extract experimental results from papers containing dense tables with merged cells and multiple header levels.",
         knowhereAdvantage:
-          "Provides both HTML and markdown outputs with perfect structure preservation",
-        competitorLimitation: "Limited to markdown, forcing choice between format and structure",
+          "Maintains structural relationships across rows, columns, and nested sections, enabling accurate cross-paper aggregation",
+        competitorLimitation:
+          "Flattens or simplifies complex table structure, making data relationships ambiguous for retrieval and analysis",
         impact: "high",
       },
     ],
@@ -824,7 +872,7 @@ export const versusMarkitdown: VersusPageData = {
         id: "why-knowhere",
         question: "Why choose Knowhere over Markitdown?",
         answer:
-          "Knowhere delivers 5x better table structure preservation (100% vs 40%), maintains semantic HTML output, and provides multiple output formats. For applications where data integrity matters, Knowhere ensures no information loss during conversion.",
+          "Knowhere focuses on reliable structure quality: 95%+ table structure preservation and 98%+ content and order consistency, plus semantic HTML output for downstream RAG and data workflows.",
         category: "general",
       },
       {
@@ -838,7 +886,7 @@ export const versusMarkitdown: VersusPageData = {
         id: "migration-process",
         question: "How easy is it to switch from Markitdown to Knowhere?",
         answer:
-          "Very easy. Knowhere provides markdown output just like Markitdown, but with better quality. Simply swap the API endpoint and optionally leverage our HTML output for enhanced functionality.",
+          "Very easy. Knowhere provides markdown output plus semantic HTML. Most teams can swap endpoints first, then incrementally adopt richer structure output for better downstream accuracy.",
         category: "migration",
       },
       {
@@ -894,13 +942,12 @@ export const versusMarkitdown: VersusPageData = {
   seo: {
     title: "Knowhere vs Markitdown: Markdown Conversion Comparison | Knowhere",
     description:
-      "Compare Knowhere and Markitdown for document conversion. Knowhere delivers 5x better table handling, perfect structure preservation, and semantic output.",
+      "Compare Knowhere and Markitdown for document conversion. Knowhere delivers 95%+ structure preservation, 98%+ content and order consistency, and semantic output.",
     keywords: [
       "knowhere vs markitdown",
       "markdown conversion comparison",
       "markitdown alternative",
       "table to markdown",
-      "document parsing performance",
       "complex table handling",
       "semantic html preservation",
       "document structure accuracy",

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Knowhere PDF Multimodal Grounding</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #fff;
+      color: #1a1a1a;
+      margin: 0;
+      padding: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .links a {
+      color: #166534;
+      text-decoration: none;
+      margin-right: 10px;
+      font-size: 12px;
+      border-bottom: 1px solid #166534;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0;
+    }
+    .subtitle {
+      color: #4b5563;
+      margin: 4px 0 14px;
+      font-size: 13px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .card {
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 10px;
+      background: #f9fafb;
+    }
+    .card .label {
+      font-size: 11px;
+      color: #6b7280;
+      margin-bottom: 3px;
+    }
+    .card .value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #166534;
+      line-height: 1.1;
+    }
+    .metric-note {
+      margin: 2px 0 12px;
+      font-size: 12px;
+      color: #4b5563;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      background: #dcfce7;
+      border: 1px solid #86efac;
+      color: #166534;
+      border-radius: 999px;
+      padding: 2px 8px;
+      margin-bottom: 10px;
+    }
+    .panel {
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .panel-head {
+      background: #f3f4f6;
+      border-bottom: 1px solid #d1d5db;
+      padding: 8px 10px;
+      font-size: 12px;
+      color: #4b5563;
+      font-weight: 600;
+    }
+    .section-body {
+      padding: 10px 12px;
+      font-size: 13px;
+      color: #374151;
+      line-height: 1.45;
+    }
+    pre {
+      margin: 0;
+      padding: 10px 12px 12px;
+      font-size: 12px;
+      line-height: 1.45;
+      overflow: auto;
+      white-space: pre-wrap;
+      background: #fff;
+    }
+    .image-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      padding: 8px;
+      background: #fff;
+    }
+    .img-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .img-card img {
+      display: block;
+      width: 100%;
+      height: 520px;
+      object-fit: contain;
+      background: #f9fafb;
+    }
+    .img-cap {
+      border-top: 1px solid #e5e7eb;
+      padding: 8px;
+      font-size: 11px;
+      color: #4b5563;
+      line-height: 1.35;
+      background: #fff;
+    }
+    .notes {
+      margin: 0;
+      padding: 12px 18px;
+      font-size: 13px;
+      color: #374151;
+    }
+    .notes li { margin-bottom: 4px; }
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div>
+      <h1 class="title">PDF Multimodal Grounding - Knowhere</h1>
+      <p class="subtitle">Sample: TNSW10046-Road-Safety-Action-Plan-2026_1_0.pdf</p>
+    </div>
+    <div class="links">
+      <a href="knowhere_textflow_showcase.html">Text Flow</a>
+      <a href="knowhere_navigation_showcase.html">Navigation</a>
+      <a href="../knowhere_vs_unstructured_multimodal_showcase.html">Compare View</a>
+    </div>
+  </div>
+
+  <span class="badge">Multimodal: section-level links + rendered evidence</span>
+
+  <div class="grid">
+    <div class="card"><div class="label">Explicit Section-Visual Association Rate</div><div class="value">100% (67/67)</div></div>
+    <div class="card"><div class="label">Heading Noise Rate</div><div class="value">0% (0/60)</div></div>
+  </div>
+  <p class="metric-note">Association Rate = explicitly linked visuals / total visuals; Heading Noise Rate = noisy heading-like entries / total heading-like entries.</p>
+
+  <div class="panel">
+    <div class="panel-head">Section + Content + Linked Images (same chunk)</div>
+    <pre>L1  The road trauma challenge for NSW
+  L2  Summary
+    Plain text  Someone is killed or hospitalised every 46 minutes because of a crash on NSW roads.
+    Plain text  Last year, 270 people were killed and 10,412 were seriously injured while using our roads in NSW.
+    Plain text  The 2021 annual road toll of 270 deaths was the lowest since 1923.
+
+  L2  Key challenges
+    Plain text  Two-thirds of NSW road fatalities happen on country roads where the fatality rate is approximately four times higher than on urban roads.
+    Plain text  In contrast, almost two-thirds of serious injuries happen on metropolitan roads.
+    Plain text  Unsafe behaviour remains a complex challenge including speeding, drink and drug driving, fatigue, and not using appropriate restraints.</pre>
+    <div class="image-grid">
+      <div class="img-card">
+        <img src="images/image-10-%23%23%20Key%20cha.jpg" alt="Key challenges image">
+        <div class="img-cap">Linked image in L2 Key challenges: image-10-## Key cha.jpg</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">Interpretation</div>
+    <ul class="notes">
+      <li>This view keeps navigation hierarchy and content context together with linked visual evidence.</li>
+      <li>L1/L2 structure remains clear, while plain-text lines preserve the original paragraph semantics.</li>
+      <li>All lines and image references are sourced from real output in <code>chunks.json</code> and <code>images/</code>.</li>
+    </ul>
+  </div>
+</body>
+</html>

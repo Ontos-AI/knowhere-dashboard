@@ -11,7 +11,6 @@ import { HeroSection } from "@/app/(landing)/versus/[product]/_components/hero-s
 import { LiveDemoSection } from "@/app/(landing)/versus/[product]/_components/live-demo-section";
 import { QuickComparisonSection } from "@/app/(landing)/versus/[product]/_components/quick-comparison-section";
 import { TechnicalDeepDive } from "@/app/(landing)/versus/[product]/_components/technical-deep-dive";
-import { TestimonialsSection } from "@/app/(landing)/versus/[product]/_components/testimonials-section";
 import { UseCasesSection } from "@/app/(landing)/versus/[product]/_components/use-cases-section";
 
 type VersusPageClientProps = {
@@ -60,16 +59,16 @@ export function VersusPageClient({ data }: VersusPageClientProps) {
         {/* Hero Section */}
         <HeroSection data={data.hero} cta={data.cta} />
 
+        {/* Feature Table Section (Phase 2) */}
+        {data.featureTable && (
+          <FeatureTableSection data={data.featureTable} competitorName={data.productName} />
+        )}
+
         {/* Quick Comparison Section */}
         <QuickComparisonSection data={data.quickComparison} competitorName={data.productName} />
 
         {/* Live Demo Section */}
         <LiveDemoSection data={data.liveDemo} competitorName={data.productName} />
-
-        {/* Feature Table Section (Phase 2) */}
-        {data.featureTable && (
-          <FeatureTableSection data={data.featureTable} competitorName={data.productName} />
-        )}
 
         {/* Technical Deep Dive (Phase 2) */}
         {data.technicalDeepDive && <TechnicalDeepDive data={data.technicalDeepDive} />}
@@ -83,7 +82,7 @@ export function VersusPageClient({ data }: VersusPageClientProps) {
         {data.faq && <FAQSection data={data.faq} />}
 
         {/* Testimonials Section (Phase 2) */}
-        {data.testimonials && <TestimonialsSection data={data.testimonials} />}
+        {/* {data.testimonials && <TestimonialsSection data={data.testimonials} />} */}
 
         {/* CTA Section */}
         <CTASection data={data.cta} />

@@ -128,7 +128,7 @@ export function BuyCreditsDialog({ currentCredits = 0 }: BuyCreditsDialogProps) 
   const handlePurchase = () => {
     if (!isValid || packages.length === 0) {
       if (packages.length === 0) {
-        toast.error("Price configuration not found");
+        toast.error(t("priceConfigNotFound"));
       }
       return;
     }
@@ -142,12 +142,12 @@ export function BuyCreditsDialog({ currentCredits = 0 }: BuyCreditsDialogProps) 
           if (response.checkout_url) {
             window.location.href = response.checkout_url;
           } else {
-            toast.error("Failed to create checkout session");
+            toast.error(t("checkoutFailed"));
           }
         },
         onError: (error) => {
           console.error("Purchase failed:", error);
-          toast.error("Purchase failed");
+          toast.error(t("purchaseFailed"));
         },
       }
     );
@@ -238,7 +238,7 @@ export function BuyCreditsDialog({ currentCredits = 0 }: BuyCreditsDialogProps) 
                   <Input
                     ref={customInputRef}
                     type="text"
-                    placeholder={t("amountPlaceholder") || "Amount"}
+                    placeholder={t("amountPlaceholder")}
                     value={customAmountStr}
                     onChange={handleCustomInputChange}
                     className="pl-7"
@@ -254,7 +254,9 @@ export function BuyCreditsDialog({ currentCredits = 0 }: BuyCreditsDialogProps) 
                   {t("minPurchaseError", { amount: MIN_CREDITS_PURCHASE })}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1 text-center">
-                  {creditsToBuy > 0 ? `≈ ${creditsToBuy.toLocaleString()} Credits` : ""}
+                  {creditsToBuy > 0
+                    ? t("creditsEstimate", { credits: creditsToBuy.toLocaleString() })
+                    : ""}
                 </p>
               </div>
             </div>

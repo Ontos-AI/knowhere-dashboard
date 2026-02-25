@@ -11,6 +11,9 @@ type HeroSectionProps = {
 };
 
 export function HeroSection({ data, cta }: HeroSectionProps) {
+  const highlightMetrics =
+    data.highlightMetrics ?? (data.highlightMetric ? [data.highlightMetric] : []);
+
   return (
     <section className="relative w-full min-h-screen flex items-center justify-center bg-pixel-bg">
       {/* Optional subtle grid background */}
@@ -28,18 +31,25 @@ export function HeroSection({ data, cta }: HeroSectionProps) {
             {data.subtitle}
           </p>
 
-          {/* Highlight Metric */}
-          {data.highlightMetric && (
-            <PixelCard className="inline-block border-4 border-pixel-green">
-              <div className="p-6 text-center">
-                <div className="text-4xl font-bold font-pixel text-pixel-green mb-2">
-                  {data.highlightMetric.value}
-                </div>
-                <div className="text-sm font-sans text-[var(--pixel-text-muted)]">
-                  {data.highlightMetric.label}
-                </div>
-              </div>
-            </PixelCard>
+          {/* Highlight Metrics */}
+          {highlightMetrics.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
+              {highlightMetrics.map((metric) => (
+                <PixelCard
+                  key={`${metric.value}-${metric.label}`}
+                  className="border-4 border-pixel-green"
+                >
+                  <div className="p-6 text-center">
+                    <div className="text-4xl font-bold font-pixel text-pixel-green mb-2">
+                      {metric.value}
+                    </div>
+                    <div className="text-sm font-sans text-[var(--pixel-text-muted)]">
+                      {metric.label}
+                    </div>
+                  </div>
+                </PixelCard>
+              ))}
+            </div>
           )}
 
           {/* CTA Buttons */}

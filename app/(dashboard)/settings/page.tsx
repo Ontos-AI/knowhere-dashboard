@@ -172,7 +172,7 @@ export default function SettingsPage() {
 
       // Show warning if nothing changed
       if (!usernameChanged && !emailChanged) {
-        toast.error(t("noChanges") || "No changes to save");
+        toast.error(t("noChanges"));
         return;
       }
 
@@ -199,7 +199,7 @@ export default function SettingsPage() {
 
   const handleTimezoneChange = (value: string) => {
     setTimezone(value);
-    toast.success(t("timezoneUpdated") || "Timezone updated");
+    toast.success(t("timezoneUpdated"));
   };
 
   const handleResendVerification = async () => {

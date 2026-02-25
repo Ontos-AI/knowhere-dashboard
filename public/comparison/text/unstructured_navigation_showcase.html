@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unstructured API PDF Navigation Quality</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; color: #1a1a1a; margin: 0; padding: 20px; max-width: 1400px; margin: 0 auto; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+    .links a { color: #92400e; text-decoration: none; margin-right: 10px; font-size: 12px; border-bottom: 1px solid #92400e; }
+    .title { font-size: 22px; font-weight: 700; margin: 0; }
+    .subtitle { color: #4b5563; margin: 4px 0 14px; font-size: 13px; }
+    .badge { display: inline-block; font-size: 11px; background: #fef3c7; border: 1px solid #fcd34d; color: #92400e; border-radius: 999px; padding: 2px 8px; margin-bottom: 10px; }
+    .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 16px; }
+    .card { border: 1px solid #d1d5db; border-radius: 8px; padding: 10px; background: #f9fafb; }
+    .label { font-size: 11px; color: #6b7280; margin-bottom: 3px; }
+    .value { font-size: 22px; font-weight: 700; color: #92400e; line-height: 1.1; }
+    .panel { border: 1px solid #d1d5db; border-radius: 8px; overflow: hidden; margin-bottom: 12px; background: #fff; }
+    .panel-head { background: #f3f4f6; border-bottom: 1px solid #d1d5db; padding: 8px 10px; font-size: 12px; color: #4b5563; font-weight: 600; }
+    .dist { padding: 10px 12px 12px; font-size: 12px; }
+    .dist-row { margin-bottom: 8px; }
+    .dist-top { display: flex; justify-content: space-between; margin-bottom: 4px; color: #374151; }
+    .bar { height: 10px; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 999px; overflow: hidden; }
+    .bar > span { display: block; height: 100%; background: #d97706; }
+    pre { margin: 0; padding: 10px 12px 12px; font-size: 12px; line-height: 1.45; overflow: auto; white-space: pre-wrap; max-height: 520px; }
+    ul.notes { margin: 0; padding: 12px 18px; font-size: 13px; color: #374151; }
+    ul.notes li { margin-bottom: 4px; }
+    @media (max-width: 980px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div>
+      <h1 class="title">PDF Navigation - Unstructured API (hi_res)</h1>
+      <p class="subtitle">Part 2: Hierarchy-first navigation comparison</p>
+    </div>
+    <div class="links">
+      <a href="../knowhere_output.pdf/knowhere_navigation_showcase.html">Knowhere Nav</a>
+      <a href="../markitdown_output/markitdown_navigation_showcase.html">MarkItDown Nav</a>
+      <a href="unstructured_navigation_showcase.html">Unstructured API Nav</a>
+      <a href="unstructured_textflow_showcase.html">Part1 Text Flow</a>
+    </div>
+  </div>
+
+  <span class="badge">Current View: Unstructured API only</span>
+
+  <div class="grid">
+    <div class="card"><div class="label">Structure Type</div><div class="value">Shallow tree</div></div>
+    <div class="card"><div class="label">Hierarchy Depth</div><div class="value">3</div></div>
+    <div class="card"><div class="label">Navigable Headings</div><div class="value">116</div></div>
+    <div class="card"><div class="label">Noise Signals</div><div class="value">37</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">Heading Level Distribution (from extracted markdown)</div>
+    <div class="dist">
+      <div class="dist-row">
+        <div class="dist-top"><span>H2</span><span>64 (55.2%)</span></div>
+        <div class="bar"><span style="width: 55.2%;"></span></div>
+      </div>
+      <div class="dist-row">
+        <div class="dist-top"><span>H3</span><span>52 (44.8%)</span></div>
+        <div class="bar"><span style="width: 44.8%;"></span></div>
+      </div>
+      <div class="dist-row">
+        <div class="dist-top"><span>H4+</span><span>0</span></div>
+        <div class="bar"><span style="width: 0%;"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">Hierarchy Probe (sampled sections)</div>
+    <pre>L1  Road safety delivery framework
+L1  Our vision and targets for road safety
+L1  Taking action to save lives
+  L2  Creating safer country roads and urban places
+  L2  Enhancing road safety in local communities
+  L2  Increasing the safety of light vehicles, heavy vehicles and protective equipment
+  L2  Making safer choices on our roads
+  L2  Ensuring the safety of vulnerable and other at‑risk road users
+
+L1  Monitoring our progress and building a strong evidence base
+  L2  What we will do
+  L2  Survey results
+    L3  Safer speeds
+    L3  Safer roads
+    L3  Safer vehicles
+    L3  Safer people
+
+L2  (noise) n a l P n o i t c A y t e f a S d a o R 6 2 0 2
+L2  (noise) W S N r o f t r o p s n a r T</pre>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">Interpretation</div>
+    <ul class="notes">
+      <li>This API run shows usable two-to-three-level heading structure for section navigation.</li>
+      <li>Depth exists, but global consistency is still affected by repeated page-furniture noise.</li>
+      <li>Compared with Knowhere, heading hierarchy is less semantically anchored to multimodal section graph.</li>
+    </ul>
+  </div>
+</body>
+</html>

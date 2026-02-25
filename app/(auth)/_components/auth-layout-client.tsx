@@ -5,6 +5,7 @@ import { useAppConfigContext } from "@providers/config-provider";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -12,6 +13,7 @@ export function AuthLayoutClient({ children }: { children: ReactNode }) {
   const appConfig = useAppConfigContext();
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+  const t = useTranslations("Common");
 
   // 如果已登录，重定向到仪表板
   useEffect(() => {
@@ -31,7 +33,7 @@ export function AuthLayoutClient({ children }: { children: ReactNode }) {
       <div className="landing-tone min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4" />
-          <p>加载中...</p>
+          <p>{t("loading")}</p>
         </div>
       </div>
     );

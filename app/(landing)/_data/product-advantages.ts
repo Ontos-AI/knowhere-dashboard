@@ -17,7 +17,7 @@ const knowhereProduct: ProductAdvantage = {
     "Optimized for RAG applications with structured output",
   ],
   metrics: [],
-  resultImage: "/comparison/knowhere.html",
+  resultImage: "/comparison/tables/knowhere.html",
   isOurProduct: true,
 };
 
@@ -37,7 +37,7 @@ export const competitorProducts: ProductAdvantage[] = [
       "Supports multiple common file formats",
     ],
     metrics: [],
-    resultImage: "/comparison/unstructured.html",
+    resultImage: "/comparison/tables/unstructured.html",
   },
   {
     id: "markitdown",
@@ -51,7 +51,7 @@ export const competitorProducts: ProductAdvantage[] = [
       "Good for basic text documents",
     ],
     metrics: [],
-    resultImage: "/comparison/markitdown.html",
+    resultImage: "/comparison/tables/markitdown.html",
   },
 ];
 

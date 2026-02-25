@@ -452,11 +452,8 @@ export default function ApiKeysPage() {
       <AlertDialog open={isToggleAlertOpen} onOpenChange={setIsToggleAlertOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t("toggleConfirmTitle") || "确认禁用 API Key？"}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t("toggleConfirmDesc") ||
-                "禁用后，使用此 Key 的应用将无法访问 API。您随时可以再次启用它。"}
-            </AlertDialogDescription>
+            <AlertDialogTitle>{t("toggleConfirmTitle")}</AlertDialogTitle>
+            <AlertDialogDescription>{t("toggleConfirmDesc")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={toggleMutation.isPending}>{t("cancel")}</AlertDialogCancel>

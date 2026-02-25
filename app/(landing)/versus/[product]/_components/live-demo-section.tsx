@@ -64,8 +64,12 @@ function IframeView({
         {shouldLoad && isLoading && !hasError && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-pixel-bg">
             <div className="text-center">
-              <div className="w-8 h-8 border-2 border-pixel-fg border-t-transparent animate-spin mx-auto mb-2" />
-              <p className="text-sm text-[var(--pixel-text-muted)] font-sans">Loading demo...</p>
+              <div className="flex items-end gap-1 mx-auto mb-2 w-fit">
+                <div className="w-2 h-2 bg-pixel-fg animate-bounce [animation-delay:-0.3s]" />
+                <div className="w-2 h-2 bg-pixel-fg animate-bounce [animation-delay:-0.15s]" />
+                <div className="w-2 h-2 bg-pixel-fg animate-bounce" />
+              </div>
+              <p className="text-sm text-[var(--pixel-text-muted)] font-sans">Loading...</p>
             </div>
           </div>
         )}
@@ -96,10 +100,7 @@ function IframeView({
       {/* Highlights */}
       <div className="space-y-2">
         {highlights.map((highlight) => {
-          const isPositive =
-            highlight.startsWith("✅") ||
-            highlight.includes("Perfect") ||
-            highlight.includes("Correct");
+          const isPositive = highlight.startsWith("✅");
           const icon = isPositive ? "check" : "cross";
           const color = isPositive ? "green" : "red";
 
@@ -121,6 +122,10 @@ export function LiveDemoSection({ data, competitorName }: LiveDemoSectionProps) 
   // Lazy loading state
   const [shouldLoadDemo, setShouldLoadDemo] = useState(false);
   const demoRef = useRef<HTMLDivElement>(null);
+
+  // Active demo tab (default: first tab = Text Flow)
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const selectedDemo = data.demos[selectedIndex];
 
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -144,17 +149,22 @@ export function LiveDemoSection({ data, competitorName }: LiveDemoSectionProps) 
     return () => observer.disconnect();
   }, []);
 
-  // Preload HTML files for better performance (only when demo should load)
-  usePreloadHtml(
-    shouldLoadDemo ? [data.originalFile, data.knowhereOutput, data.competitorOutput] : []
-  );
+  // Preload all HTML files across all demos so tab switching feels instant
+  const allDemoFiles = shouldLoadDemo
+    ? data.demos.flatMap((d) => [
+        d.knowhereOutput,
+        d.competitorOutput,
+        ...(d.originalFile ? [d.originalFile] : []),
+      ])
+    : [];
+  usePreloadHtml(allDemoFiles);
 
   // Modal handlers
   const handleOpenKnowhereDetails = () => {
     setModalContent({
       title: "Knowhere",
-      htmlUrl: data.knowhereOutput,
-      highlights: data.highlights.knowhere,
+      htmlUrl: selectedDemo.knowhereOutput,
+      highlights: selectedDemo.highlights.knowhere,
       isKnowhere: true,
     });
     setIsModalOpen(true);
@@ -163,17 +173,18 @@ export function LiveDemoSection({ data, competitorName }: LiveDemoSectionProps) 
   const handleOpenCompetitorDetails = () => {
     setModalContent({
       title: competitorName,
-      htmlUrl: data.competitorOutput,
-      highlights: data.highlights.competitor,
+      htmlUrl: selectedDemo.competitorOutput,
+      highlights: selectedDemo.highlights.competitor,
       isKnowhere: false,
     });
     setIsModalOpen(true);
   };
 
   const handleOpenOriginalDocument = () => {
+    if (!selectedDemo.originalFile) return;
     setModalContent({
       title: "Original Input Document",
-      htmlUrl: data.originalFile,
+      htmlUrl: selectedDemo.originalFile,
       highlights: [],
       isKnowhere: false,
     });
@@ -182,7 +193,6 @@ export function LiveDemoSection({ data, competitorName }: LiveDemoSectionProps) 
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    // Clear content after animation completes
     setTimeout(() => setModalContent(null), 200);
   };
 
@@ -190,13 +200,26 @@ export function LiveDemoSection({ data, competitorName }: LiveDemoSectionProps) 
     <section className="py-16 md:py-24 bg-pixel-bg">
       <div className="container mx-auto px-4">
         {/* Section header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
+        <div className="text-center max-w-3xl mx-auto mb-8">
           <PixelHeading as="h2" size="lg" className="mb-4">
             SEE THE DIFFERENCE IN ACTION
           </PixelHeading>
           <p className="text-base text-[var(--pixel-text-muted)] font-sans">
-            Real parsing results side-by-side
+            Real parsing results side-by-side — text flow, document structure, and table accuracy
           </p>
+        </div>
+
+        {/* Demo type tab switcher */}
+        <div className="flex flex-wrap justify-center gap-2 mb-10">
+          {data.demos.map((demo, index) => (
+            <PixelButton
+              key={demo.label}
+              variant={selectedIndex === index ? "primary" : "secondary"}
+              onClick={() => setSelectedIndex(index)}
+            >
+              {demo.label.toUpperCase()}
+            </PixelButton>
+          ))}
         </div>
 
         {/* Demo container */}
@@ -204,17 +227,19 @@ export function LiveDemoSection({ data, competitorName }: LiveDemoSectionProps) 
           {/* Desktop & Tablet: Side-by-side iframes (>= 768px) */}
           <div className="hidden md:flex gap-8">
             <IframeView
+              key={`desktop-knowhere-${selectedDemo.knowhereOutput}`}
               title="Knowhere"
-              src={data.knowhereOutput}
-              highlights={data.highlights.knowhere}
+              src={selectedDemo.knowhereOutput}
+              highlights={selectedDemo.highlights.knowhere}
               isKnowhere
               shouldLoad={shouldLoadDemo}
               onViewDetails={handleOpenKnowhereDetails}
             />
             <IframeView
+              key={`desktop-competitor-${selectedDemo.competitorOutput}`}
               title={competitorName}
-              src={data.competitorOutput}
-              highlights={data.highlights.competitor}
+              src={selectedDemo.competitorOutput}
+              highlights={selectedDemo.highlights.competitor}
               shouldLoad={shouldLoadDemo}
               onViewDetails={handleOpenCompetitorDetails}
             />
@@ -223,28 +248,32 @@ export function LiveDemoSection({ data, competitorName }: LiveDemoSectionProps) 
           {/* Mobile only: Stacked iframes (< 768px) */}
           <div className="md:hidden space-y-8">
             <IframeView
+              key={`mobile-knowhere-${selectedDemo.knowhereOutput}`}
               title="Knowhere"
-              src={data.knowhereOutput}
-              highlights={data.highlights.knowhere}
+              src={selectedDemo.knowhereOutput}
+              highlights={selectedDemo.highlights.knowhere}
               isKnowhere
               shouldLoad={shouldLoadDemo}
               onViewDetails={handleOpenKnowhereDetails}
             />
             <IframeView
+              key={`mobile-competitor-${selectedDemo.competitorOutput}`}
               title={competitorName}
-              src={data.competitorOutput}
-              highlights={data.highlights.competitor}
+              src={selectedDemo.competitorOutput}
+              highlights={selectedDemo.highlights.competitor}
               shouldLoad={shouldLoadDemo}
               onViewDetails={handleOpenCompetitorDetails}
             />
           </div>
 
-          {/* View Original Input button */}
-          <div className="mt-8 text-center">
-            <PixelButton onClick={handleOpenOriginalDocument} variant="secondary">
-              VIEW ORIGINAL INPUT DOCUMENT
-            </PixelButton>
-          </div>
+          {/* View Original Input button — only for demos with an original file (Table Parsing) */}
+          {selectedDemo.originalFile && (
+            <div className="mt-8 text-center">
+              <PixelButton onClick={handleOpenOriginalDocument} variant="secondary">
+                VIEW ORIGINAL INPUT DOCUMENT
+              </PixelButton>
+            </div>
+          )}
         </div>
 
         {/* Demo Detail Modal */}

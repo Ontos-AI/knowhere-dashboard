@@ -47,7 +47,11 @@ function UseCaseCard({ useCase, competitorName }: UseCaseCardProps) {
               className="w-12 h-12 border-2 border-pixel-border bg-pixel-bg flex items-center justify-center flex-shrink-0"
               style={{ boxShadow: "2px 2px 0 var(--pixel-shadow)" }}
             >
-              <PixelIcon icon="file" className="text-[var(--pixel-text-muted)]" size={24} />
+              <PixelIcon
+                icon={pixelIconName as Parameters<typeof PixelIcon>[0]["icon"]}
+                className="text-[var(--pixel-text-muted)]"
+                size={24}
+              />
             </div>
             <div className="flex-1">
               <h3 className="text-sm font-sans font-semibold text-pixel-fg">{useCase.title}</h3>

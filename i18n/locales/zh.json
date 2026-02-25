@@ -69,7 +69,8 @@
     "avgProcessingTime": "平均处理时间: {time}",
     "1d": "1天",
     "7d": "7天",
-    "30d": "30天"
+    "30d": "30天",
+    "pickDate": "选择日期"
   },
   "UsageTable": {
     "date": "日期",
@@ -112,6 +113,9 @@
     "continueToPayment": "继续支付",
     "purchase": "前往支付",
     "purchaseFailed": "发起购买失败",
+    "priceConfigNotFound": "价格配置未找到",
+    "checkoutFailed": "创建支付会话失败",
+    "creditsEstimate": "≈ {credits} 积分",
     "credits": "积分"
   },
   "Auth": {
@@ -238,6 +242,7 @@
     "enUS": "English",
     "beijingTime": "北京时间",
     "timezoneUpdated": "时区已更新",
+    "noChanges": "没有需要保存的更改",
     "emailVerificationSent": "验证邮件已发送，请检查您的邮箱",
     "emailStatus": "邮箱状态",
     "verified": "已验证",

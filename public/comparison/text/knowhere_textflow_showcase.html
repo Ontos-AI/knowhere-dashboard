@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Knowhere PDF Text Flow</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #fff;
+      color: #1a1a1a;
+      margin: 0;
+      padding: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .links a {
+      color: #166534;
+      text-decoration: none;
+      margin-right: 10px;
+      font-size: 12px;
+      border-bottom: 1px solid #166534;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0;
+    }
+    .subtitle {
+      color: #4b5563;
+      margin: 4px 0 14px;
+      font-size: 13px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .card {
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 10px;
+      background: #f9fafb;
+    }
+    .card .label {
+      font-size: 11px;
+      color: #6b7280;
+      margin-bottom: 3px;
+    }
+    .card .value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #166534;
+      line-height: 1.1;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      background: #dcfce7;
+      border: 1px solid #86efac;
+      color: #166534;
+      border-radius: 999px;
+      padding: 2px 8px;
+      margin-bottom: 10px;
+    }
+    .panel {
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .panel-head {
+      background: #f3f4f6;
+      border-bottom: 1px solid #d1d5db;
+      padding: 8px 10px;
+      font-size: 12px;
+      color: #4b5563;
+      font-weight: 600;
+    }
+    pre {
+      margin: 0;
+      padding: 12px;
+      font-size: 12px;
+      line-height: 1.45;
+      overflow: auto;
+      white-space: pre-wrap;
+      background: #ffffff;
+    }
+    .notes {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #374151;
+    }
+    .notes li { margin-bottom: 4px; }
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div>
+      <h1 class="title">PDF Text Flow - Knowhere</h1>
+      <p class="subtitle">Sample: TNSW10046-Road-Safety-Action-Plan-2026_1_0.pdf</p>
+    </div>
+    <div class="links">
+      <a href="knowhere_textflow_showcase.html">Knowhere</a>
+      <a href="markitdown_textflow_showcase.html">MarkItDown</a>
+      <a href="unstructured_textflow_showcase.html">Unstructured</a>
+    </div>
+  </div>
+
+  <span class="badge">Text Flow: Stable + Readable</span>
+
+  <div class="grid">
+    <div class="card"><div class="label">Markdown Lines</div><div class="value">925</div></div>
+    <div class="card"><div class="label">Detected Headings</div><div class="value">75</div></div>
+    <div class="card"><div class="label">Single-char Alpha Lines</div><div class="value">1</div></div>
+    <div class="card"><div class="label">Page Markers</div><div class="value">0</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">Excerpt from full.md (beginning)</div>
+    <pre># 2026 Road Safety Action Plan
+
+Toward zero trauma on NSW roads
+
+# Contents
+
+2026 Road Safety
+
+Action Plan
+
+&lt;table&gt;&lt;tr&gt;&lt;td&gt;Ministers' forewords&lt;/td&gt;&lt;td&gt;2&lt;/td&gt;&lt;/tr&gt;...&lt;/table&gt;
+
+# Minister for Roads foreword
+
+The 2026 Road Safety Action Plan provides a detailed outline of the NSW Government's commitment to improving safety on our roads across the State.
+
+The past three years have been the three lowest road tolls since 1923 with an average of 282 people killed on our roads.
+
+Even one life lost, or person seriously injured on our roads is one too many...</pre>
+  </div>
+
+  <ul class="notes">
+    <li>Headings are mostly semantic section titles instead of layout artifacts.</li>
+    <li>Paragraph order is coherent; no page-header vertical text pollution.</li>
+    <li>TOC table is preserved as structured HTML in markdown flow.</li>
+  </ul>
+</body>
+</html>

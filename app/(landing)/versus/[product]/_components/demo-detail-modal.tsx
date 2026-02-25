@@ -153,10 +153,7 @@ export function DemoDetailModal({ isOpen, onClose, content }: DemoDetailModalPro
               <h3 className="text-sm font-pixel text-pixel-fg mb-4">HIGHLIGHTS</h3>
               <div className="space-y-3">
                 {content.highlights.map((highlight) => {
-                  const isPositive =
-                    highlight.startsWith("✅") ||
-                    highlight.includes("Perfect") ||
-                    highlight.includes("Correct");
+                  const isPositive = highlight.startsWith("✅");
                   const icon = isPositive ? "check" : "cross";
                   const color = isPositive ? "green" : "red";
 

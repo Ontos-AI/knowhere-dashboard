@@ -69,7 +69,8 @@
     "avgProcessingTime": "Average processing time: {time}",
     "1d": "1d",
     "7d": "7d",
-    "30d": "30d"
+    "30d": "30d",
+    "pickDate": "Pick a date"
   },
   "UsageTable": {
     "date": "Date",
@@ -149,6 +150,9 @@
     "purchase": "Continue to Payment",
     "processing": "Processing...",
     "purchaseFailed": "Failed to initiate purchase",
+    "priceConfigNotFound": "Price configuration not found",
+    "checkoutFailed": "Failed to create checkout session",
+    "creditsEstimate": "≈ {credits} Credits",
     "credits": "Credits"
   },
   "Billing": {
@@ -237,6 +241,7 @@
     "enUS": "English",
     "beijingTime": "Beijing Time",
     "timezoneUpdated": "Timezone updated",
+    "noChanges": "No changes to save",
     "emailVerificationSent": "Verification email sent, please check your inbox",
     "emailStatus": "Email Status",
     "verified": "Verified",
