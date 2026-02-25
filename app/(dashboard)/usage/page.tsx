@@ -157,6 +157,15 @@ export default function UsagePage() {
       : "0";
 
   const handleExportCSV = () => {
+    // RFC 4180: wrap field in quotes if it contains comma, quote, or newline
+    const escapeCSVField = (value: string | number | undefined | null): string => {
+      const str = String(value ?? "");
+      if (str.includes(",") || str.includes('"') || str.includes("\n")) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    };
+
     // Define headers
     const headers = [
       tTable("date"),
@@ -174,7 +183,7 @@ export default function UsagePage() {
     const rows = jobs.map((item) => [
       formatDate({ date: item.date, formatStr: "yyyy-MM-dd HH:mm:ss" }),
       item.jobId,
-      `"${(item.fileName || "").replace(/"/g, '""')}"`,
+      item.fileName || "",
       item.model,
       item.pages,
       item.duration,
@@ -187,10 +196,13 @@ export default function UsagePage() {
       item.status === "Done" ? item.resultUrl || "" : "",
     ]);
 
-    // Combine headers and rows
-    const csvContent = [headers.join(","), ...rows.map((row) => row.join(","))].join("\n");
+    // Combine headers and rows, applying consistent escaping to all fields
+    const csvContent = [
+      headers.map(escapeCSVField).join(","),
+      ...rows.map((row) => row.map(escapeCSVField).join(",")),
+    ].join("\n");
 
-    // Create blob with BOM and download link
+    // Create blob with UTF-8 BOM so Excel recognizes the encoding correctly
     const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
     const blob = new Blob([bom, csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
@@ -201,6 +213,7 @@ export default function UsagePage() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   if (isPending) {
