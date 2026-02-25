@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Fragment } from "react";
 import {
   getVersusPageData,
   isValidVersusProductId,
@@ -83,9 +84,13 @@ export default async function VersusPage({ params }: PageProps) {
   return (
     <>
       {/* Preload HTML files for iframes */}
-      <link rel="preload" as="fetch" href={data.liveDemo.originalFile} />
-      <link rel="preload" as="fetch" href={data.liveDemo.knowhereOutput} />
-      <link rel="preload" as="fetch" href={data.liveDemo.competitorOutput} />
+      {data.liveDemo.demos.map((demo) => (
+        <Fragment key={demo.label}>
+          {demo.originalFile && <link rel="preload" as="fetch" href={demo.originalFile} />}
+          <link rel="preload" as="fetch" href={demo.knowhereOutput} />
+          <link rel="preload" as="fetch" href={demo.competitorOutput} />
+        </Fragment>
+      ))}
 
       <VersusPageClient data={data} />
     </>
