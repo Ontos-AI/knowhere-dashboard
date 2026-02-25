@@ -85,13 +85,13 @@ function ApiKeysPageSkeleton() {
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="flex items-center justify-between border-b pb-4 last:border-0"
+                className="flex flex-col gap-3 border-b pb-4 last:border-0 sm:flex-row sm:items-center sm:justify-between"
               >
                 <div className="flex-1 space-y-2">
                   <Skeleton className="h-5 w-40" />
-                  <Skeleton className="h-4 w-64" />
+                  <Skeleton className="h-4 w-full max-w-64" />
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 self-start sm:self-auto">
                   <Skeleton className="h-6 w-16" />
                   <Skeleton className="h-8 w-8 rounded" />
                 </div>
