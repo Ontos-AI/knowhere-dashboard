@@ -1,8 +1,10 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Header } from "@/app/(dashboard)/_components/header";
 import { Sidebar } from "@/app/(dashboard)/_components/sidebar";
+import { BuyCreditsModal } from "@/app/(dashboard)/billing/_components/buy-credits-modal";
 import type { AuthUser } from "@/hooks/use-auth";
 
 type DashboardClientProps = {
@@ -12,6 +14,8 @@ type DashboardClientProps = {
 
 export function DashboardClient({ user, children }: DashboardClientProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const isBuyCreditsOpen = searchParams.get("buy") === "true";
 
   useEffect(() => {
     document.body.classList.add("console-tone");
@@ -34,6 +38,8 @@ export function DashboardClient({ user, children }: DashboardClientProps) {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>
         </main>
       </div>
+
+      {isBuyCreditsOpen ? <BuyCreditsModal /> : null}
     </div>
   );
 }
