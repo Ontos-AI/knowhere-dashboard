@@ -1,10 +1,30 @@
 import { oo } from "@orpc/openapi";
 import { ORPCError } from "@orpc/server";
 import { base } from "@server/context";
+import { ApiError } from "@server/external-api/request";
+
+const apiErrorMiddleware = base.middleware(async ({ next }) => {
+  try {
+    return await next();
+  } catch (error) {
+    if (error instanceof ORPCError) {
+      throw error;
+    }
+
+    if (error instanceof ApiError) {
+      throw new ORPCError(error.orpcCode, {
+        status: error.status,
+        message: error.message,
+      });
+    }
+
+    throw error;
+  }
+});
 
 // Public procedure - anyone can access
 // No authentication required
-export const publicProcedure = base;
+export const publicProcedure = base.use(apiErrorMiddleware);
 
 // Authentication middleware with OpenAPI security spec
 // Validates that user and session exist in context (already populated by createContext)
@@ -40,4 +60,4 @@ const authMiddleware = oo.spec(
 // Protected procedure - requires authentication
 // User and session are guaranteed to exist in handlers
 // Automatically includes cookieAuth security requirement in OpenAPI spec
-export const protectedProcedure = base.use(authMiddleware);
+export const protectedProcedure = publicProcedure.use(authMiddleware);

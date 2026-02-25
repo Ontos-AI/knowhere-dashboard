@@ -1,40 +1,139 @@
+import { auth } from "@lib/auth";
 import { env } from "@lib/env";
-import { auth } from "@/lib/auth";
-
-// ============================================
-// 共享类型
-// ============================================
 
 export type CheckoutSessionResponse = {
   checkout_url: string;
   session_id: string;
 };
 
-// ============================================
-// 错误类
-// ============================================
+export type ApiOrpcErrorCode =
+  | "BAD_REQUEST"
+  | "UNAUTHORIZED"
+  | "FORBIDDEN"
+  | "NOT_FOUND"
+  | "CONFLICT"
+  | "TOO_MANY_REQUESTS"
+  | "INTERNAL_SERVER_ERROR";
+
+const STATUS_TO_ORPC_ERROR_CODE: Partial<Record<number, ApiOrpcErrorCode>> = {
+  400: "BAD_REQUEST",
+  401: "UNAUTHORIZED",
+  403: "FORBIDDEN",
+  404: "NOT_FOUND",
+  409: "CONFLICT",
+  422: "BAD_REQUEST",
+  429: "TOO_MANY_REQUESTS",
+};
+
+const EXTERNAL_CODE_TO_STATUS: Record<string, number> = {
+  ALREADY_EXISTS: 409,
+  INVALID_ARGUMENT: 400,
+  NOT_FOUND: 404,
+  PERMISSION_DENIED: 403,
+  RESOURCE_EXHAUSTED: 429,
+  UNAUTHENTICATED: 401,
+};
+
+const toOrpcErrorCode = (status?: number): ApiOrpcErrorCode => {
+  return STATUS_TO_ORPC_ERROR_CODE[status ?? -1] ?? "INTERNAL_SERVER_ERROR";
+};
 
 export class ApiError extends Error {
-  code: number;
+  code: number | string;
+  orpcCode: ApiOrpcErrorCode;
   status?: number;
 
-  constructor(message: string, code: number, status?: number) {
+  constructor(message: string, code: number | string, status?: number) {
     super(message);
     this.name = "ApiError";
     this.code = code;
+    this.orpcCode = toOrpcErrorCode(status);
     this.status = status;
   }
 }
 
-// ============================================
-// Refine response
-// ============================================
-
-// ISO 8601 datetime without timezone indicator, e.g. "2026-02-25T06:28:46.283130"
-// The external API returns UTC datetimes without "Z", causing browsers to misparse
-// them as local time. We append "Z" at the API boundary so all downstream code
-// always receives a properly-formed UTC string.
 const UTC_DATETIME_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?$/;
+
+const isObject = (value: unknown): value is Record<string, unknown> => {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+};
+
+const getText = (value: unknown) => {
+  return typeof value === "string" && value.trim() ? value : undefined;
+};
+
+const getNumber = (value: unknown) => {
+  return typeof value === "number" ? value : undefined;
+};
+
+const getCode = (value: unknown) => {
+  return typeof value === "string" || typeof value === "number" ? value : undefined;
+};
+
+const parseResponseBody = async (response: Response): Promise<unknown> => {
+  const contentType = response.headers.get("content-type") || "";
+  const isJson = contentType.includes("application/json");
+
+  if (!isJson) {
+    const text = await response.text();
+    return text || null;
+  }
+
+  try {
+    return await response.json();
+  } catch {
+    return null;
+  }
+};
+
+const isApiFailureResult = (result: unknown) => {
+  return isObject(result) && result.success === false;
+};
+
+const getStatusFromCode = (code: unknown) => {
+  if (typeof code !== "string") {
+    return undefined;
+  }
+
+  return EXTERNAL_CODE_TO_STATUS[code];
+};
+
+const extractApiError = (result: unknown, httpStatus: number) => {
+  const body = isObject(result) ? result : undefined;
+  const nestedError = body && isObject(body.error) ? body.error : undefined;
+
+  let firstViolation: string | undefined;
+  if (
+    nestedError &&
+    isObject(nestedError.details) &&
+    Array.isArray(nestedError.details.violations)
+  ) {
+    const violation = nestedError.details.violations[0];
+    if (isObject(violation)) {
+      firstViolation = getText(violation.description);
+    }
+  }
+
+  const message =
+    getText(typeof result === "string" ? result : undefined) ||
+    getText(nestedError?.message) ||
+    firstViolation ||
+    getText(body?.message) ||
+    getText(body?.detail) ||
+    getText(body?.msg) ||
+    `HTTP Error: ${httpStatus}`;
+
+  const code = getCode(nestedError?.code) || getCode(body?.code) || httpStatus;
+
+  const status =
+    (httpStatus >= 400 ? httpStatus : undefined) ||
+    getNumber(nestedError?.status) ||
+    getNumber(nestedError?.status_code) ||
+    getStatusFromCode(code) ||
+    400;
+
+  return { code, message, status };
+};
 
 function normalizeUtcDates<T>(data: T): T {
   if (typeof data === "string") {
@@ -49,9 +148,43 @@ function normalizeUtcDates<T>(data: T): T {
   return data;
 }
 
-// ============================================
-// 核心请求函数
-// ============================================
+const performRequest = async <T = unknown>({
+  authorization,
+  body,
+  method,
+  path,
+}: {
+  authorization?: string;
+  body?: unknown;
+  method: string;
+  path: string;
+}): Promise<T> => {
+  const url = `${env.NEXT_PUBLIC_API_URL}${path}`;
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  if (authorization) {
+    headers.Authorization = authorization;
+  }
+
+  const response = await fetch(url, {
+    method,
+    headers,
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+    cache: "no-store",
+  });
+
+  const result = await parseResponseBody(response);
+
+  if (!response.ok || isApiFailureResult(result)) {
+    const { message, code, status } = extractApiError(result, response.status);
+    throw new ApiError(message, code, status);
+  }
+
+  return normalizeUtcDates(result as T);
+};
 
 export async function jwtRequest<T = unknown>({
   method,
@@ -64,39 +197,18 @@ export async function jwtRequest<T = unknown>({
   userId: string;
   body?: unknown;
 }): Promise<T> {
-  const url = `${env.NEXT_PUBLIC_API_URL}${path}`;
-
-  // Generate JWT token using Better Auth
-  // Call the internal signJWT endpoint
   const { token } = await auth.api.signJWT({
     body: {
       payload: { id: userId },
     },
   });
 
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
-
-  const response = await fetch(url, {
+  return performRequest<T>({
+    authorization: `Bearer ${token}`,
+    body,
     method,
-    headers,
-    body: body !== undefined ? JSON.stringify(body) : undefined,
-    cache: "no-store",
+    path,
   });
-
-  const result = await response.json();
-
-  if (!response.ok) {
-    throw new ApiError(
-      result.detail || result.msg || `HTTP Error: ${response.status}`,
-      result.code || response.status,
-      response.status
-    );
-  }
-
-  return normalizeUtcDates(result);
 }
 
 export async function publicRequest<T = unknown>({
@@ -108,28 +220,5 @@ export async function publicRequest<T = unknown>({
   path: string;
   body?: unknown;
 }): Promise<T> {
-  const url = `${env.NEXT_PUBLIC_API_URL}${path}`;
-
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
-
-  const response = await fetch(url, {
-    method,
-    headers,
-    body: body !== undefined ? JSON.stringify(body) : undefined,
-    cache: "no-store",
-  });
-
-  const result = await response.json();
-
-  if (!response.ok) {
-    throw new ApiError(
-      result.detail || result.msg || `HTTP错误: ${response.status}`,
-      result.code || response.status,
-      response.status
-    );
-  }
-
-  return normalizeUtcDates(result);
+  return performRequest<T>({ body, method, path });
 }
