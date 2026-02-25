@@ -87,7 +87,11 @@ export function DemoDetailModal({ isOpen, onClose, content }: DemoDetailModalPro
               {isLoading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-pixel-bg z-10">
                   <div className="text-center">
-                    <div className="w-8 h-8 border-2 border-pixel-fg border-t-transparent animate-spin mx-auto mb-2" />
+                    <div className="flex items-end gap-1 mx-auto mb-2 w-fit">
+                      <div className="w-2 h-2 bg-pixel-fg animate-bounce [animation-delay:-0.3s]" />
+                      <div className="w-2 h-2 bg-pixel-fg animate-bounce [animation-delay:-0.15s]" />
+                      <div className="w-2 h-2 bg-pixel-fg animate-bounce" />
+                    </div>
                     <p className="text-sm text-[var(--pixel-text-muted)] font-sans">
                       Loading content...
                     </p>
