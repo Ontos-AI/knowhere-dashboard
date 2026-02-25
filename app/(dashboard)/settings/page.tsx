@@ -1,5 +1,6 @@
 "use client";
 
+import { useLinkedAccounts } from "@app/(dashboard)/settings/_hooks/use-accounts";
 import { useUpdateEmail, useUpdateProfile } from "@app/(dashboard)/settings/_hooks/use-user";
 import { useSendVerificationEmail } from "@app/(dashboard)/settings/_hooks/use-verification";
 import { Badge } from "@components/ui/badge";
@@ -26,6 +27,7 @@ import {
   AlertCircle,
   CheckCircle,
   Loader2,
+  Lock,
   Mail,
   Save,
   Settings as SettingsIcon,
@@ -150,6 +152,7 @@ export default function SettingsPage() {
   const updateProfileMutation = useUpdateProfile();
   const updateEmailMutation = useUpdateEmail();
   const sendVerificationMutation = useSendVerificationEmail();
+  const { hasOAuthAccount, oAuthProviderName } = useLinkedAccounts();
   const isSaving = updateProfileMutation.isPending || updateEmailMutation.isPending;
 
   const [resendCooldown, setResendCooldown] = useState(0);
@@ -183,8 +186,8 @@ export default function SettingsPage() {
         });
       }
 
-      // Update email separately if changed
-      if (emailChanged) {
+      // Update email separately if changed (not allowed for OAuth users)
+      if (emailChanged && !hasOAuthAccount) {
         await updateEmailMutation.mutateAsync({ email: data.email });
       }
 
@@ -310,12 +313,20 @@ export default function SettingsPage() {
                       id="email"
                       type="email"
                       {...profileForm.register("email")}
-                      disabled={isSaving}
+                      disabled={hasOAuthAccount || isSaving}
+                      readOnly={hasOAuthAccount}
                     />
-                    {profileForm.formState.errors.email && (
-                      <p className="text-sm text-destructive">
-                        {profileForm.formState.errors.email.message}
+                    {hasOAuthAccount ? (
+                      <p className="text-xs text-muted-foreground flex items-center gap-1">
+                        <Lock className="h-3 w-3" />
+                        {t("emailManagedByProvider", { provider: oAuthProviderName ?? "" })}
                       </p>
+                    ) : (
+                      profileForm.formState.errors.email && (
+                        <p className="text-sm text-destructive">
+                          {profileForm.formState.errors.email.message}
+                        </p>
+                      )
                     )}
                   </div>
                 </div>

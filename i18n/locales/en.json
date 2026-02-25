@@ -252,7 +252,8 @@
     "checkSpamFolder": "Check your spam folder if you don't see it.",
     "tooManyRequests": "Too many requests. Please try again later.",
     "alreadyVerified": "Your email is already verified.",
-    "failedToSendEmail": "Failed to send verification email. Please try again."
+    "failedToSendEmail": "Failed to send verification email. Please try again.",
+    "emailManagedByProvider": "Managed by {provider}"
   },
   "VerifyEmail": {
     "verifying": "Verifying your email...",

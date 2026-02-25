@@ -253,7 +253,8 @@
     "checkSpamFolder": "如果没有收到,请检查垃圾邮件文件夹。",
     "tooManyRequests": "请求过于频繁,请稍后再试。",
     "alreadyVerified": "您的邮箱已经验证过了。",
-    "failedToSendEmail": "发送验证邮件失败,请重试。"
+    "failedToSendEmail": "发送验证邮件失败,请重试。",
+    "emailManagedByProvider": "由 {provider} 管理"
   },
   "VerifyEmail": {
     "verifying": "正在验证邮箱...",
