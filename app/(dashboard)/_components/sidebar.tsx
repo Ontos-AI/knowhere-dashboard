@@ -1,9 +1,15 @@
 "use client";
 
 import { Button } from "@components/ui/button";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@components/ui/hover-card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@components/ui/dropdown-menu";
 import { ScrollArea } from "@components/ui/scroll-area";
-import { Separator } from "@components/ui/separator";
 import { Sheet, SheetContent } from "@components/ui/sheet";
 import { cn } from "@lib/utils";
 import { Key, LayoutDashboard, LogOut, Settings, Webhook } from "lucide-react";
@@ -36,6 +42,7 @@ export function Sidebar({ user, open, onOpenChange }: SidebarProps) {
   const handleLogout = async () => {
     await logout();
     success(t("logout"));
+    onOpenChange(false);
   };
 
   const SidebarContent = () => (
@@ -84,8 +91,8 @@ export function Sidebar({ user, open, onOpenChange }: SidebarProps) {
 
       {/* 用户菜单 */}
       <div className="p-4 border-t">
-        <HoverCard openDelay={0} closeDelay={100}>
-          <HoverCardTrigger asChild>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
               className="w-full justify-start px-2 h-auto py-2 hover:bg-muted"
@@ -109,32 +116,28 @@ export function Sidebar({ user, open, onOpenChange }: SidebarProps) {
                 </div>
               </div>
             </Button>
-          </HoverCardTrigger>
-          <HoverCardContent align="center" side="top" sideOffset={10} className="w-56 p-1">
-            <div className="flex items-center justify-start gap-2 p-2">
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="center" side="top" sideOffset={10} className="w-56 p-1">
+            <DropdownMenuLabel className="p-2">
               <div className="flex flex-col space-y-1 leading-none">
                 <p className="font-medium">{user?.name}</p>
                 <p className="w-[200px] truncate text-sm text-muted-foreground">{user?.email}</p>
               </div>
-            </div>
-            <Separator className="my-1" />
-            <Link href="/settings" onClick={() => onOpenChange(false)}>
-              <div className="relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/settings" onClick={() => onOpenChange(false)}>
                 <Settings className="mr-2 h-4 w-4" />
                 <span>{t("settings")}</span>
-              </div>
-            </Link>
-            <Separator className="my-1" />
-            <button
-              type="button"
-              className="relative flex w-full cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
-              onClick={handleLogout}
-            >
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={() => void handleLogout()}>
               <LogOut className="mr-2 h-4 w-4" />
               <span>{t("logout")}</span>
-            </button>
-          </HoverCardContent>
-        </HoverCard>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
