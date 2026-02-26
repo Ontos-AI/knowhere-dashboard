@@ -8,11 +8,10 @@ import { useToast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/better-auth-client";
 
 type OAuthButtonsProps = {
-  onSuccess?: () => void;
   onError?: (error: string) => void;
 };
 
-export function OAuthButtons({ onSuccess, onError }: OAuthButtonsProps) {
+export function OAuthButtons({ onError }: OAuthButtonsProps) {
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [clickedProvider, setClickedProvider] = useState<"google" | "github" | null>(null);
@@ -29,8 +28,6 @@ export function OAuthButtons({ onSuccess, onError }: OAuthButtonsProps) {
         callbackURL: "/usage",
         errorCallbackURL: "/login?error=oauth",
       });
-      // 成功会通过回调重定向到 /usage，这里的回调仅用于本地提示
-      onSuccess?.();
     } catch (error) {
       const message = error instanceof Error ? error.message : t("loginFailed");
       toast.error(t("oauthFailed"), message);

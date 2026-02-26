@@ -6,7 +6,6 @@ import { Input } from "@components/ui/input";
 import { Label } from "@components/ui/label";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -20,7 +19,6 @@ import { authClient } from "@/lib/better-auth-client";
 export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
-  const router = useRouter();
   const t = useTranslations("Auth");
 
   // Magic Link only requires an email address — no password needed
@@ -66,10 +64,6 @@ export default function RegisterPage() {
     }
   };
 
-  const handleOAuthSuccess = () => {
-    router.push("/usage");
-  };
-
   const handleOAuthError = (error: string) => {
     toast.error(t("oauthFailed"), error);
   };
@@ -82,7 +76,7 @@ export default function RegisterPage() {
       </CardHeader>
       <CardContent className="space-y-4">
         {/* OAuth registration */}
-        <OAuthButtons onSuccess={handleOAuthSuccess} onError={handleOAuthError} />
+        <OAuthButtons onError={handleOAuthError} />
 
         {/* Magic Link registration form — email only */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

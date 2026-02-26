@@ -6,7 +6,6 @@ import { Input } from "@components/ui/input";
 import { Label } from "@components/ui/label";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAppConfigContext } from "@providers/config-provider";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -18,7 +17,6 @@ import { authClient } from "@/lib/better-auth-client";
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
-  const router = useRouter();
   const _appConfig = useAppConfigContext();
   const t = useTranslations("Auth");
 
@@ -66,10 +64,6 @@ export default function LoginPage() {
     }
   };
 
-  const handleOAuthSuccess = () => {
-    router.push("/usage");
-  };
-
   const handleOAuthError = (error: string) => {
     toast.error(t("oauthFailed"), error);
   };
@@ -82,7 +76,7 @@ export default function LoginPage() {
       </CardHeader>
       <CardContent className="space-y-4">
         {/* OAuth登录 */}
-        <OAuthButtons onSuccess={handleOAuthSuccess} onError={handleOAuthError} />
+        <OAuthButtons onError={handleOAuthError} />
 
         {/* 邮箱 Magic Link 登录表单 */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
