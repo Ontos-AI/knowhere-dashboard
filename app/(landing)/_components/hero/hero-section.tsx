@@ -5,6 +5,15 @@ import { PixelButton } from "../pixel/pixel-button";
 import { PixelHeading } from "../pixel/pixel-heading";
 import { PixelIcon } from "../pixel/pixel-icon";
 
+const BRAND_TITLE = `
+██╗  ██╗███╗   ██╗ ██████╗ ██╗    ██╗██╗  ██╗███████╗██████╗ ███████╗
+██║ ██╔╝████╗  ██║██╔═══██╗██║    ██║██║  ██║██╔════╝██╔══██╗██╔════╝
+█████╔╝ ██╔██╗ ██║██║   ██║██║ █╗ ██║███████║█████╗  ██████╔╝█████╗
+██╔═██╗ ██║╚██╗██║██║   ██║██║███╗██║██╔══██║██╔══╝  ██╔══██╗██╔══╝
+██║  ██╗██║ ╚████║╚██████╔╝╚███╔███╔╝██║  ██║███████╗██║  ██║███████╗
+╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝  ╚══╝╚══╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚══════╝
+`;
+
 export const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-16 bg-pixel-bg">
@@ -19,23 +28,17 @@ export const HeroSection = () => {
             {/* Pixel Art Logo/Title */}
             <div className="space-y-8">
               {/* ASCII Art Header */}
-              <div className="font-mono text-pixel-fg leading-none overflow-x-hidden flex items-center justify-center">
+              <div className="flex w-full items-center justify-center overflow-hidden">
                 <pre
-                  className="text-[7px] scale-[0.99] sm:text-[10px] md:text-[16px] lg:text-[19px] xl:text-[22px] leading-none tracking-normal"
+                  className="m-0 max-w-full overflow-hidden whitespace-pre font-mono text-[7px] scale-[1.1] min-[380px]:text-[6px] min-[380px]:text-[7.5px] min-[500px]:text-[10px] sm:text-[12px] md:text-sm text-pixel-fg leading-[1.25] tracking-normal text-left"
                   style={{
-                    fontFamily: '"Courier New", Courier, monospace',
-                    lineHeight: 1,
-                    letterSpacing: 0,
+                    fontFamily:
+                      'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+                    fontVariantLigatures: "none",
+                    textRendering: "auto",
                   }}
                 >
-                  {`
-  ██╗  ██╗███╗   ██╗ ██████╗ ██╗    ██╗██╗  ██╗███████╗██████╗ ███████╗
-  ██║ ██╔╝████╗  ██║██╔═══██╗██║    ██║██║  ██║██╔════╝██╔══██╗██╔════╝
-  █████╔╝ ██╔██╗ ██║██║   ██║██║ █╗ ██║███████║█████╗  ██████╔╝█████╗
-  ██╔═██╗ ██║╚██╗██║██║   ██║██║███╗██║██╔══██║██╔══╝  ██╔══██╗██╔══╝
-  ██║  ██╗██║ ╚████║╚██████╔╝╚███╔███╔╝██║  ██║███████╗██║  ██║███████╗
-  ╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝  ╚══╝╚══╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚══════╝
-                  `}
+                  {BRAND_TITLE}
                 </pre>
               </div>
 
