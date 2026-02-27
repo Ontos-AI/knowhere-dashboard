@@ -30,7 +30,7 @@ export const HeroSection = () => {
               {/* ASCII Art Header */}
               <div className="flex w-full items-center justify-center overflow-hidden">
                 <pre
-                  className="m-0 max-w-full overflow-hidden whitespace-pre font-mono text-[7px] scale-[1.1] min-[380px]:text-[6px] min-[380px]:text-[7.5px] min-[500px]:text-[10px] sm:text-[12px] md:text-sm text-pixel-fg leading-[1.25] tracking-normal text-left"
+                  className="m-0 max-w-full overflow-hidden whitespace-pre font-mono text-[7px] scale-[1.1] min-[380px]:text-[7.5px] min-[500px]:text-[10px] sm:text-[12px] md:text-sm text-pixel-fg leading-[1.25] tracking-normal text-left"
                   style={{
                     fontFamily:
                       'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
