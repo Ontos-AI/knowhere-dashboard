@@ -8,7 +8,7 @@ import { useCredits } from "@hooks/use-credits";
 import { useTimezone } from "@hooks/use-timezone";
 import { cn } from "@lib/utils";
 import { format, subDays } from "date-fns";
-import { Activity, CheckCircle2, CreditCard, Download, Loader2 } from "lucide-react";
+import { CheckCircle2, CreditCard, Download, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useQueryState } from "nuqs";
 import { useMemo, useState } from "react";
@@ -33,8 +33,8 @@ function UsagePageSkeleton() {
       </div>
 
       {/* 统计卡片 */}
-      <div className="grid gap-4 md:grid-cols-3">
-        {[1, 2, 3].map((i) => (
+      <div className="grid gap-4 md:grid-cols-2">
+        {[1, 2].map((i) => (
           <Card key={i}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <Skeleton className="h-4 w-24" />
@@ -139,7 +139,6 @@ export default function UsagePage() {
   };
 
   // Calculate stats from filtered data
-  const totalRequests = jobs.length;
   const totalCost = jobs.reduce((acc, item) => acc + item.cost, 0);
   // Assuming 1 credit = $0.02
   const estimatedCost = totalCost * 0.02;
@@ -241,27 +240,7 @@ export default function UsagePage() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t("totalRequests")}</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {usageStats
-                ? usageStats.request_total.toLocaleString()
-                : totalRequests.toLocaleString()}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {usageStats
-                ? t("comparedToLastMonth", {
-                    value: `${usageStats.mom_growth >= 0 ? "+" : ""}${usageStats.mom_growth}%`,
-                  })
-                : t("comparedToLastMonth", { value: "0%" })}
-            </p>
-          </CardContent>
-        </Card>
+      <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{t("totalCreditsUsed")}</CardTitle>
