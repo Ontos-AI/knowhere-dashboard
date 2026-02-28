@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>MarkItDown Parser Output</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fff;
+            padding: 20px;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .table-container {
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+
+        .table-label {
+            font-size: 12px;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .header-note {
+            display: inline-block;
+            background: #dc3545;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            margin-left: 10px;
+        }
+
+        table {
+            border-collapse: collapse;
+            font-size: 10px;
+            border: 2px solid #888;
+        }
+
+        /* MarkItDown uses first row as header - but it's just data row 1, not real headers */
+        th {
+            border: 1px solid #ccc;
+            padding: 3px 5px;
+            text-align: center;
+            white-space: nowrap;
+            background: #f8f9fa;
+            /* Markdown default header style */
+        }
+
+        td {
+            border: 1px solid #ccc;
+            padding: 3px 5px;
+            text-align: center;
+            white-space: nowrap;
+            background: #fff;
+        }
+
+        .nan {
+            color: #999;
+            font-style: italic;
+        }
+
+        .problem-row td {
+            background: #fff0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="table-container">
+        <div class="table-label">markitdown_output.md - Single Table (24 rows × 26 columns)
+            <span class="header-note">⚠ First data row treated as header - Multi-level headers not detected</span>
+        </div>
+        <!-- MarkItDown markdown table: first row becomes <th>, rest are <td> -->
+        <table>
+            <thead>
+                <!-- This is Markdown's "header" row - but it's actually the first data row, NOT the real 3-level header -->
+                <tr>
+                    <th>Labor Cost Calculation</th>
+                    <th>Unnamed:1</th>
+                    <th>Unnamed:2</th>
+                    <th>Unnamed:3</th>
+                    <th>Unnamed:4</th>
+                    <th>Unnamed:5</th>
+                    <th>Unnamed:6</th>
+                    <th>Unnamed:7</th>
+                    <th>Unnamed:8</th>
+                    <th>Unnamed:9</th>
+                    <th>Unnamed:10</th>
+                    <th>Unnamed:11</th>
+                    <th>Unnamed:12</th>
+                    <th>Unnamed:13</th>
+                    <th>Unnamed:14</th>
+                    <th>Unnamed:15</th>
+                    <th>Unnamed:16</th>
+                    <th>Unnamed:17</th>
+                    <th>Unnamed:18</th>
+                    <th>Unnamed:19</th>
+                    <th>Unnamed:20</th>
+                    <th>Unnamed:21</th>
+                    <th>Unnamed:22</th>
+                    <th>Unnamed:23</th>
+                    <th>Unnamed:24</th>
+                    <th>Unnamed:25</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Project name SIAT</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                </tr>
+                <tr>
+                    <td>No.</td>
+                    <td>Item Name</td>
+                    <td>Item Features</td>
+                    <td>Unit</td>
+                    <td>Statistics of Completion Data</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Current Period Data</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Cumulative Data</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Remarks</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Previous Cumulative Data</td>
+                </tr>
+                <tr>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Budget Revenue</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Planned Cost</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Budget Revenue</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Actual Cost</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Budget Revenue</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Actual Cost</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Budget Revenue</td>
+                </tr>
+                <tr>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Quantity</td>
+                    <td>Unit Price</td>
+                    <td>Total Price</td>
+                    <td>Quantity</td>
+                    <td>Unit Price</td>
+                    <td>Total</td>
+                    <td>Quantity</td>
+                    <td>Unit Price</td>
+                    <td>Total Price</td>
+                    <td>Quantity</td>
+                    <td>Unit Price</td>
+                    <td>Total Price</td>
+                    <td>Quantity</td>
+                    <td>Unit Price</td>
+                    <td>Total Price</td>
+                    <td>Quantity</td>
+                    <td>Unit Price</td>
+                    <td>Total Price</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Quantity</td>
+                </tr>
+                <tr>
+                    <td>I</td>
+                    <td>Basement Structure</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>2347723.93</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>2769234.86</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>-45348.83</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>-64500</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>2297592.47</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>2434226.18</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                </tr>
+                <tr>
+                    <td>II</td>
+                    <td>Podium Structure</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>446612.47</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>440819.86</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>0</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>0</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>365302.72</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>342138.71</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                </tr>
+                <tr>
+                    <td>III</td>
+                    <td>Tower 1 Structure</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>1541884.54</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>1453947.23</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>176749.46</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>173500.82</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>679877.49</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>643023.32</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                </tr>
+                <tr>
+                    <td>IV</td>
+                    <td>Tower 2 Structure</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>1487934.54</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>1985433.89</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>114448.34</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>110419.82</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>630370.18</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>591426.06</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                </tr>
+                <tr>
+                    <td>V</td>
+                    <td>Basement Decoration</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>349846.63</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>437613.82</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>54164.86</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>57457.52</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>199010.79</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>235821.72</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                </tr>
+                <tr>
+                    <td>VI</td>
+                    <td>Podium Decoration</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>107776.35</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>148939.80</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>43205.08</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>58739.92</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>107227.63</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>122181.10</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                </tr>
+                <tr>
+                    <td>VII</td>
+                    <td>Tower 1 Decoration</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>115598.76</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>146861.40</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>0</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>0</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>0</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>0</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                </tr>
+                <tr>
+                    <td>VIII</td>
+                    <td>Tower 2 Decoration</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>155019.01</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>210637.60</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>0</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>0</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>0</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>0</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                </tr>
+                <tr>
+                    <td class="nan">NaN</td>
+                    <td>Total</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>6552396.23</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>7593488.46</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>343218.91</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>335618.08</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>4279381.27</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>4368817.09</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                </tr>
+                <tr>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                </tr>
+                <tr>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                </tr>
+                <tr class="problem-row">
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Main Structure Rebar & Concrete</td>
+                    <td>4010814.27</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Secondary Structure Masonry</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>358002.82</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                </tr>
+                <tr class="problem-row">
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Main Structure Formwork & Scaffolding</td>
+                    <td>6636335.91</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Secondary Structure Concrete</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                </tr>
+                <tr class="problem-row">
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Tower Crane Signaling & Operation</td>
+                    <td>255600</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Secondary Structure Decoration</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>1093058.66</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                </tr>
+                <tr class="problem-row">
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Main Structure Civilized Construction</td>
+                    <td>756575</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                </tr>
+                <tr class="problem-row">
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Total Main Structure Cost</td>
+                    <td>11659325.18</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Total Secondary Structure Cost</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>1451061.48</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                </tr>
+                <tr class="problem-row">
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Cumulative Actual Reported Quantity</td>
+                    <td>12623760.37</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>Cumulative Actual Reported Quantity</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td>2298298.15</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                    <td class="nan">NaN</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

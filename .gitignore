@@ -8,6 +8,10 @@
 # next.js
 /.next/
 /out/
+next-env.d.ts
+
+# build cache
+tsconfig.tsbuildinfo
 
 # production
 /build
@@ -34,4 +38,8 @@ pnpm-debug.log*
 # Editor & Tooling
 .claude
 .cursor
+.spec
 CLAUDE.md
+AGENTS.md
+
+.playwright*

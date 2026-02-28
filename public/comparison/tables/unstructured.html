@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Unstructured.io Parser Output</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fff;
+            padding: 20px;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .element {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .element-header {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .element-type {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-left: 8px;
+        }
+
+        .type-title {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .type-table {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        table {
+            border-collapse: collapse;
+            font-size: 10px;
+            border: 2px solid #888;
+            min-width: 100%;
+            white-space: nowrap;
+        }
+
+        /* All cells look identical - Unstructured uses <td> for everything, no <th> */
+        td {
+            border: 1px solid #ccc;
+            padding: 3px 5px;
+            text-align: center;
+            background: #fff;
+        }
+
+        .problem-row td {
+            background: #fff0f0;
+        }
+
+        .header-note {
+            display: inline-block;
+            background: #dc3545;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Element 0 -->
+    <div class="element">
+        <div class="element-header">Element 0 <span class="element-type type-title">Title</span></div>
+        <p style="font-size:14px; margin:0;">Labor Cost Calculation</p>
+    </div>
+
+    <!-- Element 1 -->
+    <div class="element">
+        <div class="element-header">Element 1 <span class="element-type type-title">Title</span></div>
+        <p style="font-size:14px; margin:0;">Project name SIAT</p>
+    </div>
+
+    <!-- Element 2 -->
+    <div class="element">
+        <div class="element-header">Element 2 <span class="element-type type-table">Table</span> - Main Summary
+            <span class="header-note">⚠ All cells are &lt;td&gt; - No header (&lt;th&gt;) detected</span>
+        </div>
+        <div class="table-wrapper">
+            <!-- Unstructured uses <td> for ALL cells including headers - no distinction -->
+            <table>
+                <tr>
+                    <td>No.</td>
+                    <td>Item Name</td>
+                    <td>Item Features</td>
+                    <td>Unit</td>
+                    <td>Statistics of Completion Data</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Current Period Data</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Cumulative Data</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Remarks</td>
+                    <td></td>
+                    <td></td>
+                    <td>Previous Cumulative Data</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Budget Revenue</td>
+                    <td></td>
+                    <td></td>
+                    <td>Planned Cost</td>
+                    <td></td>
+                    <td></td>
+                    <td>Budget Revenue</td>
+                    <td></td>
+                    <td></td>
+                    <td>Actual Cost</td>
+                    <td></td>
+                    <td></td>
+                    <td>Budget Revenue</td>
+                    <td></td>
+                    <td></td>
+                    <td>Actual Cost</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Budget Revenue</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Quantity</td>
+                    <td>Unit Price</td>
+                    <td>Total Price</td>
+                    <td>Quantity</td>
+                    <td>Unit Price</td>
+                    <td>Total</td>
+                    <td>Quantity</td>
+                    <td>Unit Price</td>
+                    <td>Total Price</td>
+                    <td>Quantity</td>
+                    <td>Unit Price</td>
+                    <td>Total Price</td>
+                    <td>Quantity</td>
+                    <td>Unit Price</td>
+                    <td>Total Price</td>
+                    <td>Quantity</td>
+                    <td>Unit Price</td>
+                    <td>Total Price</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Quantity</td>
+                </tr>
+                <tr>
+                    <td>I</td>
+                    <td>Basement Structure</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>2347723.93</td>
+                    <td></td>
+                    <td></td>
+                    <td>2769234.86</td>
+                    <td></td>
+                    <td></td>
+                    <td>-45348.83</td>
+                    <td></td>
+                    <td></td>
+                    <td>-64500</td>
+                    <td></td>
+                    <td></td>
+                    <td>2297592.47</td>
+                    <td></td>
+                    <td></td>
+                    <td>2434226.18</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>II</td>
+                    <td>Podium Structure</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>446612.47</td>
+                    <td></td>
+                    <td></td>
+                    <td>440819.86</td>
+                    <td></td>
+                    <td></td>
+                    <td>0</td>
+                    <td></td>
+                    <td></td>
+                    <td>0</td>
+                    <td></td>
+                    <td></td>
+                    <td>365302.72</td>
+                    <td></td>
+                    <td></td>
+                    <td>342138.71</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>III</td>
+                    <td>Tower 1 Structure</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>1541884.54</td>
+                    <td></td>
+                    <td></td>
+                    <td>1453947.23</td>
+                    <td></td>
+                    <td></td>
+                    <td>176749.46</td>
+                    <td></td>
+                    <td></td>
+                    <td>173500.82</td>
+                    <td></td>
+                    <td></td>
+                    <td>679877.49</td>
+                    <td></td>
+                    <td></td>
+                    <td>643023.32</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>IV</td>
+                    <td>Tower 2 Structure</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>1487934.54</td>
+                    <td></td>
+                    <td></td>
+                    <td>1985433.89</td>
+                    <td></td>
+                    <td></td>
+                    <td>114448.34</td>
+                    <td></td>
+                    <td></td>
+                    <td>110419.82</td>
+                    <td></td>
+                    <td></td>
+                    <td>630370.18</td>
+                    <td></td>
+                    <td></td>
+                    <td>591426.06</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>V</td>
+                    <td>Basement Decoration</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>349846.63</td>
+                    <td></td>
+                    <td></td>
+                    <td>437613.82</td>
+                    <td></td>
+                    <td></td>
+                    <td>54164.86</td>
+                    <td></td>
+                    <td></td>
+                    <td>57457.52</td>
+                    <td></td>
+                    <td></td>
+                    <td>199010.79</td>
+                    <td></td>
+                    <td></td>
+                    <td>235821.72</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>VI</td>
+                    <td>Podium Decoration</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>107776.35</td>
+                    <td></td>
+                    <td></td>
+                    <td>148939.80</td>
+                    <td></td>
+                    <td></td>
+                    <td>43205.08</td>
+                    <td></td>
+                    <td></td>
+                    <td>58739.92</td>
+                    <td></td>
+                    <td></td>
+                    <td>107227.63</td>
+                    <td></td>
+                    <td></td>
+                    <td>122181.10</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>VII</td>
+                    <td>Tower 1 Decoration</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>115598.76</td>
+                    <td></td>
+                    <td></td>
+                    <td>146861.40</td>
+                    <td></td>
+                    <td></td>
+                    <td>0</td>
+                    <td></td>
+                    <td></td>
+                    <td>0</td>
+                    <td></td>
+                    <td></td>
+                    <td>0</td>
+                    <td></td>
+                    <td></td>
+                    <td>0</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>VIII</td>
+                    <td>Tower 2 Decoration</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>155019.01</td>
+                    <td></td>
+                    <td></td>
+                    <td>210637.60</td>
+                    <td></td>
+                    <td></td>
+                    <td>0</td>
+                    <td></td>
+                    <td></td>
+                    <td>0</td>
+                    <td></td>
+                    <td></td>
+                    <td>0</td>
+                    <td></td>
+                    <td></td>
+                    <td>0</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Total</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>6552396.23</td>
+                    <td></td>
+                    <td></td>
+                    <td>7593488.46</td>
+                    <td></td>
+                    <td></td>
+                    <td>343218.91</td>
+                    <td></td>
+                    <td></td>
+                    <td>335618.08</td>
+                    <td></td>
+                    <td></td>
+                    <td>4279381.27</td>
+                    <td></td>
+                    <td></td>
+                    <td>4368817.09</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Element 3 - PROBLEM -->
+    <div class="element" style="border-color:#dc3545; border-width:2px;">
+        <div class="element-header">Element 3 <span class="element-type type-table">Table</span> - <strong
+                style="color:#dc3545;">⚠ Mixed Sub-tables (incorrect boundary)</strong></div>
+        <div class="table-wrapper">
+            <table>
+                <tr class="problem-row">
+                    <td>Main Structure Rebar & Concrete</td>
+                    <td>4010814.27</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Secondary Structure Masonry</td>
+                    <td></td>
+                    <td></td>
+                    <td>358002.82</td>
+                </tr>
+                <tr class="problem-row">
+                    <td>Main Structure Formwork & Scaffolding</td>
+                    <td>6636335.91</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Secondary Structure Concrete</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="problem-row">
+                    <td>Tower Crane Signaling & Operation</td>
+                    <td>255600</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Secondary Structure Decoration</td>
+                    <td></td>
+                    <td></td>
+                    <td>1093058.66</td>
+                </tr>
+                <tr class="problem-row">
+                    <td>Main Structure Civilized Construction</td>
+                    <td>756575</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr class="problem-row">
+                    <td>Total Main Structure Cost</td>
+                    <td>11659325.18</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Total Secondary Structure Cost</td>
+                    <td></td>
+                    <td></td>
+                    <td>1451061.48</td>
+                </tr>
+                <tr class="problem-row">
+                    <td>Cumulative Actual Reported Quantity</td>
+                    <td>12623760.37</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Cumulative Actual Reported Quantity</td>
+                    <td></td>
+                    <td></td>
+                    <td>2298298.15</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

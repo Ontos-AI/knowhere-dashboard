@@ -1,80 +1,100 @@
-import "./polyfill"
-import { betterAuth } from "better-auth"
-import { magicLink } from "better-auth/plugins"
-import { nextCookies } from "better-auth/next-js"
-import { Resend } from "resend"
-import { ProxyAgent, setGlobalDispatcher } from "undici"
+import "./polyfill";
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { nextCookies } from "better-auth/next-js";
+import { jwt, magicLink } from "better-auth/plugins";
+import { Resend } from "resend";
+import { ProxyAgent, setGlobalDispatcher } from "undici";
+import { db } from "@/lib/db";
+import { env } from "@/lib/env";
 
-// 在开发环境下，如果配置了代理，则设置全局代理（解决国内无法访问 Google/GitHub OAuth 的问题）
-if (process.env.NODE_ENV === "development" || process.env.HTTPS_PROXY) {
-  const proxyUrl = process.env.HTTPS_PROXY || process.env.HTTP_PROXY
+// Enable global proxy in development to resolve domestic network issues with Google/GitHub OAuth
+if (env.NODE_ENV === "development" || env.HTTPS_PROXY) {
+  const proxyUrl = env.HTTPS_PROXY || env.HTTP_PROXY;
   if (proxyUrl) {
     try {
-      const dispatcher = new ProxyAgent(proxyUrl)
-      setGlobalDispatcher(dispatcher)
-      console.log(`[Auth] Using proxy: ${proxyUrl}`)
+      const dispatcher = new ProxyAgent(proxyUrl);
+      setGlobalDispatcher(dispatcher);
+      console.log(`[Auth] Using proxy: ${proxyUrl}`);
     } catch (error) {
-      console.error('[Auth] Failed to set proxy:', error)
+      console.error("[Auth] Failed to set proxy:", error);
     }
   }
 }
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = new Resend(env.RESEND_API_KEY);
 
 export const auth = betterAuth({
-  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
-  // 显式指定 trustedOrigins 防止反向代理或 Docker 环境下的 host 校验失败
-  // 必须包含生产环境域名，否则会导致 invalid_origin 错误
-  trustedOrigins: [
-    "http://localhost:3000", 
-    process.env.BETTER_AUTH_URL || "http://localhost:3000"
-  ], 
-  secret: process.env.BETTER_AUTH_SECRET || "dev-secret-please-change",
+  baseURL: env.BETTER_AUTH_URL,
+  // Explicitly specify trustedOrigins to prevent host validation failures in reverse proxy or Docker environments
+  trustedOrigins: [env.NEXT_PUBLIC_APP_URL, env.BETTER_AUTH_URL],
+  secret: env.BETTER_AUTH_SECRET,
+
+  // Drizzle ORM adapter — schema is automatically loaded from db instance
+  database: drizzleAdapter(db, {
+    provider: "pg",
+  }),
+
+  // Enable performance optimization with joins (2-3x faster)
+  experimental: {
+    joins: true,
+  },
+
+  // Extend the default user schema with a custom role field for RBAC
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        defaultValue: "user",
+      },
+    },
+  },
+
   session: {
-    // 启用 JWT session，这样前端获取的 token 就是一个标准的 JWT，
-    // 后端可以直接验证这个 JWT，而不需要访问数据库（前提是共享 secret）
-    // 这对于接入外部后端 API 是最小力度的整改方案
+    // Cookie-based session caching reduces DB queries; session is valid for 30 days
     cookieCache: {
       enabled: true,
       maxAge: 30 * 24 * 60 * 60, // 30 days
     },
   },
-  // advanced: {
-  //     defaultSession: {
-  //         strategy: "jwt",
-  //     }
-  // },
-  emailAndPassword: { enabled: true },
+
+  // Only Magic Link and OAuth are supported — no email/password authentication
   socialProviders: {
-    github: {
-      clientId: process.env.GITHUB_CLIENT_ID as string,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
-      // GitHub 有时需要显式指定 redirectURI 避免自动推导错误
-      redirectURI: `${process.env.BETTER_AUTH_URL}/api/auth/callback/github`,
-    },
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      redirectURI: `${process.env.BETTER_AUTH_URL}/api/auth/callback/google`,
-    },
+    ...(env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET
+      ? {
+          github: {
+            clientId: env.GITHUB_CLIENT_ID,
+            clientSecret: env.GITHUB_CLIENT_SECRET,
+            redirectURI: `${env.BETTER_AUTH_URL}/api/auth/callback/github`,
+          },
+        }
+      : {}),
+    ...(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
+      ? {
+          google: {
+            clientId: env.GOOGLE_CLIENT_ID,
+            clientSecret: env.GOOGLE_CLIENT_SECRET,
+            redirectURI: `${env.BETTER_AUTH_URL}/api/auth/callback/google`,
+          },
+        }
+      : {}),
   },
   plugins: [
+    jwt({
+      jwt: {
+        expirationTime: "15m", // JWT expires in 15 minutes
+        definePayload: ({ user }) => ({
+          id: user.id, // Only include userId to maintain single source of truth
+        }),
+      },
+    }),
     magicLink({
-      sendMagicLink: async ({ email, token, url }) => {
+      sendMagicLink: async ({ email, url }) => {
         try {
-          // 检查必要的环境变量
-          if (!process.env.RESEND_API_KEY) {
-            console.warn("RESEND_API_KEY is missing. Printing magic link to console instead.")
-            if (process.env.NODE_ENV === "development") {
-              console.log(`\n📨 [DEV MODE] Magic Link for ${email}:\n${url}\n`)
-            }
-            return
-          }
-
           const { data, error } = await resend.emails.send({
-            from: process.env.RESEND_FROM || 'onboarding@resend.dev',
+            from: env.RESEND_FROM,
             to: email,
-            subject: "登录您的 Knowhere 账户",
+            subject: "Knowhere Account Login Link",
             html: `
               <!DOCTYPE html>
               <html>
@@ -94,50 +114,47 @@ export const auth = betterAuth({
               </head>
               <body class="body-bg" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #ffffff;">
                 <div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
-                  <h2 class="content-text" style="color: #09090b; margin-bottom: 24px; font-size: 24px; font-weight: 600;">登录 Knowhere</h2>
-                  <p class="content-text" style="color: #09090b; margin-bottom: 24px; line-height: 1.6; font-size: 16px;">您请求了登录链接。请点击下方按钮完成登录：</p>
-                  
+                  <h2 class="content-text" style="color: #09090b; margin-bottom: 24px; font-size: 24px; font-weight: 600;">Log in to Knowhere</h2>
+                  <p class="content-text" style="color: #09090b; margin-bottom: 24px; line-height: 1.6; font-size: 16px;">You requested a login link. Click the button below to sign in:</p>
+
                   <a href="${url}" class="button-primary" style="display: inline-block; padding: 12px 24px; background-color: #09090b; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 16px;">
-                    登录系统
+                    Sign In
                   </a>
 
                   <div class="divider" style="margin-top: 32px; padding-top: 32px; border-top: 1px solid #e5e5e5;">
-                    <p class="secondary-text" style="font-size: 14px; color: #666666; margin-bottom: 12px; line-height: 1.5;">如果按钮无法点击，请复制以下链接到浏览器：</p>
+                    <p class="secondary-text" style="font-size: 14px; color: #666666; margin-bottom: 12px; line-height: 1.5;">If the button doesn't work, copy and paste this link into your browser:</p>
                     <a href="${url}" class="link-text" style="font-size: 13px; color: #666666; text-decoration: underline; word-break: break-all; line-height: 1.6; display: block;">
                       ${url}
                     </a>
                   </div>
 
                   <p class="secondary-text" style="margin-top: 32px; font-size: 12px; color: #a1a1aa;">
-                    如果您没有请求此链接，请忽略此邮件。
+                    If you didn't request this link, you can safely ignore this email.
                   </p>
                 </div>
               </body>
               </html>
             `,
-          })
+          });
 
           if (error) {
-            console.error("Resend error:", error)
-            throw error
+            console.error("Resend error:", error);
+            throw error;
           }
 
-          console.log(`Magic link sent to ${email}. Id: ${data?.id}`)
+          console.log(`Magic link sent to ${email}. Id: ${data?.id}`);
         } catch (error) {
-          console.error("Failed to send magic link:", error)
-          // 即使发送失败，也在开发环境下打印链接，确保流程不阻塞
-          if (process.env.NODE_ENV === "development") {
-            console.log(`\n⚠️ [FALLBACK] Email failed. Here is the Magic Link:\n${url}\n`)
-            // 在开发模式下，如果启用了 fallback 打印，我们可以选择不抛出错误，让流程继续
-            // 但如果用户希望看到真实错误，可以注释掉下面这行 return
-            return 
+          console.error("Failed to send magic link:", error);
+          // In development, print the link as fallback so the flow is not blocked
+          if (env.NODE_ENV === "development") {
+            console.log(`\n⚠️ [FALLBACK] Email failed. Here is the Magic Link:\n${url}\n`);
+            return;
           }
-          // 在生产环境或非 fallback 情况下，必须抛出错误，否则前端会显示"发送成功"
-          throw error
+          // In production, throw to surface the error to the frontend
+          throw error;
         }
       },
     }),
     nextCookies(),
   ],
-})
-
+});

@@ -1,0 +1,86 @@
+"use client";
+
+import { ThemeToggle } from "@components/theme-toggle";
+import { useAppConfigContext } from "@providers/config-provider";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { type ReactNode, useEffect } from "react";
+import { useAuth } from "@/hooks/use-auth";
+
+export function AuthLayoutClient({ children }: { children: ReactNode }) {
+  const appConfig = useAppConfigContext();
+  const { isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
+  const t = useTranslations("Common");
+
+  // 如果已登录，重定向到仪表板
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.push("/usage");
+    }
+  }, [isAuthenticated, isLoading, router]);
+
+  useEffect(() => {
+    document.body.classList.add("console-tone");
+    return () => document.body.classList.remove("console-tone");
+  }, []);
+
+  // 如果正在加载或已登录，显示加载状态
+  if (isLoading || isAuthenticated) {
+    return (
+      <div className="landing-tone min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4" />
+          <p>{t("loading")}</p>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="landing-tone relative min-h-screen flex flex-col bg-background text-foreground">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(217,119,6,0.12),transparent_55%)]" />
+      {/* 顶部导航 */}
+      <header className="relative z-10 flex items-center justify-between border-b border-border/70 bg-background/85 p-6 backdrop-blur-sm">
+        <Link href="/" className="flex gap-2 justify-center items-center">
+          {/*  Brand logo icon */}
+          <Image
+            src={"/images/brand/brand-logo.png"}
+            alt="brand logo"
+            width={32}
+            height={32}
+            className="rounded-[5px]"
+          />
+          <div className="text-2xl font-bold">Knowhere API</div>
+        </Link>
+        <ThemeToggle />
+      </header>
+
+      {/* 主要内容 */}
+      <main className="relative z-10 flex-1 flex items-center justify-center px-6 py-12">
+        <div className="w-full max-w-md">{children}</div>
+      </main>
+
+      {/* 底部 */}
+      <footer className="relative z-10 border-t border-border/70 text-center text-sm text-muted-foreground p-6">
+        <p>
+          &copy; {appConfig.copyrightYear} {appConfig.companyName}
+          {appConfig.showIcp && (
+            <>
+              {" "}
+              <a
+                href={appConfig.icpUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                {appConfig.icpNumber}
+              </a>
+            </>
+          )}
+        </p>
+      </footer>
+    </div>
+  );
+}
