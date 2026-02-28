@@ -147,9 +147,9 @@ export function PricingSection() {
         </div>
 
         {/* Rate Limits & File Limits */}
-        <div className="max-w-6xl mx-auto mb-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="max-w-2xl mx-auto mb-16">
           {/* Rate Limits */}
-          <PixelCard>
+          {/* <PixelCard>
             <div className="p-8">
               <div className="flex items-center gap-3 mb-6">
                 <PixelIcon icon="chart" color="green" size={24} />
@@ -192,7 +192,7 @@ export function PricingSection() {
                 </p>
               </div>
             </div>
-          </PixelCard>
+          </PixelCard> */}
 
           {/* File Size Limits */}
           <PixelCard>

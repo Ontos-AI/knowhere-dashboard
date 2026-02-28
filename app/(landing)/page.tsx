@@ -30,7 +30,7 @@ export default function LandingPage() {
       <CodeDemo />
       <PricingSection />
       <CTASection />
-      <CommunitySection />
+      {/* <CommunitySection /> */}
       <Footer />
     </div>
   );
