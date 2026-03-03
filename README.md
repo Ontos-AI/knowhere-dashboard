@@ -56,7 +56,7 @@ RESEND_FROM=onboarding@your-domain.com
 ```
 
 ### 数据统计 (PostHog)
-用于用户行为分析。
+用于用户行为分析（可选，不配置将自动跳过埋点）。
 
 ```bash
 NEXT_PUBLIC_POSTHOG_KEY=phc_your_public_key
