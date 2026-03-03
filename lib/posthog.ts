@@ -6,35 +6,37 @@
 import type { PostHog } from "posthog-js";
 import { env } from "@/lib/env";
 
-// PostHog 配置
 const POSTHOG_KEY = env.NEXT_PUBLIC_POSTHOG_KEY;
 const POSTHOG_HOST = env.NEXT_PUBLIC_POSTHOG_HOST;
+export const isPostHogEnabled = Boolean(POSTHOG_KEY);
 
-// 只在客户端初始化PostHog
 let posthog: PostHog | null = null;
 
 const initPostHog = () => {
-  if (typeof window !== "undefined" && POSTHOG_KEY && !posthog) {
-    // 动态导入PostHog，避免服务端渲染问题
-    import("posthog-js")
-      .then((module) => {
-        posthog = module.default;
-        posthog.init(POSTHOG_KEY, {
-          api_host: POSTHOG_HOST,
-          person_profiles: "identified_only",
-          capture_pageview: false, // 手动控制页面浏览事件
-          capture_pageleave: true,
-          loaded: (_posthog: PostHog) => {
-            if (env.NODE_ENV === "development") {
-              console.log("PostHog loaded");
-            }
-          },
-        });
-      })
-      .catch((error) => {
-        console.error("Failed to load PostHog:", error);
-      });
+  const key = POSTHOG_KEY;
+
+  if (!key || typeof window === "undefined" || posthog) {
+    return;
   }
+
+  import("posthog-js")
+    .then((module) => {
+      posthog = module.default;
+      posthog.init(key, {
+        api_host: POSTHOG_HOST,
+        person_profiles: "identified_only",
+        capture_pageview: false,
+        capture_pageleave: true,
+        loaded: (_posthog: PostHog) => {
+          if (env.NODE_ENV === "development") {
+            console.log("PostHog loaded");
+          }
+        },
+      });
+    })
+    .catch((error) => {
+      console.error("Failed to load PostHog:", error);
+    });
 };
 
 // 获取PostHog实例
