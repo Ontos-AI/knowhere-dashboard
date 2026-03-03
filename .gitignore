@@ -38,7 +38,7 @@ pnpm-debug.log*
 # Editor & Tooling
 .claude
 .cursor
-.spec
+.spec/
 CLAUDE.md
 AGENTS.md
 
