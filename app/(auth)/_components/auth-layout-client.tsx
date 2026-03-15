@@ -4,30 +4,31 @@ import { ThemeToggle } from "@components/theme-toggle";
 import { useAppConfigContext } from "@providers/config-provider";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
+import { authRedirect } from "@/lib/auth-redirect";
 
 export function AuthLayoutClient({ children }: { children: ReactNode }) {
   const appConfig = useAppConfigContext();
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const t = useTranslations("Common");
+  const callbackURL = authRedirect.resolveCallbackURL(searchParams.get("callbackURL"));
 
-  // 如果已登录，重定向到仪表板
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      router.push("/usage");
+      router.replace(callbackURL);
     }
-  }, [isAuthenticated, isLoading, router]);
+  }, [callbackURL, isAuthenticated, isLoading, router]);
 
   useEffect(() => {
     document.body.classList.add("console-tone");
     return () => document.body.classList.remove("console-tone");
   }, []);
 
-  // 如果正在加载或已登录，显示加载状态
   if (isLoading || isAuthenticated) {
     return (
       <div className="landing-tone min-h-screen flex items-center justify-center bg-background">
