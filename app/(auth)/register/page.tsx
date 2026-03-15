@@ -6,12 +6,14 @@ import { Input } from "@components/ui/input";
 import { Label } from "@components/ui/label";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { OAuthButtons } from "@/app/(auth)/_components/oauth-buttons";
 import { useToast } from "@/hooks/use-toast";
+import { authRedirect } from "@/lib/auth-redirect";
 import { authClient } from "@/lib/better-auth-client";
 
 // Register page uses the same passwordless flow as login:
@@ -19,9 +21,18 @@ import { authClient } from "@/lib/better-auth-client";
 export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
+  const searchParams = useSearchParams();
   const t = useTranslations("Auth");
+  const rawCallbackURL = searchParams.get("callbackURL");
+  const loginPath = authRedirect.buildAuthPagePath("/login", {
+    callbackURL: rawCallbackURL,
+  });
+  const callbackURL = authRedirect.resolveCallbackURL(rawCallbackURL);
+  const errorCallbackURL = authRedirect.buildMagicLinkErrorCallbackURL("/register", {
+    callbackURL: rawCallbackURL,
+    error: "magic",
+  });
 
-  // Magic Link only requires an email address — no password needed
   const registerSchema = useMemo(
     () =>
       z.object({
@@ -43,12 +54,11 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterForm) => {
     setIsLoading(true);
     try {
-      // Trigger Magic Link — creates account automatically if email is new
       const { error } = await authClient.signIn.magicLink({
         email: data.email,
-        callbackURL: "/callback/magic-link",
-        errorCallbackURL: "/register?error=magic",
-        newUserCallbackURL: "/callback/magic-link",
+        callbackURL,
+        errorCallbackURL,
+        newUserCallbackURL: callbackURL,
       });
 
       if (error) {
@@ -75,10 +85,8 @@ export default function RegisterPage() {
         <CardDescription className="text-center">{t("registerDesc")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* OAuth registration */}
         <OAuthButtons onError={handleOAuthError} />
 
-        {/* Magic Link registration form — email only */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">{t("email")}</Label>
@@ -99,7 +107,7 @@ export default function RegisterPage() {
 
         <div className="text-center text-sm">
           <span className="text-muted-foreground">{t("haveAccount")}</span>{" "}
-          <Link href="/login" className="text-primary hover:underline">
+          <Link href={loginPath} className="text-primary hover:underline">
             {t("loginNow")}
           </Link>
         </div>
