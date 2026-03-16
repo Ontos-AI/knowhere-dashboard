@@ -1,8 +1,8 @@
 import { Footer } from "@app/(landing)/_components/footer";
 import { Navbar } from "@app/(landing)/_components/navbar";
 import { ScrollProgressBar } from "@app/(landing)/_components/scroll-progress-bar";
-import { KnowhereOpenClawPluginPage } from "@app/(landing)/knowhere-openclaw-plugin/_components/knowhere-openclaw-plugin-page";
 import type { Metadata } from "next";
+import { KnowhereOpenClawPluginPage } from "@/app/(landing)/claw/_components/knowhere-openclaw-plugin-page";
 
 const pageLinks = [
   { label: "Overview", href: "#plugin-overview" },
@@ -16,13 +16,13 @@ export const metadata: Metadata = {
   description:
     "Install the Knowhere OpenClaw plugin to turn complex documents into browse-first, citation-ready context inside OpenClaw.",
   alternates: {
-    canonical: "/knowhere-openclaw-plugin",
+    canonical: "/claw",
   },
   openGraph: {
     title: "Knowhere OpenClaw Plugin",
     description:
       "Ground OpenClaw with Knowhere result packages, browse-first retrieval, and citation-ready document context.",
-    url: "https://knowhere.com/knowhere-openclaw-plugin",
+    url: "https://knowhere.com/claw",
     siteName: "Knowhere",
     locale: "en_US",
     type: "website",

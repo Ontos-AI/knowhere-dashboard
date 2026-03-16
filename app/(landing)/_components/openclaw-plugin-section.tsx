@@ -59,7 +59,7 @@ export function OpenClawPluginSection() {
 
             <div className="mb-8 flex flex-col gap-4 sm:flex-row">
               <PixelButton variant="primary" asChild>
-                <Link href="/knowhere-openclaw-plugin">More details</Link>
+                <Link href="/claw">More details</Link>
               </PixelButton>
             </div>
 

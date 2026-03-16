@@ -1,8 +1,8 @@
 import { PixelCard } from "@app/(landing)/_components/pixel/pixel-card";
-import { CopyableCommandCard } from "@app/(landing)/knowhere-openclaw-plugin/_components/copyable-command-card";
-import { installCards } from "@app/(landing)/knowhere-openclaw-plugin/_components/plugin-content";
-import { SectionIntro } from "@app/(landing)/knowhere-openclaw-plugin/_components/section-intro";
 import { ArrowRight, Package2, TerminalSquare } from "lucide-react";
+import { CopyableCommandCard } from "@/app/(landing)/claw/_components/copyable-command-card";
+import { installCards } from "@/app/(landing)/claw/_components/plugin-content";
+import { SectionIntro } from "@/app/(landing)/claw/_components/section-intro";
 
 export function IntegrationSection() {
   return (

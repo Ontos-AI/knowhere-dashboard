@@ -1,9 +1,6 @@
-import type { ChatMessage } from "@app/(landing)/knowhere-openclaw-plugin/_components/plugin-content";
-import {
-  chatMessages,
-  financialRows,
-} from "@app/(landing)/knowhere-openclaw-plugin/_components/plugin-content";
-import { SectionIntro } from "@app/(landing)/knowhere-openclaw-plugin/_components/section-intro";
+import type { ChatMessage } from "@/app/(landing)/claw/_components/plugin-content";
+import { chatMessages, financialRows } from "@/app/(landing)/claw/_components/plugin-content";
+import { SectionIntro } from "@/app/(landing)/claw/_components/section-intro";
 
 export function WorkflowSection() {
   return (

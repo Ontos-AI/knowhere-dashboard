@@ -1,11 +1,11 @@
 import { PixelButton } from "@app/(landing)/_components/pixel/pixel-button";
 import { PixelCard } from "@app/(landing)/_components/pixel/pixel-card";
+import Link from "next/link";
 import {
   contextTraits,
   heroCards,
   inputFormats,
-} from "@app/(landing)/knowhere-openclaw-plugin/_components/plugin-content";
-import Link from "next/link";
+} from "@/app/(landing)/claw/_components/plugin-content";
 
 export function HeroSection() {
   return (
