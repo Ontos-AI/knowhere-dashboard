@@ -6,21 +6,29 @@ import { Input } from "@components/ui/input";
 import { Label } from "@components/ui/label";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAppConfigContext } from "@providers/config-provider";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { OAuthButtons } from "@/app/(auth)/_components/oauth-buttons";
 import { useToast } from "@/hooks/use-toast";
+import { authRedirect } from "@/lib/auth-redirect";
 import { authClient } from "@/lib/better-auth-client";
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
   const _appConfig = useAppConfigContext();
+  const searchParams = useSearchParams();
   const t = useTranslations("Auth");
+  const rawCallbackURL = searchParams.get("callbackURL");
+  const callbackURL = authRedirect.resolveCallbackURL(rawCallbackURL);
+  const errorCallbackURL = authRedirect.buildMagicLinkErrorCallbackURL("/login", {
+    callbackURL: rawCallbackURL,
+    error: "magic",
+  });
 
-  // Magic Link 登录仅需要邮箱地址
   const loginSchema = useMemo(
     () =>
       z.object({
@@ -42,19 +50,17 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginForm) => {
     setIsLoading(true);
     try {
-      // 触发发送魔法链接至用户邮箱
       const { error } = await authClient.signIn.magicLink({
         email: data.email,
-        callbackURL: "/callback/magic-link",
-        errorCallbackURL: "/login?error=magic",
-        newUserCallbackURL: "/callback/magic-link",
+        callbackURL,
+        errorCallbackURL,
+        newUserCallbackURL: callbackURL,
       });
 
       if (error) {
         throw new Error(error.message || t("magicLinkFailed"));
       }
 
-      // 成功后提示用户查收邮箱
       toast.success(t("magicLinkSent"));
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : t("loginFailed");

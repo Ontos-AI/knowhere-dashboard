@@ -2,9 +2,11 @@
 
 import { Button } from "@components/ui/button";
 import { Github, Loader2 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { authRedirect } from "@/lib/auth-redirect";
 import { authClient } from "@/lib/better-auth-client";
 
 type OAuthButtonsProps = {
@@ -15,9 +17,15 @@ export function OAuthButtons({ onError }: OAuthButtonsProps) {
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [clickedProvider, setClickedProvider] = useState<"google" | "github" | null>(null);
+  const searchParams = useSearchParams();
   const t = useTranslations("Auth");
+  const rawCallbackURL = searchParams.get("callbackURL");
+  const callbackURL = authRedirect.resolveCallbackURL(rawCallbackURL);
+  const errorCallbackURL = authRedirect.buildAuthPagePath("/login", {
+    callbackURL: rawCallbackURL,
+    error: "oauth",
+  });
 
-  // 使用 Better Auth 发起社交登录（重定向到提供商）
   const signInWithProvider = async (provider: "github" | "google") => {
     if (isLoading) return;
     setIsLoading(true);
@@ -25,8 +33,9 @@ export function OAuthButtons({ onError }: OAuthButtonsProps) {
     try {
       await authClient.signIn.social({
         provider,
-        callbackURL: "/usage",
-        errorCallbackURL: "/login?error=oauth",
+        callbackURL,
+        errorCallbackURL,
+        newUserCallbackURL: callbackURL,
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : t("loginFailed");
@@ -34,9 +43,6 @@ export function OAuthButtons({ onError }: OAuthButtonsProps) {
       onError?.(message);
       setIsLoading(false);
       setClickedProvider(null);
-    } finally {
-      // 注意：成功时不重置 isLoading，因为页面即将跳转
-      // 只有失败时在 catch 块中重置
     }
   };
 

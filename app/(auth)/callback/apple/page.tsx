@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Suspense, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { authRedirect } from "@/lib/auth-redirect";
 import { authClient } from "@/lib/better-auth-client";
 
 function AppleCallbackContent() {
@@ -12,21 +13,26 @@ function AppleCallbackContent() {
   const toast = useToast();
   const session = authClient.useSession();
   const t = useTranslations("Auth");
+  const rawCallbackURL = searchParams.get("callbackURL");
+  const callbackURL = authRedirect.resolveCallbackURL(rawCallbackURL);
+  const loginPath = authRedirect.buildAuthPagePath("/login", {
+    callbackURL: rawCallbackURL,
+    error: "oauth",
+  });
 
   useEffect(() => {
     if (session.isPending) return;
     if (session.data?.user) {
       toast.success(t("appleLoginSuccess"));
-      router.push("/usage");
+      router.replace(callbackURL);
     } else {
-      // 如果没有 session，检查是否有 error 参数
       const error = searchParams.get("error");
       if (error) {
         toast.error(t("appleLoginFailed"));
-        router.push("/login?error=oauth");
+        router.replace(loginPath);
       }
     }
-  }, [session.isPending, session.data, toast, router, t, searchParams]);
+  }, [callbackURL, loginPath, session.isPending, session.data, toast, router, t, searchParams]);
 
   return (
     <div className="landing-tone min-h-screen flex items-center justify-center bg-background">
