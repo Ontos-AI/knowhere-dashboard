@@ -14,14 +14,7 @@ export function HeroSection() {
       className="relative overflow-hidden bg-pixel-bg pb-16 pt-28 sm:pb-20 sm:pt-32 md:pb-24 md:pt-40"
     >
       <div className="pointer-events-none absolute inset-0 pixel-grid-bg opacity-30" />
-      <div
-        className="pointer-events-none absolute inset-x-0 top-10 mx-auto h-48 w-[min(880px,94vw)] rounded-full blur-3xl"
-        style={{ background: "rgba(234, 179, 8, 0.12)" }}
-      />
-      <div
-        className="pointer-events-none absolute inset-x-0 top-40 mx-auto h-56 w-[min(740px,88vw)] rounded-full blur-3xl"
-        style={{ background: "rgba(34, 197, 94, 0.1)" }}
-      />
+      <div className="pointer-events-none absolute inset-x-0 top-10 mx-auto h-48 w-[min(880px,94vw)] rounded-full blur-3xl" />
 
       <div className="container relative z-10 mx-auto px-4">
         <div className="mx-auto max-w-5xl text-center">
