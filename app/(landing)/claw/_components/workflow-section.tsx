@@ -1,5 +1,6 @@
+import Image from "next/image";
 import type { ChatMessage } from "@/app/(landing)/claw/_components/plugin-content";
-import { chatMessages, financialRows } from "@/app/(landing)/claw/_components/plugin-content";
+import { chatMessages } from "@/app/(landing)/claw/_components/plugin-content";
 import { SectionIntro } from "@/app/(landing)/claw/_components/section-intro";
 
 export function WorkflowSection() {
@@ -31,9 +32,17 @@ export function WorkflowSection() {
 }
 
 function DocumentPanel() {
+  const pdfSrc = "/images/openclaw/page-33.png";
+  const loupeX = 63;
+  const loupeY = 34;
+  const loupeZoom = 280;
+  const toolbarHeight = 53;
+  const footerHeight = 52;
+  const pageAlt = "Tesla Q4 2025 report preview showing a dense PDF page with complex tables";
+
   return (
     <div className="relative">
-      <div className="overflow-hidden rounded-[20px] border-4 border-pixel-border bg-[#f8f5ee] shadow-[10px_10px_0_var(--pixel-shadow)]">
+      <div className="overflow-hidden rounded-[24px] border-4 border-pixel-border bg-[#f8f5ee] shadow-[10px_10px_0_var(--pixel-shadow)]">
         <div className="flex items-center gap-2 border-b-2 border-pixel-border bg-[#f1ece2] px-4 py-3">
           <span className="h-3 w-3 rounded-full border border-black/10 bg-[#ff5f57]" />
           <span className="h-3 w-3 rounded-full border border-black/10 bg-[#febc2e]" />
@@ -43,120 +52,86 @@ function DocumentPanel() {
           </span>
         </div>
 
-        <div className="relative min-h-[460px] overflow-hidden bg-[linear-gradient(180deg,#f7f3eb_0%,#efe7d6_100%)] px-4 py-4 sm:min-h-[520px] sm:py-5 md:min-h-[560px] md:px-6">
-          <div className="absolute left-4 top-14 hidden h-[74%] w-[64%] rotate-[-6deg] rounded-[18px] border-2 border-[#d8c8ae] bg-white/70 shadow-[0_12px_0_rgba(115,115,115,0.08)] sm:block" />
-          <div className="absolute right-4 top-24 hidden h-[62%] w-[54%] rotate-[5deg] rounded-[18px] border-2 border-[#d8c8ae] bg-white/70 shadow-[0_12px_0_rgba(115,115,115,0.08)] sm:block" />
+        <div className="relative min-h-[460px] overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.84),transparent_34%),linear-gradient(180deg,#f8f3ea_0%,#ebdfcb_100%)] p-4 sm:min-h-[520px] md:min-h-[560px] md:p-6">
+          <div className="absolute inset-x-5 top-10 hidden h-[78%] rounded-[22px] border-2 border-[#d8c8ae] bg-white/45 shadow-[0_18px_0_rgba(115,115,115,0.08)] sm:block md:left-8 md:right-20 md:rotate-[-5deg]" />
+          <div className="absolute inset-x-8 top-16 hidden h-[76%] rounded-[22px] border-2 border-[#d8c8ae] bg-white/55 shadow-[0_18px_0_rgba(115,115,115,0.1)] sm:block md:left-20 md:right-8 md:rotate-[4deg]" />
 
-          <div className="absolute left-4 right-4 top-4 w-auto rounded-[18px] border-2 border-[#d6c4a7] bg-[#fcf7ec] p-4 shadow-[0_14px_0_rgba(115,115,115,0.16)] sm:left-8 sm:right-auto sm:top-8 sm:w-[min(74%,520px)] sm:rounded-[20px] sm:shadow-[0_18px_0_rgba(115,115,115,0.16)] md:left-12 md:p-5">
-            <div className="mb-4 flex items-start justify-between gap-4">
+          <div className="relative z-10 flex h-full flex-col rounded-[22px] border-2 border-[#d6c4a7] bg-[#fcf7ec] p-3 shadow-[0_18px_0_rgba(115,115,115,0.16)] sm:rounded-[24px] sm:p-4 md:mx-6 md:p-5">
+            <div className="flex items-start justify-between gap-4 border-b border-[#e2d4bd] pb-3">
               <div>
                 <p className="font-pixel text-[10px] uppercase tracking-[0.14em] text-pixel-red">
                   Raw source
                 </p>
                 <h3 className="mt-2 text-xl font-semibold tracking-[-0.015em] text-pixel-fg font-sans md:text-2xl">
-                  One dense report.
+                  Full PDF page preview.
                   <br />
-                  Many hidden retrieval targets.
+                  Zoom only where the evidence lives.
                 </h3>
               </div>
-              <span className="hidden border-2 border-[#d6c4a7] bg-white px-3 py-1 font-mono text-xs text-pixel-muted sm:inline-flex">
-                page-33
-              </span>
             </div>
 
-            <div className="space-y-2 text-sm leading-6 text-[#5c5142] font-sans">
-              <div className="h-2 rounded-full bg-[#d6c9b2]" />
-              <div className="h-2 w-[88%] rounded-full bg-[#dfd3be]" />
-              <div className="h-2 w-[80%] rounded-full bg-[#dfd3be]" />
-            </div>
-
-            <div className="mt-5 overflow-x-auto rounded-[14px] border-2 border-[#d6c4a7] bg-white">
-              <table className="w-full border-collapse text-left font-mono text-xs text-pixel-fg md:text-sm">
-                <thead className="bg-[#f4ecdd]">
-                  <tr>
-                    <th className="border-b border-[#d6c4a7] px-3 py-2 font-semibold">Metric</th>
-                    <th className="border-b border-[#d6c4a7] px-3 py-2 font-semibold">Q1-2024</th>
-                    <th className="border-b border-[#d6c4a7] px-3 py-2 font-semibold">Q4-2025</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {financialRows.map((row) => (
-                    <tr key={row.metric}>
-                      <td className="border-b border-[#e6dccb] px-3 py-2">{row.metric}</td>
-                      <td className="border-b border-[#e6dccb] px-3 py-2">{row.q12024}</td>
-                      <td className="border-b border-[#e6dccb] px-3 py-2">{row.q42025}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="mt-5 space-y-2 text-sm leading-6 text-[#5c5142] font-sans">
-              <div className="h-2 w-[92%] rounded-full bg-[#dfd3be]" />
-              <div className="h-2 w-[84%] rounded-full bg-[#dfd3be]" />
-              <div className="h-2 w-[70%] rounded-full bg-[#dfd3be]" />
-            </div>
-          </div>
-
-          <div className="absolute bottom-4 left-4 right-4 grid grid-cols-2 gap-2 sm:bottom-7 sm:left-7 sm:right-7 sm:grid-cols-4">
-            {[
-              { label: "total", value: "46" },
-              { label: "text", value: "28" },
-              { label: "tables", value: "12" },
-              { label: "images", value: "6" },
-            ].map((stat) => (
-              <div
-                key={stat.label}
-                className="rounded-[10px] border-2 border-pixel-border bg-[#fff9f0] px-3 py-2 shadow-[3px_3px_0_var(--pixel-shadow)]"
-              >
-                <p className="font-pixel text-[10px] uppercase tracking-[0.12em] text-pixel-red">
-                  {stat.label}
-                </p>
-                <p className="mt-1 font-mono text-base font-semibold text-pixel-fg sm:text-lg">
-                  {stat.value}
-                </p>
+            <div className="relative mt-4 min-h-[320px] flex-1 overflow-hidden rounded-[18px] border-2 border-[#d6c4a7] bg-white shadow-[0_10px_0_rgba(115,115,115,0.1)]">
+              <div className="absolute inset-0 flex flex-col opacity-[0.94]">
+                {[0, 1, 2].map((pageIndex) => (
+                  <div
+                    key={pageIndex}
+                    className="shrink-0"
+                    style={{ marginTop: pageIndex === 0 ? "-18%" : "-2%" }}
+                  >
+                    <Image
+                      src={pdfSrc}
+                      alt={pageIndex === 1 ? pageAlt : ""}
+                      width={4398}
+                      height={2474}
+                      sizes="(max-width: 1280px) 100vw, 46vw"
+                      priority={pageIndex === 1}
+                      className="block h-auto w-full"
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
 
-          <div className="absolute right-4 top-8 hidden w-[320px] rounded-[18px] border-[3px] border-pixel-red bg-[#fff7ef] p-4 shadow-[0_16px_0_rgba(239,68,68,0.12),8px_8px_0_rgba(115,115,115,0.28)] lg:block">
-            <p className="font-pixel text-[10px] uppercase tracking-[0.14em] text-pixel-red">
-              Loupe / page-33 / table-14
-            </p>
-            <div className="mt-3 overflow-hidden rounded-[12px] border-2 border-[#ef4444]/35 bg-white">
-              <table className="w-full border-collapse text-left font-mono text-sm text-pixel-fg">
-                <thead className="bg-[#fbe8df]">
-                  <tr>
-                    <th className="border-b border-[#efc3b5] px-3 py-2 font-semibold">Quarter</th>
-                    <th className="border-b border-[#efc3b5] px-3 py-2 font-semibold">FCF</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="border-b border-[#f5d8cf] px-3 py-2">Q1-2024</td>
-                    <td className="border-b border-[#f5d8cf] px-3 py-2 text-pixel-red">−$2,535M</td>
-                  </tr>
-                  <tr>
-                    <td className="border-b border-[#f5d8cf] px-3 py-2">Q3-2025</td>
-                    <td className="border-b border-[#f5d8cf] px-3 py-2">$3,990M</td>
-                  </tr>
-                  <tr>
-                    <td className="px-3 py-2">Q4-2025</td>
-                    <td className="px-3 py-2">$1,420M</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-14 bg-gradient-to-b from-[#fcf7ec]/75 via-[#fcf7ec]/18 to-transparent sm:h-20" />
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-20 bg-gradient-to-t from-[#fcf7ec]/82 via-[#fcf7ec]/24 to-transparent sm:h-24" />
+              <div className="pointer-events-none absolute inset-0 z-10 bg-[linear-gradient(180deg,rgba(250,245,238,0.04)_0%,rgba(54,39,22,0.12)_100%)]" />
             </div>
-            <p className="mt-3 text-sm leading-6 text-[#6c5a49] font-sans">
-              The plugin keeps this structured evidence reopenable instead of flattening it into one
-              temporary answer.
-            </p>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              {["full-page context", "table-heavy", "reopenable evidence"].map((label) => (
+                <span
+                  key={label}
+                  className="rounded-full border border-[#d6c4a7] bg-white px-3 py-1 font-mono text-[11px] text-[#6c5a49]"
+                >
+                  {label}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
 
         <div className="border-t-2 border-pixel-border bg-[#f1ece2] px-4 py-3">
           <span className="font-pixel text-[12px] text-pixel-fg md:text-[16px]">UNSTRUCTURED.</span>
         </div>
+      </div>
+
+      <div
+        className="pointer-events-none absolute z-20 hidden rounded-[18px] border-[3px] border-pixel-red bg-[#fff7ef] shadow-[0_0_0_1px_rgba(10,10,10,0.08),0_0_0_6px_rgba(239,68,68,0.12),8px_8px_0_rgba(115,115,115,0.28),0_18px_42px_rgba(10,10,10,0.18)] md:block"
+        style={{
+          left: `${loupeX}%`,
+          top: `calc(${toolbarHeight}px + (100% - ${toolbarHeight + footerHeight}px) * ${loupeY / 100})`,
+          transform: "translate(-50%, -50%)",
+          width: "clamp(240px, 28vw, 360px)",
+          height: "clamp(140px, 15vw, 220px)",
+          backgroundImage: `url(${pdfSrc})`,
+          backgroundPosition: `${loupeX}% ${loupeY}%`,
+          backgroundRepeat: "no-repeat",
+          backgroundSize: `${loupeZoom}% auto`,
+        }}
+      >
+        <div className="absolute left-3 top-3 rounded-full border border-pixel-red/30 bg-[#fffaf3] px-2 py-1 font-pixel text-[9px] uppercase tracking-[0.14em] text-pixel-red">
+          Loupe / page-33
+        </div>
+        <div className="absolute inset-0 rounded-[14px] bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0)_100%)]" />
       </div>
     </div>
   );
