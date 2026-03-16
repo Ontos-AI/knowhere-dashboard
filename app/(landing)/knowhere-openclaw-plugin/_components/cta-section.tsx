@@ -14,21 +14,21 @@ export function CTASection() {
           style={{ borderColor: "var(--pixel-accent-green)" }}
         >
           <div className="grid lg:grid-cols-[1.02fr_0.98fr]">
-            <div className="border-b-2 border-pixel-border p-8 lg:border-b-0 lg:border-r-2 lg:p-10">
+            <div className="border-b-2 border-pixel-border p-6 sm:p-8 lg:border-b-0 lg:border-r-2 lg:p-10">
               <p className="mb-4 font-pixel text-[10px] uppercase tracking-[0.16em] text-pixel-green">
                 Call to action
               </p>
               <PixelHeading as="h2" size="lg" className="mb-5 leading-relaxed">
                 BRING KNOWHERE INTO <span className="text-pixel-green">OPENCLAW</span>
               </PixelHeading>
-              <p className="mb-8 max-w-2xl text-base leading-8 text-pixel-muted font-sans md:text-lg">
+              <p className="mb-8 max-w-2xl text-sm leading-7 text-pixel-muted font-sans sm:text-base sm:leading-8 md:text-lg">
                 Install the plugin, point it at your Knowhere API key, and give OpenClaw agents a
                 browse-first document memory instead of a blind guess. Complex tables, scanned PDFs,
                 and layout-heavy files become inspectable evidence inside the agent loop.
               </p>
 
               <div className="mb-8 flex flex-col gap-4 sm:flex-row">
-                <PixelButton variant="primary" asChild>
+                <PixelButton variant="primary" className="w-full sm:w-auto" asChild>
                   <Link href="/login">Get API key</Link>
                 </PixelButton>
               </div>
@@ -47,7 +47,7 @@ export function CTASection() {
               </div>
             </div>
 
-            <div className="bg-[#111111] p-8 text-[#f6efe3] lg:p-10">
+            <div className="bg-[#111111] p-6 text-[#f6efe3] sm:p-8 lg:p-10">
               <div className="rounded-[14px] border border-white/10 bg-white/5 p-4 shadow-[6px_6px_0_rgba(0,0,0,0.35)]">
                 <p className="mb-3 font-pixel text-[10px] uppercase tracking-[0.16em] text-[#7cd8a2]">
                   What unlocks in OpenClaw

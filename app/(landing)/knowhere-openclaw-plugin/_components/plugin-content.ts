@@ -16,7 +16,7 @@ export type InstallCard = {
   step: string;
   title: string;
   description: string;
-  code: string;
+  command: string;
 };
 
 export type FinancialRow = {
@@ -101,71 +101,22 @@ export const chatMessages: readonly ChatMessage[] = [
 
 export const installCards: readonly InstallCard[] = [
   {
-    step: "Step 1",
-    title: "Install the plugin",
-    description:
-      "Add the packaged runtime to OpenClaw so the bundled tools and the `knowhere` skill are available.",
-    code: "openclaw plugins install @ontos/knowhere-claw",
+    step: "01",
+    title: "Install package",
+    description: "Add the packaged runtime so OpenClaw can load the bundled knowhere skill.",
+    command: "openclaw plugins install @ontos/knowhere-claw",
   },
   {
-    step: "Step 2",
-    title: "Set your Knowhere API key",
-    description:
-      "Point the plugin at your Knowhere account. The config can also fall back to `KNOWHERE_API_KEY`.",
-    code: 'openclaw config set plugins.entries.knowhere.config.apiKey "sk_..."',
+    step: "02",
+    title: "Attach API key",
+    description: "Connect this OpenClaw instance to your Knowhere account.",
+    command: 'openclaw config set plugins.entries.knowhere.config.apiKey "sk_..."',
   },
   {
-    step: "Step 3",
-    title: "Enable it in OpenClaw",
-    description:
-      "Turn the entry on and let the agent runtime load the plugin plus its bundled usage guidance.",
-    code: "openclaw plugins enable knowhere",
-  },
-] as const;
-
-export const pluginResponsibilities = [
-  "Register the `knowhere_*` tools.",
-  "Optionally auto-ingest supported attachments.",
-  "Persist extracted Knowhere result packages by scope.",
-  "Expose browse-first path, chunk, context, and raw-file access back to agents.",
-  "Inject compact document status context when `autoGrounding` is enabled.",
-] as const;
-
-export const browseWorkflow = [
-  "Read `manifest.json` to understand the package.",
-  "Preview the stored document before answering.",
-  "Grep for the exact concept, metric, or entity you need.",
-  "Reopen `hierarchy.json`, `kb.csv`, or chunk HTML when the answer depends on structure.",
-] as const;
-
-export const runtimeSurfaces = [
-  {
-    title: "Tools",
-    description: "Explicit ingest, browse, raw-file read, preview, job, and cleanup operations.",
-  },
-  {
-    title: "Hooks",
-    description: "Background attachment ingest plus prompt-time document and status injection.",
-  },
-  {
-    title: "Skill",
-    description:
-      "Bundled `knowhere` guidance so agents know when to preview, grep, and reopen files.",
-  },
-] as const;
-
-export const scopeModes = [
-  {
-    title: "session",
-    description: "Keep documents local to one chat or run.",
-  },
-  {
-    title: "agent",
-    description: "Share stored packages across the same agent identity.",
-  },
-  {
-    title: "global",
-    description: "Expose one shared document memory across OpenClaw.",
+    step: "03",
+    title: "Enable plugin",
+    description: "Turn the entry on so agents can load the plugin inside the runtime.",
+    command: "openclaw plugins enable knowhere",
   },
 ] as const;
 
@@ -183,33 +134,3 @@ export const ctaOutcomes = [
     description: "Result packages stay reusable across session, agent, or global scopes.",
   },
 ] as const;
-
-export const configSnippet = `{
-  plugins: {
-    load: {
-      paths: ["/absolute/path/to/knowhere-openclaw-plugin"],
-    },
-    entries: {
-      knowhere: {
-        enabled: true,
-        config: {
-          apiKey: "sk_...",
-          scopeMode: "session",
-          autoGrounding: true,
-        },
-      },
-    },
-  },
-}`;
-
-export const storageTree = `<scope>/
-  index.json
-  documents/
-    <docId>/
-      metadata.json
-      browse-index.json
-      result/
-        manifest.json
-        chunks.json
-        hierarchy.json
-        full.md`;

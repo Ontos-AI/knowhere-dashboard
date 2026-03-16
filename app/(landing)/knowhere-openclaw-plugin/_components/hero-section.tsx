@@ -11,7 +11,7 @@ export function HeroSection() {
   return (
     <section
       id="plugin-overview"
-      className="relative overflow-hidden bg-pixel-bg pb-20 pt-32 md:pb-24 md:pt-40"
+      className="relative overflow-hidden bg-pixel-bg pb-16 pt-28 sm:pb-20 sm:pt-32 md:pb-24 md:pt-40"
     >
       <div className="pointer-events-none absolute inset-0 pixel-grid-bg opacity-30" />
       <div
@@ -25,7 +25,7 @@ export function HeroSection() {
 
       <div className="container relative z-10 mx-auto px-4">
         <div className="mx-auto max-w-5xl text-center">
-          <div className="mb-8 flex flex-wrap items-center justify-center gap-3">
+          <div className="mb-6 flex flex-wrap items-center justify-center gap-2.5 sm:mb-8 sm:gap-3">
             <span className="border-2 border-pixel-fg bg-pixel-green px-3 py-1 font-pixel text-[10px] uppercase tracking-[0.18em] text-pixel-bg">
               Knowhere API
             </span>
@@ -37,43 +37,43 @@ export function HeroSection() {
             </span>
           </div>
 
-          <h1 className="text-[clamp(3.2rem,9vw,7rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-pixel-fg font-sans">
+          <h1 className="text-[clamp(2.4rem,13vw,7rem)] font-semibold leading-[0.98] tracking-[-0.035em] text-pixel-fg font-sans sm:leading-[0.95] sm:tracking-[-0.04em]">
             Your docs
           </h1>
 
-          <div className="my-6 flex flex-wrap items-center justify-center gap-3">
+          <div className="my-5 flex flex-wrap items-center justify-center gap-2.5 sm:my-6 sm:gap-3">
             {inputFormats.map((format) => (
               <span
                 key={format}
-                className="rounded-[10px] border-2 border-pixel-border bg-white px-4 py-2 font-mono text-sm font-medium text-pixel-fg shadow-[4px_4px_0_var(--pixel-shadow)]"
+                className="rounded-[10px] border-2 border-pixel-border bg-white px-3 py-2 font-mono text-xs font-medium text-pixel-fg shadow-[3px_3px_0_var(--pixel-shadow)] sm:px-4 sm:text-sm sm:shadow-[4px_4px_0_var(--pixel-shadow)]"
               >
                 {format}
               </span>
             ))}
           </div>
 
-          <h2 className="mx-auto max-w-5xl text-[clamp(2.8rem,8vw,6.4rem)] font-semibold leading-[0.96] tracking-[-0.04em] text-pixel-fg font-sans">
+          <h2 className="mx-auto max-w-5xl text-[clamp(2rem,11vw,6.4rem)] font-semibold leading-[1] tracking-[-0.03em] text-pixel-fg font-sans sm:leading-[0.96] sm:tracking-[-0.04em]">
             become <span className="text-pixel-red">OpenClaw-native</span>
             <br />
             <span className="text-pixel-green">context</span> with grounded retrieval
           </h2>
 
-          <p className="mx-auto mt-6 max-w-3xl text-base leading-8 text-pixel-muted font-sans md:text-lg">
+          <p className="mx-auto mt-5 max-w-3xl text-sm leading-7 text-pixel-muted font-sans sm:mt-6 sm:text-base sm:leading-8 md:text-lg">
             The plugin uses Knowhere for parsing and job orchestration, stores the returned result
             package inside OpenClaw-managed local storage, and gives agents a browse-first path to
             previews, chunks, hierarchy, and raw files before they answer.
           </p>
 
-          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <PixelButton variant="primary" asChild>
+          <div className="mt-8 flex flex-col items-stretch justify-center gap-4 sm:flex-row sm:items-center">
+            <PixelButton variant="primary" className="w-full sm:w-auto" asChild>
               <Link href="#integration">See integration guide</Link>
             </PixelButton>
-            <PixelButton variant="secondary" asChild>
+            <PixelButton variant="secondary" className="w-full sm:w-auto" asChild>
               <Link href="/login">Get API key</Link>
             </PixelButton>
           </div>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
             {contextTraits.map((trait) => (
               <span
                 key={trait}
@@ -85,7 +85,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className="mt-14 grid gap-4 lg:grid-cols-3">
+        <div className="mt-10 grid gap-4 sm:mt-12 lg:mt-14 lg:grid-cols-3">
           {heroCards.map((card, index) => (
             <PixelCard
               key={card.title}
@@ -96,11 +96,11 @@ export function HeroSection() {
                   : { borderColor: "var(--pixel-border)" }
               }
             >
-              <div className="p-6">
+              <div className="p-5 sm:p-6">
                 <p className="mb-3 font-pixel text-[10px] uppercase tracking-[0.16em] text-pixel-green">
                   {card.eyebrow}
                 </p>
-                <h3 className="mb-4 text-2xl font-semibold leading-tight tracking-[-0.02em] text-pixel-fg font-sans">
+                <h3 className="mb-4 text-xl font-semibold leading-tight tracking-[-0.02em] text-pixel-fg font-sans sm:text-2xl">
                   {card.title}
                 </h3>
                 <p className="text-sm leading-7 text-pixel-muted font-sans">{card.description}</p>

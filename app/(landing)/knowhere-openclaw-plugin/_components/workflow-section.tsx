@@ -46,11 +46,11 @@ function DocumentPanel() {
           </span>
         </div>
 
-        <div className="relative min-h-[560px] overflow-hidden bg-[linear-gradient(180deg,#f7f3eb_0%,#efe7d6_100%)] px-4 py-5 md:px-6">
-          <div className="absolute left-4 top-14 h-[74%] w-[64%] rotate-[-6deg] rounded-[18px] border-2 border-[#d8c8ae] bg-white/70 shadow-[0_12px_0_rgba(115,115,115,0.08)]" />
-          <div className="absolute right-4 top-24 h-[62%] w-[54%] rotate-[5deg] rounded-[18px] border-2 border-[#d8c8ae] bg-white/70 shadow-[0_12px_0_rgba(115,115,115,0.08)]" />
+        <div className="relative min-h-[460px] overflow-hidden bg-[linear-gradient(180deg,#f7f3eb_0%,#efe7d6_100%)] px-4 py-4 sm:min-h-[520px] sm:py-5 md:min-h-[560px] md:px-6">
+          <div className="absolute left-4 top-14 hidden h-[74%] w-[64%] rotate-[-6deg] rounded-[18px] border-2 border-[#d8c8ae] bg-white/70 shadow-[0_12px_0_rgba(115,115,115,0.08)] sm:block" />
+          <div className="absolute right-4 top-24 hidden h-[62%] w-[54%] rotate-[5deg] rounded-[18px] border-2 border-[#d8c8ae] bg-white/70 shadow-[0_12px_0_rgba(115,115,115,0.08)] sm:block" />
 
-          <div className="absolute left-8 top-8 w-[min(74%,520px)] rounded-[20px] border-2 border-[#d6c4a7] bg-[#fcf7ec] p-4 shadow-[0_18px_0_rgba(115,115,115,0.16)] md:left-12 md:p-5">
+          <div className="absolute left-4 right-4 top-4 w-auto rounded-[18px] border-2 border-[#d6c4a7] bg-[#fcf7ec] p-4 shadow-[0_14px_0_rgba(115,115,115,0.16)] sm:left-8 sm:right-auto sm:top-8 sm:w-[min(74%,520px)] sm:rounded-[20px] sm:shadow-[0_18px_0_rgba(115,115,115,0.16)] md:left-12 md:p-5">
             <div className="mb-4 flex items-start justify-between gap-4">
               <div>
                 <p className="font-pixel text-[10px] uppercase tracking-[0.14em] text-pixel-red">
@@ -62,7 +62,7 @@ function DocumentPanel() {
                   Many hidden retrieval targets.
                 </h3>
               </div>
-              <span className="border-2 border-[#d6c4a7] bg-white px-3 py-1 font-mono text-xs text-pixel-muted">
+              <span className="hidden border-2 border-[#d6c4a7] bg-white px-3 py-1 font-mono text-xs text-pixel-muted sm:inline-flex">
                 page-33
               </span>
             </div>
@@ -73,7 +73,7 @@ function DocumentPanel() {
               <div className="h-2 w-[80%] rounded-full bg-[#dfd3be]" />
             </div>
 
-            <div className="mt-5 overflow-hidden rounded-[14px] border-2 border-[#d6c4a7] bg-white">
+            <div className="mt-5 overflow-x-auto rounded-[14px] border-2 border-[#d6c4a7] bg-white">
               <table className="w-full border-collapse text-left font-mono text-xs text-pixel-fg md:text-sm">
                 <thead className="bg-[#f4ecdd]">
                   <tr>
@@ -101,7 +101,7 @@ function DocumentPanel() {
             </div>
           </div>
 
-          <div className="absolute bottom-7 left-7 flex flex-wrap gap-2">
+          <div className="absolute bottom-4 left-4 right-4 grid grid-cols-2 gap-2 sm:bottom-7 sm:left-7 sm:right-7 sm:grid-cols-4">
             {[
               { label: "total", value: "46" },
               { label: "text", value: "28" },
@@ -115,7 +115,9 @@ function DocumentPanel() {
                 <p className="font-pixel text-[10px] uppercase tracking-[0.12em] text-pixel-red">
                   {stat.label}
                 </p>
-                <p className="mt-1 font-mono text-lg font-semibold text-pixel-fg">{stat.value}</p>
+                <p className="mt-1 font-mono text-base font-semibold text-pixel-fg sm:text-lg">
+                  {stat.value}
+                </p>
               </div>
             ))}
           </div>
@@ -166,7 +168,7 @@ function DocumentPanel() {
 function ChatPanel() {
   return (
     <div className="overflow-hidden rounded-[20px] border-4 border-pixel-border bg-[#111111] shadow-[10px_10px_0_rgba(58,58,58,0.65)]">
-      <div className="flex items-center gap-2 border-b-2 border-pixel-border bg-[#161616] px-4 py-3">
+      <div className="flex flex-wrap items-center gap-2 border-b-2 border-pixel-border bg-[#161616] px-4 py-3">
         <span className="text-sm">🦞</span>
         <span className="font-pixel text-[10px] uppercase tracking-[0.14em] text-[#7cd8a2]">
           OpenClaw
@@ -176,7 +178,7 @@ function ChatPanel() {
         </span>
       </div>
 
-      <div className="flex min-h-[560px] flex-col bg-[radial-gradient(circle_at_top,rgba(124,216,162,0.11),transparent_34%),linear-gradient(180deg,#121212_0%,#0e0e0e_100%)] px-4 py-5 md:px-6">
+      <div className="flex min-h-[440px] flex-col bg-[radial-gradient(circle_at_top,rgba(124,216,162,0.11),transparent_34%),linear-gradient(180deg,#121212_0%,#0e0e0e_100%)] px-4 py-5 sm:min-h-[500px] md:min-h-[560px] md:px-6">
         <div className="flex flex-1 flex-col gap-4">
           {chatMessages.map((message, index) =>
             message.from === "user" ? (
@@ -198,9 +200,11 @@ function ChatPanel() {
 function UserBubble({ message }: { message: ChatMessage }) {
   return (
     <div className="flex justify-end">
-      <div className="max-w-[82%]">
+      <div className="max-w-[88%] sm:max-w-[82%]">
         <div className="rounded-[18px] rounded-tr-[8px] border-2 border-[#7ba8d9]/45 bg-[#1a2f44] px-4 py-3 shadow-[6px_6px_0_rgba(0,0,0,0.24)]">
-          <p className="text-[15px] leading-7 text-[#edf5ff] font-sans">{message.text}</p>
+          <p className="text-[14px] leading-6 text-[#edf5ff] font-sans sm:text-[15px] sm:leading-7">
+            {message.text}
+          </p>
         </div>
         {message.reaction && (
           <div className="mt-2 flex justify-end">
@@ -220,11 +224,13 @@ function AgentBubble({ message }: { message: ChatMessage }) {
       <div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#7cd8a2]/35 bg-[#162117] text-sm">
         🦞
       </div>
-      <div className="max-w-[84%]">
+      <div className="max-w-[88%] sm:max-w-[84%]">
         <div className="rounded-[18px] rounded-tl-[8px] border-2 border-[#7cd8a2]/35 bg-[#152016] px-4 py-3 shadow-[6px_6px_0_rgba(0,0,0,0.24)]">
-          <p className="text-[15px] leading-7 text-[#eef5e8] font-sans">{message.text}</p>
+          <p className="text-[14px] leading-6 text-[#eef5e8] font-sans sm:text-[15px] sm:leading-7">
+            {message.text}
+          </p>
           {message.highlight && (
-            <p className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-[#f2a93b] font-mono">
+            <p className="mt-3 text-xl font-semibold tracking-[-0.04em] text-[#f2a93b] font-mono sm:text-2xl">
               {message.highlight}
             </p>
           )}
@@ -233,7 +239,7 @@ function AgentBubble({ message }: { message: ChatMessage }) {
               {message.citations.map((citation) => (
                 <span
                   key={citation}
-                  className="rounded-[8px] border border-[#7cd8a2]/25 bg-black/20 px-2 py-1 font-mono text-[11px] text-[#b7e9cb]"
+                  className="rounded-[8px] border border-[#7cd8a2]/25 bg-black/20 px-2 py-1 font-mono text-[10px] text-[#b7e9cb] sm:text-[11px]"
                 >
                   {citation}
                 </span>
