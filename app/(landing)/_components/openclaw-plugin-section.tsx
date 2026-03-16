@@ -1,25 +1,25 @@
 import { PixelButton } from "@app/(landing)/_components/pixel/pixel-button";
 import { PixelCard } from "@app/(landing)/_components/pixel/pixel-card";
 import { PixelHeading } from "@app/(landing)/_components/pixel/pixel-heading";
+import type { LucideIcon } from "lucide-react";
+import { Search } from "lucide-react";
 import Link from "next/link";
 
-const capabilities = [
-  {
-    title: "Browse-first grounding",
-    description:
-      "Let OpenClaw reopen previews, chunks, raw files, and hierarchy before it answers.",
-  },
-  {
-    title: "Local result packages",
-    description:
-      "Store extracted Knowhere outputs inside OpenClaw-managed storage with scope-aware reuse.",
-  },
-  {
-    title: "Agent-ready tools",
-    description:
-      "Register `knowhere_*` tools for ingest, grep, preview, raw-file reads, and cleanup flows.",
-  },
-] as const;
+type PrimaryCapability = {
+  title: string;
+  description: string;
+  eyebrow: string;
+  icon: LucideIcon;
+  tags: readonly string[];
+};
+
+const primaryCapability: PrimaryCapability = {
+  eyebrow: "Main shift",
+  icon: Search,
+  title: "Browse-first grounding",
+  description: "Preview, reopen, and inspect the evidence surface before the agent answers.",
+  tags: ["preview", "chunks", "raw files"],
+};
 
 const installSteps = [
   "openclaw plugins install @ontos/knowhere-claw",
@@ -53,10 +53,8 @@ export function OpenClawPluginSection() {
             </PixelHeading>
 
             <p className="mb-6 max-w-2xl text-base leading-7 text-pixel-muted font-sans md:text-lg">
-              We added a dedicated page for the{" "}
-              <span className="font-mono">@ontos/knowhere-claw</span> package. It shows how Knowhere
-              result packages become browse-first context inside OpenClaw, how to install the
-              plugin, and how agents can answer with grounded citations instead of guesswork.
+              We added a page for the <span className="font-mono">@ontos/knowhere-claw</span>{" "}
+              package: install it, ground OpenClaw, and inspect evidence before answering.
             </p>
 
             <div className="mb-8 flex flex-col gap-4 sm:flex-row">
@@ -65,23 +63,7 @@ export function OpenClawPluginSection() {
               </PixelButton>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-3">
-              {capabilities.map((capability) => (
-                <PixelCard key={capability.title} className="h-full p-0">
-                  <div className="p-5">
-                    <p className="mb-2 font-pixel text-[10px] uppercase tracking-[0.14em] text-pixel-green">
-                      Plugin
-                    </p>
-                    <h3 className="mb-3 font-mono text-lg font-semibold text-pixel-fg">
-                      {capability.title}
-                    </h3>
-                    <p className="text-sm leading-6 text-pixel-muted font-sans">
-                      {capability.description}
-                    </p>
-                  </div>
-                </PixelCard>
-              ))}
-            </div>
+            <PrimaryCapabilityCard capability={primaryCapability} />
           </div>
 
           <PixelCard accent className="overflow-hidden p-0">
@@ -133,5 +115,48 @@ export function OpenClawPluginSection() {
         </div>
       </div>
     </section>
+  );
+}
+
+function PrimaryCapabilityCard({ capability }: { capability: PrimaryCapability }) {
+  const Icon = capability.icon;
+
+  return (
+    <PixelCard accent accentColor="green" className="overflow-hidden p-0">
+      <div className="border-b-2 border-pixel-border bg-[#f4ecdd] px-5 py-4 sm:px-6">
+        <div className="flex items-center justify-between gap-3">
+          <p className="font-pixel text-[10px] uppercase tracking-[0.16em] text-pixel-green">
+            {capability.eyebrow}
+          </p>
+          <div className="flex h-10 w-10 items-center justify-center border-2 border-pixel-border bg-pixel-bg text-pixel-green">
+            <Icon className="h-5 w-5" />
+          </div>
+        </div>
+      </div>
+
+      <div className="p-5 sm:p-6">
+        <h3 className="max-w-xl font-sans text-[clamp(1.35rem,2.6vw,2rem)] font-semibold leading-[1.06] tracking-[-0.02em] text-pixel-fg">
+          {capability.title}
+        </h3>
+        <p className="mt-3 max-w-xl font-sans text-sm leading-7 text-pixel-muted sm:text-base sm:leading-8">
+          {capability.description}
+        </p>
+
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          {capability.tags.map((tag) => (
+            <span
+              key={tag}
+              className="border-2 border-pixel-border bg-[#f8f3ea] px-3 py-1 font-mono text-xs text-pixel-fg shadow-[3px_3px_0_var(--pixel-shadow)]"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        <p className="mt-4 font-sans text-sm leading-7 text-pixel-muted">
+          This is the behavior users feel first when the plugin is present.
+        </p>
+      </div>
+    </PixelCard>
   );
 }
