@@ -31,10 +31,6 @@ export function OpenClawPluginSection() {
   return (
     <section className="relative overflow-hidden border-y-2 border-pixel-border bg-pixel-bg py-16 md:py-24">
       <div className="pointer-events-none absolute inset-0 pixel-grid-bg opacity-40" />
-      <div
-        className="pointer-events-none absolute inset-x-0 top-12 mx-auto h-40 w-[min(720px,92vw)] rounded-full blur-3xl"
-        style={{ background: "rgba(34, 197, 94, 0.12)" }}
-      />
 
       <div className="container relative z-10 mx-auto px-4">
         <div className="grid items-start gap-8 lg:grid-cols-[1.05fr_0.95fr]">
@@ -48,8 +44,23 @@ export function OpenClawPluginSection() {
               </span>
             </div>
 
-            <PixelHeading as="h2" size="lg" className="mb-5 max-w-3xl leading-relaxed">
-              GROUND OPENCLAW WITH <span className="text-pixel-green">KNOWHERE</span>
+            <PixelHeading
+              as="h2"
+              size="lg"
+              className="mb-5 max-w-3xl leading-relaxed flex items-center gap-2.5"
+            >
+              GROUND{" "}
+              <span className="inline-flex items-center gap-[0.22em] whitespace-nowrap">
+                <span
+                  role="img"
+                  aria-label="Lobster"
+                  className="translate-y-[-0.04em] text-[2em] leading-none mb-1"
+                >
+                  🦞
+                </span>
+                OPENCLAW
+              </span>{" "}
+              WITH <span className="text-pixel-green">KNOWHERE</span>
             </PixelHeading>
 
             <p className="mb-6 max-w-2xl text-base leading-7 text-pixel-muted font-sans md:text-lg">
