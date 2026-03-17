@@ -29,6 +29,8 @@ export const inputFormats = ["PDF", "DOCX", "XLSX", "PPT"] as const;
 
 export const KNOWHERE_CLAW_PACKAGE_NAME = "@ontos-ai/knowhere-claw";
 export const KNOWHERE_CLAW_PACKAGE_URL = "https://www.npmjs.com/package/@ontos-ai/knowhere-claw";
+export const KNOWHERE_CLAWHUB_SKILL_NAME = "Knowhere";
+export const KNOWHERE_CLAWHUB_SKILL_URL = "https://clawhub.ai/ErickThoughts/clawhub-knowhere";
 
 export const contextTraits = [
   "Browse-first",

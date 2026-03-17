@@ -7,6 +7,8 @@ import {
   inputFormats,
   KNOWHERE_CLAW_PACKAGE_NAME,
   KNOWHERE_CLAW_PACKAGE_URL,
+  KNOWHERE_CLAWHUB_SKILL_NAME,
+  KNOWHERE_CLAWHUB_SKILL_URL,
 } from "@/app/(landing)/claw/_components/plugin-content";
 
 export function HeroSection() {
@@ -34,6 +36,14 @@ export function HeroSection() {
               className="border-2 border-pixel-border bg-pixel-bg px-3 py-1 font-mono text-xs text-pixel-muted underline decoration-current underline-offset-4 transition-colors hover:text-pixel-fg"
             >
               {KNOWHERE_CLAW_PACKAGE_NAME}
+            </Link>
+            <Link
+              href={KNOWHERE_CLAWHUB_SKILL_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="border-2 border-pixel-border bg-[#f8f3ea] px-3 py-1 font-mono text-xs text-pixel-fg underline decoration-current underline-offset-4 transition-colors hover:text-pixel-green"
+            >
+              ClawHub: {KNOWHERE_CLAWHUB_SKILL_NAME}
             </Link>
           </div>
 

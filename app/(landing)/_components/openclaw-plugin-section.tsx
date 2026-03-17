@@ -23,6 +23,8 @@ const primaryCapability: PrimaryCapability = {
 
 const KNOWHERE_CLAW_PACKAGE_NAME = "@ontos-ai/knowhere-claw";
 const KNOWHERE_CLAW_PACKAGE_URL = "https://www.npmjs.com/package/@ontos-ai/knowhere-claw";
+const KNOWHERE_CLAWHUB_SKILL_NAME = "Knowhere";
+const KNOWHERE_CLAWHUB_SKILL_URL = "https://clawhub.ai/ErickThoughts/clawhub-knowhere";
 
 const installSteps = [
   `openclaw plugins install ${KNOWHERE_CLAW_PACKAGE_NAME}`,
@@ -77,6 +79,19 @@ export function OpenClawPluginSection() {
                 {KNOWHERE_CLAW_PACKAGE_NAME}
               </Link>{" "}
               package: install it, ground OpenClaw, and inspect evidence before answering.
+            </p>
+
+            <p className="mb-6 max-w-2xl text-sm leading-7 text-pixel-muted font-sans md:text-base">
+              Also live on ClawHub as{" "}
+              <Link
+                href={KNOWHERE_CLAWHUB_SKILL_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="font-mono underline decoration-current underline-offset-4 transition-colors hover:text-pixel-fg"
+              >
+                {KNOWHERE_CLAWHUB_SKILL_NAME}
+              </Link>
+              .
             </p>
 
             <div className="mb-8 flex flex-col gap-4 sm:flex-row">
