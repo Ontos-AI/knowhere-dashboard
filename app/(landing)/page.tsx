@@ -1,5 +1,4 @@
 import { CodeDemo } from "@app/(landing)/_components/code-demo";
-import { CommunitySection } from "@app/(landing)/_components/community-section";
 import { ComparisonTabs } from "@app/(landing)/_components/comparison-tabs";
 import { CTASection } from "@app/(landing)/_components/cta-section";
 import { DataTransformationViz } from "@app/(landing)/_components/data-transformation-viz";
@@ -7,6 +6,7 @@ import { EnhancedCapabilities } from "@app/(landing)/_components/enhanced-capabi
 import { Footer } from "@app/(landing)/_components/footer";
 import { HeroSection } from "@app/(landing)/_components/hero/hero-section";
 import { Navbar } from "@app/(landing)/_components/navbar";
+import { OpenClawPluginSection } from "@app/(landing)/_components/openclaw-plugin-section";
 import { PricingSection } from "@app/(landing)/_components/pricing-section";
 import { ProductComparison } from "@app/(landing)/_components/product-comparison";
 import { ScrollProgressBar } from "@app/(landing)/_components/scroll-progress-bar";
@@ -28,6 +28,7 @@ export default function LandingPage() {
       <EnhancedCapabilities />
       <DataTransformationViz />
       <CodeDemo />
+      <OpenClawPluginSection />
       <PricingSection />
       <CTASection />
       {/* <CommunitySection /> */}
