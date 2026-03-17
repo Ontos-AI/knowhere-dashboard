@@ -21,8 +21,11 @@ const primaryCapability: PrimaryCapability = {
   tags: ["preview", "chunks", "raw files"],
 };
 
+const KNOWHERE_CLAW_PACKAGE_NAME = "@ontos-ai/knowhere-claw";
+const KNOWHERE_CLAW_PACKAGE_URL = "https://www.npmjs.com/package/@ontos-ai/knowhere-claw";
+
 const installSteps = [
-  "openclaw plugins install @ontos/knowhere-claw",
+  `openclaw plugins install ${KNOWHERE_CLAW_PACKAGE_NAME}`,
   'openclaw config set plugins.entries.knowhere.config.apiKey "sk_..."',
   "openclaw plugins enable knowhere",
 ] as const;
@@ -64,7 +67,15 @@ export function OpenClawPluginSection() {
             </PixelHeading>
 
             <p className="mb-6 max-w-2xl text-base leading-7 text-pixel-muted font-sans md:text-lg">
-              We added a page for the <span className="font-mono">@ontos/knowhere-claw</span>{" "}
+              We added a page for the{" "}
+              <Link
+                href={KNOWHERE_CLAW_PACKAGE_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="font-mono underline decoration-current underline-offset-4 transition-colors hover:text-pixel-fg"
+              >
+                {KNOWHERE_CLAW_PACKAGE_NAME}
+              </Link>{" "}
               package: install it, ground OpenClaw, and inspect evidence before answering.
             </p>
 
@@ -83,9 +94,14 @@ export function OpenClawPluginSection() {
                 <span className="h-3 w-3 rounded-full border border-white/10 bg-[#ff5f57]" />
                 <span className="h-3 w-3 rounded-full border border-white/10 bg-[#febc2e]" />
                 <span className="h-3 w-3 rounded-full border border-white/10 bg-[#28c840]" />
-                <span className="ml-3 font-pixel text-[10px] uppercase tracking-[0.14em] text-[#f6efe3]">
-                  @ontos/knowhere-claw
-                </span>
+                <Link
+                  href={KNOWHERE_CLAW_PACKAGE_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="ml-3 font-pixel text-[10px] uppercase tracking-[0.14em] text-[#f6efe3] underline decoration-current underline-offset-4 transition-opacity hover:opacity-80"
+                >
+                  {KNOWHERE_CLAW_PACKAGE_NAME}
+                </Link>
               </div>
             </div>
 

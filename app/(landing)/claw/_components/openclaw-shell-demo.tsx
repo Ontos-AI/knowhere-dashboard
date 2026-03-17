@@ -19,7 +19,7 @@ function highlightShell(code: string): Token[] {
   const keywords = /\b(openclaw|plugins|install|config|set|enable)\b/g;
   const strings = /(["'])(?:(?=(\\?))\2.)*?\1/g;
   const paths = /\b[a-z]+(?:\.[a-zA-Z]+)+\b/g;
-  const operators = /\b(@ontos\/knowhere-claw|knowhere)\b/g;
+  const operators = /@ontos-ai\/knowhere-claw|\bknowhere\b/g;
 
   let lastIndex = 0;
   const matches: Array<{ index: number; length: number; type: Token["type"]; value: string }> = [];

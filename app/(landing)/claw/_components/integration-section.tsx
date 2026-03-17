@@ -1,5 +1,10 @@
+import Link from "next/link";
 import { OpenClawShellDemo } from "@/app/(landing)/claw/_components/openclaw-shell-demo";
-import { installCards } from "@/app/(landing)/claw/_components/plugin-content";
+import {
+  installCards,
+  KNOWHERE_CLAW_PACKAGE_NAME,
+  KNOWHERE_CLAW_PACKAGE_URL,
+} from "@/app/(landing)/claw/_components/plugin-content";
 import { SectionIntro } from "@/app/(landing)/claw/_components/section-intro";
 
 export function IntegrationSection() {
@@ -25,7 +30,14 @@ export function IntegrationSection() {
                 Package
               </p>
               <p className="mt-3 font-mono text-sm text-pixel-fg sm:text-base">
-                @ontos/knowhere-claw
+                <Link
+                  href={KNOWHERE_CLAW_PACKAGE_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline decoration-current underline-offset-4 transition-colors hover:text-pixel-green"
+                >
+                  {KNOWHERE_CLAW_PACKAGE_NAME}
+                </Link>
               </p>
               <p className="mt-4 font-sans text-sm leading-7 text-pixel-muted sm:text-base sm:leading-8">
                 No config wall, no runtime internals, and no extra surface to learn. Install the

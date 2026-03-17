@@ -27,6 +27,9 @@ export type FinancialRow = {
 
 export const inputFormats = ["PDF", "DOCX", "XLSX", "PPT"] as const;
 
+export const KNOWHERE_CLAW_PACKAGE_NAME = "@ontos-ai/knowhere-claw";
+export const KNOWHERE_CLAW_PACKAGE_URL = "https://www.npmjs.com/package/@ontos-ai/knowhere-claw";
+
 export const contextTraits = [
   "Browse-first",
   "Path-aware",
@@ -104,7 +107,7 @@ export const installCards: readonly InstallCard[] = [
     step: "01",
     title: "Install package",
     description: "Add the packaged runtime so OpenClaw can load the bundled knowhere skill.",
-    command: "openclaw plugins install @ontos/knowhere-claw",
+    command: `openclaw plugins install ${KNOWHERE_CLAW_PACKAGE_NAME}`,
   },
   {
     step: "02",

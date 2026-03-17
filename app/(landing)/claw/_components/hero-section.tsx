@@ -5,6 +5,8 @@ import {
   contextTraits,
   heroCards,
   inputFormats,
+  KNOWHERE_CLAW_PACKAGE_NAME,
+  KNOWHERE_CLAW_PACKAGE_URL,
 } from "@/app/(landing)/claw/_components/plugin-content";
 
 export function HeroSection() {
@@ -25,9 +27,14 @@ export function HeroSection() {
             <span className="border-2 border-pixel-fg bg-pixel-bg px-3 py-1 font-pixel text-[10px] uppercase tracking-[0.18em] text-pixel-fg">
               OpenClaw Plugin
             </span>
-            <span className="border-2 border-pixel-border bg-pixel-bg px-3 py-1 font-mono text-xs text-pixel-muted">
-              @ontos/knowhere-claw
-            </span>
+            <Link
+              href={KNOWHERE_CLAW_PACKAGE_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="border-2 border-pixel-border bg-pixel-bg px-3 py-1 font-mono text-xs text-pixel-muted underline decoration-current underline-offset-4 transition-colors hover:text-pixel-fg"
+            >
+              {KNOWHERE_CLAW_PACKAGE_NAME}
+            </Link>
           </div>
 
           <h1 className="text-[clamp(2.4rem,13vw,7rem)] font-semibold leading-[0.98] tracking-[-0.035em] text-pixel-fg font-sans sm:leading-[0.95] sm:tracking-[-0.04em]">
