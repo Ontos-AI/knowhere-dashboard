@@ -12,6 +12,8 @@
  * 2. 默认值
  */
 
+import { env } from "@lib/env";
+
 // 配置类型
 export type AppConfigType = {
   companyName: string;
@@ -20,6 +22,7 @@ export type AppConfigType = {
   icpUrl: string;
   copyrightYear: number;
   showIcp: boolean;
+  gaMeasurementId: string;
   // OAuth配置（运行时配置，不带NEXT_PUBLIC_前缀）
   googleClientId: string;
   githubClientId: string;
@@ -39,6 +42,7 @@ export const getDefaultConfig = (): AppConfigType => {
   const simpleCompanyName = getEnv("SIMPLE_COMPANY_NAME", "");
   const icpNumber = getEnv("ICP_NUMBER", "");
   const icpUrl = getEnv("ICP_URL", "https://beian.miit.gov.cn/");
+  const gaMeasurementId = env.GA_MEASUREMENT_ID ?? "";
 
   // OAuth配置（运行时配置，不带NEXT_PUBLIC_前缀）
   const googleClientId = getEnv("GOOGLE_CLIENT_ID", "");
@@ -63,6 +67,9 @@ export const getDefaultConfig = (): AppConfigType => {
 
     // 是否显示ICP备案信息（只有当icpNumber不为空时才显示）
     showIcp: icpNumber.trim() !== "",
+
+    // Analytics配置（运行时配置）
+    gaMeasurementId,
 
     // OAuth配置（运行时配置）
     googleClientId,

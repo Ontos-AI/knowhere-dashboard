@@ -25,6 +25,7 @@ export function useAppConfigContext(): AppConfigType {
       icpUrl: "https://beian.miit.gov.cn/",
       copyrightYear: new Date().getFullYear(),
       showIcp: false,
+      gaMeasurementId: "",
       googleClientId: "",
       githubClientId: "",
       appleClientId: "",
