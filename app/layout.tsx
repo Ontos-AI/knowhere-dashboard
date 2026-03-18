@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Press_Start_2P } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { ThemeProvider } from "@components/theme-provider";
 import { getDefaultConfig } from "@lib/config";
@@ -31,6 +32,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   // 在服务端读取环境变量（运行时配置，不带NEXT_PUBLIC_前缀）
   const appConfig = getDefaultConfig();
+  const gaMeasurementId = appConfig.gaMeasurementId;
 
   // 获取翻译消息
   const messages = await getMessages();
@@ -49,6 +51,22 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </ThemeProvider>
           </ConfigProvider>
         </NextIntlClientProvider>
+        {gaMeasurementId ? (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${gaMeasurementId}');
+              `}
+            </Script>
+          </>
+        ) : null}
       </body>
     </html>
   );
