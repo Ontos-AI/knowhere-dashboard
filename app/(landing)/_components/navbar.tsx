@@ -1,6 +1,6 @@
 "use client";
 
-import { NAV_LINKS, SOCIAL_LINKS } from "@app/(landing)/_lib/constants";
+import { NAV_LINKS } from "@app/(landing)/_lib/constants";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -114,6 +114,8 @@ export const Navbar = ({ customLinks }: NavbarProps = {}) => {
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-4">
+            {/* TODO: Temporarily hide the public GitHub entry until the project is open source. */}
+            {/*
             <Link
               href={SOCIAL_LINKS.github}
               target="_blank"
@@ -122,6 +124,7 @@ export const Navbar = ({ customLinks }: NavbarProps = {}) => {
             >
               GitHub
             </Link>
+            */}
             <PixelButton
               variant="primary"
               style={{
@@ -193,6 +196,8 @@ export const Navbar = ({ customLinks }: NavbarProps = {}) => {
                   </Link>
                 );
               })}
+              {/* TODO: Temporarily hide the public GitHub entry until the project is open source. */}
+              {/*
               <Link
                 href={SOCIAL_LINKS.github}
                 target="_blank"
@@ -202,6 +207,7 @@ export const Navbar = ({ customLinks }: NavbarProps = {}) => {
               >
                 GitHub
               </Link>
+              */}
               <div className="pt-4 border-t-2 border-pixel-border">
                 <PixelButton variant="primary" className="w-full" asChild>
                   <Link href="/login">GET API KEY</Link>

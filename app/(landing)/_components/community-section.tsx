@@ -6,23 +6,24 @@ import { PixelHeading } from "@app/(landing)/_components/pixel/pixel-heading";
 import { PixelIcon } from "@app/(landing)/_components/pixel/pixel-icon";
 import Image from "next/image";
 import Link from "next/link";
-import { SOCIAL_LINKS } from "@/app/(landing)/_lib/constants";
 
 export function CommunitySection() {
   const stats = [
-    { icon: "github" as const, value: "53.6K", label: "GitHub Stars" },
+    // TODO: Temporarily hide GitHub-related stats until the project is open source.
+    // { icon: "github" as const, value: "53.6K", label: "GitHub Stars" },
     { icon: "users" as const, value: "650+", label: "Contributors" },
     { icon: "message" as const, value: "5K+", label: "Discord Members" },
     { icon: "twitter" as const, value: "12K+", label: "Followers" },
   ];
 
   const socialLinks = [
-    {
-      name: "GitHub",
-      iconSrc: "/images/social/github.svg",
-      iconSize: { className: "size-6" },
-      href: SOCIAL_LINKS.github,
-    },
+    // TODO: Temporarily hide GitHub-related social links until the project is open source.
+    // {
+    //   name: "GitHub",
+    //   iconSrc: "/images/social/github.svg",
+    //   iconSize: { className: "size-6" },
+    //   href: SOCIAL_LINKS.github,
+    // },
     {
       name: "Discord",
       iconSrc: "/images/social/discord.svg",
@@ -65,7 +66,8 @@ export function CommunitySection() {
           ))}
         </div>
 
-        {/* GitHub Stats Widget */}
+        {/* TODO: Temporarily hide the GitHub widget until the project is open source. */}
+        {/*
         <div className="max-w-2xl mx-auto mb-12">
           <PixelCard>
             <div className="p-8">
@@ -111,6 +113,7 @@ export function CommunitySection() {
             </div>
           </PixelCard>
         </div>
+        */}
 
         {/* Social Links */}
         <div className="flex flex-wrap items-center justify-center gap-4">

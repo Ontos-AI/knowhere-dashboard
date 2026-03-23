@@ -9,11 +9,12 @@ type MetricItem = {
 };
 
 const metrics: MetricItem[] = [
-  {
-    icon: "star",
-    value: "53K+",
-    label: "GitHub Stars",
-  },
+  // TODO: Temporarily hide GitHub-related trust signals until the project is open source.
+  // {
+  //   icon: "star",
+  //   value: "53K+",
+  //   label: "GitHub Stars",
+  // },
   {
     icon: "database",
     value: "2M+",
