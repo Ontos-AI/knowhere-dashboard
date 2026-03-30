@@ -19,6 +19,8 @@ export default function LandingPage() {
       <Navbar />
       <HeroSection />
       <SupportedFormats />
+      <CodeDemo />
+      <OpenClawPluginSection />
       <ProductComparison />
       <ComparisonTabs />
       {/* <ComparisonCardStack enableAutoPlay={true} /> */}
@@ -27,8 +29,6 @@ export default function LandingPage() {
       {/* <ComparisonSlider enableAutoPlay={true} /> */}
       <EnhancedCapabilities />
       <DataTransformationViz />
-      <CodeDemo />
-      <OpenClawPluginSection />
       <PricingSection />
       <CTASection />
       {/* <CommunitySection /> */}
