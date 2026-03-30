@@ -3,6 +3,7 @@
 import { PixelButton } from "@app/(landing)/_components/pixel/pixel-button";
 import { PixelHeading } from "@app/(landing)/_components/pixel/pixel-heading";
 import { PixelIcon } from "@app/(landing)/_components/pixel/pixel-icon";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 const BRAND_TITLE = `
@@ -142,7 +143,7 @@ const HeroAnnouncementBar = () => {
       <Link
         href="/claw"
         aria-label="View Knowhere OpenClaw setup"
-        className="group relative inline-flex max-w-full overflow-hidden border-2 border-pixel-fg bg-[#f6efe3] text-left shadow-[3px_3px_0_var(--pixel-shadow)] transition-all duration-200 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0_var(--pixel-shadow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pixel-green focus-visible:ring-offset-2 focus-visible:ring-offset-pixel-bg"
+        className="group relative inline-flex max-w-full cursor-pointer overflow-hidden border-2 border-pixel-fg bg-[#f6efe3] text-left shadow-[3px_3px_0_var(--pixel-shadow)] transition-all duration-200 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0_var(--pixel-shadow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pixel-green focus-visible:ring-offset-2 focus-visible:ring-offset-pixel-bg"
       >
         <div className="pointer-events-none absolute inset-0 pixel-grid-bg opacity-15" />
 
@@ -157,6 +158,13 @@ const HeroAnnouncementBar = () => {
               <span className="text-pixel-muted"> with an installable plugin and skill.</span>
             </span>
           </p>
+          <span className="inline-flex items-center border-l-2 border-pixel-border pl-2 font-pixel text-[9px] uppercase tracking-[0.12em] text-pixel-muted transition-all duration-200 group-hover:translate-x-[1px] group-hover:text-pixel-fg">
+            <ArrowRight className="h-3.5 w-3.5 stroke-[2.75] sm:hidden" />
+            <span className="hidden items-center gap-1 sm:inline-flex">
+              <span>Explore</span>
+              <ArrowRight className="size-3 stroke-[2.75]" />
+            </span>
+          </span>
         </div>
       </Link>
     </div>
