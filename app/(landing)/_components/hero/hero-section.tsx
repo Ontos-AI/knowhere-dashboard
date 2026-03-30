@@ -1,9 +1,9 @@
 "use client";
 
+import { PixelButton } from "@app/(landing)/_components/pixel/pixel-button";
+import { PixelHeading } from "@app/(landing)/_components/pixel/pixel-heading";
+import { PixelIcon } from "@app/(landing)/_components/pixel/pixel-icon";
 import Link from "next/link";
-import { PixelButton } from "../pixel/pixel-button";
-import { PixelHeading } from "../pixel/pixel-heading";
-import { PixelIcon } from "../pixel/pixel-icon";
 
 const BRAND_TITLE = `
 ██╗  ██╗███╗   ██╗ ██████╗ ██╗    ██╗██╗  ██╗███████╗██████╗ ███████╗
@@ -27,6 +27,8 @@ export const HeroSection = () => {
           <div className="text-center space-y-12">
             {/* Pixel Art Logo/Title */}
             <div className="space-y-8">
+              <HeroAnnouncementBar />
+
               {/* ASCII Art Header */}
               <div className="flex w-full items-center justify-center overflow-hidden">
                 <pre
@@ -131,5 +133,32 @@ export const HeroSection = () => {
         </div>
       </div>
     </section>
+  );
+};
+
+const HeroAnnouncementBar = () => {
+  return (
+    <div className="mx-auto flex justify-center px-2">
+      <Link
+        href="/claw"
+        aria-label="View Knowhere OpenClaw setup"
+        className="group relative inline-flex max-w-full overflow-hidden border-2 border-pixel-fg bg-[#f6efe3] text-left shadow-[3px_3px_0_var(--pixel-shadow)] transition-all duration-200 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0_var(--pixel-shadow)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pixel-green focus-visible:ring-offset-2 focus-visible:ring-offset-pixel-bg"
+      >
+        <div className="pointer-events-none absolute inset-0 pixel-grid-bg opacity-15" />
+
+        <div className="relative flex items-center justify-center gap-2 whitespace-nowrap px-3 py-1.5 sm:px-4">
+          <span className="inline-flex items-center border-2 border-pixel-fg bg-pixel-green px-2 py-0.5 font-pixel text-[9px] uppercase tracking-[0.14em] text-pixel-bg shadow-[2px_2px_0_rgba(0,0,0,0.12)]">
+            New
+          </span>
+          <p className="font-sans text-[11px] leading-none text-pixel-fg sm:text-sm sm:leading-5">
+            <span className="font-semibold sm:hidden">Now live on 🦞 OpenClaw</span>
+            <span className="hidden sm:inline">
+              <span className="font-semibold">Now live on 🦞 OpenClaw</span>
+              <span className="text-pixel-muted"> with an installable plugin and skill.</span>
+            </span>
+          </p>
+        </div>
+      </Link>
+    </div>
   );
 };
