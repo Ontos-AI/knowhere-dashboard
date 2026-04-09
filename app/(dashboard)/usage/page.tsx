@@ -143,7 +143,7 @@ export default function UsagePage() {
   // Assuming 1 credit = $0.02
   const estimatedCost = totalCost * 0.02;
 
-  const doneJobs = jobs.filter((i) => i.status === "Done");
+  const doneJobs = jobs.filter((i) => i.statusKind === "done");
   const successRate = jobs.length > 0 ? ((doneJobs.length / jobs.length) * 100).toFixed(1) : "0";
 
   const avgDuration =
@@ -196,12 +196,18 @@ export default function UsagePage() {
       item.pages,
       item.duration,
       item.cost,
-      item.status === "Done"
+      item.statusKind === "done"
         ? tTable("statusDone")
-        : item.status === "Failed"
+        : item.statusKind === "failed"
           ? tTable("statusFailed")
-          : tTable("statusRunning"),
-      item.status === "Done" ? item.resultUrl || "" : "",
+          : item.statusKind === "running"
+            ? tTable("statusRunning")
+            : item.statusKind === "pending"
+              ? tTable("statusPending")
+              : item.statusKind === "waiting-file"
+                ? tTable("statusWaitingFile")
+                : item.status,
+      item.statusKind === "done" ? item.resultUrl || "" : "",
     ]);
 
     // Combine headers and rows, applying consistent escaping to all fields

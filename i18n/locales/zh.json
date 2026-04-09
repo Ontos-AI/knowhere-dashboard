@@ -92,6 +92,8 @@
     "statusDone": "完成",
     "statusFailed": "失败",
     "statusRunning": "进行中",
+    "statusPending": "排队中",
+    "statusWaitingFile": "等待上传",
     "modelBase": "基础版",
     "modelAdvanced": "高级版",
     "pts": "积分",

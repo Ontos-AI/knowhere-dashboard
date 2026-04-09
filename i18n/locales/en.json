@@ -92,6 +92,8 @@
     "statusDone": "Done",
     "statusFailed": "Failed",
     "statusRunning": "Running",
+    "statusPending": "Pending",
+    "statusWaitingFile": "Waiting File",
     "modelBase": "Base",
     "modelAdvanced": "Advanced",
     "pts": "pts",

@@ -2,6 +2,7 @@ import { orpcClient, orpcQuery } from "@lib/orpc/client";
 import type { JobResponse } from "@server/external-api/jobs";
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import type { UsageRecord } from "@/app/(dashboard)/usage/_components/usage-table";
+import { getUsageStatusInfo } from "@/app/(dashboard)/usage/_lib/job-status";
 
 type UseJobsParams = {
   page: number;
@@ -110,9 +111,7 @@ export function useExportAllJobs() {
  * Helper function to map job response to usage record
  */
 function mapJobToUsageRecord(job: JobResponse): UsageRecord {
-  let status: UsageRecord["status"] = "Running";
-  if (job.status === "done" || job.status === "succeeded") status = "Done";
-  else if (job.status === "failed" || job.status === "error") status = "Failed";
+  const statusInfo = getUsageStatusInfo(job.status);
 
   let fileType = job.file_extension || job.source_type?.toUpperCase() || "UNKNOWN";
   if (!job.file_extension && (fileType === "FILE" || fileType === "URL")) {
@@ -136,7 +135,8 @@ function mapJobToUsageRecord(job: JobResponse): UsageRecord {
     model: job.model || (job.result_metadata?.model as string | undefined) || "-",
     pages: (job.result_metadata?.pages as number | undefined) || 0,
     ocr: job.ocr_enabled ?? (job.result_metadata?.ocr as boolean | undefined) ?? false,
-    status: status,
+    status: statusInfo.label,
+    statusKind: statusInfo.kind,
     duration: job.duration_seconds
       ? `${job.duration_seconds.toFixed(2)}s`
       : (job.result_metadata?.duration as string | undefined) || "-",
