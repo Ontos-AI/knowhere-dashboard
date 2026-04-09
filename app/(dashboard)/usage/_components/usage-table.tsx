@@ -33,6 +33,7 @@ import {
 import { ArrowUpDown, CheckCircle, Clock, Download, FileText, XCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import * as React from "react";
+import type { UsageStatusKind } from "@/app/(dashboard)/usage/_lib/job-status";
 
 export type UsageRecord = {
   id: string;
@@ -43,7 +44,8 @@ export type UsageRecord = {
   model: string;
   pages: number;
   ocr: boolean;
-  status: "Done" | "Failed" | "Running";
+  status: string;
+  statusKind: UsageStatusKind;
   duration: string;
   cost: number;
   apiKey: string;
@@ -204,17 +206,23 @@ export function UsageTable({
         header: t("status"),
         cell: ({ row }) => {
           const status = row.getValue("status") as string;
+          const statusKind = row.original.statusKind;
           let statusText = status;
-          if (status === "Done") statusText = t("statusDone");
-          if (status === "Failed") statusText = t("statusFailed");
-          if (status === "Running") statusText = t("statusRunning");
+          if (statusKind === "done") statusText = t("statusDone");
+          if (statusKind === "failed") statusText = t("statusFailed");
+          if (statusKind === "running") statusText = t("statusRunning");
+          if (statusKind === "pending") statusText = t("statusPending");
+          if (statusKind === "waiting-file") statusText = t("statusWaitingFile");
 
           return (
             <div className="flex items-center gap-2">
-              {status === "Done" && <CheckCircle className="h-4 w-4 text-amber-600" />}
-              {status === "Failed" && <XCircle className="h-4 w-4 text-rose-600" />}
-              {status === "Running" && <Clock className="h-4 w-4 text-primary animate-spin" />}
-              <span className={status === "Failed" ? "text-rose-700" : ""}>{statusText}</span>
+              {statusKind === "done" && <CheckCircle className="h-4 w-4 text-amber-600" />}
+              {statusKind === "failed" && <XCircle className="h-4 w-4 text-rose-600" />}
+              {statusKind === "running" && <Clock className="h-4 w-4 text-primary animate-spin" />}
+              {(statusKind === "pending" || statusKind === "waiting-file") && (
+                <Clock className="h-4 w-4 text-muted-foreground" />
+              )}
+              <span className={statusKind === "failed" ? "text-rose-700" : ""}>{statusText}</span>
             </div>
           );
         },
@@ -231,8 +239,9 @@ export function UsageTable({
         header: t("cost"),
         cell: ({ row }) => {
           const amount = Number.parseFloat(row.getValue("cost"));
-          const status = row.original.status;
-          if (status !== "Done") return <div className="text-xs text-muted-foreground">-</div>;
+          if (row.original.statusKind !== "done") {
+            return <div className="text-xs text-muted-foreground">-</div>;
+          }
 
           return (
             <div className="text-xs font-medium">
@@ -247,7 +256,7 @@ export function UsageTable({
         cell: ({ row }) => {
           const record = row.original;
 
-          if (record.status !== "Done") return null;
+          if (record.statusKind !== "done") return null;
 
           return (
             <Button
