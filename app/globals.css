@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    /* Pixel Art Theme Colors */
+    /* Legacy landing page tokens */
     --pixel-bg: #fafafa;
     --pixel-fg: #0a0a0a;
     --pixel-border: #d4d4d4;
@@ -13,12 +13,6 @@
     --pixel-accent-green: #22c55e;
     --pixel-accent-yellow: #eab308;
     --pixel-accent-red: #ef4444;
-
-    /* Pixel Fonts */
-    --font-pixel-primary:
-      "Press Start 2P", "Courier New", monospace; /* Will be overridden by Next.js font optimization */
-    --font-mono: "JetBrains Mono", "Courier New", monospace;
-    --font-sans: "IBM Plex Sans", system-ui, sans-serif;
 
     /* Pixel Font Sizes */
     --text-pixel-xs: 8px;
@@ -46,89 +40,77 @@
     --space-6: 48px;
     --space-8: 64px;
 
-    /* Light mode (fallback - we primarily use dark mode) */
-    --background: 0 0% 100%;
-    --foreground: 220 18% 8%;
-    --card: 0 0% 98%;
-    --card-foreground: 220 18% 8%;
-    --popover: 30 20% 98%;
-    --popover-foreground: 220 18% 8%;
-    --primary: 200 100% 45%;
-    --primary-light: 200 100% 55%;
-    --primary-dark: 200 100% 35%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 220 15% 90%;
-    --secondary-foreground: 220 18% 8%;
-    --muted: 220 15% 95%;
-    --muted-foreground: 0 0% 50%;
-    --accent: 160 100% 45%;
-    --accent-light: 160 100% 55%;
-    --accent-dark: 160 100% 35%;
-    --accent-foreground: 0 0% 98%;
+    /* Shared application theme aligned with the Figma system scale */
+    --background: 210 40% 98%;
+    --background-secondary: 210 40% 96.1%;
+    --background-tertiary: 214 32% 91%;
+    --foreground: 222.2 47.4% 11.2%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 47.4% 11.2%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-light: 217.2 91.2% 59.8%;
+    --primary-dark: 224.3 76.3% 48%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-light: 210 40% 98%;
+    --accent-dark: 214 32% 91%;
+    --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 220 15% 85%;
-    --input: 220 15% 90%;
-    --ring: 200 100% 45%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 220 18% 8%;
-    --sidebar-primary: 200 100% 45%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 220 15% 95%;
-    --sidebar-accent-foreground: 220 18% 8%;
-    --sidebar-border: 220 15% 90%;
-    --sidebar-ring: 200 100% 45%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222.2 47.4% 11.2%;
+    --sidebar-primary: 221.2 83.2% 53.3%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 210 40% 96.1%;
+    --sidebar-accent-foreground: 222.2 47.4% 11.2%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 221.2 83.2% 53.3%;
   }
 
   .dark {
-    /* Modern Tech Dark Theme - Balanced & Professional */
-    --background: 220 20% 6%; /* Deep blue-grey #0D0F14 */
-    --background-secondary: 220 20% 9%;
-    --background-tertiary: 220 20% 12%;
-    --foreground: 0 0% 95%; /* High contrast white #F2F2F2 */
-    --card: 220 18% 10%; /* Card backgrounds */
-    --card-foreground: 0 0% 95%;
-    --popover: 220 18% 10%;
-    --popover-foreground: 0 0% 95%;
-
-    /* Electric Blue Primary - Tech/HUD feeling */
-    --primary: 200 85% 55%; /* Bright Blue #26B9ED */
-    --primary-light: 200 85% 65%;
-    --primary-dark: 200 85% 45%;
-    --primary-foreground: 220 20% 6%;
-
-    /* Teal Green for secondary elements */
-    --secondary: 160 75% 50%; /* Vibrant Teal #20D9A6 */
-    --secondary-foreground: 220 20% 6%;
-
-    /* High contrast muted text */
-    --muted: 220 15% 20%;
-    --muted-foreground: 0 0% 70%; /* #B3B3B3 */
-
-    /* Purple Accent for highlights */
-    --accent: 270 65% 60%; /* Vibrant Purple #9966FF */
-    --accent-light: 270 65% 70%;
-    --accent-dark: 270 65% 50%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 80% 60%; /* Bright red */
-    --destructive-foreground: 0 0% 100%;
-
-    /* Borders with subtle glow */
-    --border: 220 15% 18%;
-    --input: 220 18% 10%;
-    --ring: 200 85% 55%;
-
-    /* Sidebar */
-    --sidebar-background: 220 20% 6%;
-    --sidebar-foreground: 0 0% 95%;
-    --sidebar-primary: 200 85% 55%;
-    --sidebar-primary-foreground: 220 20% 6%;
-    --sidebar-accent: 220 15% 15%;
-    --sidebar-accent-foreground: 0 0% 95%;
-    --sidebar-border: 220 15% 18%;
-    --sidebar-ring: 200 85% 55%;
+    --background: 222.2 47.4% 11.2%;
+    --background-secondary: 217.2 32.6% 17.5%;
+    --background-tertiary: 215.3 25% 26.7%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 47.4% 11.2%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 47.4% 11.2%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-light: 213.1 93.9% 67.8%;
+    --primary-dark: 221.2 83.2% 53.3%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-light: 215.3 25% 26.7%;
+    --accent-dark: 222.2 47.4% 11.2%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 72.2% 50.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 215.3 19.3% 34.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 222.2 47.4% 11.2%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 217.2 91.2% 59.8%;
+    --sidebar-primary-foreground: 222.2 47.4% 11.2%;
+    --sidebar-accent: 217.2 32.6% 17.5%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 215.3 19.3% 34.5%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .landing-tone,
@@ -215,7 +197,7 @@
     @apply overflow-x-hidden;
   }
   body {
-    @apply bg-background text-foreground overflow-x-hidden;
+    @apply bg-background text-foreground overflow-x-hidden font-sans antialiased;
   }
 }
 
@@ -398,6 +380,18 @@
     @apply bg-clip-text text-transparent bg-gradient-to-r;
   }
 
+  .inset-shadow-2xs {
+    box-shadow: inset 0 1px 0 0 rgb(0 0 0 / 0.05);
+  }
+
+  .inset-shadow-xs {
+    box-shadow: inset 0 1px 1px 0 rgb(0 0 0 / 0.05);
+  }
+
+  .inset-shadow-sm {
+    box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+  }
+
   /* Cyber gradient backgrounds - Updated */
   .cyber-gradient {
     background: linear-gradient(
@@ -489,7 +483,7 @@
 
   /* Pixel Button Styles - Brutalist Style */
   .pixel-btn {
-    font-family: var(--font-pixel-primary);
+    font-family: var(--font-pixel-primary, "Press Start 2P"), "Courier New", monospace;
     font-size: var(--text-pixel-sm);
     padding: 12px 24px;
     border: 3px solid var(--pixel-fg);
@@ -560,7 +554,7 @@
 
   /* Pixel Menu Button - Original Style (for navbar hamburger menu) */
   .pixel-menu-btn {
-    font-family: var(--font-pixel-primary);
+    font-family: var(--font-pixel-primary, "Press Start 2P"), "Courier New", monospace;
     padding: 0.25rem 0.75rem; /* py-2 px-3 */
     background: transparent;
     color: var(--pixel-fg);
@@ -709,7 +703,7 @@
 
   /* Pixel Text Styles */
   .pixel-text {
-    font-family: var(--font-pixel-primary);
+    font-family: var(--font-pixel-primary, "Press Start 2P"), "Courier New", monospace;
     line-height: 1.6;
     image-rendering: pixelated;
     color: var(--pixel-fg);

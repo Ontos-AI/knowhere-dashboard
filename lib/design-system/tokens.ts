@@ -1,0 +1,260 @@
+export type ScaleToken = {
+  label: string;
+  utility: string;
+  value: string;
+};
+
+export const COLOR_FAMILIES = [
+  "slate",
+  "gray",
+  "zinc",
+  "neutral",
+  "stone",
+  "red",
+  "orange",
+  "amber",
+  "yellow",
+  "lime",
+  "green",
+  "emerald",
+  "teal",
+  "cyan",
+  "sky",
+  "blue",
+  "indigo",
+  "violet",
+  "purple",
+  "fuchsia",
+  "pink",
+  "rose",
+] as const;
+
+export const FONT_WEIGHT_TOKENS: ScaleToken[] = [
+  { label: "Thin", utility: "font-thin", value: "100" },
+  { label: "Extra Light", utility: "font-extralight", value: "200" },
+  { label: "Light", utility: "font-light", value: "300" },
+  { label: "Regular", utility: "font-normal", value: "400" },
+  { label: "Medium", utility: "font-medium", value: "500" },
+  { label: "Semi Bold", utility: "font-semibold", value: "600" },
+  { label: "Bold", utility: "font-bold", value: "700" },
+  { label: "Extra Bold", utility: "font-extrabold", value: "800" },
+  { label: "Black", utility: "font-black", value: "900" },
+];
+
+export const TYPOGRAPHY_TOKENS: ScaleToken[] = [
+  { label: "XS", utility: "text-xs", value: "0.75rem / 1rem" },
+  { label: "SM", utility: "text-sm", value: "0.875rem / 1.25rem" },
+  { label: "Base", utility: "text-base", value: "1rem / 1.5rem" },
+  { label: "LG", utility: "text-lg", value: "1.125rem / 1.75rem" },
+  { label: "XL", utility: "text-xl", value: "1.25rem / 1.75rem" },
+  { label: "2XL", utility: "text-2xl", value: "1.5rem / 2rem" },
+  { label: "3XL", utility: "text-3xl", value: "1.875rem / 2.25rem" },
+  { label: "4XL", utility: "text-4xl", value: "2.25rem / 2.5rem" },
+  { label: "5XL", utility: "text-5xl", value: "3rem / 1" },
+  { label: "6XL", utility: "text-6xl", value: "3.75rem / 1" },
+  { label: "7XL", utility: "text-7xl", value: "4.5rem / 1" },
+  { label: "8XL", utility: "text-8xl", value: "6rem / 1" },
+  { label: "9XL", utility: "text-9xl", value: "8rem / 1" },
+];
+
+export const SPACING_TOKENS: ScaleToken[] = [
+  { label: "0", utility: "0", value: "0px" },
+  { label: "px", utility: "px", value: "1px" },
+  { label: "0.5", utility: "0.5", value: "0.125rem / 2px" },
+  { label: "1", utility: "1", value: "0.25rem / 4px" },
+  { label: "1.5", utility: "1.5", value: "0.375rem / 6px" },
+  { label: "2", utility: "2", value: "0.5rem / 8px" },
+  { label: "2.5", utility: "2.5", value: "0.625rem / 10px" },
+  { label: "3", utility: "3", value: "0.75rem / 12px" },
+  { label: "3.5", utility: "3.5", value: "0.875rem / 14px" },
+  { label: "4", utility: "4", value: "1rem / 16px" },
+  { label: "5", utility: "5", value: "1.25rem / 20px" },
+  { label: "6", utility: "6", value: "1.5rem / 24px" },
+  { label: "7", utility: "7", value: "1.75rem / 28px" },
+  { label: "8", utility: "8", value: "2rem / 32px" },
+  { label: "9", utility: "9", value: "2.25rem / 36px" },
+  { label: "10", utility: "10", value: "2.5rem / 40px" },
+  { label: "11", utility: "11", value: "2.75rem / 44px" },
+  { label: "12", utility: "12", value: "3rem / 48px" },
+  { label: "14", utility: "14", value: "3.5rem / 56px" },
+  { label: "16", utility: "16", value: "4rem / 64px" },
+  { label: "20", utility: "20", value: "5rem / 80px" },
+  { label: "24", utility: "24", value: "6rem / 96px" },
+  { label: "28", utility: "28", value: "7rem / 112px" },
+  { label: "32", utility: "32", value: "8rem / 128px" },
+  { label: "36", utility: "36", value: "9rem / 144px" },
+  { label: "40", utility: "40", value: "10rem / 160px" },
+  { label: "44", utility: "44", value: "11rem / 176px" },
+  { label: "48", utility: "48", value: "12rem / 192px" },
+  { label: "52", utility: "52", value: "13rem / 208px" },
+  { label: "56", utility: "56", value: "14rem / 224px" },
+  { label: "60", utility: "60", value: "15rem / 240px" },
+  { label: "64", utility: "64", value: "16rem / 256px" },
+  { label: "72", utility: "72", value: "18rem / 288px" },
+  { label: "80", utility: "80", value: "20rem / 320px" },
+  { label: "96", utility: "96", value: "24rem / 384px" },
+];
+
+export const RADIUS_TOKENS: ScaleToken[] = [
+  { label: "None", utility: "rounded-none", value: "0px" },
+  { label: "XS", utility: "rounded-xs", value: "2px" },
+  { label: "SM", utility: "rounded-sm", value: "4px" },
+  { label: "MD", utility: "rounded-md", value: "6px" },
+  { label: "LG", utility: "rounded-lg", value: "8px" },
+  { label: "XL", utility: "rounded-xl", value: "12px" },
+  { label: "2XL", utility: "rounded-2xl", value: "16px" },
+  { label: "3XL", utility: "rounded-3xl", value: "24px" },
+  { label: "4XL", utility: "rounded-4xl", value: "32px" },
+  { label: "Full", utility: "rounded-full", value: "9999px" },
+];
+
+export const SHADOW_TOKENS: ScaleToken[] = [
+  { label: "None", utility: "shadow-none", value: "0 0 0 0 transparent" },
+  { label: "2XS", utility: "shadow-2xs", value: "0 1px 0 0 rgb(0 0 0 / 0.05)" },
+  { label: "XS", utility: "shadow-xs", value: "0 1px 2px 0 rgb(0 0 0 / 0.05)" },
+  {
+    label: "SM",
+    utility: "shadow-sm",
+    value: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px 0 rgb(0 0 0 / 0.06)",
+  },
+  {
+    label: "MD",
+    utility: "shadow-md",
+    value: "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06)",
+  },
+  {
+    label: "LG",
+    utility: "shadow-lg",
+    value: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05)",
+  },
+  {
+    label: "XL",
+    utility: "shadow-xl",
+    value: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04)",
+  },
+  { label: "2XL", utility: "shadow-2xl", value: "0 25px 50px -12px rgb(0 0 0 / 0.25)" },
+];
+
+export const INSET_SHADOW_TOKENS: ScaleToken[] = [
+  {
+    label: "2XS",
+    utility: "inset-shadow-2xs",
+    value: "inset 0 1px 0 0 rgb(0 0 0 / 0.05)",
+  },
+  {
+    label: "XS",
+    utility: "inset-shadow-xs",
+    value: "inset 0 1px 1px 0 rgb(0 0 0 / 0.05)",
+  },
+  {
+    label: "SM",
+    utility: "inset-shadow-sm",
+    value: "inset 0 2px 4px 0 rgb(0 0 0 / 0.05)",
+  },
+];
+
+export const BLUR_TOKENS: ScaleToken[] = [
+  { label: "None", utility: "blur-none", value: "0px" },
+  { label: "XS", utility: "blur-xs", value: "2px" },
+  { label: "SM", utility: "blur-sm", value: "4px" },
+  { label: "MD", utility: "blur-md", value: "6px" },
+  { label: "LG", utility: "blur-lg", value: "8px" },
+  { label: "XL", utility: "blur-xl", value: "12px" },
+  { label: "2XL", utility: "blur-2xl", value: "20px" },
+  { label: "3XL", utility: "blur-3xl", value: "32px" },
+];
+
+export const BACKDROP_BLUR_TOKENS: ScaleToken[] = [
+  { label: "None", utility: "backdrop-blur-none", value: "0px" },
+  { label: "XS", utility: "backdrop-blur-xs", value: "2px" },
+  { label: "SM", utility: "backdrop-blur-sm", value: "4px" },
+  { label: "MD", utility: "backdrop-blur-md", value: "6px" },
+  { label: "LG", utility: "backdrop-blur-lg", value: "8px" },
+  { label: "XL", utility: "backdrop-blur-xl", value: "12px" },
+  { label: "2XL", utility: "backdrop-blur-2xl", value: "20px" },
+  { label: "3XL", utility: "backdrop-blur-3xl", value: "32px" },
+];
+
+export const OPACITY_TOKENS: ScaleToken[] = [
+  { label: "0", utility: "opacity-0", value: "0" },
+  { label: "5", utility: "opacity-5", value: "0.05" },
+  { label: "10", utility: "opacity-10", value: "0.1" },
+  { label: "15", utility: "opacity-15", value: "0.15" },
+  { label: "20", utility: "opacity-20", value: "0.2" },
+  { label: "25", utility: "opacity-25", value: "0.25" },
+  { label: "30", utility: "opacity-30", value: "0.3" },
+  { label: "35", utility: "opacity-35", value: "0.35" },
+  { label: "40", utility: "opacity-40", value: "0.4" },
+  { label: "45", utility: "opacity-45", value: "0.45" },
+  { label: "50", utility: "opacity-50", value: "0.5" },
+  { label: "55", utility: "opacity-55", value: "0.55" },
+  { label: "60", utility: "opacity-60", value: "0.6" },
+  { label: "65", utility: "opacity-65", value: "0.65" },
+  { label: "70", utility: "opacity-70", value: "0.7" },
+  { label: "75", utility: "opacity-75", value: "0.75" },
+  { label: "80", utility: "opacity-80", value: "0.8" },
+  { label: "85", utility: "opacity-85", value: "0.85" },
+  { label: "90", utility: "opacity-90", value: "0.9" },
+  { label: "95", utility: "opacity-95", value: "0.95" },
+  { label: "100", utility: "opacity-100", value: "1" },
+];
+
+export const BREAKPOINT_TOKENS: ScaleToken[] = [
+  { label: "SM", utility: "sm:", value: "640px" },
+  { label: "MD", utility: "md:", value: "768px" },
+  { label: "LG", utility: "lg:", value: "1024px" },
+  { label: "XL", utility: "xl:", value: "1280px" },
+  { label: "2XL", utility: "2xl:", value: "1536px" },
+];
+
+export const MAX_WIDTH_TOKENS: ScaleToken[] = [
+  { label: "XS", utility: "max-w-xs", value: "20rem / 320px" },
+  { label: "SM", utility: "max-w-sm", value: "24rem / 384px" },
+  { label: "MD", utility: "max-w-md", value: "28rem / 448px" },
+  { label: "LG", utility: "max-w-lg", value: "32rem / 512px" },
+  { label: "XL", utility: "max-w-xl", value: "36rem / 576px" },
+  { label: "2XL", utility: "max-w-2xl", value: "42rem / 672px" },
+  { label: "3XL", utility: "max-w-3xl", value: "48rem / 768px" },
+  { label: "4XL", utility: "max-w-4xl", value: "56rem / 896px" },
+  { label: "5XL", utility: "max-w-5xl", value: "64rem / 1024px" },
+  { label: "6XL", utility: "max-w-6xl", value: "72rem / 1152px" },
+  { label: "7XL", utility: "max-w-7xl", value: "80rem / 1280px" },
+];
+
+export const CURSOR_TOKENS: ScaleToken[] = [
+  { label: "Auto", utility: "cursor-auto", value: "auto" },
+  { label: "Default", utility: "cursor-default", value: "default" },
+  { label: "Pointer", utility: "cursor-pointer", value: "pointer" },
+  { label: "Wait", utility: "cursor-wait", value: "wait" },
+  { label: "Text", utility: "cursor-text", value: "text" },
+  { label: "Move", utility: "cursor-move", value: "move" },
+  { label: "Help", utility: "cursor-help", value: "help" },
+  { label: "Context Menu", utility: "cursor-context-menu", value: "context-menu" },
+  { label: "Progress", utility: "cursor-progress", value: "progress" },
+  { label: "Cell", utility: "cursor-cell", value: "cell" },
+  { label: "Crosshair", utility: "cursor-crosshair", value: "crosshair" },
+  { label: "Vertical Text", utility: "cursor-vertical-text", value: "vertical-text" },
+  { label: "Alias", utility: "cursor-alias", value: "alias" },
+  { label: "Copy", utility: "cursor-copy", value: "copy" },
+  { label: "No Drop", utility: "cursor-no-drop", value: "no-drop" },
+  { label: "Not Allowed", utility: "cursor-not-allowed", value: "not-allowed" },
+  { label: "Grab", utility: "cursor-grab", value: "grab" },
+  { label: "Grabbing", utility: "cursor-grabbing", value: "grabbing" },
+  { label: "All Scroll", utility: "cursor-all-scroll", value: "all-scroll" },
+  { label: "Column Resize", utility: "cursor-col-resize", value: "col-resize" },
+  { label: "Row Resize", utility: "cursor-row-resize", value: "row-resize" },
+  { label: "North Resize", utility: "cursor-n-resize", value: "n-resize" },
+  { label: "East Resize", utility: "cursor-e-resize", value: "e-resize" },
+  { label: "South Resize", utility: "cursor-s-resize", value: "s-resize" },
+  { label: "West Resize", utility: "cursor-w-resize", value: "w-resize" },
+  { label: "North East", utility: "cursor-ne-resize", value: "ne-resize" },
+  { label: "North West", utility: "cursor-nw-resize", value: "nw-resize" },
+  { label: "South East", utility: "cursor-se-resize", value: "se-resize" },
+  { label: "South West", utility: "cursor-sw-resize", value: "sw-resize" },
+  { label: "East West", utility: "cursor-ew-resize", value: "ew-resize" },
+  { label: "North South", utility: "cursor-ns-resize", value: "ns-resize" },
+  { label: "North East South West", utility: "cursor-nesw-resize", value: "nesw-resize" },
+  { label: "North West South East", utility: "cursor-nwse-resize", value: "nwse-resize" },
+  { label: "Zoom In", utility: "cursor-zoom-in", value: "zoom-in" },
+  { label: "Zoom Out", utility: "cursor-zoom-out", value: "zoom-out" },
+];

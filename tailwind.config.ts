@@ -8,13 +8,19 @@ const config: Config = {
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-  	extend: {
-  		fontFamily: {
-  			sans: ['IBM Plex Sans', 'system-ui', 'sans-serif'],
-  			mono: ['JetBrains Mono', 'monospace'],
-  			heading: ['JetBrains Mono', 'monospace'],
-  			pixel: ['Press Start 2P', 'Courier New', 'monospace']
-  		},
+	extend: {
+			screens: {
+				xs: '375px'
+			},
+			fontFamily: {
+				sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+				mono: ['var(--font-mono)', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+				'mono-display': ['var(--font-mono-display)', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+				'mono-readable': ['var(--font-mono-readable)', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+				accent: ['var(--font-accent)', 'system-ui', 'sans-serif'],
+				heading: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+				pixel: ['var(--font-pixel-primary)', 'Courier New', 'monospace']
+			},
   		colors: {
   			border: 'hsl(var(--border))',
   			input: 'hsl(var(--input))',
@@ -74,11 +80,70 @@ const config: Config = {
   				red: 'var(--pixel-accent-red)'
   			}
   		},
-  		borderRadius: {
-  			lg: 'var(--radius)',
-  			md: 'calc(var(--radius) - 2px)',
-  			sm: 'calc(var(--radius) - 4px)'
-  		},
+		borderRadius: {
+			xs: '2px',
+			sm: '4px',
+			md: '6px',
+			lg: '8px',
+			xl: '12px',
+			'2xl': '16px',
+			'3xl': '24px',
+			'4xl': '32px',
+			full: '9999px'
+		},
+		boxShadow: {
+			'2xs': '0 1px 0 0 rgb(0 0 0 / 0.05)',
+			xs: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+			sm: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px 0 rgb(0 0 0 / 0.06)',
+			DEFAULT: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px 0 rgb(0 0 0 / 0.06)',
+			md: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06)',
+			lg: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05)',
+			xl: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04)',
+			'2xl': '0 25px 50px -12px rgb(0 0 0 / 0.25)'
+		},
+		blur: {
+			none: '0px',
+			xs: '2px',
+			sm: '4px',
+			md: '6px',
+			lg: '8px',
+			xl: '12px',
+			'2xl': '20px',
+			'3xl': '32px'
+		},
+		backdropBlur: {
+			none: '0px',
+			xs: '2px',
+			sm: '4px',
+			md: '6px',
+			lg: '8px',
+			xl: '12px',
+			'2xl': '20px',
+			'3xl': '32px'
+		},
+		opacity: {
+			0: '0',
+			5: '0.05',
+			10: '0.1',
+			15: '0.15',
+			20: '0.2',
+			25: '0.25',
+			30: '0.3',
+			35: '0.35',
+			40: '0.4',
+			45: '0.45',
+			50: '0.5',
+			55: '0.55',
+			60: '0.6',
+			65: '0.65',
+			70: '0.7',
+			75: '0.75',
+			80: '0.8',
+			85: '0.85',
+			90: '0.9',
+			95: '0.95',
+			100: '1'
+		},
   		spacing: {
   			'pixel-1': 'var(--space-1)',
   			'pixel-2': 'var(--space-2)',

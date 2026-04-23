@@ -1,5 +1,13 @@
 import type { Metadata } from "next";
-import { Inter, Press_Start_2P } from "next/font/google";
+import {
+  Anuphan,
+  Atkinson_Hyperlegible_Mono,
+  Azeret_Mono,
+  Inter,
+  JetBrains_Mono,
+  Press_Start_2P,
+  Ysabeau,
+} from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { ThemeProvider } from "@components/theme-provider";
@@ -10,11 +18,40 @@ import { Providers } from "@providers/providers";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-sans",
+});
+const jetBrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-mono",
+});
+const azeretMono = Azeret_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-mono-display",
+});
+const atkinsonHyperlegibleMono = Atkinson_Hyperlegible_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-mono-readable",
+});
+const anuphan = Anuphan({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-accent",
+});
+const ysabeau = Ysabeau({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-brand",
+});
 const pressStart2P = Press_Start_2P({
   weight: "400",
   subsets: ["latin"],
-  display: "block",
+  display: "swap",
   variable: "--font-pixel-primary",
 });
 
@@ -38,8 +75,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const messages = await getMessages();
 
   return (
-    <html lang={locale} suppressHydrationWarning className={pressStart2P.variable}>
-      <body className={inter.className}>
+    <html
+      lang={locale}
+      suppressHydrationWarning
+      className={`${inter.variable} ${jetBrainsMono.variable} ${azeretMono.variable} ${atkinsonHyperlegibleMono.variable} ${anuphan.variable} ${ysabeau.variable} ${pressStart2P.variable}`}
+    >
+      <body className="font-sans antialiased">
         <NextIntlClientProvider messages={messages} locale={locale}>
           <ConfigProvider config={appConfig}>
             <ThemeProvider attribute="class" enableSystem={true} disableTransitionOnChange>
