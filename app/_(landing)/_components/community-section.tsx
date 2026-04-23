@@ -1,9 +1,9 @@
 "use client";
 
-import { PixelButton } from "@app/(landing)/_components/pixel/pixel-button";
-import { PixelCard } from "@app/(landing)/_components/pixel/pixel-card";
-import { PixelHeading } from "@app/(landing)/_components/pixel/pixel-heading";
-import { PixelIcon } from "@app/(landing)/_components/pixel/pixel-icon";
+import { PixelButton } from "@app/_(landing)/_components/pixel/pixel-button";
+import { PixelCard } from "@app/_(landing)/_components/pixel/pixel-card";
+import { PixelHeading } from "@app/_(landing)/_components/pixel/pixel-heading";
+import { PixelIcon } from "@app/_(landing)/_components/pixel/pixel-icon";
 import Image from "next/image";
 import Link from "next/link";
 

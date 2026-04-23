@@ -1,7 +1,7 @@
 import Image from "next/image";
-import type { ChatMessage } from "@/app/(landing)/claw/_components/plugin-content";
-import { chatMessages } from "@/app/(landing)/claw/_components/plugin-content";
-import { SectionIntro } from "@/app/(landing)/claw/_components/section-intro";
+import type { ChatMessage } from "@/app/_(landing)/claw/_components/plugin-content";
+import { chatMessages } from "@/app/_(landing)/claw/_components/plugin-content";
+import { SectionIntro } from "@/app/_(landing)/claw/_components/section-intro";
 
 export function WorkflowSection() {
   return (

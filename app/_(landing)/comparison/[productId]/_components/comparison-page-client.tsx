@@ -8,9 +8,9 @@ import Link from "next/link";
 import { parseAsStringLiteral, useQueryState } from "nuqs";
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { HTMLShowcaseViewer } from "@/app/(landing)/_components/comparison-variants/html-showcase-viewer";
-import { allProducts } from "@/app/(landing)/_data/product-advantages";
-import type { CompetitorProductId, ProductId } from "@/app/(landing)/_types/comparison";
+import { HTMLShowcaseViewer } from "@/app/_(landing)/_components/comparison-variants/html-showcase-viewer";
+import { allProducts } from "@/app/_(landing)/_data/product-advantages";
+import type { CompetitorProductId, ProductId } from "@/app/_(landing)/_types/comparison";
 
 type ComparisonPageClientProps = {
   productId: ProductId;

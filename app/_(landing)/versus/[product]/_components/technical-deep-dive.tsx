@@ -1,8 +1,8 @@
 "use client";
 
-import { PixelCard } from "@/app/(landing)/_components/pixel/pixel-card";
-import { PixelHeading } from "@/app/(landing)/_components/pixel/pixel-heading";
-import type { VersusPageData } from "@/app/(landing)/_data/versus-pages";
+import { PixelCard } from "@/app/_(landing)/_components/pixel/pixel-card";
+import { PixelHeading } from "@/app/_(landing)/_components/pixel/pixel-heading";
+import type { VersusPageData } from "@/app/_(landing)/_data/versus-pages";
 
 type TechnicalDeepDiveProps = {
   data: NonNullable<VersusPageData["technicalDeepDive"]>;

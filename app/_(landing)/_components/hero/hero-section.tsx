@@ -1,8 +1,8 @@
 "use client";
 
-import { PixelButton } from "@app/(landing)/_components/pixel/pixel-button";
-import { PixelHeading } from "@app/(landing)/_components/pixel/pixel-heading";
-import { PixelIcon } from "@app/(landing)/_components/pixel/pixel-icon";
+import { PixelButton } from "@app/_(landing)/_components/pixel/pixel-button";
+import { PixelHeading } from "@app/_(landing)/_components/pixel/pixel-heading";
+import { PixelIcon } from "@app/_(landing)/_components/pixel/pixel-icon";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 

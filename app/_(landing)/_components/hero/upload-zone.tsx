@@ -1,6 +1,6 @@
 "use client";
 
-import { FILE_TYPES } from "@app/(landing)/_lib/constants";
+import { FILE_TYPES } from "@app/_(landing)/_lib/constants";
 import { Button } from "@components/ui/button";
 import { motion } from "framer-motion";
 import { CheckCircle2, FileText, Sparkles, Upload } from "lucide-react";

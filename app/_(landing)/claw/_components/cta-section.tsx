@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ctaOutcomes } from "@/app/(landing)/claw/_components/plugin-content";
+import { ctaOutcomes } from "@/app/_(landing)/claw/_components/plugin-content";
 
 export function CTASection() {
   return (

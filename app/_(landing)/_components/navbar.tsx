@@ -1,6 +1,6 @@
 "use client";
 
-import { NAV_LINKS } from "@app/(landing)/_lib/constants";
+import { NAV_LINKS } from "@app/_(landing)/_lib/constants";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";

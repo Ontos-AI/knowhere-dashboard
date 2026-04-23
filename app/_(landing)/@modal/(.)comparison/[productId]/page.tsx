@@ -8,10 +8,10 @@ import { useParams, useRouter } from "next/navigation";
 import { parseAsStringLiteral, useQueryState } from "nuqs";
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { HTMLShowcaseViewer } from "@/app/(landing)/_components/comparison-variants/html-showcase-viewer";
-import { allProducts } from "@/app/(landing)/_data/product-advantages";
-import type { CompetitorProductId } from "@/app/(landing)/_types/comparison";
-import { isValidProductId } from "@/app/(landing)/_types/comparison";
+import { HTMLShowcaseViewer } from "@/app/_(landing)/_components/comparison-variants/html-showcase-viewer";
+import { allProducts } from "@/app/_(landing)/_data/product-advantages";
+import type { CompetitorProductId, ProductAdvantage } from "@/app/_(landing)/_types/comparison";
+import { isValidProductId } from "@/app/_(landing)/_types/comparison";
 
 // Tab parser for nuqs
 const tabParser = parseAsStringLiteral(["knowhere", "unstructured", "markitdown"] as const);
@@ -42,7 +42,9 @@ export default function ComparisonModal() {
   }, [isValid, router]);
 
   // Get current product data based on active tab
-  const currentProduct = allProducts.find((p) => p.id === activeTab);
+  const currentProduct = allProducts.find(
+    (product): product is ProductAdvantage => product.id === activeTab
+  );
 
   // Close modal - use router.back() for intercepted routes
   const handleClose = useCallback(
@@ -67,7 +69,9 @@ export default function ComparisonModal() {
 
   // Type-safe tab change handler
   const handleTabChange = (value: string) => {
-    const product = allProducts.find((p) => p.id === value);
+    const product = allProducts.find(
+      (candidate): candidate is ProductAdvantage => candidate.id === value
+    );
     if (product) {
       setActiveTab(product.id);
     }

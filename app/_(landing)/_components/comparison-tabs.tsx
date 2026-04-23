@@ -1,14 +1,14 @@
 "use client";
 
-import { PixelButton } from "@app/(landing)/_components/pixel/pixel-button";
-import { PixelCard } from "@app/(landing)/_components/pixel/pixel-card";
-import { PixelHeading } from "@app/(landing)/_components/pixel/pixel-heading";
-import { PixelIcon } from "@app/(landing)/_components/pixel/pixel-icon";
+import { PixelButton } from "@app/_(landing)/_components/pixel/pixel-button";
+import { PixelCard } from "@app/_(landing)/_components/pixel/pixel-card";
+import { PixelHeading } from "@app/_(landing)/_components/pixel/pixel-heading";
+import { PixelIcon } from "@app/_(landing)/_components/pixel/pixel-icon";
 import { cn } from "@lib/utils";
 import Link from "next/link";
 import { useState } from "react";
-import { competitorProducts } from "@/app/(landing)/_data/product-advantages";
-import type { MetricIcon } from "@/app/(landing)/_types/comparison";
+import { competitorProducts } from "@/app/_(landing)/_data/product-advantages";
+import type { MetricIcon } from "@/app/_(landing)/_types/comparison";
 
 type ComparisonTabsProps = {
   className?: string;

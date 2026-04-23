@@ -1,9 +1,9 @@
 "use client";
 
-import { PixelButton } from "@/app/(landing)/_components/pixel/pixel-button";
-import { PixelCard } from "@/app/(landing)/_components/pixel/pixel-card";
-import { PixelHeading } from "@/app/(landing)/_components/pixel/pixel-heading";
-import type { VersusPageData } from "@/app/(landing)/_data/versus-pages";
+import { PixelButton } from "@/app/_(landing)/_components/pixel/pixel-button";
+import { PixelCard } from "@/app/_(landing)/_components/pixel/pixel-card";
+import { PixelHeading } from "@/app/_(landing)/_components/pixel/pixel-heading";
+import type { VersusPageData } from "@/app/_(landing)/_data/versus-pages";
 
 type HeroSectionProps = {
   data: VersusPageData["hero"];

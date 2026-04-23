@@ -1,7 +1,7 @@
 "use client";
 
-import { PixelCard } from "@app/(landing)/_components/pixel/pixel-card";
-import { PixelHeading } from "@app/(landing)/_components/pixel/pixel-heading";
+import { PixelCard } from "@app/_(landing)/_components/pixel/pixel-card";
+import { PixelHeading } from "@app/_(landing)/_components/pixel/pixel-heading";
 
 type Capability = {
   icon: "grid" | "sparkles" | "book" | "atom" | "zap" | "shield" | "code" | "globe";

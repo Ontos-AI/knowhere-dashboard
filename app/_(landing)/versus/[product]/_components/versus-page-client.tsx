@@ -1,17 +1,17 @@
 "use client";
 
-import { Footer } from "@/app/(landing)/_components/footer";
-import { Navbar } from "@/app/(landing)/_components/navbar";
-import { ScrollProgressBar } from "@/app/(landing)/_components/scroll-progress-bar";
-import type { VersusPageData } from "@/app/(landing)/_data/versus-pages";
-import { CTASection } from "@/app/(landing)/versus/[product]/_components/cta-section";
-import { FAQSection } from "@/app/(landing)/versus/[product]/_components/faq-section";
-import { FeatureTableSection } from "@/app/(landing)/versus/[product]/_components/feature-table-section";
-import { HeroSection } from "@/app/(landing)/versus/[product]/_components/hero-section";
-import { LiveDemoSection } from "@/app/(landing)/versus/[product]/_components/live-demo-section";
-import { QuickComparisonSection } from "@/app/(landing)/versus/[product]/_components/quick-comparison-section";
-import { TechnicalDeepDive } from "@/app/(landing)/versus/[product]/_components/technical-deep-dive";
-import { UseCasesSection } from "@/app/(landing)/versus/[product]/_components/use-cases-section";
+import { Footer } from "@/app/_(landing)/_components/footer";
+import { Navbar } from "@/app/_(landing)/_components/navbar";
+import { ScrollProgressBar } from "@/app/_(landing)/_components/scroll-progress-bar";
+import type { VersusPageData } from "@/app/_(landing)/_data/versus-pages";
+import { CTASection } from "@/app/_(landing)/versus/[product]/_components/cta-section";
+import { FAQSection } from "@/app/_(landing)/versus/[product]/_components/faq-section";
+import { FeatureTableSection } from "@/app/_(landing)/versus/[product]/_components/feature-table-section";
+import { HeroSection } from "@/app/_(landing)/versus/[product]/_components/hero-section";
+import { LiveDemoSection } from "@/app/_(landing)/versus/[product]/_components/live-demo-section";
+import { QuickComparisonSection } from "@/app/_(landing)/versus/[product]/_components/quick-comparison-section";
+import { TechnicalDeepDive } from "@/app/_(landing)/versus/[product]/_components/technical-deep-dive";
+import { UseCasesSection } from "@/app/_(landing)/versus/[product]/_components/use-cases-section";
 
 type VersusPageClientProps = {
   data: VersusPageData;

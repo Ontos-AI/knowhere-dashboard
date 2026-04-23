@@ -1,7 +1,7 @@
 "use client";
 
-import { PixelBadge } from "@app/(landing)/_components/pixel/pixel-badge";
-import { PixelHeading } from "@app/(landing)/_components/pixel/pixel-heading";
+import { PixelBadge } from "@app/_(landing)/_components/pixel/pixel-badge";
+import { PixelHeading } from "@app/_(landing)/_components/pixel/pixel-heading";
 import { useState } from "react";
 
 type Token = {

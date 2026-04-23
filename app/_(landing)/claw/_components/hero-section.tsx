@@ -1,5 +1,5 @@
-import { PixelButton } from "@app/(landing)/_components/pixel/pixel-button";
-import { PixelCard } from "@app/(landing)/_components/pixel/pixel-card";
+import { PixelButton } from "@app/_(landing)/_components/pixel/pixel-button";
+import { PixelCard } from "@app/_(landing)/_components/pixel/pixel-card";
 import Link from "next/link";
 import {
   contextTraits,
@@ -9,7 +9,7 @@ import {
   KNOWHERE_CLAW_PACKAGE_URL,
   KNOWHERE_CLAWHUB_SKILL_NAME,
   KNOWHERE_CLAWHUB_SKILL_URL,
-} from "@/app/(landing)/claw/_components/plugin-content";
+} from "@/app/_(landing)/claw/_components/plugin-content";
 
 export function HeroSection() {
   return (

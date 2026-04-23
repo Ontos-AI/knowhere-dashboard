@@ -1,4 +1,8 @@
-import { KnowhereIcon, type KnowhereIconName } from "@components/ui/knowhere-icon";
+import {
+  KNOWHERE_ICON_NAMES,
+  KnowhereIcon,
+  type KnowhereIconName,
+} from "@components/ui/knowhere-icon";
 import { cn } from "@lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import type { ComponentProps, ReactNode } from "react";
@@ -49,6 +53,9 @@ export type TagProps = ComponentProps<"div"> &
 
 const cornerClassName = "absolute size-[9px] border-l-2 border-t-2 border-stone-300";
 
+const isKnowhereIconName = (value: ReactNode): value is KnowhereIconName =>
+  typeof value === "string" && KNOWHERE_ICON_NAMES.includes(value as KnowhereIconName);
+
 export const Tag = ({ children, className, icon, value, variant = "text", ...props }: TagProps) => {
   const resolvedVariant: TagVariant = variant ?? "text";
   const resolvedValue =
@@ -66,17 +73,16 @@ export const Tag = ({ children, className, icon, value, variant = "text", ...pro
   const fallbackIcon: KnowhereIconName =
     resolvedVariant === "status" ? "check" : resolvedVariant === "block" ? "mind" : "download";
 
-  const resolvedIcon =
-    typeof icon === "string" ? (
-      <KnowhereIcon className="size-6" name={icon} />
-    ) : (
-      (icon ?? (
-        <KnowhereIcon
-          className={cn(resolvedVariant === "status" ? "size-8" : "size-6")}
-          name={fallbackIcon}
-        />
-      ))
-    );
+  const resolvedIcon = isKnowhereIconName(icon) ? (
+    <KnowhereIcon className="size-6" name={icon} />
+  ) : (
+    (icon ?? (
+      <KnowhereIcon
+        className={cn(resolvedVariant === "status" ? "size-8" : "size-6")}
+        name={fallbackIcon}
+      />
+    ))
+  );
 
   return (
     <div className={cn(tagVariants({ variant: resolvedVariant }), className)} {...props}>

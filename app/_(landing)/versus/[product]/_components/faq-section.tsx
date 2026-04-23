@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { PixelCard } from "@/app/(landing)/_components/pixel/pixel-card";
-import { PixelHeading } from "@/app/(landing)/_components/pixel/pixel-heading";
-import { PixelIcon } from "@/app/(landing)/_components/pixel/pixel-icon";
-import type { FAQItem, VersusPageData } from "@/app/(landing)/_data/versus-pages";
+import { PixelCard } from "@/app/_(landing)/_components/pixel/pixel-card";
+import { PixelHeading } from "@/app/_(landing)/_components/pixel/pixel-heading";
+import { PixelIcon } from "@/app/_(landing)/_components/pixel/pixel-icon";
+import type { FAQItem, VersusPageData } from "@/app/_(landing)/_data/versus-pages";
 
 type FAQSectionProps = {
   data: NonNullable<VersusPageData["faq"]>;

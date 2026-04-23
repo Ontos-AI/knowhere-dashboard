@@ -1,6 +1,6 @@
 "use client";
 
-import { useScrollProgress } from "@app/(landing)/_hooks/use-scroll-progress";
+import { useScrollProgress } from "@app/_(landing)/_hooks/use-scroll-progress";
 import { motion } from "framer-motion";
 
 export function ScrollProgressBar() {

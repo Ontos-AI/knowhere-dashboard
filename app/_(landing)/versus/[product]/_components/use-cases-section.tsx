@@ -1,10 +1,10 @@
 "use client";
 
-import { PixelBadge } from "@/app/(landing)/_components/pixel/pixel-badge";
-import { PixelCard } from "@/app/(landing)/_components/pixel/pixel-card";
-import { PixelHeading } from "@/app/(landing)/_components/pixel/pixel-heading";
-import { PixelIcon } from "@/app/(landing)/_components/pixel/pixel-icon";
-import type { UseCase, VersusPageData } from "@/app/(landing)/_data/versus-pages";
+import { PixelBadge } from "@/app/_(landing)/_components/pixel/pixel-badge";
+import { PixelCard } from "@/app/_(landing)/_components/pixel/pixel-card";
+import { PixelHeading } from "@/app/_(landing)/_components/pixel/pixel-heading";
+import { PixelIcon } from "@/app/_(landing)/_components/pixel/pixel-icon";
+import type { UseCase, VersusPageData } from "@/app/_(landing)/_data/versus-pages";
 
 type UseCasesSectionProps = {
   data: NonNullable<VersusPageData["useCases"]>;

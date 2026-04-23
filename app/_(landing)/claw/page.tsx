@@ -1,8 +1,8 @@
-import { Footer } from "@app/(landing)/_components/footer";
-import { Navbar } from "@app/(landing)/_components/navbar";
-import { ScrollProgressBar } from "@app/(landing)/_components/scroll-progress-bar";
+import { Footer } from "@app/_(landing)/_components/footer";
+import { Navbar } from "@app/_(landing)/_components/navbar";
+import { ScrollProgressBar } from "@app/_(landing)/_components/scroll-progress-bar";
 import type { Metadata } from "next";
-import { KnowhereOpenClawPluginPage } from "@/app/(landing)/claw/_components/knowhere-openclaw-plugin-page";
+import { KnowhereOpenClawPluginPage } from "@/app/_(landing)/claw/_components/knowhere-openclaw-plugin-page";
 
 const pageLinks = [
   { label: "Overview", href: "#plugin-overview" },

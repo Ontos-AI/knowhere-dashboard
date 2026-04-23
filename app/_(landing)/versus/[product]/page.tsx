@@ -5,8 +5,8 @@ import {
   getVersusPageData,
   isValidVersusProductId,
   type VersusProductId,
-} from "@/app/(landing)/_data/versus-pages";
-import { VersusPageClient } from "@/app/(landing)/versus/[product]/_components/versus-page-client";
+} from "@/app/_(landing)/_data/versus-pages";
+import { VersusPageClient } from "@/app/_(landing)/versus/[product]/_components/versus-page-client";
 
 type PageProps = {
   params: Promise<{

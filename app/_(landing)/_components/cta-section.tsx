@@ -1,8 +1,8 @@
 "use client";
 
-import { PixelButton } from "@app/(landing)/_components/pixel/pixel-button";
-import { PixelCard } from "@app/(landing)/_components/pixel/pixel-card";
-import { PixelHeading } from "@app/(landing)/_components/pixel/pixel-heading";
+import { PixelButton } from "@app/_(landing)/_components/pixel/pixel-button";
+import { PixelCard } from "@app/_(landing)/_components/pixel/pixel-card";
+import { PixelHeading } from "@app/_(landing)/_components/pixel/pixel-heading";
 import Link from "next/link";
 
 export function CTASection() {

@@ -1,6 +1,6 @@
 "use client";
 
-import { PixelIcon } from "@app/(landing)/_components/pixel/pixel-icon";
+import { PixelIcon } from "@app/_(landing)/_components/pixel/pixel-icon";
 
 type MetricItem = {
   icon: "star" | "database" | "badge" | "cloud" | "security" | "performance";

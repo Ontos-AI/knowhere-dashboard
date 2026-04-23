@@ -1,7 +1,7 @@
 "use client";
 
-import { useMediaQuery, usePrefersReducedMotion } from "@app/(landing)/_hooks/use-media-query";
-import { PARTICLE_CONFIG } from "@app/(landing)/_lib/constants";
+import { useMediaQuery, usePrefersReducedMotion } from "@app/_(landing)/_hooks/use-media-query";
+import { PARTICLE_CONFIG } from "@app/_(landing)/_lib/constants";
 import { useEffect, useRef } from "react";
 
 type Particle = {

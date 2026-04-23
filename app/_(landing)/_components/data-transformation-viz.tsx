@@ -1,8 +1,8 @@
 "use client";
 
-import { PixelBadge } from "@app/(landing)/_components/pixel/pixel-badge";
-import { PixelCard } from "@app/(landing)/_components/pixel/pixel-card";
-import { PixelHeading } from "@app/(landing)/_components/pixel/pixel-heading";
+import { PixelBadge } from "@app/_(landing)/_components/pixel/pixel-badge";
+import { PixelCard } from "@app/_(landing)/_components/pixel/pixel-card";
+import { PixelHeading } from "@app/_(landing)/_components/pixel/pixel-heading";
 
 type Stage = {
   icon: "file" | "gauge" | "sparkles" | "chart";

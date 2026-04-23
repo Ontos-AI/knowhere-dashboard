@@ -1,15 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { PixelButton } from "@/app/(landing)/_components/pixel/pixel-button";
-import { PixelHeading } from "@/app/(landing)/_components/pixel/pixel-heading";
-import { PixelIcon } from "@/app/(landing)/_components/pixel/pixel-icon";
-import type { LiveDemoConfig } from "@/app/(landing)/_data/versus-pages";
+import { PixelButton } from "@/app/_(landing)/_components/pixel/pixel-button";
+import { PixelHeading } from "@/app/_(landing)/_components/pixel/pixel-heading";
+import { PixelIcon } from "@/app/_(landing)/_components/pixel/pixel-icon";
+import type { LiveDemoConfig } from "@/app/_(landing)/_data/versus-pages";
 import {
   type DemoContent,
   DemoDetailModal,
-} from "@/app/(landing)/versus/[product]/_components/demo-detail-modal";
-import { usePreloadHtml } from "@/app/(landing)/versus/[product]/_hooks/use-preload-html";
+} from "@/app/_(landing)/versus/[product]/_components/demo-detail-modal";
+import { usePreloadHtml } from "@/app/_(landing)/versus/[product]/_hooks/use-preload-html";
 
 type LiveDemoSectionProps = {
   data: LiveDemoConfig;

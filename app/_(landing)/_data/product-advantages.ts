@@ -1,4 +1,4 @@
-import type { ProductAdvantage } from "@/app/(landing)/_types/comparison";
+import type { ProductAdvantage } from "@/app/_(landing)/_types/comparison";
 
 /**
  * Knowhere product data (our product)

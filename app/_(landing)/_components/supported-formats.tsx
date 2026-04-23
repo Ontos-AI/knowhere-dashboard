@@ -1,6 +1,6 @@
 "use client";
 
-import { PixelIcon } from "@app/(landing)/_components/pixel/pixel-icon";
+import { PixelIcon } from "@app/_(landing)/_components/pixel/pixel-icon";
 
 const supportedFormats = ["docx", "xlsx", "csv", "pptx", "pdf", "txt", "png", "jpg", "md", "json"];
 const comingSoonFormats = ["doc", "xls", "ppt", "epub", "html", "xml", "mp4", "mp3", "skills.md"];

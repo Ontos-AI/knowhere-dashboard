@@ -4,6 +4,25 @@
 
 @layer base {
   :root {
+    /* Offline-safe font tokens used by Tailwind font families. */
+    --font-sans:
+      "Inter", "Segoe UI", "Helvetica Neue", Arial, system-ui, -apple-system, BlinkMacSystemFont,
+      sans-serif;
+    --font-mono:
+      "JetBrains Mono", "SFMono-Regular", "SF Mono", "Cascadia Code", Menlo, Consolas, ui-monospace,
+      monospace;
+    --font-mono-display:
+      "Azeret Mono", "JetBrains Mono", "SFMono-Regular", "SF Mono", "Cascadia Code", Menlo,
+      Consolas, ui-monospace, monospace;
+    --font-mono-readable:
+      "Atkinson Hyperlegible Mono", "JetBrains Mono", "SFMono-Regular", "SF Mono", "Cascadia Code",
+      Menlo, Consolas, ui-monospace, monospace;
+    --font-accent:
+      "Anuphan", "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, system-ui, sans-serif;
+    --font-brand:
+      "Ysabeau", "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, ui-serif, serif;
+    --font-pixel-primary: "Press Start 2P", "Courier New", "Lucida Console", monospace;
+
     /* Legacy landing page tokens */
     --pixel-bg: #fafafa;
     --pixel-fg: #0a0a0a;
@@ -418,7 +437,7 @@
 
   /* Terminal/Monospace text styling */
   .terminal-text {
-    font-family: "JetBrains Mono", monospace;
+    font-family: var(--font-mono);
     font-variant-ligatures: none;
     letter-spacing: -0.02em;
   }

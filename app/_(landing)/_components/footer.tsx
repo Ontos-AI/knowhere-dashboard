@@ -1,9 +1,9 @@
 "use client";
 
-import { PixelButton } from "@app/(landing)/_components/pixel/pixel-button";
-import { PixelDivider } from "@app/(landing)/_components/pixel/pixel-divider";
-import { PixelIcon } from "@app/(landing)/_components/pixel/pixel-icon";
-import { FOOTER_LINKS, SOCIAL_LINKS } from "@app/(landing)/_lib/constants";
+import { PixelButton } from "@app/_(landing)/_components/pixel/pixel-button";
+import { PixelDivider } from "@app/_(landing)/_components/pixel/pixel-divider";
+import { PixelIcon } from "@app/_(landing)/_components/pixel/pixel-icon";
+import { FOOTER_LINKS, SOCIAL_LINKS } from "@app/_(landing)/_lib/constants";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";

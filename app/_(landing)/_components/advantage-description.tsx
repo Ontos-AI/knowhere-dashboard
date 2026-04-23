@@ -1,7 +1,7 @@
 "use client";
 
-import { PixelCard } from "@app/(landing)/_components/pixel/pixel-card";
-import { PixelIcon } from "@app/(landing)/_components/pixel/pixel-icon";
+import { PixelCard } from "@app/_(landing)/_components/pixel/pixel-card";
+import { PixelIcon } from "@app/_(landing)/_components/pixel/pixel-icon";
 import { cn } from "@lib/utils";
 
 type AdvantageDescriptionProps = {

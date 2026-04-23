@@ -1,13 +1,5 @@
 import type { Metadata } from "next";
-import {
-  Anuphan,
-  Atkinson_Hyperlegible_Mono,
-  Azeret_Mono,
-  Inter,
-  JetBrains_Mono,
-  Press_Start_2P,
-  Ysabeau,
-} from "next/font/google";
+import { cookies } from "next/headers";
 import Script from "next/script";
 import "./globals.css";
 import { ThemeProvider } from "@components/theme-provider";
@@ -18,50 +10,11 @@ import { Providers } from "@providers/providers";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-sans",
-});
-const jetBrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-mono",
-});
-const azeretMono = Azeret_Mono({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-mono-display",
-});
-const atkinsonHyperlegibleMono = Atkinson_Hyperlegible_Mono({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-mono-readable",
-});
-const anuphan = Anuphan({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-accent",
-});
-const ysabeau = Ysabeau({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-brand",
-});
-const pressStart2P = Press_Start_2P({
-  weight: "400",
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-pixel-primary",
-});
-
 export const metadata: Metadata = {
   title: "Knowhere API - Transform Documents into Structured Data",
   description:
     "The most accurate document parsing API for AI agents. Extract tables, formulas, and structured data with unmatched precision.",
 };
-
-import { cookies } from "next/headers";
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
@@ -75,11 +28,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const messages = await getMessages();
 
   return (
-    <html
-      lang={locale}
-      suppressHydrationWarning
-      className={`${inter.variable} ${jetBrainsMono.variable} ${azeretMono.variable} ${atkinsonHyperlegibleMono.variable} ${anuphan.variable} ${ysabeau.variable} ${pressStart2P.variable}`}
-    >
+    <html lang={locale} suppressHydrationWarning>
       <body className="font-sans antialiased">
         <NextIntlClientProvider messages={messages} locale={locale}>
           <ConfigProvider config={appConfig}>

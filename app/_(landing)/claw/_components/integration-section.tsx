@@ -1,13 +1,13 @@
 import Link from "next/link";
-import { OpenClawShellDemo } from "@/app/(landing)/claw/_components/openclaw-shell-demo";
+import { OpenClawShellDemo } from "@/app/_(landing)/claw/_components/openclaw-shell-demo";
 import {
   installCards,
   KNOWHERE_CLAW_PACKAGE_NAME,
   KNOWHERE_CLAW_PACKAGE_URL,
   KNOWHERE_CLAWHUB_SKILL_NAME,
   KNOWHERE_CLAWHUB_SKILL_URL,
-} from "@/app/(landing)/claw/_components/plugin-content";
-import { SectionIntro } from "@/app/(landing)/claw/_components/section-intro";
+} from "@/app/_(landing)/claw/_components/plugin-content";
+import { SectionIntro } from "@/app/_(landing)/claw/_components/section-intro";
 
 export function IntegrationSection() {
   return (

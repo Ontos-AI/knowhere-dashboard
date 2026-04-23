@@ -1,6 +1,6 @@
 "use client";
 
-import { throttle } from "@app/(landing)/_lib/utils";
+import { throttle } from "@app/_(landing)/_lib/utils";
 import { useEffect, useState } from "react";
 
 /**

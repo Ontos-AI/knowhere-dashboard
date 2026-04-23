@@ -1,6 +1,6 @@
-import { PixelButton } from "@app/(landing)/_components/pixel/pixel-button";
-import { PixelCard } from "@app/(landing)/_components/pixel/pixel-card";
-import { PixelHeading } from "@app/(landing)/_components/pixel/pixel-heading";
+import { PixelButton } from "@app/_(landing)/_components/pixel/pixel-button";
+import { PixelCard } from "@app/_(landing)/_components/pixel/pixel-card";
+import { PixelHeading } from "@app/_(landing)/_components/pixel/pixel-heading";
 import type { LucideIcon } from "lucide-react";
 import { Search } from "lucide-react";
 import Link from "next/link";

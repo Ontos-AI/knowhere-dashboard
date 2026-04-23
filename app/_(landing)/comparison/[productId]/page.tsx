@@ -5,8 +5,8 @@ import {
   isValidProductId,
   PRODUCT_IDS,
   type ProductId,
-} from "@/app/(landing)/_types/comparison";
-import { ComparisonPageClient } from "@/app/(landing)/comparison/[productId]/_components/comparison-page-client";
+} from "@/app/_(landing)/_types/comparison";
+import { ComparisonPageClient } from "@/app/_(landing)/comparison/[productId]/_components/comparison-page-client";
 
 // Generate metadata for SEO
 export async function generateMetadata(props: {

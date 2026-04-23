@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { InstallCard } from "@/app/(landing)/claw/_components/plugin-content";
+import type { InstallCard } from "@/app/_(landing)/claw/_components/plugin-content";
 
 type Token = {
   type: "keyword" | "string" | "operator" | "path" | "text";
