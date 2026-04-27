@@ -19,6 +19,7 @@ import { authClient } from "@/lib/better-auth-client";
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isMagicLinkLoading, setIsMagicLinkLoading] = useState(false);
+  const [isPasswordLoginEnabled, setIsPasswordLoginEnabled] = useState(false);
   const toast = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -36,7 +37,7 @@ export default function LoginPage() {
     () =>
       z.object({
         email: z.string().email(t("emailInvalid")),
-        password: z.string().min(8, t("passwordMinLength")),
+        password: z.string().optional(),
       }),
     [t]
   );
@@ -46,14 +47,22 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
-    getValues,
-    trigger,
+    clearErrors,
+    setError,
     formState: { errors },
   } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: LoginForm): Promise<void> => {
+  const handlePasswordSignIn = async (data: LoginForm): Promise<void> => {
+    if (!data.password || data.password.length < 8) {
+      setError("password", {
+        type: "manual",
+        message: t("passwordMinLength"),
+      });
+      return;
+    }
+
     setIsLoading(true);
     try {
       const { error } = await authClient.signIn.email({
@@ -76,16 +85,11 @@ export default function LoginPage() {
     }
   };
 
-  const handleMagicLinkSignIn = async (): Promise<void> => {
-    const isEmailValid = await trigger("email");
-    if (!isEmailValid) {
-      return;
-    }
-
+  const handleMagicLinkSignIn = async (data: LoginForm): Promise<void> => {
     setIsMagicLinkLoading(true);
     try {
       const { error } = await authClient.signIn.magicLink({
-        email: getValues("email"),
+        email: data.email,
         callbackURL,
         errorCallbackURL: authRedirect.buildMagicLinkErrorCallbackURL("/login", {
           callbackURL: rawCallbackURL,
@@ -111,6 +115,11 @@ export default function LoginPage() {
     toast.error(t("oauthFailed"), error);
   };
 
+  const togglePasswordLogin = (): void => {
+    setIsPasswordLoginEnabled((currentValue) => !currentValue);
+    clearErrors("password");
+  };
+
   return (
     <Card className="w-full border-border/80 bg-card/95 shadow-[0_14px_44px_-24px_rgba(146,64,14,0.35)]">
       <CardHeader className="space-y-1">
@@ -121,8 +130,13 @@ export default function LoginPage() {
         {/* OAuth登录 */}
         <OAuthButtons onError={handleOAuthError} />
 
-        {/* Email/password login form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* Email login form. Password login is opt-in from this default view. */}
+        <form
+          onSubmit={handleSubmit(
+            isPasswordLoginEnabled ? handlePasswordSignIn : handleMagicLinkSignIn
+          )}
+          className="space-y-4"
+        >
           <div className="space-y-2">
             <Label htmlFor="email">{t("email")}</Label>
             <Input
@@ -130,42 +144,50 @@ export default function LoginPage() {
               type="email"
               placeholder={t("emailPlaceholder")}
               {...register("email")}
-              disabled={isLoading}
+              disabled={isLoading || isMagicLinkLoading}
             />
             {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
           </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password">{t("password")}</Label>
-              <Link href={forgotPasswordPath} className="text-xs text-primary hover:underline">
-                {t("forgotPassword")}
-              </Link>
+          {isPasswordLoginEnabled && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">{t("password")}</Label>
+                <Link href={forgotPasswordPath} className="text-xs text-primary hover:underline">
+                  {t("forgotPassword")}
+                </Link>
+              </div>
+              <Input
+                id="password"
+                type="password"
+                placeholder={t("passwordPlaceholder")}
+                autoComplete="current-password"
+                {...register("password")}
+                disabled={isLoading}
+              />
+              {errors.password && (
+                <p className="text-sm text-destructive">{errors.password.message}</p>
+              )}
             </div>
-            <Input
-              id="password"
-              type="password"
-              placeholder={t("passwordPlaceholder")}
-              autoComplete="current-password"
-              {...register("password")}
-              disabled={isLoading}
-            />
-            {errors.password && (
-              <p className="text-sm text-destructive">{errors.password.message}</p>
-            )}
-          </div>
+          )}
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? t("signingIn") : t("signInWithPassword")}
-          </Button>
+          {isPasswordLoginEnabled ? (
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? t("signingIn") : t("signInWithPassword")}
+            </Button>
+          ) : (
+            <Button type="submit" className="w-full" disabled={isMagicLinkLoading}>
+              {isMagicLinkLoading ? t("sending") : t("sendMagicLink")}
+            </Button>
+          )}
           <Button
             type="button"
             variant="outline"
             className="w-full"
             disabled={isLoading || isMagicLinkLoading}
-            onClick={handleMagicLinkSignIn}
+            onClick={togglePasswordLogin}
           >
-            {isMagicLinkLoading ? t("sending") : t("sendMagicLink")}
+            {isPasswordLoginEnabled ? t("useEmailLinkInstead") : t("loginWithPassword")}
           </Button>
         </form>
 

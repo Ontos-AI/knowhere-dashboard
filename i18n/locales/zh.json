@@ -142,6 +142,8 @@
     "sending": "发送中...",
     "signingIn": "登录中...",
     "signInWithPassword": "登录",
+    "loginWithPassword": "使用密码登录",
+    "useEmailLinkInstead": "改用邮箱登录链接",
     "signUpWithPassword": "创建账户",
     "registering": "注册中...",
     "haveAccount": "已有账户？",

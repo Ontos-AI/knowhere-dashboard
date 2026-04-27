@@ -124,6 +124,8 @@
     "sending": "Sending...",
     "signingIn": "Signing in...",
     "signInWithPassword": "Sign in",
+    "loginWithPassword": "Sign in with password",
+    "useEmailLinkInstead": "Use email link instead",
     "signUpWithPassword": "Create account",
     "registering": "Signing up...",
     "haveAccount": "Already have an account?",
