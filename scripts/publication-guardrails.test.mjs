@@ -115,3 +115,19 @@ test("container startup uses Drizzle generate and migrate before starting the ap
   assert.ok(migrateIndex < serverIndex);
   assert.doesNotMatch(startupScript, /scripts\/migrate\.js/);
 });
+
+test("optional auth providers do not get synthetic empty-string defaults", () => {
+  const envSchema = readFileSync("lib/env.ts", "utf8");
+  const optionalIntegrationNames = [
+    "GITHUB_CLIENT_ID",
+    "GITHUB_CLIENT_SECRET",
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET",
+    "RESEND_API_KEY",
+  ];
+
+  for (const envName of optionalIntegrationNames) {
+    assert.doesNotMatch(envSchema, new RegExp(`${envName}: z\\.string\\(\\)\\.default\\(""\\)`));
+    assert.match(envSchema, new RegExp(`${envName}: z\\.string\\(\\)\\.optional\\(\\)`));
+  }
+});

@@ -10,11 +10,11 @@ export const env = createEnv({
       .string()
       .regex(/^G-[A-Z0-9]+$/)
       .optional(),
-    GITHUB_CLIENT_ID: z.string().default(""),
-    GITHUB_CLIENT_SECRET: z.string().default(""),
-    GOOGLE_CLIENT_ID: z.string().default(""),
-    GOOGLE_CLIENT_SECRET: z.string().default(""),
-    RESEND_API_KEY: z.string().default(""),
+    GITHUB_CLIENT_ID: z.string().optional(),
+    GITHUB_CLIENT_SECRET: z.string().optional(),
+    GOOGLE_CLIENT_ID: z.string().optional(),
+    GOOGLE_CLIENT_SECRET: z.string().optional(),
+    RESEND_API_KEY: z.string().optional(),
     RESEND_FROM: z.string().default("onboarding@resend.dev"),
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     HTTPS_PROXY: z.string().optional(),
