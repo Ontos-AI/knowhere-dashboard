@@ -29,6 +29,9 @@ env:
   DASHBOARD_KUBE_NAMESPACE_STAGING: ${{ secrets.DASHBOARD_KUBE_NAMESPACE_STAGING }}
   DASHBOARD_APP_URL_PROD: https://knowhereto.ai
   DASHBOARD_APP_URL_STAGING: https://staging.knowhereto.ai
+  DASHBOARD_API_URL_PROD: https://api.knowhereto.ai
+  DASHBOARD_API_URL_STAGING: https://api-staging.knowhereto.ai
+  DASHBOARD_AUTH_BASE_URL: /api/auth
 
 jobs:
   build-and-publish:
@@ -55,10 +58,13 @@ jobs:
           if [ "$environment" = "prod" ]; then
             kube_namespace="${DASHBOARD_KUBE_NAMESPACE_PROD}"
             app_url="${DASHBOARD_APP_URL_PROD}"
+            api_url="${DASHBOARD_API_URL_PROD}"
           else
             kube_namespace="${DASHBOARD_KUBE_NAMESPACE_STAGING}"
             app_url="${DASHBOARD_APP_URL_STAGING}"
+            api_url="${DASHBOARD_API_URL_STAGING}"
           fi
+          auth_base_url="${DASHBOARD_AUTH_BASE_URL}"
 
           missing=()
           for variable_name in \
@@ -68,7 +74,9 @@ jobs:
             DASHBOARD_IMAGE_REPOSITORY \
             DASHBOARD_KUBE_CONTAINER \
             DASHBOARD_KUBE_DEPLOYMENT \
+            api_url \
             app_url \
+            auth_base_url \
             kube_namespace
           do
             if [ -z "${!variable_name}" ]; then
@@ -90,6 +98,9 @@ jobs:
           echo "environment=${environment}" >> "$GITHUB_OUTPUT"
           echo "image_tag=${image_tag}" >> "$GITHUB_OUTPUT"
           echo "image_uri=${image_uri}" >> "$GITHUB_OUTPUT"
+          echo "api_url=${api_url}" >> "$GITHUB_OUTPUT"
+          echo "app_url=${app_url}" >> "$GITHUB_OUTPUT"
+          echo "auth_base_url=${auth_base_url}" >> "$GITHUB_OUTPUT"
           echo "kube_container=${DASHBOARD_KUBE_CONTAINER}" >> "$GITHUB_OUTPUT"
           echo "kube_deployment=${DASHBOARD_KUBE_DEPLOYMENT}" >> "$GITHUB_OUTPUT"
           echo "kube_namespace=${kube_namespace}" >> "$GITHUB_OUTPUT"
@@ -119,6 +130,10 @@ jobs:
           tags: |
             ${{ steps.context.outputs.image_uri }}
             ${{ steps.context.outputs.latest_uri }}
+          build-args: |
+            NEXT_PUBLIC_API_URL=${{ steps.context.outputs.api_url }}
+            NEXT_PUBLIC_AUTH_BASE_URL=${{ steps.context.outputs.auth_base_url }}
+            NEXT_PUBLIC_APP_URL=${{ steps.context.outputs.app_url }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -126,6 +141,9 @@ jobs:
         shell: bash
         run: |
           echo "Environment: ${{ steps.context.outputs.environment }}"
+          echo "API URL: ${{ steps.context.outputs.api_url }}"
+          echo "App URL: ${{ steps.context.outputs.app_url }}"
+          echo "Auth Base URL: ${{ steps.context.outputs.auth_base_url }}"
           echo "Image: ${{ steps.context.outputs.image_uri }}"
           echo "Deployment: ${{ steps.context.outputs.kube_deployment }}"
           echo "Namespace: ${{ steps.context.outputs.kube_namespace }}"
@@ -149,10 +167,13 @@ jobs:
           if [ "$environment" = "prod" ]; then
             kube_namespace="${DASHBOARD_KUBE_NAMESPACE_PROD}"
             app_url="${DASHBOARD_APP_URL_PROD}"
+            api_url="${DASHBOARD_API_URL_PROD}"
           else
             kube_namespace="${DASHBOARD_KUBE_NAMESPACE_STAGING}"
             app_url="${DASHBOARD_APP_URL_STAGING}"
+            api_url="${DASHBOARD_API_URL_STAGING}"
           fi
+          auth_base_url="${DASHBOARD_AUTH_BASE_URL}"
 
           missing=()
           for variable_name in \
@@ -162,7 +183,9 @@ jobs:
             DASHBOARD_IMAGE_REPOSITORY \
             DASHBOARD_KUBE_CONTAINER \
             DASHBOARD_KUBE_DEPLOYMENT \
+            api_url \
             app_url \
+            auth_base_url \
             kube_namespace
           do
             if [ -z "${!variable_name}" ]; then
@@ -184,7 +207,9 @@ jobs:
           echo "DEPLOY_KUBE_CONTAINER=${DASHBOARD_KUBE_CONTAINER}" >> "$GITHUB_ENV"
           echo "DEPLOY_KUBE_DEPLOYMENT=${DASHBOARD_KUBE_DEPLOYMENT}" >> "$GITHUB_ENV"
           echo "DEPLOY_KUBE_NAMESPACE=${kube_namespace}" >> "$GITHUB_ENV"
+          echo "DEPLOY_API_URL=${api_url}" >> "$GITHUB_ENV"
           echo "DEPLOY_APP_URL=${app_url}" >> "$GITHUB_ENV"
+          echo "DEPLOY_AUTH_BASE_URL=${auth_base_url}" >> "$GITHUB_ENV"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -207,6 +232,8 @@ jobs:
         shell: bash
         run: |
           kubectl set env "deployment/${DEPLOY_KUBE_DEPLOYMENT}" \
+            "NEXT_PUBLIC_API_URL=${DEPLOY_API_URL}" \
+            "NEXT_PUBLIC_AUTH_BASE_URL=${DEPLOY_AUTH_BASE_URL}" \
             "NEXT_PUBLIC_APP_URL=${DEPLOY_APP_URL}" \
             --namespace "${DEPLOY_KUBE_NAMESPACE}"
 
@@ -226,4 +253,6 @@ jobs:
           echo "Deployment: ${DEPLOY_KUBE_DEPLOYMENT}"
           echo "Container: ${DEPLOY_KUBE_CONTAINER}"
           echo "Namespace: ${DEPLOY_KUBE_NAMESPACE}"
+          echo "API URL: ${DEPLOY_API_URL}"
           echo "App URL: ${DEPLOY_APP_URL}"
+          echo "Auth Base URL: ${DEPLOY_AUTH_BASE_URL}"

@@ -54,6 +54,8 @@ jobs:
         env:
           BETTER_AUTH_SECRET: build-validation-only-auth-secret-32-chars
           BETTER_AUTH_URL: http://localhost:3000
+          NEXT_PUBLIC_API_URL: http://localhost:5005/api
+          NEXT_PUBLIC_AUTH_BASE_URL: /api/auth
           NEXT_PUBLIC_APP_URL: http://localhost:3000
           RESEND_API_KEY: re_build_validation_placeholder
           SKIP_ENV_VALIDATION: "1"
@@ -96,3 +98,7 @@ jobs:
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
+          build-args: |
+            NEXT_PUBLIC_API_URL=http://localhost:5005/api
+            NEXT_PUBLIC_AUTH_BASE_URL=/api/auth
+            NEXT_PUBLIC_APP_URL=http://localhost:3000

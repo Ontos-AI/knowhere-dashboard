@@ -17,9 +17,17 @@ FROM base AS builder
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN BETTER_AUTH_SECRET=build-validation-only-auth-secret-32-chars \
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_AUTH_BASE_URL
+ARG NEXT_PUBLIC_APP_URL
+RUN test -n "${NEXT_PUBLIC_API_URL}" \
+  && test -n "${NEXT_PUBLIC_AUTH_BASE_URL}" \
+  && test -n "${NEXT_PUBLIC_APP_URL}" \
+  && BETTER_AUTH_SECRET=build-validation-only-auth-secret-32-chars \
   BETTER_AUTH_URL=http://localhost:3000 \
-  NEXT_PUBLIC_APP_URL=http://localhost:3000 \
+  NEXT_PUBLIC_API_URL="${NEXT_PUBLIC_API_URL}" \
+  NEXT_PUBLIC_AUTH_BASE_URL="${NEXT_PUBLIC_AUTH_BASE_URL}" \
+  NEXT_PUBLIC_APP_URL="${NEXT_PUBLIC_APP_URL}" \
   RESEND_API_KEY=re_build_validation_placeholder \
   SKIP_ENV_VALIDATION=1 \
   pnpm build
