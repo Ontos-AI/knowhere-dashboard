@@ -57,9 +57,9 @@ jobs:
           fi
 
           if [ "$environment" = "prod" ]; then
-            kube_namespace="${KUBE_NAMESPACE_PROD}"
+            kube_namespace="${DASHBOARD_KUBE_NAMESPACE_PROD}"
           else
-            kube_namespace="${KUBE_NAMESPACE_STAGING}"
+            kube_namespace="${DASHBOARD_KUBE_NAMESPACE_STAGING}"
           fi
 
           missing=()
