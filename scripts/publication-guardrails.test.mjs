@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import test from "node:test";
 
 const TEXT_FILE_REGEX = /\.(cjs|css|js|json|jsx|md|mjs|mts|sql|ts|tsx|txt|yml|yaml)$/;
@@ -98,22 +98,31 @@ test("publication tree does not contain private deployment or credential default
   assert.deepEqual(violations, []);
 });
 
-test("container startup uses Drizzle generate and migrate before starting the app server", () => {
+test("container startup uses Drizzle generate and migrate before starting the Next server", () => {
   const dockerfile = readFileSync("Dockerfile", "utf8");
+  const generateIndex = dockerfile.indexOf("pnpm db:generate");
+  const migrateIndex = dockerfile.indexOf("pnpm db:migrate");
+  const startIndex = dockerfile.indexOf("pnpm start");
 
-  assert.match(dockerfile, /CMD \["node", "scripts\/start-with-migrations\.js"\]/);
-
-  const startupScript = readFileSync("scripts/start-with-migrations.js", "utf8");
-  const generateIndex = startupScript.indexOf("db:generate");
-  const migrateIndex = startupScript.indexOf("db:migrate");
-  const serverIndex = startupScript.indexOf("server.js");
-
+  assert.match(
+    dockerfile,
+    /CMD \["sh", "-c", "pnpm db:generate && pnpm db:migrate && exec pnpm start"\]/
+  );
   assert.notEqual(generateIndex, -1);
   assert.notEqual(migrateIndex, -1);
-  assert.notEqual(serverIndex, -1);
+  assert.notEqual(startIndex, -1);
   assert.ok(generateIndex < migrateIndex);
-  assert.ok(migrateIndex < serverIndex);
-  assert.doesNotMatch(startupScript, /scripts\/migrate\.js/);
+  assert.ok(migrateIndex < startIndex);
+  assert.doesNotMatch(dockerfile, /scripts\/migrate\.js|start-with-migrations\.js|server\.js/);
+  assert.equal(existsSync("scripts/migrate.js"), false);
+  assert.equal(existsSync("scripts/start-with-migrations.js"), false);
+});
+
+test("Next config uses the standard node server runtime", () => {
+  const nextConfig = readFileSync("next.config.js", "utf8");
+
+  assert.doesNotMatch(nextConfig, /output:\s*['"]standalone['"]/);
+  assert.doesNotMatch(nextConfig, /outputFileTracingIncludes/);
 });
 
 test("optional auth providers do not get synthetic empty-string defaults", () => {

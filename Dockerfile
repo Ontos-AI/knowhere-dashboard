@@ -34,21 +34,20 @@ RUN apk add --no-cache ca-certificates postgresql-client \
   && addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/scripts/start-with-migrations.js ./scripts/start-with-migrations.js
-
-COPY --from=deps --chown=nextjs:nodejs /app/node_modules /migration/node_modules
-COPY --from=builder --chown=nextjs:nodejs /app/package.json /migration/package.json
-COPY --from=builder --chown=nextjs:nodejs /app/pnpm-lock.yaml /migration/pnpm-lock.yaml
-COPY --from=builder --chown=nextjs:nodejs /app/drizzle.config.ts /migration/drizzle.config.ts
-COPY --from=builder --chown=nextjs:nodejs /app/tsconfig.json /migration/tsconfig.json
-COPY --from=builder --chown=nextjs:nodejs /app/drizzle /migration/drizzle
-COPY --from=builder --chown=nextjs:nodejs /app/lib/db /migration/lib/db
+COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
+COPY --from=builder --chown=nextjs:nodejs /app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder --chown=nextjs:nodejs /app/next.config.js ./next.config.js
+COPY --from=builder --chown=nextjs:nodejs /app/tsconfig.json ./tsconfig.json
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
+COPY --from=builder --chown=nextjs:nodejs /app/i18n ./i18n
+COPY --from=builder --chown=nextjs:nodejs /app/drizzle.config.ts ./drizzle.config.ts
+COPY --from=builder --chown=nextjs:nodejs /app/drizzle ./drizzle
+COPY --from=builder --chown=nextjs:nodejs /app/lib/db ./lib/db
 
 USER nextjs
 
 EXPOSE 3000
 
-CMD ["node", "scripts/start-with-migrations.js"]
+CMD ["sh", "-c", "pnpm db:generate && pnpm db:migrate && exec pnpm start"]

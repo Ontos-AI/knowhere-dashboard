@@ -95,7 +95,7 @@ docker run --rm -p 3000:3000 --env-file .env.local knowhere-api-dashboard
 
 The container runs `pnpm db:generate` and `pnpm db:migrate` before starting the Next.js server. If either command fails, the app server is not started.
 
-The image is built from Next.js standalone output. Runtime configuration is injected through environment variables; the Docker build does not create or bake `.env.production`.
+The image runs the standard Next.js Node server with `pnpm start`. Runtime configuration is injected through environment variables; the Docker build does not create or bake `.env.production`.
 
 ## Public CI and Images
 
