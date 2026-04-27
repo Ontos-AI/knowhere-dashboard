@@ -125,6 +125,15 @@ test("Next config uses the standard node server runtime", () => {
   assert.doesNotMatch(nextConfig, /outputFileTracingIncludes/);
 });
 
+test("auth route uses a synchronous lazy auth adapter", () => {
+  const authRoute = readFileSync("app/api/auth/[...path]/route.ts", "utf8");
+
+  assert.match(authRoute, /import \{ getAuth \} from "@lib\/auth";/);
+  assert.match(authRoute, /toNextJsHandler\(handleAuthRequest\)/);
+  assert.doesNotMatch(authRoute, /await import\("@lib\/auth"\)/);
+  assert.doesNotMatch(authRoute, /async function (GET|POST)/);
+});
+
 test("optional auth providers do not get synthetic empty-string defaults", () => {
   const envSchema = readFileSync("lib/env.ts", "utf8");
   const optionalIntegrationNames = [

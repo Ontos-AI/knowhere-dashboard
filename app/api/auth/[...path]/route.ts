@@ -1,17 +1,9 @@
 import "@/lib/polyfill";
+import { getAuth } from "@lib/auth";
 import { toNextJsHandler } from "better-auth/next-js";
 
-const getAuthHandlers = async () => {
-  const { getAuth } = await import("@lib/auth");
-  return toNextJsHandler(getAuth());
+const handleAuthRequest = (request: Request): Promise<Response> => {
+  return getAuth().handler(request);
 };
 
-export async function GET(request: Request) {
-  const handlers = await getAuthHandlers();
-  return handlers.GET(request);
-}
-
-export async function POST(request: Request) {
-  const handlers = await getAuthHandlers();
-  return handlers.POST(request);
-}
+export const { GET, POST } = toNextJsHandler(handleAuthRequest);
