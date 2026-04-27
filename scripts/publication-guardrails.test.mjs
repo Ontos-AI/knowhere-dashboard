@@ -30,13 +30,13 @@ const forbiddenPatterns = [
     regex: /107424103509/,
   },
   {
-    name: "private ECR registry",
-    regex:
-      /\bECR_(REGISTRY|REPOSITORY)\b|Amazon ECR|amazon-ecr-login|\.dkr\.ecr\.[a-z0-9-]+\.amazonaws\.com/,
+    name: "hard-coded private AWS registry",
+    regex: /\d{12}\.dkr\.ecr\.[a-z0-9-]+\.amazonaws\.com/,
   },
   {
-    name: "private EKS deployment flow",
-    regex: /\bEKS\b|aws eks update-kubeconfig|kubectl (set image|rollout|get|describe)/i,
+    name: "hard-coded private deployment target",
+    regex:
+      /knowhere-prod-cluster|knowhere-(prod|staging)\b|PROJECT_NAME:\s*knowhere-web|knowhere\/knowhere-frontend/i,
   },
   {
     name: "public default API password",
@@ -138,6 +138,35 @@ test("build steps provide auth-only placeholder env for build-time auth initiali
   for (const envName of requiredBuildEnv) {
     assert.match(dockerfile, new RegExp(`${envName}=`));
     assert.match(ciWorkflow, new RegExp(`${envName}:`));
+  }
+});
+
+test("deploy workflow deploys merged branch pushes without hard-coded private infrastructure", () => {
+  const deployWorkflowPath = ".github/workflows/deploy.yml";
+
+  assert.equal(existsSync(deployWorkflowPath), true);
+
+  const deployWorkflow = readFileSync(deployWorkflowPath, "utf8");
+  const requiredVariables = [
+    "DASHBOARD_AWS_REGION",
+    "DASHBOARD_EKS_CLUSTER_NAME",
+    "DASHBOARD_IMAGE_REGISTRY",
+    "DASHBOARD_IMAGE_REPOSITORY",
+    "DASHBOARD_KUBE_CONTAINER",
+    "DASHBOARD_KUBE_DEPLOYMENT",
+    "DASHBOARD_KUBE_NAMESPACE_PROD",
+    "DASHBOARD_KUBE_NAMESPACE_STAGING",
+  ];
+
+  assert.match(deployWorkflow, /push:\s*\n\s+branches:\s*\n\s+- main\s*\n\s+- staging/);
+  assert.doesNotMatch(deployWorkflow, /pull_request:/);
+  assert.match(deployWorkflow, /docker\/build-push-action@v6/);
+  assert.match(deployWorkflow, /aws eks update-kubeconfig/);
+  assert.match(deployWorkflow, /kubectl set image/);
+  assert.match(deployWorkflow, /kubectl rollout status/);
+
+  for (const variableName of requiredVariables) {
+    assert.match(deployWorkflow, new RegExp(`vars\\.${variableName}`));
   }
 });
 

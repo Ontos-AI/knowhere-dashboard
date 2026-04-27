@@ -99,13 +99,34 @@ The image runs the standard Next.js Node server with `pnpm start`. Runtime confi
 
 ## Public CI and Images
 
-The public workflow runs lint, type-check, tests, and build on pull requests and pushes to `main`.
+The public workflow runs lint, type-check, tests, and build on pull requests and pushes to `main` and `staging`.
 
-Docker images are published to GitHub Container Registry only for version tags such as `v1.0.0`, or when a maintainer runs the workflow manually with image publishing enabled. Private production deployment remains outside this public repository and should be owned by the private DevOps process.
+The CI workflow can publish Docker images to GitHub Container Registry for version tags such as `v1.0.0`, or when a maintainer runs it manually with image publishing enabled.
 
-Open DevOps decisions before public release:
+## Deployment
 
-- confirm the final GHCR image naming and tag policy
-- confirm private production deployment remains outside the public repository
-- confirm runtime environment injection and secret handling
-- confirm whether migrations should remain a separate command or move to a platform-owned release step
+Merging a pull request into `staging` or `main` triggers `.github/workflows/deploy.yml` through the branch push created by the merge. The workflow builds the dashboard image, pushes it to the configured AWS image registry, and updates the configured Kubernetes deployment with `kubectl set image`.
+
+DevOps must configure these GitHub repository secrets:
+
+| Name | Purpose |
+| --- | --- |
+| `AWS_ACCESS_KEY_ID` | AWS principal allowed to push images and update the cluster. |
+| `AWS_SECRET_ACCESS_KEY` | Secret key for the AWS principal. |
+
+DevOps must configure these GitHub repository variables:
+
+| Name | Purpose |
+| --- | --- |
+| `DASHBOARD_AWS_REGION` | AWS region for the image registry and cluster. |
+| `DASHBOARD_EKS_CLUSTER_NAME` | Kubernetes cluster name used by `aws eks update-kubeconfig`. |
+| `DASHBOARD_IMAGE_REGISTRY` | Registry host, for example an AWS account registry host. |
+| `DASHBOARD_IMAGE_REPOSITORY` | Dashboard image repository path inside the registry. |
+| `DASHBOARD_KUBE_CONTAINER` | Container name inside the dashboard Deployment. |
+| `DASHBOARD_KUBE_DEPLOYMENT` | Dashboard Kubernetes Deployment name. |
+| `DASHBOARD_KUBE_NAMESPACE_STAGING` | Namespace updated when `staging` is deployed. |
+| `DASHBOARD_KUBE_NAMESPACE_PROD` | Namespace updated when `main` is deployed. |
+
+The AWS principal must be able to authenticate to the image registry, push the dashboard image, call `eks:DescribeCluster`, and update the target deployment. The cluster must be able to pull the pushed image.
+
+Runtime environment variables are still injected by the deployment platform, not by the Docker build. Because the container runs `pnpm db:generate` and `pnpm db:migrate` before `pnpm start`, the deployed pod must have `DATABASE_URL` and the required auth/app URL environment variables at startup. The container filesystem must allow writes to the app directory unless the migration generation step is moved out of container startup.
