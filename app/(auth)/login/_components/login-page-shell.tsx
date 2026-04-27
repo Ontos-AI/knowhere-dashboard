@@ -6,9 +6,11 @@ import { EmailLoginForm } from "@/app/(auth)/login/_components/email-login-form"
 import { LoginBrand } from "@/app/(auth)/login/_components/login-brand";
 import { SocialLoginButtons } from "@/app/(auth)/login/_components/social-login-buttons";
 import { useLoginActions } from "@/app/(auth)/login/_hooks/use-login-actions";
+import { useAppConfigContext } from "@/providers/config-provider";
 
 export const LoginPageShell = () => {
   const t = useTranslations("Auth");
+  const { passwordLoginEnabled } = useAppConfigContext();
   const {
     activeOAuthProvider,
     forgotPasswordPath,
@@ -66,6 +68,7 @@ export const LoginPageShell = () => {
               isPasswordLoading={isPasswordLoading}
               onMagicLinkSubmit={signInWithMagicLink}
               onPasswordSubmit={signInWithPassword}
+              passwordLoginEnabled={passwordLoginEnabled}
             />
           </div>
         </section>

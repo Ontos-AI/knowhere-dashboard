@@ -63,7 +63,7 @@ Required for startup:
 | `BETTER_AUTH_SECRET` | Random secret with at least 32 characters. |
 | `DATABASE_URL` | PostgreSQL connection URL for dashboard auth/account data. |
 
-Email/password registration and login are enabled by default for self-hosted deployments. OAuth and Resend-backed magic-link login are optional add-ons. Password reset emails also use Resend; signed-in OAuth users can set a password from dashboard settings.
+Email/password registration is enabled for self-hosted deployments. The login page defaults to SSO plus Resend-backed email links; set `PASSWORD_LOGIN_ENABLED=true` only when you want to expose the password-login entry point. OAuth and Resend-backed magic-link login are optional add-ons. Password reset emails also use Resend; signed-in OAuth users can set a password from dashboard settings.
 
 Required for specific features:
 
@@ -80,6 +80,7 @@ Optional:
 | `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_POSTHOG_HOST` | PostHog analytics. |
 | `GA_MEASUREMENT_ID` | Google Analytics measurement ID. |
 | `BILLING_ENABLED` | Set to `true` only when the API billing endpoints and payment configuration are available. Defaults to disabled for open-source self-hosted deployments. |
+| `PASSWORD_LOGIN_ENABLED` | Set to `true` to show the login page's password-login button. Defaults to hidden. |
 | `COMPANY_NAME`, `SIMPLE_COMPANY_NAME` | Runtime branding text. |
 | `ICP_NUMBER`, `ICP_URL` | ICP footer metadata for deployments that need it. |
 | `HTTPS_PROXY`, `HTTP_PROXY` | Development proxy for outbound auth/email calls. |

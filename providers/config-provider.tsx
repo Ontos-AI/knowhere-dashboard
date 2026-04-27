@@ -30,6 +30,7 @@ export function useAppConfigContext(): AppConfigType {
       githubClientId: "",
       appleClientId: "",
       billingEnabled: false,
+      passwordLoginEnabled: false,
     };
   }
   return config;

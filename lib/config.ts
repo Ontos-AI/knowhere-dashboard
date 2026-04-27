@@ -15,6 +15,12 @@
 import { isBillingEnabled } from "@lib/billing";
 import { env } from "@lib/env";
 
+const ENABLED_VALUES = new Set(["1", "true", "yes", "on"]);
+
+function getBooleanEnv(value: string): boolean {
+  return ENABLED_VALUES.has(value.trim().toLowerCase());
+}
+
 // 配置类型
 export type AppConfigType = {
   companyName: string;
@@ -29,6 +35,7 @@ export type AppConfigType = {
   githubClientId: string;
   appleClientId: string;
   billingEnabled: boolean;
+  passwordLoginEnabled: boolean;
 };
 
 // 获取配置（用于服务端组件）
@@ -79,5 +86,6 @@ export const getDefaultConfig = (): AppConfigType => {
     appleClientId,
 
     billingEnabled: isBillingEnabled(),
+    passwordLoginEnabled: getBooleanEnv(env.PASSWORD_LOGIN_ENABLED),
   };
 };

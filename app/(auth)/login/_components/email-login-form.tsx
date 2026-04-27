@@ -17,6 +17,7 @@ type EmailLoginFormProps = {
   isPasswordLoading?: boolean;
   onMagicLinkSubmit: (email: string) => Promise<boolean>;
   onPasswordSubmit: (email: string, password: string) => Promise<boolean>;
+  passwordLoginEnabled: boolean;
 };
 
 type LoginFormValues = {
@@ -31,6 +32,7 @@ export const EmailLoginForm = ({
   isPasswordLoading = false,
   onMagicLinkSubmit,
   onPasswordSubmit,
+  passwordLoginEnabled,
 }: EmailLoginFormProps) => {
   const t = useTranslations("Auth");
   const [isPasswordLoginEnabled, setIsPasswordLoginEnabled] = useState(false);
@@ -59,7 +61,7 @@ export const EmailLoginForm = ({
   };
 
   const handleSubmit = form.handleSubmit(async ({ email, password }) => {
-    if (isPasswordLoginEnabled) {
+    if (passwordLoginEnabled && isPasswordLoginEnabled) {
       if (password.length < 8) {
         form.setError("password", {
           type: "manual",
@@ -100,7 +102,7 @@ export const EmailLoginForm = ({
         ) : null}
       </div>
 
-      {isPasswordLoginEnabled ? (
+      {passwordLoginEnabled && isPasswordLoginEnabled ? (
         <div className="space-y-2 max-[639px]:space-y-1.5">
           <div className="flex items-center justify-between gap-3">
             <Label
@@ -140,21 +142,23 @@ export const EmailLoginForm = ({
         type="submit"
         variant="primary"
       >
-        {isPasswordLoginEnabled
+        {passwordLoginEnabled && isPasswordLoginEnabled
           ? t("signInWithPassword")
           : isMagicLinkLoading
             ? t("sending")
             : t("sendMagicLink")}
       </LoginButton>
 
-      <LoginButton
-        disabled={disabled || isSubmitting}
-        onClick={togglePasswordLogin}
-        type="button"
-        variant="secondary"
-      >
-        {isPasswordLoginEnabled ? t("useEmailLinkInstead") : t("loginWithPassword")}
-      </LoginButton>
+      {passwordLoginEnabled ? (
+        <LoginButton
+          disabled={disabled || isSubmitting}
+          onClick={togglePasswordLogin}
+          type="button"
+          variant="secondary"
+        >
+          {isPasswordLoginEnabled ? t("useEmailLinkInstead") : t("loginWithPassword")}
+        </LoginButton>
+      ) : null}
     </form>
   );
 };
