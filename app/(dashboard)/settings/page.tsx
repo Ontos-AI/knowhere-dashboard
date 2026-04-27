@@ -21,11 +21,13 @@ import { Switch } from "@components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@components/ui/tabs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTimezone } from "@hooks/use-timezone";
+import { useQueryClient } from "@tanstack/react-query";
 import { setCookie } from "@utils/cookies";
 import { formatDate } from "@utils/format";
 import {
   AlertCircle,
   CheckCircle,
+  KeyRound,
   Loader2,
   Lock,
   Mail,
@@ -41,6 +43,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
+import { authClient } from "@/lib/better-auth-client";
 
 function SettingsPageSkeleton() {
   return (
@@ -139,6 +142,54 @@ const createProfileSchema = (t: (key: string) => string) =>
 
 type ProfileForm = z.infer<ReturnType<typeof createProfileSchema>>;
 
+const createSetPasswordSchema = (t: (key: string) => string) =>
+  z
+    .object({
+      newPassword: z.string().min(8, { message: t("newPasswordMinLength") }),
+      confirmPassword: z.string().min(8, { message: t("newPasswordMinLength") }),
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, {
+      message: t("passwordMismatch"),
+      path: ["confirmPassword"],
+    });
+
+type SetPasswordForm = z.infer<ReturnType<typeof createSetPasswordSchema>>;
+
+const createChangePasswordSchema = (t: (key: string) => string) =>
+  z
+    .object({
+      currentPassword: z.string().min(1, { message: t("currentPasswordRequired") }),
+      newPassword: z.string().min(8, { message: t("newPasswordMinLength") }),
+      confirmPassword: z.string().min(8, { message: t("newPasswordMinLength") }),
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, {
+      message: t("passwordMismatch"),
+      path: ["confirmPassword"],
+    });
+
+type ChangePasswordForm = z.infer<ReturnType<typeof createChangePasswordSchema>>;
+
+type PasswordApiErrorResponse = {
+  readonly message?: string;
+};
+
+async function setPasswordWithCurrentSession(newPassword: string): Promise<void> {
+  const response = await fetch("/api/account/password", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ newPassword }),
+  });
+
+  if (!response.ok) {
+    const errorPayload = (await response
+      .json()
+      .catch(() => null)) as PasswordApiErrorResponse | null;
+    throw new Error(errorPayload?.message || "Failed to set password");
+  }
+}
+
 export default function SettingsPage() {
   const { user, isLoading } = useAuth();
   const toast = useToast();
@@ -147,23 +198,42 @@ export default function SettingsPage() {
   const locale = useLocale();
   const { setTheme, theme } = useTheme();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { timezone, setTimezone } = useTimezone();
 
   const updateProfileMutation = useUpdateProfile();
   const updateEmailMutation = useUpdateEmail();
   const sendVerificationMutation = useSendVerificationEmail();
-  const { hasOAuthAccount, oAuthProviderName } = useLinkedAccounts();
+  const { hasOAuthAccount, hasPasswordCredential, oAuthProviderName } = useLinkedAccounts();
   const isSaving = updateProfileMutation.isPending || updateEmailMutation.isPending;
+  const [isPasswordSaving, setIsPasswordSaving] = useState(false);
 
   const [resendCooldown, setResendCooldown] = useState(0);
 
   const profileSchema = useMemo(() => createProfileSchema(t), [t]);
+  const setPasswordSchema = useMemo(() => createSetPasswordSchema(t), [t]);
+  const changePasswordSchema = useMemo(() => createChangePasswordSchema(t), [t]);
 
   const profileForm = useForm<ProfileForm>({
     resolver: zodResolver(profileSchema),
     values: {
       username: user?.name || "",
       email: user?.email || "",
+    },
+  });
+  const setPasswordForm = useForm<SetPasswordForm>({
+    resolver: zodResolver(setPasswordSchema),
+    defaultValues: {
+      newPassword: "",
+      confirmPassword: "",
+    },
+  });
+  const changePasswordForm = useForm<ChangePasswordForm>({
+    resolver: zodResolver(changePasswordSchema),
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
     },
   });
 
@@ -203,6 +273,53 @@ export default function SettingsPage() {
   const handleTimezoneChange = (value: string) => {
     setTimezone(value);
     toast.success(t("timezoneUpdated"));
+  };
+
+  const refreshPasswordState = async (): Promise<void> => {
+    await authClient.getSession({
+      query: { disableCookieCache: true },
+    });
+    await queryClient.invalidateQueries({ queryKey: ["session"] });
+    await queryClient.invalidateQueries({ queryKey: ["linked-accounts"] });
+  };
+
+  const handleSetPassword = async (data: SetPasswordForm): Promise<void> => {
+    setIsPasswordSaving(true);
+    try {
+      await setPasswordWithCurrentSession(data.newPassword);
+      setPasswordForm.reset();
+      await refreshPasswordState();
+      toast.success(t("passwordSet"));
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : t("passwordUpdateFailed");
+      toast.error(message);
+    } finally {
+      setIsPasswordSaving(false);
+    }
+  };
+
+  const handleChangePassword = async (data: ChangePasswordForm): Promise<void> => {
+    setIsPasswordSaving(true);
+    try {
+      const { error } = await authClient.changePassword({
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword,
+        revokeOtherSessions: true,
+      });
+
+      if (error) {
+        throw new Error(error.message || t("passwordUpdateFailed"));
+      }
+
+      changePasswordForm.reset();
+      await refreshPasswordState();
+      toast.success(t("passwordUpdated"));
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : t("passwordUpdateFailed");
+      toast.error(message);
+    } finally {
+      setIsPasswordSaving(false);
+    }
   };
 
   const handleResendVerification = async () => {
@@ -276,7 +393,7 @@ export default function SettingsPage() {
       <Tabs defaultValue="profile" className="space-y-4">
         <TabsList>
           <TabsTrigger value="profile">{t("profile")}</TabsTrigger>
-          {/* <TabsTrigger value="security">{t('security')}</TabsTrigger> */}
+          <TabsTrigger value="security">{t("security")}</TabsTrigger>
           <TabsTrigger value="preferences">{t("preferences")}</TabsTrigger>
         </TabsList>
 
@@ -423,6 +540,133 @@ export default function SettingsPage() {
                   <p className="text-sm">{t("active")}</p>
                 </div>
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="security" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <KeyRound className="mr-2 h-5 w-5" />
+                {t("passwordSettings")}
+              </CardTitle>
+              <CardDescription>
+                {hasPasswordCredential ? t("passwordDesc") : t("setPasswordDesc")}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {hasPasswordCredential ? (
+                <form
+                  onSubmit={changePasswordForm.handleSubmit(handleChangePassword)}
+                  className="space-y-4"
+                >
+                  <div className="space-y-2">
+                    <Label htmlFor="currentPassword">{t("currentPassword")}</Label>
+                    <Input
+                      id="currentPassword"
+                      type="password"
+                      autoComplete="current-password"
+                      {...changePasswordForm.register("currentPassword")}
+                      disabled={isPasswordSaving}
+                    />
+                    {changePasswordForm.formState.errors.currentPassword && (
+                      <p className="text-sm text-destructive">
+                        {changePasswordForm.formState.errors.currentPassword.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="newPassword">{t("newPassword")}</Label>
+                      <Input
+                        id="newPassword"
+                        type="password"
+                        autoComplete="new-password"
+                        {...changePasswordForm.register("newPassword")}
+                        disabled={isPasswordSaving}
+                      />
+                      {changePasswordForm.formState.errors.newPassword && (
+                        <p className="text-sm text-destructive">
+                          {changePasswordForm.formState.errors.newPassword.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="confirmPassword">{t("confirmPassword")}</Label>
+                      <Input
+                        id="confirmPassword"
+                        type="password"
+                        autoComplete="new-password"
+                        {...changePasswordForm.register("confirmPassword")}
+                        disabled={isPasswordSaving}
+                      />
+                      {changePasswordForm.formState.errors.confirmPassword && (
+                        <p className="text-sm text-destructive">
+                          {changePasswordForm.formState.errors.confirmPassword.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <Button type="submit" disabled={isPasswordSaving}>
+                      {isPasswordSaving ? t("updating") : t("updatePassword")}
+                    </Button>
+                  </div>
+                </form>
+              ) : (
+                <form
+                  onSubmit={setPasswordForm.handleSubmit(handleSetPassword)}
+                  className="space-y-4"
+                >
+                  <div className="rounded-md border border-border/70 bg-muted/30 p-4 text-sm text-muted-foreground">
+                    {t("noPasswordCredentialDesc")}
+                  </div>
+
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="setNewPassword">{t("newPassword")}</Label>
+                      <Input
+                        id="setNewPassword"
+                        type="password"
+                        autoComplete="new-password"
+                        {...setPasswordForm.register("newPassword")}
+                        disabled={isPasswordSaving}
+                      />
+                      {setPasswordForm.formState.errors.newPassword && (
+                        <p className="text-sm text-destructive">
+                          {setPasswordForm.formState.errors.newPassword.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="setConfirmPassword">{t("confirmPassword")}</Label>
+                      <Input
+                        id="setConfirmPassword"
+                        type="password"
+                        autoComplete="new-password"
+                        {...setPasswordForm.register("confirmPassword")}
+                        disabled={isPasswordSaving}
+                      />
+                      {setPasswordForm.formState.errors.confirmPassword && (
+                        <p className="text-sm text-destructive">
+                          {setPasswordForm.formState.errors.confirmPassword.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <Button type="submit" disabled={isPasswordSaving}>
+                      {isPasswordSaving ? t("updating") : t("setPassword")}
+                    </Button>
+                  </div>
+                </form>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

@@ -18,12 +18,16 @@ import { authClient } from "@/lib/better-auth-client";
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const [isMagicLinkLoading, setIsMagicLinkLoading] = useState(false);
   const toast = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations("Auth");
   const rawCallbackURL = searchParams.get("callbackURL");
   const callbackURL = authRedirect.resolveCallbackURL(rawCallbackURL);
+  const forgotPasswordPath = authRedirect.buildAuthPagePath("/forgot-password", {
+    callbackURL: rawCallbackURL,
+  });
   const registerPath = authRedirect.buildAuthPagePath("/register", {
     callbackURL: rawCallbackURL,
   });
@@ -42,12 +46,14 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
+    getValues,
+    trigger,
     formState: { errors },
   } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: LoginForm) => {
+  const onSubmit = async (data: LoginForm): Promise<void> => {
     setIsLoading(true);
     try {
       const { error } = await authClient.signIn.email({
@@ -70,7 +76,38 @@ export default function LoginPage() {
     }
   };
 
-  const handleOAuthError = (error: string) => {
+  const handleMagicLinkSignIn = async (): Promise<void> => {
+    const isEmailValid = await trigger("email");
+    if (!isEmailValid) {
+      return;
+    }
+
+    setIsMagicLinkLoading(true);
+    try {
+      const { error } = await authClient.signIn.magicLink({
+        email: getValues("email"),
+        callbackURL,
+        errorCallbackURL: authRedirect.buildMagicLinkErrorCallbackURL("/login", {
+          callbackURL: rawCallbackURL,
+          error: "magic",
+        }),
+        newUserCallbackURL: callbackURL,
+      });
+
+      if (error) {
+        throw new Error(error.message || t("magicLinkFailed"));
+      }
+
+      toast.success(t("magicLinkSent"));
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : t("magicLinkFailed");
+      toast.error(t("magicLinkFailed"), errorMessage);
+    } finally {
+      setIsMagicLinkLoading(false);
+    }
+  };
+
+  const handleOAuthError = (error: string): void => {
     toast.error(t("oauthFailed"), error);
   };
 
@@ -99,7 +136,12 @@ export default function LoginPage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">{t("password")}</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="password">{t("password")}</Label>
+              <Link href={forgotPasswordPath} className="text-xs text-primary hover:underline">
+                {t("forgotPassword")}
+              </Link>
+            </div>
             <Input
               id="password"
               type="password"
@@ -115,6 +157,15 @@ export default function LoginPage() {
 
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? t("signingIn") : t("signInWithPassword")}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            disabled={isLoading || isMagicLinkLoading}
+            onClick={handleMagicLinkSignIn}
+          >
+            {isMagicLinkLoading ? t("sending") : t("sendMagicLink")}
           </Button>
         </form>
 

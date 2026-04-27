@@ -44,7 +44,7 @@ The default self-hosted flow is:
 1. Start PostgreSQL, Redis, object storage, and other shared dependencies.
 2. Start the dashboard migration/bootstrap step so Better Auth tables exist.
 3. Start the API with standalone mode disabled, then run API migrations.
-4. Register or sign in through the dashboard with email and password.
+4. Register or sign in through the dashboard with email and password, or use Resend-backed magic-link login when email delivery is configured.
 5. Create and manage API keys from the dashboard.
 6. Process jobs through the API/worker with dashboard billing disabled.
 
@@ -63,13 +63,13 @@ Required for startup:
 | `BETTER_AUTH_SECRET` | Random secret with at least 32 characters. |
 | `DATABASE_URL` | PostgreSQL connection URL for dashboard auth/account data. |
 
-Email/password registration and login are enabled by default for self-hosted deployments. OAuth and magic-link login are optional add-ons.
+Email/password registration and login are enabled by default for self-hosted deployments. OAuth and Resend-backed magic-link login are optional add-ons. Password reset emails also use Resend; signed-in OAuth users can set a password from dashboard settings.
 
 Required for specific features:
 
 | Variable | Feature |
 | --- | --- |
-| `RESEND_API_KEY`, `RESEND_FROM` | Magic-link email login. |
+| `RESEND_API_KEY`, `RESEND_FROM` | Magic-link email login and password reset emails. |
 | `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` | GitHub OAuth login. |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google OAuth login. |
 

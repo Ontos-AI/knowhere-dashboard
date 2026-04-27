@@ -1,5 +1,5 @@
 const DEFAULT_AUTH_REDIRECT_PATH = "/usage" as const;
-const AUTH_PAGE_PATHS = ["/login", "/register"] as const;
+const AUTH_PAGE_PATHS = ["/login", "/register", "/forgot-password", "/reset-password"] as const;
 const AUTH_CALLBACK_PATH_PREFIX = "/callback" as const;
 const PROTECTED_PATH_PREFIXES = [
   "/dashboard",
