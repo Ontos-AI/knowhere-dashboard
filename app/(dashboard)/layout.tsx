@@ -3,8 +3,6 @@ import { redirect } from "next/navigation";
 import { DashboardClient } from "@/app/(dashboard)/_components/dashboard-client";
 import { auth } from "@/lib/auth";
 
-export const dynamic = "force-dynamic";
-
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   // 服务端获取 session
   const session = await auth.api.getSession({
