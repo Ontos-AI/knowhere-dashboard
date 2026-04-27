@@ -1,15 +1,33 @@
 import * as authSchema from "@lib/db/auth-schema";
 import * as appSchema from "@lib/db/schema";
+import { env } from "@lib/env";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
-// Connection pool for Neon Postgres
-const pool = new Pool({
-  // biome-ignore lint/style/noNonNullAssertion: DATABASE_URL is validated at runtime by env schema
-  connectionString: process.env.DATABASE_URL!,
-  ssl: {
+const UNSAFE_DB_SSL_ENABLED_VALUES = new Set(["1", "true", "yes", "on"]);
+
+function getDatabaseSslConfig(unsafeDbSslEnabled: string | undefined):
+  | false
+  | {
+      rejectUnauthorized: boolean;
+    } {
+  const shouldDisableDatabaseSsl = UNSAFE_DB_SSL_ENABLED_VALUES.has(
+    (unsafeDbSslEnabled ?? "false").trim().toLowerCase()
+  );
+
+  if (shouldDisableDatabaseSsl) {
+    return false;
+  }
+
+  return {
     rejectUnauthorized: true,
-  },
+  };
+}
+
+// Connection pool for dashboard auth/account data.
+const pool = new Pool({
+  connectionString: env.DATABASE_URL,
+  ssl: getDatabaseSslConfig(env.UNSAFE_DB_SSL_ENABLED),
 });
 
 // Merge all schemas for type-safe db.query.* helpers
