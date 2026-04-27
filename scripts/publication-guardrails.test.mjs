@@ -149,8 +149,8 @@ test("auth route uses the Better Auth Next handler directly", () => {
   assert.match(authRoute, /export const \{ GET, POST \} = toNextJsHandler\(auth\);/);
   assert.doesNotMatch(authRoute, /getAuth|handleAuthRequest/);
   assert.doesNotMatch(authRoute, /await import\("@lib\/auth"\)/);
-  assert.match(authModule, /export const auth = createAuth\(\);/);
-  assert.doesNotMatch(authModule, /export const getAuth/);
+  assert.match(authModule, /export const auth = betterAuth\(\{/);
+  assert.doesNotMatch(authModule, /createAuth|getAuth/);
 });
 
 test("optional auth providers do not get synthetic empty-string defaults", () => {
