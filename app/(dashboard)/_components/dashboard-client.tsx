@@ -1,10 +1,14 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Header } from "@/app/(dashboard)/_components/header";
 import { Sidebar } from "@/app/(dashboard)/_components/sidebar";
+import { ApiKeysDashboardShell } from "@/app/(dashboard)/api-keys/_components/api-keys-dashboard-shell";
 import { BuyCreditsModal } from "@/app/(dashboard)/billing/_components/buy-credits-modal";
+import { SettingsDashboardShell } from "@/app/(dashboard)/settings/_components/settings-dashboard-shell";
+import { UsageDashboardShell } from "@/app/(dashboard)/usage/_components/usage-dashboard-shell";
+import { WebhooksDashboardShell } from "@/app/(dashboard)/webhooks/_components/webhooks-dashboard-shell";
 import type { AuthUser } from "@/hooks/use-auth";
 
 type DashboardClientProps = {
@@ -14,13 +18,56 @@ type DashboardClientProps = {
 
 export function DashboardClient({ user, children }: DashboardClientProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const isBuyCreditsOpen = searchParams.get("buy") === "true";
+  const isUsageRoute = pathname === "/usage" || pathname.startsWith("/usage/");
+  const isApiKeysRoute = pathname === "/api-keys" || pathname.startsWith("/api-keys/");
+  const isSettingsRoute = pathname === "/settings" || pathname.startsWith("/settings/");
+  const isWebhooksRoute = pathname === "/webhooks" || pathname.startsWith("/webhooks/");
+  const isRedesignedDashboardRoute =
+    isUsageRoute || isApiKeysRoute || isSettingsRoute || isWebhooksRoute;
 
   useEffect(() => {
+    if (isRedesignedDashboardRoute) {
+      return;
+    }
+
     document.body.classList.add("console-tone");
     return () => document.body.classList.remove("console-tone");
-  }, []);
+  }, [isRedesignedDashboardRoute]);
+
+  if (isUsageRoute) {
+    return (
+      <UsageDashboardShell user={user} isBuyCreditsOpen={isBuyCreditsOpen}>
+        {children}
+      </UsageDashboardShell>
+    );
+  }
+
+  if (isApiKeysRoute) {
+    return (
+      <ApiKeysDashboardShell user={user} isBuyCreditsOpen={isBuyCreditsOpen}>
+        {children}
+      </ApiKeysDashboardShell>
+    );
+  }
+
+  if (isWebhooksRoute) {
+    return (
+      <WebhooksDashboardShell user={user} isBuyCreditsOpen={isBuyCreditsOpen}>
+        {children}
+      </WebhooksDashboardShell>
+    );
+  }
+
+  if (isSettingsRoute) {
+    return (
+      <SettingsDashboardShell user={user} isBuyCreditsOpen={isBuyCreditsOpen}>
+        {children}
+      </SettingsDashboardShell>
+    );
+  }
 
   return (
     <div className="landing-tone relative min-h-screen bg-background text-foreground">
@@ -29,7 +76,7 @@ export function DashboardClient({ user, children }: DashboardClientProps) {
       <Sidebar user={user} open={sidebarOpen} onOpenChange={setSidebarOpen} />
 
       {/* 主内容区域 */}
-      <div className="relative z-10 lg:pl-64">
+      <div className="relative z-10 sm:pl-[160px] lg:pl-[200px]">
         {/* 顶部导航栏 */}
         <Header onMenuClick={() => setSidebarOpen(true)} />
 

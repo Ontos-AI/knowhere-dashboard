@@ -1,180 +1,246 @@
 "use client";
 
-import { Button } from "@components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
-import { Separator } from "@components/ui/separator";
-import { Skeleton } from "@components/ui/skeleton";
+import { DatePickerWithRange } from "@app/(dashboard)/usage/_components/date-range-picker";
+import { UsageTable } from "@app/(dashboard)/usage/_components/usage-table";
+import { useExportAllJobs, useJobs } from "@app/(dashboard)/usage/_hooks/use-jobs";
+import { useParseUsage } from "@app/(dashboard)/usage/_hooks/use-usage-stats";
 import { useCredits } from "@hooks/use-credits";
 import { useTimezone } from "@hooks/use-timezone";
 import { cn } from "@lib/utils";
 import { format, subDays } from "date-fns";
-import { CheckCircle2, CreditCard, Download, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useQueryState } from "nuqs";
-import { useMemo, useState } from "react";
+import { startTransition, useState } from "react";
 import type { DateRange } from "react-day-picker";
-import { BuyCreditsDialog } from "@/app/(dashboard)/billing/_components/buy-credits-dialog";
-import { DatePickerWithRange } from "@/app/(dashboard)/usage/_components/date-range-picker";
-import { UsageTable } from "@/app/(dashboard)/usage/_components/usage-table";
-import { useExportAllJobs, useJobs } from "@/app/(dashboard)/usage/_hooks/use-jobs";
-import { useParseUsage } from "@/app/(dashboard)/usage/_hooks/use-usage-stats";
-import { useToast } from "@/hooks/use-toast";
 
-function UsagePageSkeleton() {
+type TimeRangePreset = 1 | 3 | 7;
+
+type UsageSummaryCardProps = {
+  title: string;
+  value: string;
+  unit: string;
+  valueClassName: string;
+  helper: React.ReactNode;
+  icon: React.ReactNode;
+};
+
+const getPresetDateRange = (days: TimeRangePreset): DateRange => {
+  return {
+    from: subDays(new Date(), days),
+    to: new Date(),
+  };
+};
+
+const buildBuyCreditsHref = (pathname: string, searchParams: URLSearchParams) => {
+  const params = new URLSearchParams(searchParams.toString());
+  params.set("buy", "true");
+  const nextSearch = params.toString();
+  return nextSearch ? `${pathname}?${nextSearch}` : pathname;
+};
+
+const formatMetricNumber = (value: number, fractionDigits = 3) => {
+  return value.toLocaleString(undefined, {
+    maximumFractionDigits: fractionDigits,
+  });
+};
+
+const SummaryIcon = ({
+  className,
+  height,
+  src,
+  width,
+}: {
+  className?: string;
+  height: number;
+  src: string;
+  width: number;
+}) => {
   return (
-    <output className="flex flex-col gap-6 p-6" aria-busy="true">
-      {/* 标题行 */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-col gap-2">
-          <Skeleton className="h-9 w-48" />
-          <Skeleton className="h-5 w-full max-w-96" />
-        </div>
-        <Skeleton className="h-10 w-32 self-start sm:self-auto" />
-      </div>
+    <div className={cn("flex size-6 shrink-0 items-start justify-center", className)}>
+      <Image src={src} alt="" aria-hidden width={width} height={height} />
+    </div>
+  );
+};
 
-      {/* 统计卡片 */}
-      <div className="grid gap-4 md:grid-cols-2">
-        {[1, 2].map((i) => (
-          <Card key={i}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-4 w-4 rounded-full" />
-            </CardHeader>
-            <CardContent>
-              <Skeleton className="h-8 w-20 mb-2" />
-              <Skeleton className="h-3 w-32" />
-            </CardContent>
-          </Card>
+const UsageSummaryCard = ({
+  title,
+  value,
+  unit,
+  valueClassName,
+  helper,
+  icon,
+}: UsageSummaryCardProps) => {
+  return (
+    <article className="flex h-[98px] flex-col gap-2 overflow-hidden border border-[#f4f4f5] px-[14px] pb-[14px] pt-3 sm:h-[120px] sm:px-[18px] sm:pb-5 sm:pt-4 lg:h-[132px] lg:px-5">
+      <div className="flex min-h-6 items-start justify-between gap-6 sm:min-h-[40px]">
+        <h2 className="text-[14px] font-medium leading-5 text-[#27272a] sm:text-base sm:leading-6">
+          {title}
+        </h2>
+        {icon}
+      </div>
+      <div className="flex items-baseline gap-2 sm:gap-1.5">
+        <span
+          className={cn(
+            "font-accent text-[18px] font-extrabold leading-none sm:text-[22px] lg:text-2xl",
+            valueClassName
+          )}
+        >
+          {value}
+        </span>
+        <span className="font-accent text-[12px] font-medium leading-none text-[#27272a] sm:text-[14px] lg:text-base">
+          {unit}
+        </span>
+      </div>
+      <div className="text-[12px] leading-[14px] sm:leading-4">{helper}</div>
+    </article>
+  );
+};
+
+const UsagePageSkeleton = () => {
+  return (
+    <div className="w-full space-y-[18px] sm:space-y-[22px] lg:space-y-5">
+      <div className="h-6 w-[340px] animate-pulse bg-[#f4f4f5]" />
+      <div className="grid grid-cols-1 gap-0 border border-[#e4e4e7] lg:grid-cols-3">
+        {["summary-1", "summary-2", "summary-3"].map((cardKey) => (
+          <div
+            key={cardKey}
+            className="flex h-[98px] flex-col gap-3 border border-[#f4f4f5] px-[14px] pb-[14px] pt-3 sm:h-[120px] sm:px-[18px] sm:pb-5 sm:pt-4 lg:h-[132px] lg:px-5"
+          >
+            <div className="h-6 w-32 animate-pulse bg-[#f4f4f5]" />
+            <div className="h-8 w-24 animate-pulse bg-[#f4f4f5]" />
+            <div className="h-4 w-40 animate-pulse bg-[#f4f4f5]" />
+          </div>
         ))}
       </div>
-
-      <Separator />
-
-      {/* 控制栏 */}
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-          <Skeleton className="h-10 w-full sm:w-64" />
-          <Skeleton className="h-10 w-full sm:w-48" />
-        </div>
-        <Skeleton className="h-9 w-32 self-start lg:self-auto" />
+      <div className="flex flex-wrap gap-2">
+        <div className="h-8 w-[288px] animate-pulse bg-[#f4f4f5]" />
+        <div className="h-8 w-[220px] animate-pulse bg-[#f4f4f5]" />
+        <div className="ml-auto h-8 w-[128px] animate-pulse bg-[#f4f4f5]" />
       </div>
-
-      {/* 表格 */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="space-y-3">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <Skeleton key={i} className="h-14 w-full" />
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      <span className="sr-only">Loading usage data...</span>
-    </output>
+      <div className="h-[560px] animate-pulse border border-[#e4e4e7] bg-[#fafafa]" />
+    </div>
   );
-}
+};
 
 export default function UsagePage() {
   const t = useTranslations("Usage");
   const tTable = useTranslations("UsageTable");
-  const _toast = useToast();
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: subDays(new Date(), 30),
-    to: new Date(),
-  });
-  const [activeRange, setActiveRange] = useState<"1d" | "7d" | "30d" | null>("30d");
-  const { timezone, formatDate } = useTimezone();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const buyCreditsHref = buildBuyCreditsHref(
+    pathname,
+    new URLSearchParams(searchParams.toString())
+  );
+  const [date, setDate] = useState<DateRange | undefined>(getPresetDateRange(1));
+  const [activeRange, setActiveRange] = useState<TimeRangePreset | null>(1);
   const { data: credits } = useCredits();
+  const { formatDate } = useTimezone();
 
-  // Use URL state for pagination
   const [page, setPage] = useQueryState("page", { defaultValue: "1" });
-  const [pageSize, setPageSize] = useQueryState("pageSize", { defaultValue: "10" });
+  const [pageSize, setPageSize] = useQueryState("pageSize", { defaultValue: "30" });
 
-  // Build query params
-  const queryParams = useMemo(() => {
-    const params: {
-      page: number;
-      pageSize: number;
-      recentDays?: number;
-      startTime?: string;
-      endTime?: string;
-    } = {
-      page: Number(page),
-      pageSize: Number(pageSize),
-    };
+  const currentPage = Number.parseInt(page, 10) || 1;
+  const currentPageSize = Number.parseInt(pageSize, 10) || 30;
 
-    if (activeRange) {
-      if (activeRange === "1d") params.recentDays = 1;
-      else if (activeRange === "7d") params.recentDays = 7;
-      else if (activeRange === "30d") params.recentDays = 30;
-    } else if (date?.from) {
-      params.startTime = date.from.toISOString();
-      if (date.to) {
-        const endOfDay = new Date(date.to);
-        endOfDay.setHours(23, 59, 59, 999);
-        params.endTime = endOfDay.toISOString();
-      } else {
-        const endOfDay = new Date(date.from);
-        endOfDay.setHours(23, 59, 59, 999);
-        params.endTime = endOfDay.toISOString();
-      }
-    }
+  const resolvedCustomEndTime =
+    activeRange === 3 || (activeRange === null && date?.from)
+      ? (() => {
+          const dateForEnd = date?.to ?? date?.from;
 
-    return params;
-  }, [page, pageSize, activeRange, date]);
+          if (!dateForEnd) {
+            return undefined;
+          }
 
-  // Fetch data with TanStack Query
-  const { data: jobsData, isPending: isPendingJobs } = useJobs(queryParams);
-  const { data: usageStats, isPending: isPendingStats } = useParseUsage();
-  const { mutateAsync: fetchAllJobs, isPending: isExporting } = useExportAllJobs();
+          const endOfDay = new Date(dateForEnd);
+          endOfDay.setHours(23, 59, 59, 999);
+          return endOfDay.toISOString();
+        })()
+      : undefined;
 
-  const isPending = isPendingJobs || isPendingStats;
-  const jobs = jobsData?.jobs || [];
-  const totalCount = jobsData?.total || 0;
-
-  const handlePageChange = (newPagination: { pageIndex: number; pageSize: number }) => {
-    setPage((newPagination.pageIndex + 1).toString());
-    setPageSize(newPagination.pageSize.toString());
+  const queryParams = {
+    page: currentPage,
+    pageSize: currentPageSize,
+    recentDays: activeRange === 1 || activeRange === 7 ? activeRange : undefined,
+    startTime:
+      activeRange === 3 || (activeRange === null && date?.from)
+        ? date?.from?.toISOString()
+        : undefined,
+    endTime: resolvedCustomEndTime,
   };
 
-  // Calculate stats from filtered data
-  const totalCost = jobs.reduce((acc, item) => acc + item.cost, 0);
-  // Assuming 1 credit = $0.02
-  const estimatedCost = totalCost * 0.02;
+  const {
+    data: jobsData,
+    isPending: isPendingJobs,
+    isFetching: isFetchingJobs,
+  } = useJobs(queryParams);
+  const {
+    data: usageStats,
+    isPending: isPendingUsageStats,
+    isFetching: isFetchingUsageStats,
+  } = useParseUsage();
+  const { mutateAsync: exportAllJobs, isPending: isExporting } = useExportAllJobs();
 
-  const doneJobs = jobs.filter((i) => i.statusKind === "done");
-  const successRate = jobs.length > 0 ? ((doneJobs.length / jobs.length) * 100).toFixed(1) : "0";
+  const jobs = jobsData?.jobs ?? [];
+  const totalCount = jobsData?.total ?? 0;
+  const pageCount = Math.max(Math.ceil(totalCount / currentPageSize), 1);
 
-  const avgDuration =
-    doneJobs.length > 0
-      ? (
-          doneJobs.reduce((acc, item) => {
-            const durationStr = String(item.duration).replace("s", "");
-            return acc + (Number.parseFloat(durationStr) || 0);
-          }, 0) / doneJobs.length
-        ).toFixed(1)
-      : "0";
+  const totalCreditsUsed = usageStats?.credits_used ?? jobs.reduce((sum, job) => sum + job.cost, 0);
+  const estimatedCost =
+    usageStats?.estimated_amount ?? jobs.reduce((sum, job) => sum + job.cost, 0) * 0.02;
+  const estimatedCostLabel =
+    typeof estimatedCost === "number" ? estimatedCost.toLocaleString() : String(estimatedCost);
 
-  const handleExportCSV = async () => {
-    // RFC 4180: wrap field in quotes if it contains comma, quote, or newline
-    const escapeCSVField = (value: string | number | undefined | null): string => {
-      const str = String(value ?? "");
-      if (str.includes(",") || str.includes('"') || str.includes("\n")) {
-        return `"${str.replace(/"/g, '""')}"`;
+  const doneJobs = jobs.filter((job) => job.statusKind === "done");
+  const successRate =
+    usageStats?.success_rate ??
+    (jobs.length > 0 ? ((doneJobs.length / jobs.length) * 100).toFixed(2) : "0.00");
+  const averageDuration =
+    usageStats?.avg_processing_time ??
+    (() => {
+      if (doneJobs.length === 0) {
+        return "0.00";
       }
-      return str;
+
+      const totalDuration = doneJobs.reduce((sum, job) => {
+        const numericValue = Number.parseFloat(String(job.duration).replace("s", ""));
+        return Number.isNaN(numericValue) ? sum : sum + numericValue;
+      }, 0);
+
+      return (totalDuration / doneJobs.length).toFixed(2);
+    })();
+
+  const isInitialLoading = isPendingJobs || isPendingUsageStats;
+  const isRefreshing = isFetchingJobs || isFetchingUsageStats;
+
+  const handleExportCsv = async () => {
+    if (totalCount === 0) {
+      return;
+    }
+
+    const escapeCsvField = (value: string | number | undefined | null) => {
+      const stringValue = String(value ?? "");
+
+      if (stringValue.includes(",") || stringValue.includes('"') || stringValue.includes("\n")) {
+        return `"${stringValue.replace(/"/g, '""')}"`;
+      }
+
+      return stringValue;
     };
 
-    // Fetch all records (not just the current page) for a complete export
-    const allJobs = await fetchAllJobs({
+    const exportedJobs = await exportAllJobs({
       total: totalCount,
-      recentDays: queryParams.recentDays,
+      recentDays:
+        queryParams.recentDays === 1 || queryParams.recentDays === 7
+          ? queryParams.recentDays
+          : undefined,
       startTime: queryParams.startTime,
       endTime: queryParams.endTime,
     });
 
-    // Define headers
     const headers = [
       tTable("date"),
       tTable("jobId"),
@@ -187,190 +253,205 @@ export default function UsagePage() {
       tTable("resultUrl"),
     ];
 
-    // Map data to rows
-    const rows = allJobs.map((item) => [
-      formatDate({ date: item.date, formatStr: "yyyy-MM-dd HH:mm:ss" }),
-      item.jobId,
-      item.fileName || "",
-      item.model,
-      item.pages,
-      item.duration,
-      item.cost,
-      item.statusKind === "done"
+    const rows = exportedJobs.map((job) => [
+      formatDate({ date: job.date, formatStr: "yyyy-MM-dd HH:mm:ss" }),
+      job.jobId,
+      job.fileName,
+      job.model,
+      job.pages,
+      job.duration,
+      job.cost,
+      job.statusKind === "done"
         ? tTable("statusDone")
-        : item.statusKind === "failed"
+        : job.statusKind === "failed"
           ? tTable("statusFailed")
-          : item.statusKind === "running"
+          : job.statusKind === "running"
             ? tTable("statusRunning")
-            : item.statusKind === "pending"
+            : job.statusKind === "pending"
               ? tTable("statusPending")
-              : item.statusKind === "waiting-file"
+              : job.statusKind === "waiting-file"
                 ? tTable("statusWaitingFile")
-                : item.status,
-      item.statusKind === "done" ? item.resultUrl || "" : "",
+                : job.status,
+      job.resultUrl ?? "",
     ]);
 
-    // Combine headers and rows, applying consistent escaping to all fields
     const csvContent = [
-      headers.map(escapeCSVField).join(","),
-      ...rows.map((row) => row.map(escapeCSVField).join(",")),
+      headers.map(escapeCsvField).join(","),
+      ...rows.map((row) => row.map(escapeCsvField).join(",")),
     ].join("\n");
 
-    // Create blob with UTF-8 BOM so Excel recognizes the encoding correctly
     const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
     const blob = new Blob([bom, csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
+
     link.setAttribute("href", url);
     link.setAttribute("download", `usage_export_${format(new Date(), "yyyyMMdd")}.csv`);
     link.style.visibility = "hidden";
+
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
 
-  if (isPending) {
+  if (isInitialLoading) {
     return <UsagePageSkeleton />;
   }
 
   return (
-    <div className="flex flex-col gap-6 p-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{t("title")}</h1>
-          <p className="text-muted-foreground">{t("description")}</p>
-        </div>
-        <div className="self-start sm:self-auto">
-          <BuyCreditsDialog currentCredits={credits || 0} />
-        </div>
-      </div>
+    <div className="w-full space-y-[18px] sm:space-y-[22px] lg:space-y-5">
+      <section className="space-y-1 sm:hidden">
+        <h1 className="text-base font-bold leading-6 text-black">{t("title")}</h1>
+        <p className="text-[14px] leading-5 text-[#52525c]">{t("description")}</p>
+      </section>
+      <p className="hidden text-base leading-[22px] text-[#52525c] sm:block lg:leading-6">
+        {t("description")}
+      </p>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t("totalCreditsUsed")}</CardTitle>
-            <CreditCard className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {usageStats ? usageStats.credits_used.toLocaleString() : totalCost.toLocaleString()}{" "}
-              pts
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {usageStats
-                ? t("estCost", { cost: `$${usageStats.estimated_amount}` })
-                : t("estCost", { cost: `$${estimatedCost.toFixed(2)}` })}
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t("successRate")}</CardTitle>
-            <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {usageStats ? usageStats.success_rate : successRate}%
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {usageStats
-                ? t("avgProcessingTime", { time: `${usageStats.avg_processing_time}s` })
-                : t("avgProcessingTime", { time: `${avgDuration}s` })}
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Separator />
-
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-            <DatePickerWithRange
-              className="w-full sm:w-auto"
-              date={date}
-              setDate={(newDate) => {
-                setDate(newDate);
-                setActiveRange(null);
-              }}
+      <section className="grid grid-cols-1 gap-0 border border-[#e4e4e7] lg:grid-cols-3">
+        <UsageSummaryCard
+          title={t("remainingCredits")}
+          value={formatMetricNumber(credits ?? 0)}
+          unit={tTable("pts")}
+          valueClassName="text-[#ff6900]"
+          icon={
+            <SummaryIcon
+              src="/icons/usage/summary-remaining.svg"
+              width={21}
+              height={15}
+              className="pt-[2px]"
             />
-            <div className="grid w-full grid-cols-3 items-center rounded-lg border bg-card p-1 text-card-foreground shadow-sm sm:flex sm:w-auto">
-              <Button
-                variant="ghost"
-                size="sm"
-                className={cn(
-                  "h-8 px-2 text-xs hover:bg-muted sm:h-7 sm:px-3",
-                  activeRange === "1d" && "bg-primary text-primary-foreground hover:bg-primary/90"
-                )}
-                onClick={() => {
-                  setDate({ from: subDays(new Date(), 1), to: new Date() });
-                  setActiveRange("1d");
-                }}
-              >
-                {t("1d")}
-              </Button>
-              <Separator orientation="vertical" className="hidden h-4 sm:block" />
-              <Button
-                variant="ghost"
-                size="sm"
-                className={cn(
-                  "h-8 px-2 text-xs hover:bg-muted sm:h-7 sm:px-3",
-                  activeRange === "7d" && "bg-primary text-primary-foreground hover:bg-primary/90"
-                )}
-                onClick={() => {
-                  setDate({ from: subDays(new Date(), 7), to: new Date() });
-                  setActiveRange("7d");
-                }}
-              >
-                {t("7d")}
-              </Button>
-              <Separator orientation="vertical" className="hidden h-4 sm:block" />
-              <Button
-                variant="ghost"
-                size="sm"
-                className={cn(
-                  "h-8 px-2 text-xs hover:bg-muted sm:h-7 sm:px-3",
-                  activeRange === "30d" && "bg-primary text-primary-foreground hover:bg-primary/90"
-                )}
-                onClick={() => {
-                  setDate({ from: subDays(new Date(), 30), to: new Date() });
-                  setActiveRange("30d");
-                }}
-              >
-                {t("30d")}
-              </Button>
-            </div>
+          }
+          helper={
+            <Link
+              href={buyCreditsHref}
+              className="text-[#ff6900] transition-opacity hover:opacity-80"
+            >
+              Buy Knowhere API Credit &gt;&gt;
+            </Link>
+          }
+        />
+        <UsageSummaryCard
+          title={t("totalCreditsUsed")}
+          value={formatMetricNumber(totalCreditsUsed)}
+          unit={tTable("pts")}
+          valueClassName="text-[#00a63e]"
+          icon={<SummaryIcon src="/icons/usage/summary-used.svg" width={19} height={19} />}
+          helper={
+            <span className="text-[#27272a]">
+              {t("estCost", { cost: `$${estimatedCostLabel}` })}
+            </span>
+          }
+        />
+        <UsageSummaryCard
+          title={t("successRate")}
+          value={formatMetricNumber(Number(successRate), 2)}
+          unit="%"
+          valueClassName="text-[#2b7fff]"
+          icon={
+            <SummaryIcon src="/icons/usage/summary-success-fill.svg" width={20.65} height={19.73} />
+          }
+          helper={
+            <span className="text-[#27272a]">
+              {t("avgProcessingTime", { time: `${averageDuration}s` })}
+            </span>
+          }
+        />
+      </section>
+
+      <section className="space-y-3">
+        <div className="flex flex-wrap items-start gap-[6px] sm:gap-x-2 sm:gap-y-[6px] lg:gap-2">
+          <DatePickerWithRange
+            className="w-full max-w-[222px] sm:max-w-[224px] lg:max-w-[238px]"
+            date={date}
+            setDate={(nextDate) => {
+              setDate(nextDate);
+              setActiveRange(null);
+              startTransition(() => {
+                setPage("1");
+              });
+            }}
+          />
+
+          <div className="flex h-9 w-[205px] items-center gap-px overflow-hidden sm:h-8">
+            {[1, 3, 7].map((range) => {
+              const isActive = activeRange === range;
+
+              return (
+                <button
+                  key={`range-${range}`}
+                  type="button"
+                  className={cn(
+                    "flex h-9 w-[68px] items-center justify-center overflow-hidden bg-[#e4e4e7] px-4 pb-[10px] pt-2 font-mono-display text-[12px] font-light leading-4 tracking-normal text-[#09090b] sm:h-8 sm:pb-[10px] whitespace-nowrap",
+                    isActive && "border-b-4 border-[#52525c] bg-[#71717b] pb-3 font-bold text-white"
+                  )}
+                  onClick={() => {
+                    setActiveRange(range as TimeRangePreset);
+                    setDate(getPresetDateRange(range as TimeRangePreset));
+                    startTransition(() => {
+                      setPage("1");
+                    });
+                  }}
+                >
+                  {range} Day
+                </button>
+              );
+            })}
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            className="self-start lg:self-auto"
-            onClick={handleExportCSV}
+
+          <button
+            type="button"
+            className="flex h-9 w-[121px] items-center justify-center gap-1 border-x border-t border-b-4 border-[#f4f4f5] bg-white px-3 pb-0.5 font-mono-display text-[12px] font-medium leading-5 text-[#27272a] transition-colors hover:bg-[#fafafa] disabled:cursor-not-allowed disabled:opacity-60 sm:h-8 lg:ml-auto lg:w-[127px]"
+            onClick={() => void handleExportCsv()}
             disabled={isExporting || totalCount === 0}
           >
             {isExporting ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              <Download className="mr-2 h-4 w-4" />
+              <Image
+                src="/icons/usage/export.svg"
+                alt=""
+                aria-hidden
+                width={13.33}
+                height={13.33}
+                className="h-[13.33px] w-[13.33px]"
+              />
             )}
             {t("exportCSV")}
-          </Button>
+          </button>
         </div>
 
-        <div className="w-full">
-          <UsageTable
-            data={jobs}
-            timeZone={timezone}
-            pageCount={Math.ceil(totalCount / Number(pageSize))}
-            pageIndex={Number(page) - 1}
-            pageSize={Number(pageSize)}
-            onPageChange={handlePageChange}
-            total={totalCount}
-            isLoading={isPending}
-          />
-        </div>
-      </div>
+        <UsageTable
+          data={jobs}
+          total={totalCount}
+          page={currentPage}
+          pageSize={currentPageSize}
+          pageCount={pageCount}
+          isLoading={isRefreshing}
+          formatDateLabel={(value) =>
+            formatDate({ date: value, formatStr: "MM/dd/yyyy, hh:mm:ss aa" }).toLowerCase()
+          }
+          onPageChange={(nextPage) => {
+            startTransition(() => {
+              setPage(String(nextPage));
+            });
+          }}
+          onPageSizeChange={(nextPageSize) => {
+            startTransition(() => {
+              setPage("1");
+              setPageSize(String(nextPageSize));
+            });
+          }}
+          onDownloadResult={(_jobId, resultUrl) => {
+            if (!resultUrl) {
+              return;
+            }
+
+            window.open(resultUrl, "_blank", "noopener,noreferrer");
+          }}
+        />
+      </section>
     </div>
   );
 }

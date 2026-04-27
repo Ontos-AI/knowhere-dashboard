@@ -8,8 +8,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 export function useWebhookSecrets() {
   return useQuery({
     ...orpcQuery.webhookSecrets.list.queryOptions(),
-    staleTime: 60 * 1000, // 1 minute
-    gcTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    retry: 2,
   });
 }
 

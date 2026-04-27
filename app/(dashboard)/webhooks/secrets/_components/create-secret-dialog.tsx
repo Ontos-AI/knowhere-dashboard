@@ -1,64 +1,36 @@
 "use client";
 
-import { Button } from "@components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@components/ui/dialog";
-import { Input } from "@components/ui/input";
-import { Label } from "@components/ui/label";
-import { Loader2 } from "lucide-react";
+  DashboardDesktopActionButton,
+  DashboardDesktopDialogCloseButton,
+  dashboardDesktopFieldLabelClassName,
+  dashboardDesktopModalContentClassName,
+  dashboardDesktopTextFieldClassName,
+} from "@app/(dashboard)/_components/dashboard-modal-primitives";
+import { Dialog, DialogContent } from "@components/ui/dialog";
+import { cn } from "@lib/utils";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { type FormEvent, useState } from "react";
 import { z } from "zod";
 
 type CreateSecretDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onCreateSecret: (endpoint?: string | null) => Promise<void>;
   isPending: boolean;
+  onCreateSecret: (endpoint?: string | null) => Promise<void>;
+  onOpenChange: (open: boolean) => void;
+  open: boolean;
 };
 
 const endpointSchema = z.string().url("Invalid URL format").optional().nullable();
 
-export function CreateSecretDialog({
-  open,
-  onOpenChange,
-  onCreateSecret,
+export const CreateSecretDialog = ({
   isPending,
-}: CreateSecretDialogProps) {
+  onCreateSecret,
+  onOpenChange,
+  open,
+}: CreateSecretDialogProps) => {
   const t = useTranslations("Webhooks");
-
-  const [endpoint, setEndpoint] = useState<string>("");
-  const [validationError, setValidationError] = useState<string>("");
-
-  const handleCreate = async () => {
-    // Clear previous validation error
-    setValidationError("");
-
-    // Validate endpoint if provided
-    if (endpoint.trim()) {
-      const result = endpointSchema.safeParse(endpoint.trim());
-      if (!result.success) {
-        setValidationError(result.error.issues[0].message);
-        return;
-      }
-    }
-
-    try {
-      await onCreateSecret(endpoint.trim() || null);
-      // Reset form on success
-      setEndpoint("");
-      setValidationError("");
-    } catch (error) {
-      // Error handling is done in parent component
-      console.error("Create secret error:", error);
-    }
-  };
+  const [endpoint, setEndpoint] = useState("");
+  const [validationError, setValidationError] = useState("");
 
   const handleClose = () => {
     setEndpoint("");
@@ -66,45 +38,104 @@ export function CreateSecretDialog({
     onOpenChange(false);
   };
 
+  const handleCreate = async () => {
+    setValidationError("");
+
+    if (endpoint.trim()) {
+      const result = endpointSchema.safeParse(endpoint.trim());
+
+      if (!result.success) {
+        setValidationError(result.error.issues[0]?.message ?? "Invalid URL format");
+        return;
+      }
+    }
+
+    try {
+      await onCreateSecret(endpoint.trim() || null);
+      setEndpoint("");
+      setValidationError("");
+    } catch (error) {
+      console.error("Create secret error:", error);
+    }
+  };
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    void handleCreate();
+  };
+
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>{t("createSecret")}</DialogTitle>
-          <DialogDescription>{t("createSecretDescription")}</DialogDescription>
-        </DialogHeader>
+      <DialogContent className={dashboardDesktopModalContentClassName}>
+        <form
+          className="flex flex-col gap-8 px-6 pb-10 pt-6 sm:gap-[38px] sm:px-[46px] sm:pb-[54px] sm:pt-[38px] lg:gap-10 lg:px-12 lg:pb-14 lg:pt-10"
+          onSubmit={handleSubmit}
+        >
+          <div className="flex items-start gap-6 sm:gap-8">
+            <div className="min-w-0 flex-1">
+              <h2 className="text-[20px] font-bold leading-7 text-[#09090b] sm:leading-[26px] lg:leading-7">
+                {t("createSecret")}
+              </h2>
+              <p className="mt-1 text-sm leading-5 text-[#71717b] sm:leading-[18px] lg:leading-5">
+                {t("createSecretDescription")}
+              </p>
+            </div>
 
-        <div className="grid gap-4 py-4">
-          <div className="grid gap-2">
-            <Label htmlFor="endpoint">{t("endpointUrl")}</Label>
-            <Input
-              id="endpoint"
-              placeholder={t("endpointPlaceholder")}
-              value={endpoint}
-              onChange={(e) => setEndpoint(e.target.value)}
-              disabled={isPending}
-            />
-            {validationError && <p className="text-sm text-destructive">{validationError}</p>}
-            <p className="text-sm text-muted-foreground">{t("endpointHint")}</p>
+            <DashboardDesktopDialogCloseButton />
           </div>
-        </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={handleClose} disabled={isPending}>
-            {t("cancel")}
-          </Button>
-          <Button onClick={handleCreate} disabled={isPending}>
-            {isPending ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {t("creating")}
-              </>
-            ) : (
-              t("create")
-            )}
-          </Button>
-        </DialogFooter>
+          <div className="flex flex-col gap-6">
+            <label htmlFor="webhook-endpoint-url" className="flex flex-col gap-2">
+              <span
+                className={cn(
+                  dashboardDesktopFieldLabelClassName,
+                  "sm:leading-[18px] lg:leading-5"
+                )}
+              >
+                {t("endpointUrl")}
+              </span>
+              <input
+                id="webhook-endpoint-url"
+                value={endpoint}
+                onChange={(event) => setEndpoint(event.target.value)}
+                placeholder={t("endpointPlaceholder")}
+                className={dashboardDesktopTextFieldClassName}
+                disabled={isPending}
+              />
+            </label>
+
+            <div className="min-h-5">
+              <p
+                className={cn(
+                  "text-sm leading-5 sm:leading-[18px] lg:leading-5",
+                  validationError ? "text-destructive" : "text-[#71717b]"
+                )}
+              >
+                {validationError || t("endpointHint")}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-2 sm:gap-[6px] lg:gap-2">
+            <DashboardDesktopActionButton
+              variant="secondary"
+              onClick={handleClose}
+              disabled={isPending}
+              className="flex-1 sm:min-w-[67px] sm:flex-none lg:min-w-[71px]"
+            >
+              {t("cancel")}
+            </DashboardDesktopActionButton>
+            <DashboardDesktopActionButton
+              variant="primary"
+              type="submit"
+              disabled={isPending}
+              className="flex-1 sm:min-w-[60px] sm:flex-none lg:min-w-[64px]"
+            >
+              {isPending ? t("creating") : t("create")}
+            </DashboardDesktopActionButton>
+          </div>
+        </form>
       </DialogContent>
     </Dialog>
   );
-}
+};

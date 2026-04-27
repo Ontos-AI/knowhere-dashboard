@@ -203,8 +203,13 @@ export async function jwtRequest<T = unknown>({
     },
   });
 
+  const authorization =
+    env.NODE_ENV === "development" && env.DEV_EXTERNAL_API_AUTHORIZATION
+      ? env.DEV_EXTERNAL_API_AUTHORIZATION
+      : `Bearer ${token}`;
+
   return performRequest<T>({
-    authorization: `Bearer ${token}`,
+    authorization,
     body,
     method,
     path,

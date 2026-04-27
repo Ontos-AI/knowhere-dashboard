@@ -17,11 +17,18 @@ export type IntegrationStep = {
 
 export type ComparisonStatus = "yes" | "bad" | "no";
 
+export type ComparisonCategory = "Structures" | "Tables" | "Interpretability" | "Downstream";
+
+export type ComparisonTab = "All" | ComparisonCategory;
+
 export type ComparisonRow = {
+  category: ComparisonCategory;
   feature: string;
   knowhere: ComparisonStatus;
   others: ComparisonStatus;
+  description?: string;
   emphasize?: boolean;
+  callout?: boolean;
 };
 
 export type ChallengeCard = {
@@ -49,6 +56,22 @@ export type PriceExample = {
   label: string;
 };
 
+export type WhyChooseCompetitorId = "unstructured" | "markitdown";
+
+export type WhyChooseMetric = {
+  value: string;
+  label: string;
+};
+
+export type WhyChooseProduct = {
+  id: WhyChooseCompetitorId;
+  tabLabel: string;
+  description: string;
+  advantages: string[];
+  headline: string;
+  metrics: WhyChooseMetric[];
+};
+
 export type FileLimit = {
   format: string;
   size: string;
@@ -69,15 +92,12 @@ export const supportedFormats: FormatChip[] = [
   { label: ".csv", tone: { background: "#cffafe", border: "#a5f3fc", text: "#155e75" } },
   { label: ".png", tone: { background: "#ede9fe", border: "#ddd6ff", text: "#5b21b6" } },
   { label: ".md", tone: { background: "#ecfccb", border: "#d9f99d", text: "#4d7c0f" } },
-  { label: ".json", tone: { background: "#fef3c6", border: "#fde68a", text: "#a16207" } },
+  { label: ".josn", tone: { background: "#fef3c6", border: "#fde68a", text: "#a16207" } },
   { label: ".txt", tone: { background: "#e0e7ff", border: "#c7d2fe", text: "#3730a3" } },
 ];
 
 export const comingSoonFormats: FormatChip[] = [
   { label: ".epub", tone: { background: "#f4f4f5", border: "#d4d4d8", text: "#9f9fa9" } },
-  { label: ".doc", tone: { background: "#f4f4f5", border: "#d4d4d8", text: "#9f9fa9" } },
-  { label: ".xls", tone: { background: "#f4f4f5", border: "#d4d4d8", text: "#9f9fa9" } },
-  { label: ".ppt", tone: { background: "#f4f4f5", border: "#d4d4d8", text: "#9f9fa9" } },
   { label: ".html", tone: { background: "#f4f4f5", border: "#d4d4d8", text: "#9f9fa9" } },
   { label: ".xml", tone: { background: "#f4f4f5", border: "#d4d4d8", text: "#9f9fa9" } },
   { label: ".mp4", tone: { background: "#f4f4f5", border: "#d4d4d8", text: "#9f9fa9" } },
@@ -109,30 +129,128 @@ export const comparisonHighlights = [
   "50%+ Token saving when developing knowledge graphs",
 ] as const;
 
-export const comparisonTabs = [
+export const comparisonTabs: ComparisonTab[] = [
   "All",
   "Structures",
   "Tables",
   "Interpretability",
   "Downstream",
-] as const;
-
-export const comparisonRows: ComparisonRow[] = [
-  { feature: "Hierarchy construction", knowhere: "yes", others: "bad" },
-  { feature: "Complex merged cells", knowhere: "yes", others: "bad", emphasize: true },
-  { feature: "Table boundary detection", knowhere: "yes", others: "no" },
-  { feature: "Source traceability", knowhere: "yes", others: "bad", emphasize: true },
-  { feature: "Hierarchical memory & progressive disclosure", knowhere: "yes", others: "no" },
-  { feature: "Vectorless RAG & hybrid RAG", knowhere: "yes", others: "no", emphasize: true },
-  { feature: "Top-K boost ~10%+ in production", knowhere: "yes", others: "no" },
-  { feature: "50%+ token savings on graphs", knowhere: "yes", others: "no", emphasize: true },
 ];
 
-export const whyChooseBenefits = [
-  "Open-source and community-driven development",
-  "Basic text extraction for simple documents",
-  "Supports multiple common file formats",
-] as const;
+export const comparisonRows: ComparisonRow[] = [
+  {
+    category: "Structures",
+    feature: "Hierarchy construction",
+    knowhere: "yes",
+    others: "bad",
+    description:
+      "Automatically recognize and construct hierarchical data structures, such as multi-level section titles and multi-index headers",
+  },
+  {
+    category: "Tables",
+    feature: "Complex merged cells",
+    knowhere: "yes",
+    others: "bad",
+    description: "Accurately handle multi-level merged cells in both doc files and tables",
+    emphasize: true,
+  },
+  {
+    category: "Tables",
+    feature: "Table boundary detection",
+    knowhere: "yes",
+    others: "no",
+    description: "Automatically separate tables in one table sheet based on boundary detection",
+  },
+  {
+    category: "Interpretability",
+    feature: "Source traceability",
+    knowhere: "yes",
+    others: "bad",
+    description:
+      "Trace each information piece to its original section in the raw source with clear boundary",
+    emphasize: true,
+  },
+  {
+    category: "Downstream",
+    feature: "Hierarchical memory & progressive disclosure",
+    knowhere: "yes",
+    others: "no",
+    description: "Naturally supports hierarchical memory and progressive disclosure",
+    callout: true,
+  },
+  {
+    category: "Downstream",
+    feature: "Vectorless RAG & hybrid RAG",
+    knowhere: "yes",
+    others: "no",
+    description: "Naturally enables vectorless RAG and hybrid RAG",
+    emphasize: true,
+  },
+  {
+    category: "Downstream",
+    feature: "Top-K boost ~10%+ in production",
+    knowhere: "yes",
+    others: "no",
+    description:
+      "Boost Top-K by ~10%+ in production data when applying RAG pipelines to parsed data",
+    callout: true,
+  },
+  {
+    category: "Downstream",
+    feature: "50%+ token savings on graphs",
+    knowhere: "yes",
+    others: "no",
+    description: "Save 50%+ tokens when developing graphs",
+    emphasize: true,
+  },
+];
+
+export const whyChooseProducts: WhyChooseProduct[] = [
+  {
+    id: "unstructured",
+    tabLabel: "Unstructured",
+    description:
+      "Unstructured is an open-source document processing tool that provides basic text extraction. While functional for simple documents, it struggles with complex table structures and loses important semantic information during parsing.",
+    advantages: [
+      "Open-source and community-driven development",
+      "Basic text extraction for simple documents",
+      "Supports multiple common file formats",
+    ],
+    headline: "Why Knowhere delivers superior document parsing for complex tables",
+    metrics: [
+      {
+        value: "90%+",
+        label: "Complex Table Parsing Accuracy",
+      },
+      {
+        value: "Better",
+        label: "Nested Table Detection",
+      },
+    ],
+  },
+  {
+    id: "markitdown",
+    tabLabel: "Markitdown",
+    description:
+      "Markitdown focuses on converting documents to Markdown format with a lightweight approach. However, it lacks the sophistication needed for complex document structures and often produces suboptimal results with tables and nested content.",
+    advantages: [
+      "Simple Markdown conversion workflow",
+      "Lightweight and easy to integrate",
+      "Good for basic text documents",
+    ],
+    headline: "Why Knowhere is the superior choice for markdown conversion",
+    metrics: [
+      {
+        value: "95%+",
+        label: "Structure Preservation",
+      },
+      {
+        value: "98%+",
+        label: "Content & Order Consistency",
+      },
+    ],
+  },
+];
 
 export const challengeCards: ChallengeCard[] = [
   {

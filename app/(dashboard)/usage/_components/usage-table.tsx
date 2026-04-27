@@ -1,7 +1,5 @@
 "use client";
 
-import { Badge } from "@components/ui/badge";
-import { Button } from "@components/ui/button";
 import {
   Select,
   SelectContent,
@@ -9,30 +7,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@components/ui/select";
+import { cn } from "@lib/utils";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@components/ui/table";
-import {
-  type ColumnDef,
-  type ColumnFiltersState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  type PaginationState,
-  type SortingState,
-  useReactTable,
-  type VisibilityState,
-} from "@tanstack/react-table";
-import { ArrowUpDown, CheckCircle, Clock, Download, FileText, XCircle } from "lucide-react";
+  ArrowUp,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Clock3,
+  Loader2,
+  XCircle,
+} from "lucide-react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
-import * as React from "react";
+import { useEffect, useRef, useState } from "react";
 import type { UsageStatusKind } from "@/app/(dashboard)/usage/_lib/job-status";
 
 export type UsageRecord = {
@@ -52,379 +39,494 @@ export type UsageRecord = {
   resultUrl?: string;
 };
 
+type UsageTableProps = {
+  data: UsageRecord[];
+  total: number;
+  page: number;
+  pageSize: number;
+  pageCount: number;
+  isLoading?: boolean;
+  formatDateLabel: (value: string) => string;
+  onPageChange: (page: number) => void;
+  onPageSizeChange: (pageSize: number) => void;
+  onDownloadResult?: (jobId: string, resultUrl?: string) => void;
+};
+
+type PaginationItem = number | "ellipsis";
+
+const tableHeaders = [
+  { key: "date", labelKey: "date", width: "210px" },
+  { key: "jobId", labelKey: "jobId", width: "140px" },
+  { key: "fileName", labelKey: "fileName", width: "170px" },
+  { key: "type", labelKey: "type", width: "80px" },
+  { key: "model", labelKey: "model", width: "144px" },
+  { key: "pages", labelKey: "pages", width: "60px" },
+  { key: "ocr", labelKey: "ocr", width: "56px" },
+  { key: "status", labelKey: "status", width: "80px" },
+  { key: "duration", labelKey: "duration", width: "100px" },
+  { key: "cost", labelKey: "cost", width: "120px" },
+] as const;
+
+const tableGridTemplate = tableHeaders.map((header) => header.width).join(" ");
+const tableMinWidth = tableHeaders.reduce(
+  (total, header) => total + Number.parseInt(header.width, 10),
+  0
+);
+
+const fileTypeColorMap = {
+  pdf: {
+    background: "#fef2f2",
+    border: "#ffe2e2",
+    text: "#c10007",
+  },
+  docx: {
+    background: "#eff6ff",
+    border: "#dbeafe",
+    text: "#1447e6",
+  },
+  jpg: {
+    background: "#fdf4ff",
+    border: "#fae8ff",
+    text: "#a800b7",
+  },
+  jpeg: {
+    background: "#fdf4ff",
+    border: "#fae8ff",
+    text: "#a800b7",
+  },
+  pptx: {
+    background: "#fff7ed",
+    border: "#ffedd4",
+    text: "#ca3500",
+  },
+  xlsx: {
+    background: "#ecfdf5",
+    border: "#d0fae5",
+    text: "#007a55",
+  },
+  csv: {
+    background: "#ecfeff",
+    border: "#cefafe",
+    text: "#007595",
+  },
+  png: {
+    background: "#f5f3ff",
+    border: "#ede9fe",
+    text: "#7008e7",
+  },
+  md: {
+    background: "#f7fee7",
+    border: "#ecfcca",
+    text: "#497d00",
+  },
+  json: {
+    background: "#fefce8",
+    border: "#fef9c2",
+    text: "#a65f00",
+  },
+  txt: {
+    background: "#eef2ff",
+    border: "#e0e7ff",
+    text: "#432dd7",
+  },
+} as const;
+
+const buildPaginationItems = (page: number, pageCount: number): PaginationItem[] => {
+  if (pageCount <= 6) {
+    return Array.from({ length: pageCount }, (_, index) => index + 1);
+  }
+
+  if (page <= 3) {
+    return [1, 2, 3, "ellipsis", pageCount - 1, pageCount];
+  }
+
+  if (page >= pageCount - 2) {
+    return [1, 2, "ellipsis", pageCount - 2, pageCount - 1, pageCount];
+  }
+
+  return [1, "ellipsis", page - 1, page, page + 1, "ellipsis", pageCount];
+};
+
+const normalizeFileType = (fileType: string) => {
+  const normalized = fileType.trim().replace(/^\./, "").toLowerCase();
+  return normalized || "txt";
+};
+
+const formatFileTypeLabel = (fileType: string) => {
+  return `.${normalizeFileType(fileType)}`;
+};
+
+const formatCostLabel = (cost: number) => {
+  return `${cost.toLocaleString(undefined, {
+    maximumFractionDigits: 4,
+  })} pts`;
+};
+
+const getStatusLabel = (
+  t: ReturnType<typeof useTranslations>,
+  statusKind: UsageStatusKind,
+  fallback: string
+) => {
+  if (statusKind === "done") return t("statusDone");
+  if (statusKind === "failed") return t("statusFailed");
+  if (statusKind === "running") return t("statusRunning");
+  if (statusKind === "pending") return t("statusPending");
+  if (statusKind === "waiting-file") return t("statusWaitingFile");
+  return fallback;
+};
+
+const StatusIcon = ({ statusKind }: { statusKind: UsageStatusKind }) => {
+  if (statusKind === "done") {
+    return <CheckCircle2 className="h-[14px] w-[14px] text-[#00a63e]" />;
+  }
+
+  if (statusKind === "failed") {
+    return <XCircle className="h-[14px] w-[14px] text-[#e7000b]" />;
+  }
+
+  if (statusKind === "running") {
+    return <Loader2 className="h-[14px] w-[14px] animate-spin text-[#fd9a00]" />;
+  }
+
+  if (statusKind === "pending" || statusKind === "waiting-file") {
+    return <Clock3 className="h-[14px] w-[14px] text-[#71717b]" />;
+  }
+
+  return <Clock3 className="h-[14px] w-[14px] text-[#71717b]" />;
+};
+
+const TableCell = ({ children, className }: { children: React.ReactNode; className?: string }) => {
+  return (
+    <div
+      className={cn(
+        "flex h-10 items-center overflow-hidden border-r border-[#f4f4f5] px-3 py-2 text-[12px] leading-4 sm:h-[22px] sm:px-[10px] sm:py-1 lg:h-8",
+        className
+      )}
+    >
+      {children}
+    </div>
+  );
+};
+
 export function UsageTable({
   data,
-  timeZone = "UTC",
-  onDownload,
-  pageCount,
-  pageIndex,
-  pageSize,
-  onPageChange,
   total,
+  page,
+  pageSize,
+  pageCount,
   isLoading = false,
-}: {
-  data: UsageRecord[];
-  timeZone?: string;
-  onDownload?: (jobId: string, resultUrl?: string) => void;
-  pageCount?: number;
-  pageIndex?: number;
-  pageSize?: number;
-  onPageChange?: (pagination: PaginationState) => void;
-  total?: number;
-  isLoading?: boolean;
-}) {
+  formatDateLabel,
+  onPageChange,
+  onPageSizeChange,
+  onDownloadResult,
+}: UsageTableProps) {
   const t = useTranslations("UsageTable");
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [scrollThumbWidth, setScrollThumbWidth] = useState(0);
+  const [scrollThumbOffset, setScrollThumbOffset] = useState(0);
+  const [goToPageValue, setGoToPageValue] = useState(String(page));
 
-  const [loadingTarget, setLoadingTarget] = React.useState<"prev" | "next" | "pageSize" | null>(
-    null
-  );
+  useEffect(() => {
+    setGoToPageValue(String(page));
+  }, [page]);
 
-  // Reset loading target when isLoading becomes false
-  React.useEffect(() => {
-    if (!isLoading) {
-      setLoadingTarget(null);
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+
+    if (!scrollContainer) {
+      return;
     }
-  }, [isLoading]);
 
-  // Memoize formatter to avoid creating it for every row render
-  const dateFormatter = React.useMemo(() => {
-    try {
-      return new Intl.DateTimeFormat("default", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        timeZone: timeZone,
-      });
-    } catch (_e) {
-      return null;
-    }
-  }, [timeZone]);
+    const updateScrollMetrics = () => {
+      const { clientWidth, scrollLeft, scrollWidth } = scrollContainer;
 
-  const columns = React.useMemo<ColumnDef<UsageRecord>[]>(
-    () => [
-      {
-        accessorKey: "date",
-        header: ({ column }) => {
-          return (
-            <Button
-              variant="ghost"
-              className="p-0 hover:bg-transparent"
-              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            >
-              {t("date")}
-              <ArrowUpDown className="ml-2 h-4 w-4" />
-            </Button>
-          );
-        },
-        cell: ({ row }) => {
-          const dateStr = row.getValue("date") as string;
-          const date = new Date(dateStr);
-          // Handle invalid dates
-          if (Number.isNaN(date.getTime())) {
-            return (
-              <div className="lowercase text-muted-foreground text-xs whitespace-nowrap">
-                {dateStr}
-              </div>
-            );
-          }
-
-          try {
-            if (dateFormatter) {
-              const formattedDate = dateFormatter.format(date);
-              return (
-                <div className="lowercase text-muted-foreground text-xs whitespace-nowrap">
-                  {formattedDate}
-                </div>
-              );
-            }
-            // Fallback if formatter failed
-            return (
-              <div className="lowercase text-muted-foreground text-xs whitespace-nowrap">
-                {dateStr}
-              </div>
-            );
-          } catch (_e) {
-            // Fallback if timezone is invalid
-            return (
-              <div className="lowercase text-muted-foreground text-xs whitespace-nowrap">
-                {dateStr}
-              </div>
-            );
-          }
-        },
-      },
-      {
-        accessorKey: "jobId",
-        header: t("jobId"),
-        cell: ({ row }) => (
-          <div className="font-mono text-xs text-muted-foreground">{row.getValue("jobId")}</div>
-        ),
-      },
-      {
-        accessorKey: "fileName",
-        header: t("fileName"),
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2 max-w-[200px]">
-            <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
-            <span className="truncate text-sm font-medium" title={row.getValue("fileName")}>
-              {row.getValue("fileName")}
-            </span>
-          </div>
-        ),
-      },
-      {
-        accessorKey: "fileType",
-        header: t("type"),
-        cell: ({ row }) => (
-          <Badge variant="outline" className="text-xs px-1 py-0">
-            {row.getValue("fileType")}
-          </Badge>
-        ),
-      },
-      {
-        accessorKey: "model",
-        header: t("model"),
-        cell: ({ row }) => <div className="text-xs">{row.getValue("model")}</div>,
-      },
-      {
-        accessorKey: "pages",
-        header: t("pages"),
-        cell: ({ row }) => <div className="text-xs text-right pr-4">{row.getValue("pages")}</div>,
-      },
-      {
-        accessorKey: "ocr",
-        header: t("ocr"),
-        cell: ({ row }) => (
-          <div className="text-xs text-center">{row.getValue("ocr") ? t("yes") : t("no")}</div>
-        ),
-      },
-      {
-        accessorKey: "status",
-        header: t("status"),
-        cell: ({ row }) => {
-          const status = row.getValue("status") as string;
-          const statusKind = row.original.statusKind;
-          let statusText = status;
-          if (statusKind === "done") statusText = t("statusDone");
-          if (statusKind === "failed") statusText = t("statusFailed");
-          if (statusKind === "running") statusText = t("statusRunning");
-          if (statusKind === "pending") statusText = t("statusPending");
-          if (statusKind === "waiting-file") statusText = t("statusWaitingFile");
-
-          return (
-            <div className="flex items-center gap-2">
-              {statusKind === "done" && <CheckCircle className="h-4 w-4 text-amber-600" />}
-              {statusKind === "failed" && <XCircle className="h-4 w-4 text-rose-600" />}
-              {statusKind === "running" && <Clock className="h-4 w-4 text-primary animate-spin" />}
-              {(statusKind === "pending" || statusKind === "waiting-file") && (
-                <Clock className="h-4 w-4 text-muted-foreground" />
-              )}
-              <span className={statusKind === "failed" ? "text-rose-700" : ""}>{statusText}</span>
-            </div>
-          );
-        },
-      },
-      {
-        accessorKey: "duration",
-        header: t("duration"),
-        cell: ({ row }) => (
-          <div className="text-xs text-muted-foreground">{row.getValue("duration")}</div>
-        ),
-      },
-      {
-        accessorKey: "cost",
-        header: t("cost"),
-        cell: ({ row }) => {
-          const amount = Number.parseFloat(row.getValue("cost"));
-          if (row.original.statusKind !== "done") {
-            return <div className="text-xs text-muted-foreground">-</div>;
-          }
-
-          return (
-            <div className="text-xs font-medium">
-              {amount} {t("pts")}
-            </div>
-          );
-        },
-      },
-      {
-        id: "actions",
-        enableHiding: false,
-        cell: ({ row }) => {
-          const record = row.original;
-
-          if (record.statusKind !== "done") return null;
-
-          return (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (record.resultUrl) {
-                  window.open(record.resultUrl, "_blank");
-                } else {
-                  onDownload?.(record.jobId, record.resultUrl);
-                }
-              }}
-            >
-              <Download className="h-4 w-4 text-muted-foreground hover:text-foreground" />
-              <span className="sr-only">{t("download")}</span>
-            </Button>
-          );
-        },
-      },
-    ],
-    [t, onDownload, dateFormatter]
-  );
-
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
-
-  const table = useReactTable({
-    data,
-    columns,
-    pageCount: pageCount ?? -1,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-      pagination: {
-        pageIndex: pageIndex ?? 0,
-        pageSize: pageSize ?? 10,
-      },
-    },
-    onPaginationChange: (updater) => {
-      if (typeof updater === "function") {
-        const newState = updater({
-          pageIndex: pageIndex ?? 0,
-          pageSize: pageSize ?? 10,
-        });
-        onPageChange?.(newState);
-      } else {
-        onPageChange?.(updater);
+      if (scrollWidth <= clientWidth) {
+        setScrollThumbWidth(clientWidth);
+        setScrollThumbOffset(0);
+        return;
       }
-    },
-    manualPagination: true,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
+
+      const nextThumbWidth = Math.max((clientWidth / scrollWidth) * clientWidth, 48);
+      const maxThumbOffset = clientWidth - nextThumbWidth;
+      const maxScrollLeft = scrollWidth - clientWidth;
+      const nextThumbOffset = maxScrollLeft > 0 ? (scrollLeft / maxScrollLeft) * maxThumbOffset : 0;
+
+      setScrollThumbWidth(nextThumbWidth);
+      setScrollThumbOffset(nextThumbOffset);
+    };
+
+    updateScrollMetrics();
+    scrollContainer.addEventListener("scroll", updateScrollMetrics);
+    window.addEventListener("resize", updateScrollMetrics);
+
+    return () => {
+      scrollContainer.removeEventListener("scroll", updateScrollMetrics);
+      window.removeEventListener("resize", updateScrollMetrics);
+    };
+  }, []);
+
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+
+    if (!scrollContainer) {
+      return;
+    }
+
+    const { clientWidth, scrollLeft, scrollWidth } = scrollContainer;
+
+    if (scrollWidth <= clientWidth) {
+      setScrollThumbWidth(clientWidth);
+      setScrollThumbOffset(0);
+      return;
+    }
+
+    const nextThumbWidth = Math.max((clientWidth / scrollWidth) * clientWidth, 48);
+    const maxThumbOffset = clientWidth - nextThumbWidth;
+    const maxScrollLeft = scrollWidth - clientWidth;
+    const nextThumbOffset = maxScrollLeft > 0 ? (scrollLeft / maxScrollLeft) * maxThumbOffset : 0;
+
+    setScrollThumbWidth(nextThumbWidth);
+    setScrollThumbOffset(nextThumbOffset);
   });
 
+  const paginationItems = buildPaginationItems(page, Math.max(pageCount, 1));
+
   return (
-    <div className="w-full">
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader className="bg-muted/50">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="h-10 hover:bg-muted/50">
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id} className="h-10 text-xs font-medium">
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                  className="h-12 border-b"
+    <div className="w-full space-y-[18px] sm:space-y-3">
+      <div className="overflow-hidden border border-[#e4e4e7] bg-white">
+        <div ref={scrollContainerRef} className="overflow-x-auto overflow-y-hidden">
+          <div className="min-w-[1160px]" style={{ minWidth: tableMinWidth }}>
+            <div
+              className="grid h-[30px] bg-[#f4f4f5] sm:h-[26px] lg:h-8"
+              style={{ gridTemplateColumns: tableGridTemplate }}
+            >
+              {tableHeaders.map((header) => (
+                <div
+                  key={header.key}
+                  className="flex h-full items-center gap-1.5 border-r border-[#e4e4e7] px-3 py-[7px] text-[12px] font-semibold leading-4 text-[#3f3f46] sm:py-[5px] lg:py-2"
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="py-2">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  <span>{t(header.labelKey)}</span>
+                  {header.key === "date" ? <ArrowUp className="h-3 w-3 text-[#9f9fa9]" /> : null}
+                </div>
+              ))}
+            </div>
+
+            {data.length > 0 ? (
+              data.map((row) => {
+                const fileTypeKey = normalizeFileType(row.fileType);
+                const fileTypeTheme =
+                  fileTypeColorMap[fileTypeKey as keyof typeof fileTypeColorMap] ??
+                  fileTypeColorMap.txt;
+                const statusLabel = getStatusLabel(t, row.statusKind, row.status);
+
+                return (
+                  <div
+                    key={row.id}
+                    className={cn("relative grid pr-12", isLoading && "opacity-70")}
+                    style={{ gridTemplateColumns: tableGridTemplate }}
+                  >
+                    <TableCell className="font-mono-display text-[#3f3f46]">
+                      {formatDateLabel(row.date)}
                     </TableCell>
-                  ))}
-                </TableRow>
-              ))
+                    <TableCell className="text-[#71717b]">{row.jobId}</TableCell>
+                    <TableCell className="gap-1.5">
+                      <Image
+                        src="/icons/usage/file.svg"
+                        alt=""
+                        aria-hidden
+                        width={15}
+                        height={19}
+                        className="h-[14px] w-[11px] shrink-0"
+                      />
+                      <span className="truncate font-medium text-[#09090b]" title={row.fileName}>
+                        {row.fileName}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <span
+                        className="inline-flex items-center border py-1 pl-[6px] pr-2 font-mono-display text-[18px] leading-6"
+                        style={{
+                          backgroundColor: fileTypeTheme.background,
+                          borderColor: fileTypeTheme.border,
+                          color: fileTypeTheme.text,
+                        }}
+                      >
+                        {formatFileTypeLabel(row.fileType)}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-[#3f3f46]">{row.model}</TableCell>
+                    <TableCell className="font-mono-display text-[#3f3f46]">{row.pages}</TableCell>
+                    <TableCell className={row.ocr ? "text-[#00a63e]" : "text-[#e7000b]"}>
+                      {row.ocr ? t("yes") : t("no")}
+                    </TableCell>
+                    <TableCell className="gap-1.5">
+                      <StatusIcon statusKind={row.statusKind} />
+                      <span
+                        className={cn(
+                          row.statusKind === "done" && "text-[#00a63e]",
+                          row.statusKind === "failed" && "text-[#e7000b]",
+                          row.statusKind === "running" && "text-[#fd9a00]",
+                          (row.statusKind === "pending" || row.statusKind === "waiting-file") &&
+                            "text-[#71717b]"
+                        )}
+                      >
+                        {statusLabel}
+                      </span>
+                    </TableCell>
+                    <TableCell className="font-mono-display text-[#71717b]">
+                      {row.duration}
+                    </TableCell>
+                    <TableCell className="font-mono-display text-[#3f3f46]">
+                      {formatCostLabel(row.cost)}
+                    </TableCell>
+
+                    <button
+                      type="button"
+                      className="absolute right-0 top-1/2 flex h-10 w-12 -translate-y-1/2 items-center justify-center border-l border-[#f4f4f5] bg-[#fafafa] text-[#ff8904] transition-colors hover:bg-[#fff7ed] disabled:cursor-not-allowed disabled:text-[#d4d4d8]"
+                      onClick={() => onDownloadResult?.(row.jobId, row.resultUrl)}
+                      disabled={!row.resultUrl}
+                      aria-label={row.resultUrl ? t("download") : row.status}
+                    >
+                      <Image
+                        src="/icons/usage/row-action.svg"
+                        alt=""
+                        aria-hidden
+                        width={14.33}
+                        height={14.33}
+                        className="h-[14.33px] w-[14.33px]"
+                      />
+                    </button>
+                  </div>
+                );
+              })
             ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  {t("noResults")}
-                </TableCell>
-              </TableRow>
+              <div className="flex h-24 items-center justify-center text-sm text-[#9f9fa9]">
+                {t("noResults")}
+              </div>
             )}
-          </TableBody>
-        </Table>
-      </div>
-      <div className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="text-sm text-muted-foreground">{t("totalRows", { total: total || 0 })}</div>
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6 lg:gap-8">
-          <div className="flex items-center justify-between gap-2 sm:justify-start">
-            <p className="text-sm font-medium">{t("rowsPerPage")}</p>
-            <Select
-              value={`${table.getState().pagination.pageSize}`}
-              onValueChange={(value) => {
-                setLoadingTarget("pageSize");
-                table.setPageSize(Number(value));
-              }}
-              disabled={isLoading}
-            >
-              <SelectTrigger className="h-8 w-[76px]">
-                <SelectValue placeholder={table.getState().pagination.pageSize} />
-              </SelectTrigger>
-              <SelectContent side="top">
-                {[10, 20, 30, 40, 50].map((pageSize) => (
-                  <SelectItem key={pageSize} value={`${pageSize}`}>
-                    {pageSize}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full sm:w-auto"
-              onClick={() => {
-                setLoadingTarget("prev");
-                table.previousPage();
-              }}
-              disabled={!table.getCanPreviousPage() || isLoading}
-            >
-              {isLoading && loadingTarget === "prev" && (
-                <Clock className="mr-2 h-3 w-3 animate-spin" />
-              )}
-              {t("previous")}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full sm:w-auto"
-              onClick={() => {
-                setLoadingTarget("next");
-                table.nextPage();
-              }}
-              disabled={!table.getCanNextPage() || isLoading}
-            >
-              {isLoading && loadingTarget === "next" && (
-                <Clock className="mr-2 h-3 w-3 animate-spin" />
-              )}
-              {t("next")}
-            </Button>
           </div>
         </div>
+
+        <div className="border-t border-[#e4e4e7]">
+          <div className="relative h-2 border-b border-[#e4e4e7] bg-[#f4f4f5]">
+            <div
+              className="absolute inset-y-0 left-0 bg-[#e4e4e7]"
+              style={{
+                transform: `translateX(${scrollThumbOffset}px)`,
+                width: `${scrollThumbWidth}px`,
+              }}
+            />
+          </div>
+          <div className="px-3 py-2 text-sm leading-[18px] text-[#9f9fa9] sm:py-1.5 sm:leading-5 lg:py-2">
+            {t("totalRows", { total })}
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-col items-center gap-[6px] sm:grid sm:grid-cols-[161px_244px] sm:justify-center sm:gap-x-4 sm:gap-y-2 lg:flex lg:flex-row lg:items-center lg:gap-4">
+        <div className="flex items-center justify-center gap-1.5">
+          <span className="text-[12px] leading-4 text-[#9f9fa9]">{t("rowsPerPage")}</span>
+          <Select
+            value={String(pageSize)}
+            onValueChange={(value) => {
+              onPageSizeChange(Number(value));
+            }}
+          >
+            <SelectTrigger className="h-8 w-[72px] rounded-none border-[#e4e4e7] px-[10px] text-[12px] text-[#27272a] focus:ring-0">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent sideOffset={4} className="w-[200px]">
+              {["10", "20", "30", "40", "50"].map((option) => (
+                <SelectItem key={option} value={option}>
+                  {option}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex items-center justify-center sm:justify-self-center">
+          <button
+            type="button"
+            className="flex h-8 w-[26px] items-center justify-center border border-[#e4e4e7] bg-white px-1 text-[#71717b] transition-colors hover:bg-[#f4f4f5] disabled:cursor-not-allowed disabled:text-[#d4d4d8] lg:w-7"
+            onClick={() => onPageChange(page - 1)}
+            disabled={page <= 1}
+            aria-label={t("previous")}
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          {paginationItems.map((item, index) => {
+            if (item === "ellipsis") {
+              return (
+                <span
+                  key={`ellipsis-${String(paginationItems[index - 1])}-${String(paginationItems[index + 1])}`}
+                  className="flex h-8 w-8 items-center justify-center border border-[#e4e4e7] bg-white text-[12px] text-[#3f3f46]"
+                >
+                  ...
+                </span>
+              );
+            }
+
+            const isActive = item === page;
+
+            return (
+              <button
+                key={item}
+                type="button"
+                className={cn(
+                  "flex h-8 w-8 items-center justify-center border border-[#e4e4e7] bg-white text-[12px] leading-4 text-[#3f3f46] transition-colors hover:bg-[#f4f4f5]",
+                  isActive &&
+                    "font-bold text-[#7f22fe] underline decoration-solid underline-offset-4"
+                )}
+                onClick={() => onPageChange(item)}
+              >
+                {item}
+              </button>
+            );
+          })}
+          <button
+            type="button"
+            className="flex h-8 w-[26px] items-center justify-center border border-[#e4e4e7] bg-white px-1 text-[#71717b] transition-colors hover:bg-[#f4f4f5] disabled:cursor-not-allowed disabled:text-[#d4d4d8] lg:w-7"
+            onClick={() => onPageChange(page + 1)}
+            disabled={page >= pageCount}
+            aria-label={t("next")}
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+        </div>
+
+        <form
+          className="flex items-center justify-center sm:col-span-2 sm:justify-self-center lg:col-auto"
+          onSubmit={(event) => {
+            event.preventDefault();
+            const nextPage = Number.parseInt(goToPageValue, 10);
+
+            if (Number.isNaN(nextPage)) {
+              setGoToPageValue(String(page));
+              return;
+            }
+
+            const safePage = Math.min(Math.max(nextPage, 1), Math.max(pageCount, 1));
+            onPageChange(safePage);
+            setGoToPageValue(String(safePage));
+          }}
+        >
+          <input
+            type="number"
+            min={1}
+            max={Math.max(pageCount, 1)}
+            value={goToPageValue}
+            onChange={(event) => setGoToPageValue(event.target.value)}
+            className="h-8 w-[77px] border border-[#e4e4e7] px-3 text-[12px] leading-4 text-[#27272a] placeholder:text-[#9f9fa9] focus:outline-none"
+            placeholder="Number"
+          />
+          <button
+            type="submit"
+            className="flex h-8 w-10 items-center justify-center border border-[#e4e4e7] bg-[#f4f4f5] text-[12px] font-medium leading-4 text-[#7f22fe] transition-colors hover:bg-[#ede9fe]"
+          >
+            Go
+          </button>
+        </form>
       </div>
     </div>
   );

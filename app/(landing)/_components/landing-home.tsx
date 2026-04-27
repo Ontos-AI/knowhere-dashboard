@@ -1,12 +1,12 @@
+import { ComparisonShowcase } from "@app/(landing)/_components/comparison-showcase";
+import { IntegrateCodePanel } from "@app/(landing)/_components/integrate-code-panel";
 import { LandingBrand } from "@app/(landing)/_components/landing-brand";
+import { LandingHeader } from "@app/(landing)/_components/landing-header";
 import {
   type ChallengeCard,
-  type ComparisonStatus,
   challengeCards,
   comingSoonFormats,
   comparisonHighlights,
-  comparisonRows,
-  comparisonTabs,
   enterpriseItems,
   type FormatChip,
   faqItems,
@@ -18,44 +18,43 @@ import {
   type TransformStep,
   transformMetrics,
   transformSteps,
-  whyChooseBenefits,
 } from "@app/(landing)/_components/landing-home-data";
-import { LandingThemeToggle } from "@app/(landing)/_components/landing-theme-toggle";
-import { LandingUnstructuredBrand } from "@app/(landing)/_components/landing-unstructured-brand";
+import { WhyChooseShowcase } from "@app/(landing)/_components/why-choose-showcase";
 import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { cn } from "@lib/utils";
 import {
   Bot,
   Braces,
-  Check,
-  CheckCircle2,
   CreditCard,
   Files,
-  Minus,
   Plus,
   SearchCheck,
   ServerCog,
   Sigma,
-  Sparkles,
-  X,
   Zap,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 
 const sectionFrameClassName = "overflow-hidden border border-zinc-200 bg-[#fafafa]";
-const sectionPaddingClassName = "px-5 xs:px-[18px] sm:px-16";
-const heroSectionPaddingClassName = "px-5 xs:px-5 sm:px-[62px] md:px-[62px] lg:px-16";
-const landingHeaderCanvasWidthClassName =
-  "mx-auto flex h-12 w-full max-w-[260px] items-center xs:max-w-none lg:h-16 2xl:max-w-[1536px]";
-const landingCanvasWidthClassName = "w-full max-w-[260px] xs:max-w-none 2xl:max-w-[1280px]";
-const footerPaddingClassName = "p-5 xs:p-5 sm:px-[62px] sm:py-8 md:px-16";
-const comparisonTableGridClassName =
-  "min-w-[720px] grid grid-cols-[1.35fr_0.9fr_0.9fr] lg:min-w-[860px]";
+const sectionPaddingClassName = "px-12 max-[639px]:px-4";
+const heroSectionPaddingClassName = "px-16 max-[639px]:px-5";
+const landingCanvasWidthClassName =
+  "mx-auto flex w-full flex-col min-[768px]:max-w-[768px] min-[769px]:max-w-[976px] [&>*+*]:-mt-px";
+const footerPaddingClassName = "px-12 py-6 max-[639px]:px-4 max-[639px]:py-[18px]";
 const monoDisplayClassName = "font-[family-name:var(--font-mono-display)]";
 const monoReadableClassName = "font-[family-name:var(--font-mono-readable)]";
 const accentClassName = "font-[family-name:var(--font-accent)]";
-const mobileActionLinkClassName = "h-[52px] px-7 text-xl";
+const mobileActionLinkClassName = "h-[52px] px-7 text-[18px] leading-6";
+const challengeCardHeightClassNames = [
+  "min-[769px]:min-h-[214px]",
+  "min-[769px]:min-h-[214px]",
+  "min-[769px]:min-h-[194px]",
+  "min-[769px]:min-h-[194px]",
+  "min-[769px]:min-h-[214px]",
+  "min-[769px]:min-h-[214px]",
+] as const;
 
 const stripePattern = (color: string, thickness = 1, size = 8): CSSProperties => ({
   backgroundImage: `repeating-linear-gradient(-45deg, transparent 0 ${size - thickness}px, ${color} ${size - thickness}px ${size}px)`,
@@ -73,6 +72,35 @@ const cardStripePattern = (color: string): CSSProperties => ({
 const processCardIconAssetMap = {
   doc: "/icons/knowhere/process-document.svg",
 } as const;
+
+const heroFieldPatternStyle: CSSProperties = {
+  backgroundImage: "radial-gradient(rgba(228,228,231,0.9) 1px, transparent 1px)",
+  backgroundSize: "14px 14px",
+};
+
+const heroDemoFiles = [
+  {
+    active: false,
+    fileName: "Invoice.pdf",
+    extension: ".pdf",
+    style: { left: "calc(50% - 67px)", top: "calc(50% + 31px)" },
+    tone: { background: "#fb2c36", text: "#fef2f2" },
+  },
+  {
+    active: true,
+    fileName: "Report.pdf",
+    extension: ".pdf",
+    style: { left: "calc(50% + 8.5px)", top: "calc(50% - 59px)" },
+    tone: { background: "#fb2c36", text: "#fef2f2" },
+  },
+  {
+    active: false,
+    fileName: "Database.csv",
+    extension: ".csv",
+    style: { left: "calc(50% + 63px)", top: "calc(50% + 47px)" },
+    tone: { background: "#00b8db", text: "#ecfeff" },
+  },
+] as const;
 
 type ActionLinkProps = {
   children: ReactNode;
@@ -146,101 +174,52 @@ const ProcessCardIcon = ({
   );
 };
 
-const HeaderLink = ({
-  href,
-  children,
-  active = false,
-}: {
-  href: string;
-  children: ReactNode;
-  active?: boolean;
-}) => (
-  <Link
-    href={href}
-    className={cn(
-      "relative flex h-12 items-center justify-center px-4 text-sm leading-5 text-zinc-950 transition-colors hover:bg-zinc-100/70 lg:h-16",
-      active
-        ? "font-semibold after:absolute after:bottom-[9px] after:left-4 after:right-4 after:h-px after:bg-zinc-950 lg:after:bottom-[13px]"
-        : "font-light"
-    )}
-  >
-    {children}
-  </Link>
-);
-
 const SectionTitle = ({
   title,
-  accent,
   description,
   className,
   descriptionClassName,
 }: {
   title: ReactNode;
-  accent?: ReactNode;
   description?: ReactNode;
   className?: string;
   descriptionClassName?: string;
 }) => (
-  <div className={cn("flex flex-col gap-3", className)}>
-    <h2 className="text-[24px] font-bold leading-8 tracking-normal text-zinc-950 sm:text-[36px] sm:leading-10">
+  <div className={cn("flex flex-col gap-2", className)}>
+    <h2 className="text-[30px] font-bold leading-9 text-zinc-950 max-[639px]:text-[22px] max-[639px]:leading-8">
       {title}
-      {accent ? <span className="text-[#7f22fe]"> {accent}</span> : null}
     </h2>
     {description ? (
-      <p
-        className={cn(
-          "max-w-[1080px] text-base leading-6 text-zinc-500 sm:text-xl sm:leading-7",
-          descriptionClassName
-        )}
-      >
+      <p className={cn("max-w-[1080px] text-base leading-6 text-zinc-500", descriptionClassName)}>
         {description}
       </p>
     ) : null}
   </div>
 );
 
-const ProcessCard = ({
+const DemoProcessCard = ({
   icon,
   title,
   caption,
-  className,
 }: {
   icon: "doc" | "api" | "json";
   title: string;
   caption: string;
-  className?: string;
 }) => (
-  <div
-    className={cn(
-      "relative flex shrink-0 flex-col overflow-hidden rounded-lg border border-zinc-300 bg-zinc-100",
-      className
-    )}
-  >
-    <div
-      className="absolute bottom-[-1px] left-[-1px] right-[-1px] h-[50px] opacity-40"
-      style={stripePattern("#d4d4d8", 1, 9)}
-    />
-    <div className="relative z-10 flex h-[55px] w-full items-center justify-center gap-[14px] border-b border-zinc-200 bg-[#fafafa] px-6 sm:h-[70px] sm:gap-3 sm:px-10 lg:h-[78px]">
-      <ProcessCardIcon className="size-5 text-zinc-950" name={icon} />
-      <span
-        className={cn(
-          "whitespace-nowrap text-[20px] font-normal leading-7 tracking-normal text-zinc-950 xs:text-[14px] xs:leading-[18px] sm:text-[20px] sm:leading-7",
-          monoDisplayClassName
-        )}
-      >
-        {title}
-      </span>
+  <div className="w-[104px] overflow-hidden rounded-lg border border-zinc-600 bg-zinc-800 text-nowrap">
+    <div className="flex items-center justify-center gap-1.5 border-b border-zinc-600 bg-zinc-700 px-[10px] pb-1.5 pt-2 text-zinc-400">
+      <ProcessCardIcon className="size-3 text-current" name={icon} />
+      <span className={cn("text-xs leading-4", monoDisplayClassName)}>{title}</span>
     </div>
-    <div className="relative z-10 flex flex-1 items-center justify-center">
-      <span
-        className={cn(
-          "whitespace-nowrap text-base font-medium leading-6 tracking-normal text-zinc-400 xs:text-[12px] xs:leading-[14px] sm:text-base sm:leading-6",
-          monoDisplayClassName
-        )}
-      >
-        {caption}
-      </span>
+    <div className="flex items-center justify-center px-[10px] py-1.5 text-center">
+      <span className={cn("text-xs leading-4 text-zinc-500", monoDisplayClassName)}>{caption}</span>
     </div>
+  </div>
+);
+
+const DemoProcessConnector = () => (
+  <div className="flex h-full items-center">
+    <div className="w-2 border-t border-zinc-600" />
   </div>
 );
 
@@ -253,9 +232,16 @@ const StatsItem = ({
   leading: string;
   trailing: string;
 }) => (
-  <div className="flex h-16 items-center justify-center gap-4 px-4 xs:px-16 sm:h-20 sm:px-16 md:justify-start md:px-8 lg:px-16">
-    <div className="flex size-6 items-center justify-center text-[#8e51ff]">{icon}</div>
-    <div className={cn("flex items-center gap-3 text-lg leading-7", monoDisplayClassName)}>
+  <div className="flex h-20 items-center justify-center gap-3 px-4 text-center max-[639px]:h-16 max-[639px]:gap-[14px] min-[769px]:gap-4 min-[769px]:px-6">
+    <div className="flex size-5 items-center justify-center text-[#8e51ff] min-[769px]:size-6">
+      {icon}
+    </div>
+    <div
+      className={cn(
+        "flex items-center gap-2 text-[14px] leading-5 max-[639px]:gap-[10px] max-[639px]:text-base max-[639px]:leading-6 min-[769px]:gap-3 min-[769px]:text-[16px] min-[769px]:leading-6",
+        monoDisplayClassName
+      )}
+    >
       <span className="font-medium text-zinc-800">{leading}</span>
       <span className="font-light text-zinc-700">{trailing}</span>
     </div>
@@ -294,7 +280,7 @@ const FormatBadge = ({
 }) => (
   <div className="flex flex-col items-center gap-4">
     <div
-      className="relative overflow-hidden border px-3 py-1.5 sm:px-4 sm:py-2"
+      className="relative overflow-hidden border px-3 py-2"
       style={{
         backgroundColor: chip.tone.background,
         borderColor: chip.tone.border,
@@ -302,7 +288,7 @@ const FormatBadge = ({
     >
       <div className="absolute inset-0 opacity-40" style={stripePattern(chip.tone.border, 1, 10)} />
       <span
-        className={cn("relative text-2xl leading-8", monoDisplayClassName)}
+        className={cn("relative text-[18px] leading-6", monoDisplayClassName)}
         style={{ color: chip.tone.text }}
       >
         {chip.label}
@@ -310,14 +296,16 @@ const FormatBadge = ({
       <CornerLines color={muted ? "#d4d4d8" : chip.tone.border} />
     </div>
     {value ? (
-      <span className={cn("text-2xl leading-8 text-[#e60076]", monoDisplayClassName)}>{value}</span>
+      <span className={cn("text-[18px] leading-7 text-[#e60076]", monoDisplayClassName)}>
+        {value}
+      </span>
     ) : null}
   </div>
 );
 
 const NumberBadge = ({ number }: { number: string }) => (
-  <div className="relative flex size-12 items-center justify-center overflow-hidden border border-[#ddd6ff] border-r-4 border-b border-l border-t-0 bg-[#ede9fe] text-[#a684ff]">
-    <span className={cn("text-lg font-bold leading-7", monoDisplayClassName)}>{number}</span>
+  <div className="flex size-10 items-center justify-center border-b border-l border-r-4 border-[#ddd6ff] bg-[#ede9fe] text-[#a684ff]">
+    <span className={cn("text-[18px] font-bold leading-7", monoDisplayClassName)}>{number}</span>
   </div>
 );
 
@@ -326,55 +314,31 @@ const HighlightRow = ({ text }: { text: string }) => {
 
   return (
     <div className="flex items-center justify-between border border-[#fde68a] bg-[#fffbeb]">
-      <div className="flex min-h-[72px] flex-1 items-center">
-        <div className="relative flex min-h-[72px] w-[115px] flex-none items-center justify-center overflow-hidden border-r border-[#fde68a] bg-[#fff7db]">
+      <div className="flex min-h-[72px] flex-1 items-center max-[639px]:min-h-[60px]">
+        <div className="relative flex min-h-[72px] w-[115px] flex-none items-center justify-center overflow-hidden border-r border-[#fde68a] bg-[#fff7db] max-[639px]:min-h-[60px] max-[639px]:w-[78px]">
           <div className="absolute inset-0 opacity-50" style={dotPattern("#fde68a")} />
           <span
             className={cn(
-              "relative text-[30px] font-bold leading-9 text-[#ea580c]",
+              "relative text-[30px] font-bold leading-9 text-[#ea580c] max-[639px]:text-[20px] max-[639px]:leading-7",
               monoDisplayClassName
             )}
           >
             {metric}
           </span>
         </div>
-        <div className={cn("px-5 py-4 text-[20px] leading-7 text-[#ea580c]", monoDisplayClassName)}>
+        <div
+          className={cn(
+            "px-5 py-4 text-[20px] leading-7 text-[#ea580c] max-[639px]:px-4 max-[639px]:py-3 max-[639px]:text-base max-[639px]:leading-6",
+            monoDisplayClassName
+          )}
+        >
           {parts.join(" ")}
         </div>
       </div>
-      <div className="flex h-full items-center justify-center px-4 text-[#f7b955] xs:px-5">
+      <div className="flex h-full items-center justify-center px-4 text-[#f7b955] max-[639px]:px-3 min-[769px]:px-5">
         <Plus className="size-5" />
       </div>
     </div>
-  );
-};
-
-const ComparisonIndicator = ({ status }: { status: ComparisonStatus }) => {
-  const map = {
-    yes: {
-      icon: <CheckCircle2 className="size-4" />,
-      label: "Yes",
-      color: "#10b981",
-    },
-    bad: {
-      icon: <Minus className="size-4" />,
-      label: "Bad",
-      color: "#f59e0b",
-    },
-    no: {
-      icon: <X className="size-4" />,
-      label: "No",
-      color: "#fb2c36",
-    },
-  } as const;
-
-  const item = map[status];
-
-  return (
-    <span className="inline-flex items-center justify-center gap-2" style={{ color: item.color }}>
-      {item.icon}
-      <span className="text-base font-semibold leading-6">{item.label}</span>
-    </span>
   );
 };
 
@@ -400,16 +364,13 @@ const ChallengeIcon = ({ card }: { card: ChallengeCard }) => {
 
 const TransformStepCard = ({ step }: { step: TransformStep }) => (
   <div
-    className="relative flex w-full flex-col overflow-hidden border"
-    style={{
-      backgroundColor: "#fafafa",
-      borderColor: step.tone.border,
-    }}
+    className="relative flex w-full flex-col overflow-hidden border bg-[#fafafa]"
+    style={{ borderColor: step.tone.border }}
   >
-    <div className="flex items-center gap-6 px-5 py-[14px]">
+    <div className="flex items-center gap-5 px-5 py-[14px] max-[639px]:gap-4 max-[639px]:px-4">
       <div
-        className="flex h-12 w-12 flex-none items-center justify-center text-lg font-bold leading-7"
-        style={{ backgroundColor: step.tone.text, color: "#fafafa" }}
+        className="flex h-12 w-12 flex-none items-center justify-center text-lg font-bold leading-7 text-[#fafafa] max-[639px]:h-10 max-[639px]:w-[54px]"
+        style={{ backgroundColor: step.tone.text }}
       >
         <span className={monoDisplayClassName}>{step.number}</span>
       </div>
@@ -420,7 +381,7 @@ const TransformStepCard = ({ step }: { step: TransformStep }) => (
         >
           {step.title}
         </span>
-        <span className={cn("text-base leading-6 text-zinc-500", monoDisplayClassName)}>
+        <span className={cn("text-sm leading-5 text-zinc-500", monoDisplayClassName)}>
           {step.description}
         </span>
       </div>
@@ -436,7 +397,7 @@ const TransformStepCard = ({ step }: { step: TransformStep }) => (
 
 const MetricPanel = ({ card }: { card: MetricCard }) => (
   <div
-    className="flex min-h-[188px] flex-col items-center justify-center border px-6 text-center"
+    className="flex min-h-[254px] flex-col items-center justify-center border px-6 text-center max-[639px]:min-h-[176px] min-[769px]:min-h-[188px]"
     style={{
       backgroundColor: card.tone.background,
       borderColor: card.tone.border,
@@ -444,13 +405,19 @@ const MetricPanel = ({ card }: { card: MetricCard }) => (
     }}
   >
     <span
-      className={cn("text-[36px] font-semibold leading-10", monoReadableClassName)}
+      className={cn(
+        "text-[36px] font-semibold leading-10 max-[639px]:text-[20px] max-[639px]:leading-8",
+        monoReadableClassName
+      )}
       style={{ color: card.tone.text }}
     >
       {card.value}
     </span>
     <span
-      className={cn("mt-4 text-sm leading-5", monoDisplayClassName)}
+      className={cn(
+        "mt-4 text-sm leading-5 max-[639px]:text-xs max-[639px]:leading-4",
+        monoDisplayClassName
+      )}
       style={{ color: card.tone.text }}
     >
       {card.label}
@@ -459,7 +426,7 @@ const MetricPanel = ({ card }: { card: MetricCard }) => (
 );
 
 const PricingBurst = () => (
-  <div className="relative flex size-[190px] items-center justify-center sm:size-[298px]">
+  <div className="relative flex size-[298px] items-center justify-center max-[639px]:size-[196px]">
     <div
       className="absolute inset-0 bg-[#e60076]"
       style={{
@@ -467,11 +434,14 @@ const PricingBurst = () => (
           "polygon(50% 0%, 62% 10%, 77% 5%, 82% 20%, 97% 18%, 94% 33%, 100% 50%, 90% 60%, 97% 77%, 82% 80%, 77% 95%, 62% 90%, 50% 100%, 38% 90%, 23% 95%, 18% 80%, 3% 77%, 10% 60%, 0% 50%, 6% 33%, 3% 18%, 18% 20%, 23% 5%, 38% 10%)",
       }}
     />
-    <div className="absolute inset-3 opacity-25 sm:inset-[18px]" style={dotPattern("#fdf2f8")} />
+    <div
+      className="absolute inset-[18px] opacity-25 max-[639px]:inset-3"
+      style={dotPattern("#fdf2f8")}
+    />
     <div className="-rotate-[15deg] text-center text-[#fdf2f8]">
       <div
         className={cn(
-          "text-[54px] font-extrabold leading-[54px] sm:text-[72px] sm:leading-[72px]",
+          "text-[65px] font-extrabold leading-[65px] min-[769px]:text-[72px] min-[769px]:leading-[72px] max-[639px]:text-[58px] max-[639px]:leading-[58px]",
           accentClassName
         )}
       >
@@ -479,7 +449,7 @@ const PricingBurst = () => (
       </div>
       <div
         className={cn(
-          "mt-2 text-sm font-light leading-5 sm:mt-3 sm:text-base",
+          "mt-3 text-sm font-light leading-[18px] min-[769px]:text-base min-[769px]:leading-5 max-[639px]:text-sm",
           monoDisplayClassName
         )}
       >
@@ -490,31 +460,26 @@ const PricingBurst = () => (
 );
 
 const EnterpriseCheckItem = ({ label }: { label: string }) => (
-  <div className="flex items-center gap-4 py-3 sm:gap-6">
-    <div className="flex size-8 items-center justify-center rounded-full border border-[#009966] border-r-4 bg-[#00bc7d] text-white sm:size-12">
-      <Check className="size-5 stroke-[3]" />
+  <div className="flex items-center gap-3 self-start py-2 pr-4">
+    <div className="flex size-10 shrink-0 items-center justify-center rounded-full border border-[#009966] border-r-4 bg-[#00bc7d] text-white">
+      <KnowhereIcon className="size-6 text-current" name="check" />
     </div>
-    <span className="text-base font-semibold leading-7 text-zinc-950 sm:text-lg">{label}</span>
+    <span className="text-base font-semibold leading-6 text-zinc-950">{label}</span>
   </div>
 );
 
 const FaqRow = ({ question, answer }: { question: string; answer: string }) => (
-  <div className="flex items-start gap-4 border border-zinc-100 px-5 py-6 xs:gap-6 xs:px-6 xs:py-6 md:px-16">
-    <div className="flex size-8 flex-none items-center justify-center border border-[#ddd6ff] border-r-[3px] bg-[#ede9fe] text-[#a684ff] xs:size-12 xs:border-r-4">
-      <span
-        className={cn(
-          "text-2xl font-black leading-6 xs:text-[30px] xs:leading-7",
-          monoDisplayClassName
-        )}
-      >
-        ?
-      </span>
+  <div className="flex items-center gap-6 border-b border-zinc-100 px-12 py-5 first:border-t max-[639px]:items-start max-[639px]:gap-4 max-[639px]:px-4 max-[639px]:py-6">
+    <div className="flex size-10 flex-none items-center justify-center border-b border-l border-r-4 border-t border-[#ddd6ff] bg-[#ede9fe] text-[#a684ff]">
+      <span className={cn("text-[18px] font-black leading-7", monoDisplayClassName)}>?</span>
     </div>
     <div className="flex flex-col gap-1">
-      <h3 className="text-xl font-semibold leading-7 text-zinc-950 sm:text-2xl sm:leading-8">
+      <h3 className="text-base font-semibold leading-6 text-zinc-950 min-[769px]:text-xl min-[769px]:leading-7">
         {question}
       </h3>
-      <p className="text-base leading-7 text-zinc-700">{answer}</p>
+      <p className="text-xs leading-4 text-zinc-700 max-[639px]:text-sm max-[639px]:leading-6">
+        {answer}
+      </p>
     </div>
   </div>
 );
@@ -522,7 +487,7 @@ const FaqRow = ({ question, answer }: { question: string; answer: string }) => (
 const FooterChip = ({ color, children }: { color: string; children: string }) => (
   <p
     className={cn(
-      "text-sm leading-[18px] text-zinc-950 sm:text-xl sm:leading-7",
+      "text-sm leading-6 text-zinc-950 min-[769px]:text-[18px] min-[769px]:leading-8",
       monoDisplayClassName
     )}
   >
@@ -532,146 +497,187 @@ const FooterChip = ({ color, children }: { color: string; children: string }) =>
   </p>
 );
 
+const HeroFileCard = ({
+  active,
+  fileName,
+  extension,
+  style,
+  tone,
+}: {
+  active: boolean;
+  fileName: string;
+  extension: string;
+  style: CSSProperties;
+  tone: { background: string; text: string };
+}) => (
+  <div className="absolute -translate-x-1/2 -translate-y-1/2" style={style}>
+    <div className="flex flex-col items-center gap-1">
+      <div className="relative h-16 w-[65px]">
+        <Image
+          alt=""
+          aria-hidden="true"
+          className="absolute left-[7px] top-0 h-16 w-[50px]"
+          height={64}
+          src={
+            active
+              ? "/images/knowhere/hero-demo-page-active.svg"
+              : "/images/knowhere/hero-demo-page-default.svg"
+          }
+          width={50}
+        />
+        <span
+          className={cn(
+            "absolute bottom-2 right-[5px] inline-flex items-center justify-center px-1 py-0.5 text-[18px] leading-6",
+            monoDisplayClassName
+          )}
+          style={{ backgroundColor: tone.background, color: tone.text }}
+        >
+          {extension}
+        </span>
+      </div>
+      <span className={cn("text-xs leading-4 text-zinc-900", monoDisplayClassName)}>
+        {fileName}
+      </span>
+    </div>
+  </div>
+);
+
+const HeroDemoSplit = () => (
+  <div className="grid grid-cols-2 max-[639px]:grid-cols-1 min-[640px]:max-[767px]:grid-cols-1">
+    <div
+      className="relative min-h-[260px] border-r border-t border-zinc-200 bg-white max-[639px]:border-b max-[639px]:border-r-0 min-[640px]:max-[767px]:border-b min-[640px]:max-[767px]:border-r-0"
+      style={heroFieldPatternStyle}
+    >
+      <div className="relative min-h-[260px]">
+        {heroDemoFiles.map((file) => (
+          <HeroFileCard
+            key={file.fileName}
+            active={file.active}
+            extension={file.extension}
+            fileName={file.fileName}
+            style={file.style}
+            tone={file.tone}
+          />
+        ))}
+      </div>
+    </div>
+    <div
+      className="flex min-h-[260px] flex-col items-center justify-center gap-10 border-t border-zinc-200 bg-zinc-800 px-12 py-10 text-center max-[639px]:border-t-0 max-[639px]:px-6 min-[640px]:max-[767px]:border-t-0"
+      style={cardStripePattern("rgba(255,255,255,0.06)")}
+    >
+      <p className={cn("w-full text-xs leading-4 text-zinc-200", monoDisplayClassName)}>
+        Drop a file here or pick a sample on the left
+      </p>
+      <div className="flex items-center justify-center">
+        <DemoProcessCard caption="input" icon="doc" title="Document" />
+        <DemoProcessConnector />
+        <DemoProcessCard caption="API" icon="api" title="Processing" />
+        <DemoProcessConnector />
+        <DemoProcessCard caption="output" icon="json" title="Clean JOSN" />
+      </div>
+    </div>
+  </div>
+);
+
 export const LandingHome = () => {
   return (
     <div className="min-h-dvh bg-[#fafafa] text-[#09090b]">
-      <header className="w-full border-b border-zinc-200 bg-[#fafafa]">
-        <div className={landingHeaderCanvasWidthClassName}>
-          <div className="flex h-full w-32 flex-none items-center border-r-0 px-4 sm:border-r sm:border-zinc-200">
-            <Link href="/" className="flex h-full w-full items-center">
-              <LandingBrand size="header" className="mx-0 sm:hidden" />
-              <LandingBrand size="nav" className="mx-0 hidden sm:flex lg:hidden" />
-              <LandingBrand className="mx-0 hidden lg:flex" />
-            </Link>
-          </div>
-          <div className="hidden min-w-0 flex-1 items-center justify-between pl-2 sm:flex">
-            <nav className="flex h-full items-center">
-              <HeaderLink href="#comparison" active>
-                Comparison
-              </HeaderLink>
-              <HeaderLink href="#pricing">Pricing</HeaderLink>
-              <HeaderLink href="https://docs.knowhereto.ai/">Docs</HeaderLink>
-            </nav>
-            <div className="ml-auto hidden items-center lg:flex">
-              <div className="flex h-16 items-center justify-center gap-1 pl-4 pr-3 text-sm text-zinc-950">
-                <span>English</span>
-                <KnowhereIcon className="size-5 text-current" name="chevron-down" />
-              </div>
-              <LandingThemeToggle className="flex" />
-            </div>
-          </div>
-          <div className="ml-auto flex h-full items-center sm:ml-0 lg:hidden">
-            <LandingThemeToggle className="flex h-full w-[52px] sm:hidden" />
-            <span className="flex h-full w-[52px] items-center justify-center text-zinc-950">
-              <KnowhereIcon className="size-5 text-current" name="menu" />
-            </span>
-          </div>
-          <ActionLink
-            href="/login"
-            size="sm"
-            className="hidden h-full w-32 flex-none rounded-none px-0 text-base sm:inline-flex"
-          >
-            GET API KEY
-          </ActionLink>
-        </div>
-      </header>
+      <LandingHeader />
 
-      <main className={cn("mx-auto flex flex-col [&>*+*]:-mt-px", landingCanvasWidthClassName)}>
+      <main className={landingCanvasWidthClassName}>
         <section className={sectionFrameClassName}>
-          <div className="border-b border-[#ede9fe] bg-[#f5f3ff] pb-10 pt-4 sm:pb-16 sm:pt-10 md:py-16">
+          <div className="border-b border-[#ede9fe] bg-[#f5f3ff] pb-14 pt-12 max-[639px]:pb-11 max-[639px]:pt-4 min-[769px]:pb-[56px] min-[769px]:pt-[48px]">
             <div
               className={cn(
-                "flex flex-col items-center gap-7 xs:gap-8 sm:gap-12",
+                "flex flex-col items-center gap-9 max-[639px]:gap-7",
                 heroSectionPaddingClassName
               )}
             >
-              <div className="flex w-full max-w-[934px] flex-col items-center overflow-hidden rounded-lg border border-zinc-200 bg-white px-5 py-3 sm:flex-row sm:items-center sm:gap-[18px] sm:px-0 sm:py-0 sm:pl-[30px] md:max-w-[644px] md:gap-0 md:pl-0 lg:max-w-[896px] xl:max-w-[934px]">
-                <div className="flex w-full px-6 max-w-[188px] flex-wrap items-start justify-center gap-x-2 gap-y-1.5 py-[14px] text-center sm:w-[319px] sm:max-w-none sm:flex-none sm:justify-start sm:py-6 sm:text-left md:flex-1 md:py-[22px] lg:gap-y-2 lg:py-6">
-                  <span
-                    className={cn(
-                      "text-sm font-semibold leading-[14px] tracking-[-1px] text-zinc-950 sm:text-base sm:leading-[22px] lg:text-lg lg:leading-6",
-                      monoDisplayClassName
-                    )}
-                  >
-                    Now live on
-                  </span>
-                  <span className="inline-flex size-4 items-center justify-center text-[#e7000b] sm:size-[18px]">
-                    <Sparkles className="size-4 fill-current stroke-current" />
-                  </span>
-                  <span
-                    className={cn(
-                      "text-sm font-semibold leading-[14px] tracking-[-1px] text-[#e7000b] sm:text-base sm:leading-[22px] lg:text-lg lg:leading-6",
-                      monoDisplayClassName
-                    )}
-                  >
-                    OpenClaw
-                  </span>
-                  <span
-                    className={cn(
-                      "mx-auto basis-full max-w-[188px] text-sm font-light leading-[18px] tracking-[-0.5px] text-zinc-600 sm:mx-0 sm:max-w-none sm:text-sm sm:leading-[22px] md:text-base lg:text-lg lg:leading-6",
-                      monoDisplayClassName
-                    )}
-                  >
-                    with an installable plugin and skill.
-                  </span>
-                </div>
-                <div className="flex items-center justify-center pt-1 sm:h-full sm:w-[149px] sm:flex-none sm:gap-[10px] sm:pt-0 md:w-[171px] lg:w-[193px]">
-                  <span className="hidden h-6 w-0 shrink-0 border-l border-zinc-200 sm:block" />
-                  <Link
-                    href="/claw"
-                    className="flex min-w-0 items-center p-2 text-[#7008e7] sm:h-full sm:w-[139px] sm:flex-none md:w-[161px] lg:w-[183px]"
-                  >
-                    <span className="flex h-full w-full items-center justify-center gap-2 rounded-[4px] px-2 transition-colors hover:bg-[#f5f3ff] sm:pl-5 sm:pr-[14px] md:pl-8 md:pr-6">
-                      <span className={cn("text-xl font-medium leading-7", monoDisplayClassName)}>
-                        EXPLOR
-                      </span>
-                      <KnowhereIcon className="size-6 text-current" name="arrow-outward" />
+              <div className="flex w-full max-w-[934px] flex-row items-stretch overflow-hidden rounded-lg border border-zinc-200 bg-white max-[639px]:flex-col max-[639px]:items-center max-[639px]:gap-2 max-[639px]:px-5 max-[639px]:py-3">
+                <div className="flex flex-1 flex-wrap items-center gap-x-2 gap-y-1 px-7 py-5 text-left max-[639px]:justify-center max-[639px]:px-0 max-[639px]:py-0 max-[639px]:text-center">
+                  <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 max-[639px]:max-w-[240px]">
+                    <span
+                      className={cn(
+                        "text-[14px] font-semibold leading-[22px] tracking-[-1px] text-zinc-950 min-[769px]:text-base min-[769px]:leading-6",
+                        monoDisplayClassName
+                      )}
+                    >
+                      Now live on
                     </span>
-                  </Link>
+                    <span className="inline-flex h-[18px] w-5 shrink-0 items-center justify-center">
+                      <Image
+                        alt=""
+                        aria-hidden="true"
+                        className="h-[18px] w-5"
+                        height={18}
+                        src="/icons/knowhere/openclaw-icon.svg"
+                        width={20}
+                      />
+                    </span>
+                    <span
+                      className={cn(
+                        "text-[14px] font-semibold leading-[22px] tracking-[-1px] text-[#e7000b] min-[769px]:text-base min-[769px]:leading-6",
+                        monoDisplayClassName
+                      )}
+                    >
+                      OpenClaw
+                    </span>
+                    <span
+                      className={cn(
+                        "text-[14px] font-light leading-[22px] tracking-[-0.5px] text-zinc-600 min-[769px]:text-base min-[769px]:leading-6",
+                        monoDisplayClassName
+                      )}
+                    >
+                      with an installable plugin and skill.
+                    </span>
+                  </div>
+                </div>
+                <div className="w-px shrink-0 bg-zinc-200 max-[639px]:hidden" />
+                <Link
+                  href="/claw"
+                  className="flex min-w-[129px] items-center justify-center px-5 py-4 text-[#7008e7] transition-colors hover:bg-[#f5f3ff] min-[769px]:min-w-[168px] max-[639px]:min-w-0 max-[639px]:justify-center max-[639px]:px-0 max-[639px]:py-2"
+                >
+                  <span className="flex items-center gap-2">
+                    <span className={cn("text-[18px] font-medium leading-7", monoDisplayClassName)}>
+                      EXPLOR
+                    </span>
+                    <KnowhereIcon className="size-6 text-current" name="arrow-outward" />
+                  </span>
+                </Link>
+              </div>
+
+              <div className="flex flex-col items-center gap-8">
+                <div className="flex flex-col items-center gap-4 pt-6 text-center max-[639px]:gap-5 max-[639px]:pt-0">
+                  <h1
+                    className={cn(
+                      "max-w-[640px] text-[32px] font-bold leading-[1.2] tracking-[-1px] text-zinc-950 max-[639px]:max-w-[335px] max-[639px]:text-[22px] max-[639px]:leading-[1.2] min-[769px]:max-w-[880px] min-[769px]:text-[36px]",
+                      monoDisplayClassName
+                    )}
+                  >
+                    Transform unstructured documents into{" "}
+                    <span className="text-[#4f39f6]">clean</span>,{" "}
+                    <span className="text-[#a800b7]">structured</span> data.
+                  </h1>
+                  <p
+                    className={cn(
+                      "max-w-[640px] text-base font-light leading-[1.5] tracking-[-0.5px] text-zinc-600 max-[639px]:max-w-[320px] max-[639px]:leading-[1.5] min-[769px]:max-w-[780px] min-[769px]:text-[18px]",
+                      monoDisplayClassName
+                    )}
+                  >
+                    Extract tables, formulas, and layouts with pixel-perfect precision.
+                  </p>
                 </div>
               </div>
 
-              <div className="flex flex-col items-center gap-5 pt-3 text-center sm:gap-6 sm:pt-0">
-                <span
-                  className={cn(
-                    "bg-zinc-200 px-3 py-0.5 text-sm font-light leading-[18px] text-zinc-700 sm:py-1 sm:text-2xl sm:leading-8",
-                    monoDisplayClassName
-                  )}
-                >
-                  [ API Platform ]
-                </span>
-                <h1
-                  className={cn(
-                    "max-w-[220px] text-[22px] font-bold leading-[1.2] tracking-[-1px] text-zinc-950 xs:max-w-[337px] sm:max-w-[640px] sm:text-[42px] md:text-[48px] lg:max-w-[1150px]",
-                    monoDisplayClassName
-                  )}
-                >
-                  Transform unstructured documents into{" "}
-                  <span className="text-[#4f39f6]">clean</span>,{" "}
-                  <span className="text-[#a800b7]">structured</span> data.
-                </h1>
-                <p
-                  className={cn(
-                    "max-w-[220px] text-base font-light leading-[24px] tracking-[-0.5px] text-zinc-600 xs:max-w-[335px] sm:max-w-[640px] sm:text-[22px] sm:leading-[1.5] md:text-2xl md:leading-9 lg:max-w-[1040px]",
-                    monoDisplayClassName
-                  )}
-                >
-                  Extract tables, formulas, and layouts with pixel-perfect precision.
-                </p>
-              </div>
-
-              <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-nowrap">
-                <ActionLink
-                  href="/login"
-                  className={cn(mobileActionLinkClassName, "sm:h-[72px] sm:px-9")}
-                >
+              <div className="flex flex-row items-center justify-center gap-2 max-[639px]:flex-col max-[639px]:gap-3">
+                <ActionLink href="/login" className={cn(mobileActionLinkClassName, "w-fit")}>
                   Start Free Trial
                 </ActionLink>
                 <ActionLink
-                  href="https://docs.knowhereto.ai/"
                   external
+                  href="https://docs.knowhereto.ai/"
                   variant="secondary"
-                  className={cn(mobileActionLinkClassName, "sm:h-[72px] sm:px-9")}
+                  className={cn(mobileActionLinkClassName, "w-fit")}
                 >
                   View Docs
                 </ActionLink>
@@ -679,36 +685,7 @@ export const LandingHome = () => {
             </div>
           </div>
 
-          <div className="overflow-x-auto overflow-y-hidden border-b border-zinc-200 px-[18px] py-10 xs:px-5 sm:px-16 md:px-[43px] lg:px-16">
-            <div className="flex w-max min-w-max flex-row items-center justify-start gap-0 md:min-w-0 md:w-full md:justify-center">
-              <ProcessCard
-                icon="doc"
-                title="Document"
-                caption="input"
-                className="h-24 w-[143px] max-w-none text-nowrap sm:h-[120px] sm:w-[198px] sm:max-w-[198px] lg:w-[245px] lg:max-w-[245px]"
-              />
-              <div className="flex h-[98px] w-4 items-center sm:h-[120px] lg:w-auto lg:flex-1">
-                <div className="w-full border-t border-dashed border-zinc-300" />
-              </div>
-              <ProcessCard
-                icon="api"
-                title="Processing"
-                caption="API"
-                className="h-[98px] w-[168px] max-w-none text-nowrap sm:h-[120px] sm:w-[226px] sm:max-w-[226px] lg:w-[245px] lg:max-w-[245px]"
-              />
-              <div className="flex h-[98px] w-4 items-center sm:h-[120px] lg:w-auto lg:flex-1">
-                <div className="w-full border-t border-dashed border-zinc-300" />
-              </div>
-              <ProcessCard
-                icon="json"
-                title="Clean JOSN"
-                caption="output"
-                className="h-[98px] w-[168px] max-w-none text-nowrap sm:h-[120px] sm:w-[226px] sm:max-w-[226px] lg:w-[245px] lg:max-w-[245px]"
-              />
-            </div>
-          </div>
-
-          <div className="grid divide-y divide-zinc-200 bg-zinc-100 md:grid-cols-3 md:divide-x md:divide-y-0">
+          <div className="grid grid-cols-3 divide-x divide-zinc-200 max-[639px]:grid-cols-1 max-[639px]:divide-x-0 max-[639px]:divide-y">
             <StatsItem
               icon={<CreditCard className="size-5" />}
               leading="No Card"
@@ -721,22 +698,24 @@ export const LandingHome = () => {
             />
             <StatsItem icon={<Zap className="size-5" />} leading="<200ms" trailing="Speed" />
           </div>
+
+          <HeroDemoSplit />
         </section>
 
         <section
           className={cn(
             sectionFrameClassName,
-            "grid gap-12 py-16 sm:gap-16 sm:py-20 md:grid-cols-2 md:gap-x-[62px] md:gap-y-16 lg:gap-16",
+            "grid grid-cols-2 gap-x-[46px] gap-y-[18px] py-14 max-[639px]:grid-cols-1 max-[639px]:gap-6 max-[639px]:py-9 min-[640px]:max-[767px]:grid-cols-1 min-[640px]:max-[767px]:gap-y-8 min-[769px]:gap-x-12 min-[769px]:gap-y-5",
             sectionPaddingClassName
           )}
         >
-          <div className="flex flex-col gap-10">
+          <div className="flex flex-col gap-8 max-[639px]:gap-6">
             <SectionTitle title="Supported Formats" />
-            <div className="flex flex-wrap gap-1.5 xs:gap-2">
+            <div className="flex flex-wrap gap-x-1.5 gap-y-1 min-[769px]:gap-1.5">
               {supportedFormats.map((chip) => (
                 <div
                   key={chip.label}
-                  className="relative overflow-hidden border px-3 py-1.5 sm:px-4 sm:py-2"
+                  className="relative overflow-hidden border px-3 py-2"
                   style={{ backgroundColor: chip.tone.background, borderColor: chip.tone.border }}
                 >
                   <div
@@ -744,7 +723,7 @@ export const LandingHome = () => {
                     style={stripePattern(chip.tone.border, 1, 10)}
                   />
                   <span
-                    className={cn("relative text-2xl leading-8", monoDisplayClassName)}
+                    className={cn("relative text-[18px] leading-6", monoDisplayClassName)}
                     style={{ color: chip.tone.text }}
                   >
                     {chip.label}
@@ -755,13 +734,13 @@ export const LandingHome = () => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-10">
-            <SectionTitle title="Comming soon" />
-            <div className="flex flex-wrap gap-1.5 xs:gap-2">
+          <div className="flex flex-col gap-8 pt-1 max-[639px]:gap-6 max-[639px]:pt-0 min-[640px]:max-[767px]:pt-0">
+            <h3 className="text-base font-normal leading-6 text-zinc-950">Comming soon</h3>
+            <div className="flex flex-wrap gap-x-1.5 gap-y-1 min-[769px]:gap-1.5">
               {comingSoonFormats.map((chip) => (
                 <div
                   key={chip.label}
-                  className="relative overflow-hidden border px-3 py-1.5 sm:px-4 sm:py-2"
+                  className="relative overflow-hidden border px-3 py-2"
                   style={{ backgroundColor: chip.tone.background, borderColor: chip.tone.border }}
                 >
                   <div
@@ -769,7 +748,7 @@ export const LandingHome = () => {
                     style={stripePattern("#e4e4e7", 1, 10)}
                   />
                   <span
-                    className={cn("relative text-2xl leading-8", monoDisplayClassName)}
+                    className={cn("relative text-[18px] leading-6", monoDisplayClassName)}
                     style={{ color: chip.tone.text }}
                   >
                     {chip.label}
@@ -782,124 +761,50 @@ export const LandingHome = () => {
         </section>
 
         <section className={sectionFrameClassName}>
-          <div className={cn("flex flex-col gap-12 pt-16 sm:pt-20", sectionPaddingClassName)}>
+          <div
+            className={cn(
+              "flex flex-col gap-9 pt-14 max-[639px]:gap-6 max-[639px]:pt-9",
+              sectionPaddingClassName
+            )}
+          >
             <SectionTitle
-              title="Integrate In Minutes"
               description="Real-world comparisons showing why developers choose Knowhere API"
+              title="Integrate In Minutes"
             />
-          </div>
-          <div className="mt-8 grid border-t border-zinc-100 sm:mt-12 lg:grid-cols-[1fr_1.02fr]">
-            <div
-              className={cn(
-                "flex min-w-0 flex-col justify-center py-4 xs:py-6",
-                sectionPaddingClassName
-              )}
-            >
-              {integrationSteps.map((step) => (
-                <div key={step.number} className="flex w-full min-w-0 items-start gap-6 py-[14px]">
-                  <NumberBadge number={step.number} />
-                  <div className="flex min-w-0 flex-1 flex-col gap-1 pr-1">
-                    <h3 className="text-base font-bold leading-6 text-zinc-950">{step.title}</h3>
-                    <p className="w-full max-w-full text-base leading-6 text-zinc-500">
-                      {step.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
 
-            <div className="flex flex-col justify-center px-5 py-6 xs:px-[18px] sm:px-16">
-              <div className="min-w-0 bg-zinc-800 text-zinc-50">
-                <div className="flex items-center justify-between gap-3 border-b border-zinc-800 px-4 py-4">
-                  <div className="flex items-center gap-3">
-                    <span className="bg-[#fafafa] px-3 py-2 text-sm leading-5 text-zinc-950">
-                      Python
-                    </span>
-                    <span className="bg-zinc-700 px-3 py-2 text-sm leading-5 text-zinc-50">
-                      CURL
-                    </span>
+            <div className="grid grid-cols-2 gap-0 border-t border-zinc-100 pl-12 max-[639px]:grid-cols-1 max-[639px]:gap-4 max-[639px]:pl-0 min-[640px]:max-[767px]:grid-cols-1 min-[640px]:max-[767px]:gap-6 min-[640px]:max-[767px]:pl-0">
+              <div className="flex min-w-0 flex-col justify-center py-6 pr-12 max-[639px]:pr-0 min-[640px]:max-[767px]:pr-0">
+                {integrationSteps.map((step) => (
+                  <div key={step.number} className="flex w-full min-w-0 items-start gap-5 py-4">
+                    <NumberBadge number={step.number} />
+                    <div className="flex min-w-0 flex-1 flex-col gap-1 pr-1">
+                      <h3 className="text-base font-bold leading-6 text-zinc-950">{step.title}</h3>
+                      <p className="w-full max-w-full text-sm leading-5 text-zinc-500">
+                        {step.description}
+                      </p>
+                    </div>
                   </div>
-                  <span
-                    className={cn(
-                      "rounded-full px-4 py-2 text-sm leading-5 text-[#a684ff]",
-                      monoReadableClassName
-                    )}
-                  >
-                    Copy
-                  </span>
-                </div>
-                <div className="overflow-x-auto px-4 py-4">
-                  <pre
-                    className={cn(
-                      "min-w-0 break-words whitespace-pre-wrap text-sm leading-7 text-zinc-50 xl:min-w-[580px] xl:whitespace-pre",
-                      monoReadableClassName
-                    )}
-                  >
-                    <code>
-                      <span className="text-[#51a2ff]">import</span> requests{"\n\n"}
-                      url ={" "}
-                      <span className="text-[#ff6467]">"https://api.knowhereto.ai/v1/jobs"</span>
-                      {"\n"}
-                      headers = {"{"}
-                      {"\n"}
-                      {"  "}
-                      <span className="text-[#ff6467]">"Authorization"</span>:{" "}
-                      <span className="text-[#ff6467]">"Bearer ***REMOVED***"</span>,{"\n"}
-                      {"  "}
-                      <span className="text-[#ff6467]">"Content-Type"</span>:{" "}
-                      <span className="text-[#ff6467]">"application/json"</span>
-                      {"\n"}
-                      {"}"}
-                      {"\n"}
-                      payload = {"{"}
-                      {"\n"}
-                      {"  "}
-                      <span className="text-[#ff6467]">"source_type"</span>:{" "}
-                      <span className="text-[#ff6467]">"url"</span>,{"\n"}
-                      {"  "}
-                      <span className="text-[#ff6467]">"source_url"</span>:{" "}
-                      <span className="text-[#ff6467]">"https://arxiv.org/pdf/1706.03762.pdf"</span>
-                      ,{"\n"}
-                      {"  "}
-                      <span className="text-[#ff6467]">"parsing_params"</span>: {"{"}
-                      {"\n"}
-                      {"    "}
-                      <span className="text-[#ff6467]">"model"</span>:{" "}
-                      <span className="text-[#ff6467]">"base"</span>,{"\n"}
-                      {"    "}
-                      <span className="text-[#ff6467]">"ocr_enabled"</span>:{" "}
-                      <span className="text-[#51a2ff]">True</span>
-                      {"\n"}
-                      {"  "}
-                      {"}"}
-                      {"\n"}
-                      {"}"}
-                      {"\n\n"}
-                      response = requests.<span className="text-[#d08700]">post</span>(url,
-                      headers=headers, json=payload){"\n"}
-                      <span className="text-[#51a2ff]">print</span>(response.
-                      <span className="text-[#d08700]">json</span>())
-                    </code>
-                  </pre>
-                </div>
+                ))}
               </div>
+
+              <IntegrateCodePanel />
             </div>
           </div>
         </section>
 
         <section
-          id="comparison"
           className={cn(
             sectionFrameClassName,
-            "bg-[#fffbeb] py-16 sm:py-20",
+            "scroll-mt-20 bg-[#fffbeb] py-16 max-[639px]:py-9 min-[769px]:py-20",
             sectionPaddingClassName
           )}
+          id="comparison"
         >
-          <div className="flex flex-col gap-12">
+          <div className="flex flex-col gap-12 max-[639px]:gap-8">
             <SectionTitle
-              title="How We Compare"
               description="Our API is designed to be intuitive and easy to use. Whether you're using Python, Node.js, or raw cURL, you can get started with just a few lines of code."
               descriptionClassName="text-[#ff8904]"
+              title="How We Compare"
             />
 
             <div className="flex flex-col gap-2">
@@ -908,231 +813,60 @@ export const LandingHome = () => {
               ))}
             </div>
 
-            <div className="overflow-x-auto">
-              <div className="flex w-max flex-nowrap gap-px">
-                {comparisonTabs.map((tab, index) => (
-                  <div
-                    key={tab}
-                    className={cn(
-                      "px-4 py-2 text-sm leading-5",
-                      monoDisplayClassName,
-                      index === 0
-                        ? "border-b-4 border-[#d97706] bg-[#ff8904] text-[#fff7db]"
-                        : "bg-[#fde68a] text-[#5b3716]"
-                    )}
-                  >
-                    {tab}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="overflow-x-auto border border-[#fde68a]">
-              <div className={cn(comparisonTableGridClassName, "bg-[#fef3c6]")}>
-                <div
-                  className={cn(
-                    "flex items-center justify-center border-r border-[#fde68a] px-6 py-4 text-sm leading-[18px] text-[#f97316] xs:text-xl xs:leading-8",
-                    monoDisplayClassName
-                  )}
-                >
-                  Feature
-                </div>
-                <div className="relative flex items-center justify-center gap-3 overflow-hidden border-r border-[#fde68a] px-6 py-4">
-                  <div
-                    className="absolute inset-0 opacity-40"
-                    style={stripePattern("#fde68a", 1, 9)}
-                  />
-                  <div className="relative flex items-center gap-3">
-                    <LandingBrand compact />
-                  </div>
-                </div>
-                <div
-                  className={cn(
-                    "flex items-center justify-center px-6 py-4 text-sm leading-[18px] text-[#f97316] xs:text-xl xs:leading-8",
-                    monoDisplayClassName
-                  )}
-                >
-                  Others
-                </div>
-              </div>
-
-              {comparisonRows.map((row, index) => (
-                <div
-                  key={row.feature}
-                  className={cn(comparisonTableGridClassName, "border-t border-[#fde68a] bg-white")}
-                >
-                  <div className="relative border-r border-[#fde68a] px-6 py-6">
-                    {row.emphasize ? (
-                      <div
-                        className="absolute inset-0 opacity-30"
-                        style={stripePattern("#fde68a", 1, 8)}
-                      />
-                    ) : null}
-                    <div className="relative flex items-center justify-between gap-4">
-                      <span
-                        className={cn(
-                          "text-base leading-6 text-[#92400e] xs:text-[18px] xs:leading-8",
-                          monoDisplayClassName
-                        )}
-                      >
-                        {row.feature}
-                      </span>
-                      {index === 4 || index === 6 ? (
-                        <span className="text-[#f59e0b]">
-                          <Plus className="size-4" />
-                        </span>
-                      ) : null}
-                    </div>
-                  </div>
-                  <div className="relative flex items-center justify-center border-r border-[#fde68a] bg-[#fffbeb] px-6 py-6">
-                    <div
-                      className="absolute inset-0 opacity-25"
-                      style={stripePattern("#fde68a", 1, 8)}
-                    />
-                    <div className="relative">
-                      <ComparisonIndicator status={row.knowhere} />
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-center px-6 py-6">
-                    <ComparisonIndicator status={row.others} />
-                  </div>
-                </div>
-              ))}
-            </div>
+            <ComparisonShowcase />
           </div>
         </section>
 
         <section className={sectionFrameClassName}>
-          <div className={cn("flex flex-col gap-12 pt-16 sm:pt-20", sectionPaddingClassName)}>
+          <div
+            className={cn(
+              "flex flex-col gap-9 pt-14 pb-[14px] max-[639px]:gap-6 max-[639px]:pt-9 max-[639px]:pb-0",
+              sectionPaddingClassName
+            )}
+          >
             <SectionTitle
+              description="Knowhere outperforms major competitors in key metrics"
               title={
                 <>
                   Why Choose <span className="text-[#7f22fe]">Knowhere</span>
                 </>
               }
-              description="Knowhere outperforms major competitors in key metrics"
             />
-
-            <div className="flex flex-wrap gap-px">
-              <div
-                className={cn(
-                  "border-b-4 border-zinc-600 bg-zinc-400 px-4 py-2 text-sm font-bold leading-5 text-zinc-50",
-                  monoDisplayClassName
-                )}
-              >
-                Unstructured
-              </div>
-              <div
-                className={cn(
-                  "bg-zinc-200 px-4 py-2 text-sm font-light leading-5 text-zinc-950",
-                  monoDisplayClassName
-                )}
-              >
-                Markitdown
-              </div>
-            </div>
           </div>
-
-          <div className="mt-3 grid border-t border-zinc-100 lg:grid-cols-2">
-            <div className={cn("flex flex-col gap-8 py-8 xs:py-10", sectionPaddingClassName)}>
-              <p className="max-w-[510px] text-sm leading-5 text-zinc-500">
-                Unstructured is an open-source document processing tool that provides basic text
-                extraction. While functional for simple documents, it struggles with complex table
-                structures and loses important semantic information during parsing.
-              </p>
-              <div className="flex flex-col">
-                {whyChooseBenefits.map((benefit) => (
-                  <div key={benefit} className="flex items-center gap-4 py-3 xs:gap-6">
-                    <div className="flex size-8 items-center justify-center rounded-full border border-[#009966] border-r-4 bg-[#00bc7d] text-white xs:size-12">
-                      <Check className="size-5 stroke-[3]" />
-                    </div>
-                    <span className="text-[18px] font-semibold leading-7 text-zinc-950">
-                      {benefit}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="border-t border-zinc-100 lg:border-l lg:border-t-0">
-              <div className="flex flex-col items-center gap-8 px-4 pb-10 pt-8 text-center xs:px-6 xs:pb-12 xs:pt-10 md:px-12">
-                <h3 className="max-w-[420px] text-sm font-bold leading-5 text-zinc-950">
-                  Why Knowhere delivers superior document parsing for complex tables
-                </h3>
-                <div className="grid w-full sm:grid-cols-2">
-                  <div
-                    className="flex min-h-[169px] flex-col items-center justify-center border border-zinc-700 bg-zinc-600 text-center text-[#5ee9b5]"
-                    style={cardStripePattern("rgba(255,255,255,0.12)")}
-                  >
-                    <span
-                      className={cn("text-[36px] font-semibold leading-10", monoReadableClassName)}
-                    >
-                      90%+
-                    </span>
-                    <span
-                      className={cn(
-                        "mt-3 max-w-[165px] text-sm leading-5 text-zinc-400",
-                        monoDisplayClassName
-                      )}
-                    >
-                      Complex Table Parsing Accuracy
-                    </span>
-                  </div>
-                  <div
-                    className="flex min-h-[169px] flex-col items-center justify-center border border-zinc-700 bg-zinc-600 text-center text-[#5ee9b5]"
-                    style={cardStripePattern("rgba(255,255,255,0.12)")}
-                  >
-                    <span
-                      className={cn("text-[36px] font-semibold leading-10", monoReadableClassName)}
-                    >
-                      Better
-                    </span>
-                    <span
-                      className={cn(
-                        "mt-3 max-w-[165px] text-sm leading-5 text-zinc-400",
-                        monoDisplayClassName
-                      )}
-                    >
-                      Nested Table Detection
-                    </span>
-                  </div>
-                </div>
-                <div className="flex flex-wrap items-center justify-center gap-4 xs:gap-6">
-                  <LandingBrand compact className="sm:hidden" />
-                  <LandingBrand className="hidden sm:flex" />
-                  <span className="flex size-10 items-center justify-center rounded-full bg-zinc-100 text-base text-zinc-400">
-                    VS
-                  </span>
-                  <LandingUnstructuredBrand />
-                </div>
-              </div>
-            </div>
-          </div>
+          <WhyChooseShowcase />
         </section>
 
         <section className={sectionFrameClassName}>
-          <div className={cn("flex flex-col gap-12 pt-16 sm:pt-20", sectionPaddingClassName)}>
+          <div
+            className={cn(
+              "flex flex-col gap-9 pt-14 max-[639px]:gap-4 max-[639px]:pt-9",
+              sectionPaddingClassName
+            )}
+          >
             <SectionTitle
+              description="Enterprise-grade features designed to handle the most complex document parsing scenarios"
               title={
                 <>
                   Built For Every <span className="text-[#7f22fe]">Document Challenge</span>
                 </>
               }
-              description="Enterprise-grade features designed to handle the most complex document parsing scenarios"
             />
           </div>
 
-          <div className="mt-8 grid border-y border-zinc-100 sm:mt-12 sm:grid-cols-2 xl:grid-cols-3">
-            {challengeCards.map((card) => (
+          <div className="mt-9 grid grid-cols-2 border-y border-zinc-100 max-[639px]:mt-6 max-[639px]:grid-cols-1">
+            {challengeCards.map((card, index) => (
               <div
                 key={card.title}
-                className="relative border border-zinc-100 px-4 py-8 xs:px-6 xs:py-10 lg:px-16"
+                className={cn(
+                  "relative min-h-[194px] border border-zinc-100 px-12 py-8 min-[769px]:px-12 min-[769px]:py-10 max-[639px]:px-4",
+                  challengeCardHeightClassNames[index]
+                )}
               >
                 <div
                   className="absolute inset-0 opacity-35"
                   style={stripePattern("#f4f4f5", 1, 8)}
                 />
-                <div className="relative flex flex-col gap-6">
+                <div className="relative flex h-full flex-col gap-6">
                   <div
                     className="flex size-10 items-center justify-center border"
                     style={{
@@ -1142,11 +876,9 @@ export const LandingHome = () => {
                   >
                     <ChallengeIcon card={card} />
                   </div>
-                  <div className="flex flex-col gap-3">
-                    <h3 className="text-[18px] font-semibold leading-7 text-zinc-950">
-                      {card.title}
-                    </h3>
-                    <p className="text-base leading-8 text-zinc-500">{card.description}</p>
+                  <div className="flex max-w-[360px] flex-col gap-3">
+                    <h3 className="text-base font-bold leading-6 text-zinc-950">{card.title}</h3>
+                    <p className="text-sm leading-5 text-zinc-500">{card.description}</p>
                   </div>
                 </div>
               </div>
@@ -1155,18 +887,23 @@ export const LandingHome = () => {
         </section>
 
         <section className={sectionFrameClassName}>
-          <div className={cn("flex flex-col gap-12 py-16 sm:py-20", sectionPaddingClassName)}>
+          <div
+            className={cn(
+              "flex flex-col gap-12 py-16 max-[639px]:gap-9 max-[639px]:py-9 min-[640px]:max-[767px]:gap-9 min-[640px]:max-[767px]:py-14 min-[769px]:py-20",
+              sectionPaddingClassName
+            )}
+          >
             <SectionTitle
+              description="Our intelligent pipeline processes documents through multiple stages to deliver perfect results"
+              descriptionClassName="text-zinc-600"
               title={
                 <>
                   Watch Your Data <span className="text-[#7f22fe]">Transform</span>
                 </>
               }
-              description="Our intelligent pipeline processes documents through multiple stages to deliver perfect results"
-              descriptionClassName="text-zinc-600"
             />
 
-            <div className="grid gap-8 border-y border-zinc-100 py-8 sm:gap-10 sm:py-10 lg:grid-cols-[448px_minmax(0,1fr)] lg:gap-16 xl:grid-cols-[1fr_0.95fr]">
+            <div className="grid grid-cols-2 gap-12 border-y border-zinc-100 py-8 max-[639px]:grid-cols-1 max-[639px]:gap-8 min-[640px]:max-[767px]:grid-cols-1 min-[640px]:max-[767px]:gap-8 min-[769px]:gap-16 min-[769px]:py-10">
               <div className="relative flex flex-col gap-5">
                 {transformSteps.map((step, index) => (
                   <div key={step.number} className="relative">
@@ -1189,101 +926,102 @@ export const LandingHome = () => {
           </div>
         </section>
 
-        <section id="pricing" className={cn(sectionFrameClassName, "border-zinc-200 bg-[#fdf2f8]")}>
-          <div className="flex flex-col gap-12 pt-16 sm:gap-16 sm:pt-20">
+        <section className={cn(sectionFrameClassName, "scroll-mt-20 bg-[#fdf2f8]")} id="pricing">
+          <div className="flex flex-col gap-12 pt-16 max-[639px]:gap-8 max-[639px]:pt-9 min-[769px]:gap-16 min-[769px]:pt-20">
             <div
               className={cn(
                 "flex flex-col items-center gap-3 text-center",
                 sectionPaddingClassName
               )}
             >
-              <h2 className="text-[24px] font-bold leading-8 sm:text-[36px] sm:leading-10">
-                <span className="text-[#510424]">Simple,</span>
-                <span className="text-[#e60076]"> Transparent Pricing</span>
+              <h2 className="text-[30px] font-bold leading-9 text-zinc-950 max-[639px]:text-[22px] max-[639px]:leading-8">
+                <span className="text-[#510424]">Simple, </span>
+                <span className="text-[#e60076]">Transparent Pricing</span>
               </h2>
-              <p className="text-base leading-7 text-[#a3004c] sm:text-xl sm:leading-7">
+              <p className="text-base leading-6 text-[#a3004c]">
                 Pay only for what you use. No hidden fees, no complex tiers.
               </p>
             </div>
 
             <div
               className={cn(
-                "grid items-center gap-8 pb-12 sm:gap-10 sm:pb-16 lg:grid-cols-[298px_1fr] lg:gap-20",
+                "grid grid-cols-[298px_1fr] items-center gap-14 pb-12 max-[639px]:grid-cols-1 max-[639px]:justify-items-center max-[639px]:gap-8 max-[639px]:pb-9 min-[769px]:grid-cols-[298px_1fr] min-[769px]:gap-20 min-[769px]:pb-16",
                 sectionPaddingClassName
               )}
             >
-              <div className="flex justify-center lg:justify-start">
+              <div className="flex justify-center min-[769px]:justify-start">
                 <PricingBurst />
               </div>
               <div
                 className={cn(
-                  "text-center text-[18px] leading-8 text-[#861043] sm:text-[26px] sm:leading-[34px] md:text-[30px] md:leading-9 lg:text-left",
+                  "text-left text-[26px] leading-[34px] text-[#861043] max-[639px]:max-w-[260px] max-[639px]:text-center max-[639px]:text-[18px] max-[639px]:leading-7 min-[769px]:text-left min-[769px]:text-[30px] min-[769px]:leading-9",
                   monoDisplayClassName
                 )}
               >
                 <p>That&apos;s it. No complex tiers, no hidden fees.</p>
-                <p className="mt-8">Purchase page credits anytime. No minimum, no commitment.</p>
+                <p className="mt-8 max-[639px]:mt-6">
+                  Purchase page credits anytime. No minimum, no commitment.
+                </p>
               </div>
             </div>
 
-            <div className="grid border-t border-[#fccee8] lg:grid-cols-3">
+            <div className="grid grid-cols-3 border-y border-[#fccee8] max-[639px]:grid-cols-1">
               {pricingExamples.map((example, index) => (
                 <div
                   key={example.label}
                   className={cn(
-                    "relative border-[#fccee8] px-6 py-8 text-center md:px-10",
+                    "relative min-h-[100px] border-[#fccee8] px-6 py-6 min-[769px]:px-12",
                     index < pricingExamples.length - 1
-                      ? "border-b lg:border-b-0 lg:border-r"
-                      : "border-b"
+                      ? "min-[640px]:border-r max-[639px]:border-b"
+                      : ""
                   )}
                 >
                   <div
                     className="absolute inset-0 opacity-40"
                     style={stripePattern("#fccee8", 1, 8)}
                   />
-                  <div className="relative flex items-center justify-center gap-3 text-[#e60076]">
-                    <span className="text-[18px] font-semibold leading-7 sm:text-[24px] sm:leading-8">
-                      {example.value}
-                    </span>
+                  <div className="relative flex h-full flex-col items-start justify-center gap-1.5 text-left max-[639px]:items-center max-[639px]:text-center">
                     <span
                       className={cn(
-                        "text-[18px] leading-7 sm:text-2xl sm:leading-8",
-                        monoDisplayClassName
+                        "text-[20px] font-semibold leading-7 text-[#f6339a]",
+                        accentClassName
                       )}
                     >
-                      {example.label}
+                      {example.value}
                     </span>
+                    <p className={cn("text-sm leading-5 text-[#a3004c]", monoDisplayClassName)}>
+                      {example.label}
+                    </p>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="grid border-t border-[#fccee8] lg:grid-cols-[1.35fr_2.65fr]">
-              <div className="border-b border-[#fccee8] px-4 py-8 text-center xs:px-[18px] md:px-16 lg:border-b-0 lg:border-r lg:text-left">
-                <div className="flex flex-col items-center gap-4 lg:items-start">
-                  <h3 className="text-[24px] font-bold leading-8 text-[#510424] sm:text-[36px] sm:leading-10">
+            <div className="grid grid-cols-[256px_1fr] max-[639px]:grid-cols-1 min-[640px]:max-[767px]:grid-cols-1 min-[769px]:grid-cols-[320px_1fr]">
+              <div className="border-r border-[#fccee8] px-6 py-8 max-[639px]:border-b max-[639px]:border-r-0 max-[639px]:px-4 max-[639px]:py-6 min-[640px]:max-[767px]:border-b min-[640px]:max-[767px]:border-r-0 min-[640px]:max-[767px]:px-12 min-[640px]:max-[767px]:py-6 min-[769px]:border-b-0 min-[769px]:border-r min-[769px]:px-12 min-[769px]:py-7">
+                <div className="flex flex-col gap-4 items-center">
+                  <h3 className="text-[24px] font-bold leading-8 text-[#510424] max-[639px]:text-[22px] max-[639px]:leading-8 text-center min-[640px]:max-[767px]:text-center">
                     File Size Limits
                   </h3>
-                  <p className="text-base leading-7 text-[#e60076] sm:text-xl sm:leading-8">
-                    Need higher limits? Contact{" "}
-                    <Link className="underline underline-offset-4" href="mailto:team@knowhereto.ai">
-                      team@knowhereto.ai
+                  <p className="max-w-[228px] text-sm leading-5 text-[#f6339a] max-[639px]:max-w-[320px] max-[639px]:text-center min-[640px]:max-[767px]:max-w-none min-[640px]:max-[767px]:text-center">
+                    Need higher limits? Contact team{" "}
+                    <Link className="text-[#7f22fe]" href="mailto:team@knowhereto.ai">
+                      @knowhereto.ai
                     </Link>{" "}
                     for enterprise pricing with custom limits.
                   </p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 border-l-0 lg:grid-cols-4">
+              <div className="grid grid-cols-4 max-[639px]:grid-cols-2">
                 {fileLimits.map((limit, index) => (
                   <div
                     key={limit.format}
                     className={cn(
                       "border-[#fccee8] px-6 py-10 text-center",
-                      index < 2 && "border-b",
-                      index % 2 === 0 && "border-r",
-                      index < fileLimits.length - 1 && "lg:border-r",
-                      "lg:border-b-0"
+                      index < fileLimits.length - 1 && "min-[640px]:border-r",
+                      index % 2 === 0 && "max-[639px]:border-r",
+                      index < 2 && "max-[639px]:border-b"
                     )}
                   >
                     <FormatBadge
@@ -1300,40 +1038,41 @@ export const LandingHome = () => {
         <section className={sectionFrameClassName}>
           <div
             className={cn(
-              "flex flex-col items-center gap-6 pt-16 text-center sm:pt-20 lg:items-start lg:text-left",
+              "flex flex-col items-start gap-5 pt-20 text-left max-[639px]:items-center max-[639px]:gap-6 max-[639px]:pt-9 max-[639px]:text-center",
               sectionPaddingClassName
             )}
           >
-            <div className="flex flex-col items-center gap-3 lg:items-start">
-              <div className="flex flex-wrap items-center justify-center gap-4 lg:justify-start">
-                <div className="relative overflow-hidden rounded-[4px] border border-[#ddd6ff] border-b-6 bg-[#ede9fe] px-3 pb-3 pt-2">
+            <div className="flex flex-col items-start gap-2 max-[639px]:items-center">
+              <div className="flex flex-wrap items-center gap-4 max-[639px]:flex-col max-[639px]:justify-center max-[639px]:gap-3">
+                <div className="relative overflow-hidden rounded-[4px] border border-[#ddd6ff] bg-[#ede9fe] px-3 pb-3 pt-2">
                   <div
                     className="absolute inset-0 opacity-40"
                     style={stripePattern("#ddd6ff", 1, 8)}
                   />
-                  <span className="relative text-[36px] font-bold leading-10 text-[#5d0ec0]">
+                  <span className="relative text-[30px] font-bold leading-9 text-[#5d0ec0]">
                     ENTERPRISE
                   </span>
                 </div>
-                <h2 className="text-[24px] font-bold leading-8 text-zinc-950 sm:text-[36px] sm:leading-10">
+                <h2 className="text-[30px] font-bold leading-9 text-zinc-950 max-[639px]:text-[22px] max-[639px]:leading-8">
                   Need Custom <span className="text-[#7f22fe]">Solutions</span>?
                 </h2>
               </div>
-              <p className="text-base leading-7 text-zinc-600 sm:text-xl sm:leading-7">
+              <p className="text-base leading-6 text-zinc-600 max-[639px]:max-w-[330px]">
                 Get custom limits, SLAs, and dedicated support for your enterprise needs.
               </p>
             </div>
-            <div className="flex justify-center lg:justify-start">
+            <div className="flex justify-center min-[769px]:justify-start">
               <ActionLink
                 href="mailto:team@knowhereto.ai"
-                className={cn(mobileActionLinkClassName, "sm:h-[72px] sm:px-9 w-fit!")}
+                className={mobileActionLinkClassName}
+                external
               >
                 Contact Sales
               </ActionLink>
             </div>
           </div>
 
-          <div className="mt-8 grid grid-cols-2 border-t border-zinc-100 px-4 py-8 xs:px-[18px] sm:mt-12 sm:py-10 md:px-16">
+          <div className="mt-12 grid grid-cols-2 border-t border-zinc-100 px-12 py-7 max-[639px]:mt-5 max-[639px]:px-5 max-[639px]:py-2.5">
             {enterpriseItems.map((item) => (
               <EnterpriseCheckItem key={item} label={item} />
             ))}
@@ -1341,7 +1080,12 @@ export const LandingHome = () => {
         </section>
 
         <section className={sectionFrameClassName}>
-          <div className={cn("flex flex-col gap-12 py-16 sm:py-20", sectionPaddingClassName)}>
+          <div
+            className={cn(
+              "flex flex-col gap-9 py-14 max-[639px]:gap-6 max-[639px]:py-9",
+              sectionPaddingClassName
+            )}
+          >
             <SectionTitle
               title={
                 <>
@@ -1349,50 +1093,52 @@ export const LandingHome = () => {
                 </>
               }
             />
-            <div className="flex flex-col border border-zinc-100">
+            <div className="flex flex-col border-x border-zinc-100 max-[639px]:border-x-0">
               {faqItems.map((faq) => (
-                <FaqRow key={faq.question} question={faq.question} answer={faq.answer} />
+                <FaqRow key={faq.question} answer={faq.answer} question={faq.question} />
               ))}
             </div>
           </div>
         </section>
 
-        <section className={cn(sectionFrameClassName, "py-16 text-center sm:py-20")}>
-          <div className={cn("flex flex-col items-center gap-12", sectionPaddingClassName)}>
+        <section
+          className={cn(
+            sectionFrameClassName,
+            "py-16 text-center max-[639px]:py-9 min-[769px]:py-20"
+          )}
+        >
+          <div
+            className={cn(
+              "flex flex-col items-center gap-12 max-[639px]:gap-8",
+              sectionPaddingClassName
+            )}
+          >
             <SectionTitle
               className="items-center"
+              description="Join thousands of developers building AI agents with the most accurate document parsing API"
+              descriptionClassName="max-w-[980px] text-center text-base leading-6 text-zinc-600 max-[639px]:max-w-[320px]"
               title={
                 <>
                   Ready To Get <span className="text-[#7f22fe]">Started</span>?
                 </>
               }
-              description="Join thousands of developers building AI agents with the most accurate document parsing API"
-              descriptionClassName="max-w-[980px] text-zinc-600 text-center"
             />
 
-            <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-nowrap sm:gap-6">
-              <ActionLink
-                href="/login"
-                className={cn(
-                  mobileActionLinkClassName,
-                  "w-fit text-[14px] leading-[26px] xs:text-xl xs:leading-7 sm:h-[72px] sm:w-fit sm:max-w-none sm:px-9"
-                )}
-              >
+            <div className="flex flex-row items-center justify-center gap-2 max-[639px]:flex-col max-[639px]:gap-3">
+              <ActionLink href="/login" className={cn(mobileActionLinkClassName, "w-fit")}>
                 Start Free Trial
               </ActionLink>
               <ActionLink
                 href="mailto:team@knowhereto.ai"
                 variant="secondary"
-                className={cn(
-                  mobileActionLinkClassName,
-                  "w-fit text-[14px] leading-[26px] xs:text-xl xs:leading-7 sm:h-[72px] sm:w-fit sm:max-w-none sm:px-9"
-                )}
+                className={cn(mobileActionLinkClassName, "w-fit")}
+                external
               >
                 Book A Demo
               </ActionLink>
             </div>
 
-            <div className="flex w-full flex-col items-center gap-[10px] px-11 sm:gap-[10px] sm:px-[42px] md:px-11">
+            <div className="flex w-full flex-col items-center gap-[10px]">
               <FooterChip color="#fb2c36">No credit card required</FooterChip>
               <FooterChip color="#efb100">Free 14-day trial</FooterChip>
               <FooterChip color="#00c951">Cancel anytime</FooterChip>
@@ -1403,15 +1149,12 @@ export const LandingHome = () => {
 
       <footer
         className={cn(
-          "mx-auto flex flex-col items-center gap-3 border border-zinc-200 bg-[#fafafa] text-center sm:flex-row sm:justify-between sm:text-left",
-          footerPaddingClassName,
-          landingCanvasWidthClassName
+          "mx-auto flex w-full flex-row items-center justify-between gap-3 border border-zinc-200 bg-[#fafafa] text-left max-[639px]:flex-col max-[639px]:text-center min-[768px]:max-w-[768px] min-[769px]:max-w-[976px]",
+          footerPaddingClassName
         )}
       >
-        <p className="order-1 text-xs leading-4 text-zinc-400 sm:order-2 sm:text-sm sm:leading-5">
-          © 2026 Knowhere API. All rights reserved.
-        </p>
-        <LandingBrand compact className="order-2 sm:order-1" />
+        <LandingBrand size="header" />
+        <p className="text-xs leading-4 text-zinc-400">© 2026 Knowhere API. All rights reserved.</p>
       </footer>
     </div>
   );

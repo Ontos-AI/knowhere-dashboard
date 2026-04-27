@@ -213,10 +213,11 @@
     @apply border-border;
   }
   html {
-    @apply overflow-x-hidden;
+    overflow-x: clip;
   }
   body {
-    @apply bg-background text-foreground overflow-x-hidden font-sans antialiased;
+    @apply bg-background text-foreground font-sans antialiased;
+    overflow-x: clip;
   }
 }
 
