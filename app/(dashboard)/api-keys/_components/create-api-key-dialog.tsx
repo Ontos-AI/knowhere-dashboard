@@ -1,0 +1,151 @@
+"use client";
+
+import {
+  DashboardDesktopActionButton,
+  DashboardDesktopDialogCloseButton,
+  dashboardDesktopFieldLabelClassName,
+  dashboardDesktopModalContentClassName,
+  dashboardDesktopTextFieldClassName,
+} from "@app/(dashboard)/_components/dashboard-modal-primitives";
+import { LoadingSpinner } from "@components/common/loading-spinner";
+import { Dialog, DialogContent } from "@components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@components/ui/select";
+import { cn } from "@lib/utils";
+import { useTranslations } from "next-intl";
+import type { FormEvent } from "react";
+
+type CreateApiKeyDialogProps = {
+  expirationDuration: string;
+  expirationOptions: Array<{ label: string; value: string }>;
+  isPending: boolean;
+  name: string;
+  onExpirationChange: (value: string) => void;
+  onNameChange: (value: string) => void;
+  onOpenChange: (open: boolean) => void;
+  onSubmit: () => void;
+  open: boolean;
+};
+
+export const CreateApiKeyDialog = ({
+  expirationDuration,
+  expirationOptions,
+  isPending,
+  name,
+  onExpirationChange,
+  onNameChange,
+  onOpenChange,
+  onSubmit,
+  open,
+}: CreateApiKeyDialogProps) => {
+  const t = useTranslations("ApiKeys");
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    onSubmit();
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className={dashboardDesktopModalContentClassName}>
+        <form
+          className="flex flex-col gap-8 px-6 pb-10 pt-6 sm:gap-[38px] sm:px-[46px] sm:pb-[54px] sm:pt-[38px] lg:gap-10 lg:px-12 lg:pb-14 lg:pt-10"
+          onSubmit={handleSubmit}
+        >
+          <div className="flex items-start gap-6 sm:gap-8">
+            <div className="min-w-0 flex-1">
+              <h2 className="text-[20px] font-bold leading-7 text-[#09090b] sm:leading-[26px] lg:leading-7">
+                {t("createDialogTitle")}
+              </h2>
+              <p className="mt-1 text-sm leading-5 text-[#71717b] sm:leading-[18px] lg:leading-5">
+                {t("createDialogDesc")}
+              </p>
+            </div>
+
+            <DashboardDesktopDialogCloseButton />
+          </div>
+
+          <div className="flex flex-col gap-6">
+            <label htmlFor="api-key-name" className="flex flex-col gap-2">
+              <span
+                className={cn(
+                  dashboardDesktopFieldLabelClassName,
+                  "sm:leading-[18px] lg:leading-5"
+                )}
+              >
+                {t("name")}
+              </span>
+              <input
+                id="api-key-name"
+                value={name}
+                onChange={(event) => onNameChange(event.target.value)}
+                placeholder={t("namePlaceholder")}
+                className={dashboardDesktopTextFieldClassName}
+                disabled={isPending}
+              />
+            </label>
+
+            <label htmlFor="api-key-expiration" className="flex flex-col gap-[10px]">
+              <span
+                className={cn(
+                  dashboardDesktopFieldLabelClassName,
+                  "sm:leading-[18px] lg:leading-5"
+                )}
+              >
+                {t("expiration")}
+              </span>
+              <Select value={expirationDuration} onValueChange={onExpirationChange}>
+                <SelectTrigger
+                  id="api-key-expiration"
+                  className={cn(
+                    dashboardDesktopTextFieldClassName,
+                    "px-[10px] pr-2 text-left hover:border-[#e4e4e7] focus:border-[#e4e4e7] [&>span]:line-clamp-1 [&>svg]:size-4 [&>svg]:text-[#71717b]"
+                  )}
+                  disabled={isPending}
+                >
+                  <SelectValue placeholder={t("selectExpiration")} />
+                </SelectTrigger>
+                <SelectContent className="w-[var(--radix-select-trigger-width)] rounded-none border-[#e4e4e7]">
+                  {expirationOptions.map((option) => (
+                    <SelectItem
+                      key={option.value}
+                      value={option.value}
+                      className="px-3 py-2 text-xs leading-4 text-[#27272a]"
+                    >
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </label>
+          </div>
+
+          <div className="flex justify-end gap-2 sm:gap-[6px] lg:gap-2">
+            <DashboardDesktopActionButton
+              variant="secondary"
+              onClick={() => onOpenChange(false)}
+              disabled={isPending}
+              className="flex-1 sm:min-w-[67px] sm:flex-none lg:min-w-[71px]"
+            >
+              {t("cancel")}
+            </DashboardDesktopActionButton>
+            <DashboardDesktopActionButton
+              variant="primary"
+              type="submit"
+              disabled={isPending || name.trim().length === 0}
+              className="flex-1 sm:min-w-[60px] sm:flex-none lg:min-w-[64px]"
+            >
+              {isPending ? <LoadingSpinner className="size-4" /> : null}
+              <span>{isPending ? t("creating") : t("create")}</span>
+            </DashboardDesktopActionButton>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};

@@ -1,24 +1,29 @@
 "use client";
 
-import { Button } from "@components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
-import { ScrollArea } from "@components/ui/scroll-area";
-import { Sheet, SheetContent } from "@components/ui/sheet";
+import { KnowhereIcon } from "@components/ui/knowhere-icon";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@components/ui/sheet";
+import { ThemeSwitch } from "@components/ui/theme-switch";
 import { cn } from "@lib/utils";
-import { Key, LayoutDashboard, LogOut, Settings, Webhook } from "lucide-react";
+import { setCookie } from "@utils/cookies";
+import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { usePathname, useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
+import { useTheme } from "next-themes";
 import { type AuthUser, useAuth } from "@/hooks/use-auth";
-import { useToast } from "@/hooks/use-toast";
 
 type SidebarProps = {
   user: AuthUser;
@@ -26,137 +31,565 @@ type SidebarProps = {
   onOpenChange: (open: boolean) => void;
 };
 
-export function Sidebar({ user, open, onOpenChange }: SidebarProps) {
+type NavigationItem = {
+  href: string;
+  icon: {
+    height: number;
+    src: string;
+    width: number;
+    x: number;
+    y: number;
+  };
+  label: string;
+};
+
+const SIDEBAR_BRAND_LAYERS = [
+  {
+    src: "/images/sidebar/logo-mark-primary.svg",
+    left: 1.63,
+    top: 1.62,
+    width: 22.75,
+    height: 30.42,
+    rotation: 0,
+  },
+  {
+    src: "/images/sidebar/logo-mark-secondary.svg",
+    left: 17.15,
+    top: 8.96,
+    width: 22.75,
+    height: 30.42,
+    rotation: 180,
+  },
+] as const;
+
+const SIDEBAR_WORDMARK_STYLE = {
+  left: 49.67,
+  top: 12.25,
+  width: 92.71,
+  height: 16.5,
+} as const;
+
+const SIDEBAR_SHEET_WIDTH_CLASS = "w-[160px] min-w-[160px] max-w-[160px]";
+const SIDEBAR_STATIC_WIDTH_CLASS =
+  "sm:w-[160px] sm:min-w-[160px] sm:max-w-[160px] lg:w-[200px] lg:min-w-[200px] lg:max-w-[200px]";
+
+const MOBILE_SIDEBAR_MARK_LAYERS = [
+  {
+    src: "/images/sidebar/logo-mark-primary.svg",
+    left: 0,
+    top: 0,
+    width: 11.98,
+    height: 15.82,
+    rotation: 0,
+  },
+  {
+    src: "/images/sidebar/logo-mark-secondary.svg",
+    left: 10.42,
+    top: 4.54,
+    width: 11.98,
+    height: 15.82,
+    rotation: 180,
+  },
+] as const;
+
+const TABLET_SIDEBAR_MARK_LAYERS = [
+  {
+    src: "/images/sidebar/logo-mark-primary.svg",
+    left: 0,
+    top: 0,
+    width: 14.97,
+    height: 19.78,
+    rotation: 0,
+  },
+  {
+    src: "/images/sidebar/logo-mark-secondary.svg",
+    left: 13.03,
+    top: 5.68,
+    width: 14.97,
+    height: 19.78,
+    rotation: 180,
+  },
+] as const;
+
+const localeLabels = {
+  en: "English",
+  zh: "中文",
+} as const;
+
+const mobileLocaleOrder: Array<keyof typeof localeLabels> = ["zh", "en"];
+
+const getNavigation = (labels: {
+  usage: string;
+  apiKeys: string;
+  webhooks: string;
+  settings: string;
+}): NavigationItem[] => [
+  {
+    href: "/usage",
+    icon: {
+      src: "/icons/sidebar/usage.svg",
+      x: 3.33,
+      y: 3.33,
+      width: 13.33,
+      height: 13.33,
+    },
+    label: labels.usage,
+  },
+  {
+    href: "/api-keys",
+    icon: {
+      src: "/icons/sidebar/api-keys.svg",
+      x: 1.67,
+      y: 5.83,
+      width: 17.32,
+      height: 8.33,
+    },
+    label: labels.apiKeys,
+  },
+  {
+    href: "/webhooks/secrets",
+    icon: {
+      src: "/icons/sidebar/webhooks.svg",
+      x: 2.08,
+      y: 2.08,
+      width: 15.83,
+      height: 15,
+    },
+    label: labels.webhooks,
+  },
+  {
+    href: "/settings",
+    icon: {
+      src: "/icons/sidebar/settings.svg",
+      x: 2.71,
+      y: 2.5,
+      width: 14.57,
+      height: 15,
+    },
+    label: labels.settings,
+  },
+];
+
+const SidebarBrand = ({ onNavigate }: { onNavigate?: () => void }) => {
+  return (
+    <Link href="/" aria-label="Knowhere" className="block" onClick={onNavigate}>
+      <div className="relative hidden h-[41px] w-[144px] lg:block">
+        {SIDEBAR_BRAND_LAYERS.map((layer) => (
+          <Image
+            key={layer.src}
+            src={layer.src}
+            alt=""
+            aria-hidden
+            width={layer.width}
+            height={layer.height}
+            className="absolute block"
+            style={{
+              left: `${layer.left}px`,
+              top: `${layer.top}px`,
+              width: `${layer.width}px`,
+              height: `${layer.height}px`,
+              transform: layer.rotation ? `rotate(${layer.rotation}deg)` : undefined,
+            }}
+          />
+        ))}
+        <Image
+          src="/images/sidebar/logo-wordmark.svg"
+          alt=""
+          aria-hidden
+          width={SIDEBAR_WORDMARK_STYLE.width}
+          height={SIDEBAR_WORDMARK_STYLE.height}
+          className="absolute block"
+          style={{
+            left: `${SIDEBAR_WORDMARK_STYLE.left}px`,
+            top: `${SIDEBAR_WORDMARK_STYLE.top}px`,
+            width: `${SIDEBAR_WORDMARK_STYLE.width}px`,
+            height: `${SIDEBAR_WORDMARK_STYLE.height}px`,
+          }}
+        />
+      </div>
+
+      <div className="flex items-center gap-3 lg:hidden">
+        <div className="relative h-[25.46px] w-7 shrink-0 opacity-80">
+          {TABLET_SIDEBAR_MARK_LAYERS.map((layer) => (
+            <Image
+              key={layer.src}
+              src={layer.src}
+              alt=""
+              aria-hidden
+              width={layer.width}
+              height={layer.height}
+              className="absolute block"
+              style={{
+                left: `${layer.left}px`,
+                top: `${layer.top}px`,
+                width: `${layer.width}px`,
+                height: `${layer.height}px`,
+                transform: layer.rotation ? `rotate(${layer.rotation}deg)` : undefined,
+              }}
+            />
+          ))}
+        </div>
+        <span className="font-brand text-[16px] font-medium leading-none text-[#09090b]">
+          Knowhere
+        </span>
+      </div>
+    </Link>
+  );
+};
+
+const MobileSidebarBrand = ({ onNavigate }: { onNavigate?: () => void }) => {
+  return (
+    <Link href="/" aria-label="Knowhere" className="block" onClick={onNavigate}>
+      <div className="flex items-center gap-3">
+        <div className="relative h-[20.36px] w-[22.4px] shrink-0 opacity-80">
+          {MOBILE_SIDEBAR_MARK_LAYERS.map((layer) => (
+            <Image
+              key={layer.src}
+              src={layer.src}
+              alt=""
+              aria-hidden
+              width={layer.width}
+              height={layer.height}
+              className="absolute block"
+              style={{
+                left: `${layer.left}px`,
+                top: `${layer.top}px`,
+                width: `${layer.width}px`,
+                height: `${layer.height}px`,
+                transform: layer.rotation ? `rotate(${layer.rotation}deg)` : undefined,
+              }}
+            />
+          ))}
+        </div>
+        <span className="font-brand text-[16px] font-medium leading-none text-[#09090b]">
+          Knowhere
+        </span>
+      </div>
+    </Link>
+  );
+};
+
+const SidebarNavIcon = ({
+  icon,
+  isActive,
+}: {
+  icon: NavigationItem["icon"];
+  isActive: boolean;
+}) => {
+  return (
+    <span aria-hidden="true" className="relative block size-5 shrink-0">
+      <Image
+        src={icon.src}
+        alt=""
+        aria-hidden
+        width={icon.width}
+        height={icon.height}
+        className={cn(
+          "absolute block transition-[filter]",
+          isActive ? "brightness-0 invert" : "brightness-0"
+        )}
+        style={{
+          left: `${icon.x}px`,
+          top: `${icon.y}px`,
+          width: `${icon.width}px`,
+          height: `${icon.height}px`,
+        }}
+      />
+    </span>
+  );
+};
+
+const DashboardSidebarContent = ({
+  user,
+  onNavigate,
+  onLogout,
+}: {
+  user: AuthUser;
+  onNavigate?: () => void;
+  onLogout: () => Promise<void>;
+}) => {
   const pathname = usePathname();
-  const { logout } = useAuth();
-  const { success } = useToast();
   const t = useTranslations("Common");
 
-  const navigation = [
-    { name: t("usage"), href: "/usage", icon: LayoutDashboard },
-    { name: t("apiKeys"), href: "/api-keys", icon: Key },
-    { name: t("webhooks"), href: "/webhooks/secrets", icon: Webhook },
-    { name: t("settings"), href: "/settings", icon: Settings },
-  ];
+  const navigation = getNavigation({
+    usage: t("usage"),
+    apiKeys: t("apiKeys"),
+    webhooks: t("webhooks"),
+    settings: t("settings"),
+  });
+
+  return (
+    <div className="flex h-full min-w-0 w-full flex-col bg-[#f4f4f5] text-[#09090b]">
+      <div className="flex h-16 items-center border-b border-[#d4d4d8] px-5 lg:px-4">
+        <SidebarBrand onNavigate={onNavigate} />
+      </div>
+
+      <nav className="flex min-h-0 flex-1 flex-col">
+        {navigation.map((item) => {
+          const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={onNavigate}
+              aria-current={isActive ? "page" : undefined}
+              className={cn(
+                "relative flex h-12 items-center gap-1.5 overflow-hidden border-b px-4 text-[12px] font-normal leading-4 tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25 focus-visible:ring-inset sm:h-8 lg:h-9",
+                isActive
+                  ? "border-[#7f22fe] bg-[#8e51ff] text-[#f5f3ff] shadow-[inset_-8px_0_0_#7f22fe]"
+                  : "border-[#e5e7eb] text-[#09090b]"
+              )}
+            >
+              <SidebarNavIcon icon={item.icon} isActive={isActive} />
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            type="button"
+            className="group flex h-[63px] w-full items-center gap-3 border-t border-[#e4e4e7] px-5 text-left transition-colors hover:bg-[#f4f4f5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25 focus-visible:ring-inset lg:px-4"
+          >
+            <div
+              className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#f59e0b]/15 bg-cover bg-center text-sm font-semibold text-[#a65f00]"
+              style={{
+                backgroundImage: user.image ? `url(${user.image})` : undefined,
+              }}
+            >
+              {!user.image ? user.name?.charAt(0).toUpperCase() || "U" : null}
+            </div>
+            <div className="flex min-w-0 flex-1 flex-col justify-center text-[#09090b] lg:max-w-[80px]">
+              <div className="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium leading-5">
+                {user.name}
+              </div>
+              <div className="overflow-hidden text-ellipsis whitespace-nowrap text-[12px] leading-4 text-[#09090b]">
+                {user.email}
+              </div>
+            </div>
+            <span className="ml-auto flex size-6 shrink-0 items-center justify-center rounded-full transition-colors group-hover:bg-white group-focus-visible:bg-white">
+              <Image
+                src="/icons/sidebar/footer-expand-all.svg"
+                alt=""
+                aria-hidden
+                width={8}
+                height={13.33}
+                className="block h-[13.33px] w-2"
+              />
+            </span>
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="end"
+          side="top"
+          sideOffset={8}
+          className="w-[236px] rounded-none border-[#e4e4e7] bg-white p-0 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)]"
+        >
+          <DropdownMenuItem
+            asChild
+            className="flex h-[52px] items-center gap-4 rounded-none bg-[#fafafa] px-5 py-4 text-[14px] font-normal leading-5 text-[#09090b] outline-none data-[highlighted]:bg-[#fafafa] data-[highlighted]:text-[#09090b]"
+          >
+            <Link href="/settings" onClick={onNavigate} className="cursor-pointer">
+              <Image
+                src="/icons/sidebar/footer-settings.svg"
+                alt=""
+                aria-hidden
+                width={20}
+                height={20}
+                className="size-5 shrink-0"
+              />
+              {t("settings")}
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="flex h-[52px] items-center gap-4 rounded-none px-5 py-4 text-[14px] font-normal leading-5 text-[#09090b] outline-none data-[highlighted]:bg-[#fafafa] data-[highlighted]:text-[#09090b]"
+            onClick={async () => {
+              await onLogout();
+            }}
+          >
+            <Image
+              src="/icons/sidebar/footer-sign-out.svg"
+              alt=""
+              aria-hidden
+              width={20}
+              height={20}
+              className="size-5 shrink-0"
+            />
+            {t("logout")}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+};
+
+const MobileSidebarContent = ({
+  user,
+  onNavigate,
+  onLogout,
+}: {
+  user: AuthUser;
+  onNavigate?: () => void;
+  onLogout: () => Promise<void>;
+}) => {
+  const pathname = usePathname();
+  const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations("Common");
+  const { resolvedTheme, setTheme } = useTheme();
+
+  const navigation = getNavigation({
+    usage: t("usage"),
+    apiKeys: t("apiKeys"),
+    webhooks: t("webhooks"),
+    settings: t("settings"),
+  });
+
+  const handleLocaleChange = async (nextLocale: keyof typeof localeLabels) => {
+    await setCookie("NEXT_LOCALE", nextLocale);
+    onNavigate?.();
+    router.refresh();
+  };
+
+  return (
+    <div className="flex h-full min-w-0 w-full flex-col bg-[#f4f4f5] text-[#09090b]">
+      <div className="flex h-12 items-center border-b border-[#d4d4d8] px-3">
+        <MobileSidebarBrand onNavigate={onNavigate} />
+      </div>
+
+      <nav className="flex min-h-0 flex-1 flex-col">
+        {navigation.map((item) => {
+          const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={onNavigate}
+              aria-current={isActive ? "page" : undefined}
+              className={cn(
+                "relative flex h-12 items-center gap-[10px] overflow-hidden border-b p-3 text-[14px] font-normal leading-5 tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25 focus-visible:ring-inset",
+                isActive
+                  ? "border-[#7f22fe] bg-[#8e51ff] text-[#f5f3ff] shadow-[inset_-8px_0_0_#7f22fe]"
+                  : "border-[#e5e7eb] text-[#09090b]"
+              )}
+            >
+              <SidebarNavIcon icon={item.icon} isActive={isActive} />
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="w-full border-y border-[#e4e4e7] bg-white pb-20">
+        {mobileLocaleOrder.map((localeKey) => (
+          <button
+            key={localeKey}
+            type="button"
+            className="flex h-12 w-full items-center justify-between border-b border-[#f4f4f5] px-3 text-left"
+            onClick={() => void handleLocaleChange(localeKey)}
+          >
+            <span className="text-[14px] font-medium leading-5 text-black">
+              {localeLabels[localeKey]}
+            </span>
+            <KnowhereIcon
+              name="check"
+              className={cn(
+                "size-[19px] text-[#00c950] transition-opacity",
+                locale === localeKey ? "opacity-100" : "opacity-0"
+              )}
+            />
+          </button>
+        ))}
+
+        <div className="flex h-12 items-center justify-between border-b border-[#e4e4e7] px-3">
+          <span className="flex-1 text-[14px] font-medium leading-5 text-black">Theme</span>
+          <ThemeSwitch
+            checked={resolvedTheme === "light"}
+            onCheckedChange={(checked) => setTheme(checked ? "light" : "dark")}
+            aria-label="Toggle theme"
+            className="bg-[#7f22fe] shadow-none data-[state=checked]:bg-[#7f22fe] data-[state=unchecked]:bg-[#7f22fe] focus-visible:ring-0"
+          />
+        </div>
+      </div>
+
+      <div className="flex h-[63px] items-center gap-3 border-t border-[#e4e4e7] px-3">
+        <div
+          className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#f59e0b]/15 bg-cover bg-center text-sm font-semibold text-[#a65f00]"
+          style={{
+            backgroundImage: user.image ? `url(${user.image})` : undefined,
+          }}
+        >
+          {!user.image ? user.name?.charAt(0).toUpperCase() || "U" : null}
+        </div>
+        <div className="flex min-w-0 flex-1 flex-col justify-center">
+          <div className="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium leading-5 text-[#09090b]">
+            {user.name}
+          </div>
+          <div className="overflow-hidden text-ellipsis whitespace-nowrap text-[12px] leading-4 text-[#09090b]">
+            {user.email}
+          </div>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        className="flex h-10 w-full items-center justify-center gap-2 border-t border-[#e4e4e7] px-3 text-[#71717b] transition-colors hover:bg-white"
+        onClick={async () => {
+          await onLogout();
+        }}
+      >
+        <LogOut className="h-4 w-4 text-[#9f9fa9]" />
+        <span className="text-[12px] font-normal leading-4">{t("logout")}</span>
+      </button>
+    </div>
+  );
+};
+
+export function Sidebar({ user, open, onOpenChange }: SidebarProps) {
+  const { logout } = useAuth();
+
+  const handleClose = () => onOpenChange(false);
 
   const handleLogout = async () => {
     await logout();
-    success(t("logout"));
-    onOpenChange(false);
+    handleClose();
   };
-
-  const SidebarContent = () => (
-    <div className="flex h-full flex-col">
-      {/* Logo */}
-      <div className="flex h-16 items-center justify-between px-6">
-        <Link href="/" className="flex items-center space-x-2">
-          {/*  Brand logo icon */}
-          <Image
-            src={"/images/brand/brand-logo.png"}
-            alt="brand logo"
-            width={24}
-            height={24}
-            className="rounded-[5px]"
-          />
-          <span className="text-xl font-bold">Knowhere</span>
-        </Link>
-        {/* <LanguageSwitcher /> */}
-      </div>
-
-      {/* 导航菜单 */}
-      <ScrollArea className="flex-1 px-3 py-4">
-        <nav className="space-y-1">
-          {navigation.map((item) => {
-            const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
-            const IconComponent = item.icon;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors",
-                  isActive
-                    ? "bg-primary/90 text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/70"
-                )}
-                onClick={() => onOpenChange(false)}
-              >
-                <IconComponent className="mr-3 h-5 w-5" />
-                {item.name}
-              </Link>
-            );
-          })}
-        </nav>
-      </ScrollArea>
-
-      {/* 用户菜单 */}
-      <div className="p-4 border-t">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="w-full justify-start px-2 h-auto py-2 hover:bg-muted"
-            >
-              <div className="flex items-center gap-x-3 text-left w-full">
-                <div
-                  className="h-8 w-8 rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0 bg-cover bg-center"
-                  style={{
-                    backgroundImage: user?.image ? `url(${user.image})` : undefined,
-                  }}
-                >
-                  {!user?.image && (
-                    <span className="text-xs font-medium">
-                      {user?.name?.charAt(0).toUpperCase() || "U"}
-                    </span>
-                  )}
-                </div>
-                <div className="flex flex-col flex-1 min-w-0">
-                  <span className="text-sm font-medium truncate">{user?.name || "User"}</span>
-                  <span className="text-xs text-muted-foreground truncate">{user?.email}</span>
-                </div>
-              </div>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="center" side="top" sideOffset={10} className="w-56 p-1">
-            <DropdownMenuLabel className="p-2">
-              <div className="flex flex-col space-y-1 leading-none">
-                <p className="font-medium">{user?.name}</p>
-                <p className="w-[200px] truncate text-sm text-muted-foreground">{user?.email}</p>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/settings" onClick={() => onOpenChange(false)}>
-                <Settings className="mr-2 h-4 w-4" />
-                <span>{t("settings")}</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={() => void handleLogout()}>
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>{t("logout")}</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </div>
-  );
 
   return (
     <>
-      {/* 移动端侧边栏 */}
       <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent side="left" className="p-0 w-64">
-          <SidebarContent />
+        <SheetContent
+          side="left"
+          className={cn(
+            SIDEBAR_SHEET_WIDTH_CLASS,
+            "border-r border-[#d4d4d8] bg-[#f4f4f5] p-0 text-[#09090b] [&>button]:hidden"
+          )}
+        >
+          <SheetHeader className="sr-only">
+            <SheetTitle>Sidebar</SheetTitle>
+            <SheetDescription>Dashboard navigation</SheetDescription>
+          </SheetHeader>
+          <MobileSidebarContent user={user} onNavigate={handleClose} onLogout={handleLogout} />
         </SheetContent>
       </Sheet>
 
-      {/* 桌面端侧边栏 */}
-      <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-64 lg:flex-col">
-        <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-border/70 bg-sidebar/90 px-6 pb-4 backdrop-blur-sm">
-          <SidebarContent />
+      <aside
+        className={cn(
+          SIDEBAR_STATIC_WIDTH_CLASS,
+          "fixed inset-y-0 left-0 z-40 hidden border-r border-[#d4d4d8] bg-[#f4f4f5] sm:flex"
+        )}
+      >
+        <div className="flex h-full w-full lg:hidden">
+          <MobileSidebarContent user={user} onLogout={handleLogout} />
         </div>
-      </div>
+        <div className="hidden h-full w-full lg:flex">
+          <DashboardSidebarContent user={user} onLogout={handleLogout} />
+        </div>
+      </aside>
     </>
   );
 }

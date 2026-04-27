@@ -10,8 +10,8 @@ export function useApiKeys() {
   return useQuery({
     ...orpcQuery.apiKeys.list.queryOptions(),
     select: (data) => data.api_keys || [],
-    staleTime: 60 * 1000, // 1 minute
-    gcTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 }
 

@@ -21,13 +21,13 @@ export function Header({ onMenuClick }: HeaderProps) {
   return (
     <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-border/70 bg-background/85 px-4 shadow-[0_8px_24px_-20px_rgba(15,23,42,0.35)] backdrop-blur-sm sm:gap-x-6 sm:px-6 lg:px-8">
       {/* 移动端菜单按钮 */}
-      <Button variant="ghost" size="icon" className="lg:hidden" onClick={onMenuClick}>
+      <Button variant="ghost" size="icon" className="sm:hidden" onClick={onMenuClick}>
         <Menu className="h-6 w-6" />
         <span className="sr-only">{t("openSidebar")}</span>
       </Button>
 
       {/* 分隔线 */}
-      <div className="h-6 w-px bg-border lg:hidden" />
+      <div className="h-6 w-px bg-border sm:hidden" />
 
       {/* 占位符，将右侧操作区推到最右 */}
       <div className="flex-1" />

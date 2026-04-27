@@ -2,12 +2,12 @@ import type { KnowhereIconName } from "@components/ui/knowhere-icon";
 
 export type ClawNavItem = {
   href: string;
-  isActive?: boolean;
+  isExternal?: boolean;
   label: string;
 };
 
 export const clawNavItems: ClawNavItem[] = [
-  { href: "#overview", isActive: true, label: "Overview" },
+  { href: "#overview", label: "Overview" },
   { href: "#workflow", label: "Workflow" },
   { href: "#integration", label: "Integration" },
   { href: "#docs", label: "Docs" },

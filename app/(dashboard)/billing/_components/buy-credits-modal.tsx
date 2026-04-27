@@ -4,18 +4,16 @@ import {
   useBuyCreditsPackage,
   usePriceConfigs,
 } from "@app/(dashboard)/billing/_hooks/use-subscription";
-import { Button } from "@components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
-  DialogHeader,
   DialogTitle,
 } from "@components/ui/dialog";
-import { Input } from "@components/ui/input";
 import { cn } from "@lib/utils";
 import { Loader2 } from "lucide-react";
+import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useQueryState } from "nuqs";
@@ -24,6 +22,67 @@ import { useToast } from "@/hooks/use-toast";
 
 const MIN_CREDITS_PURCHASE = 1;
 const PRESET_AMOUNTS = [20, 50, 100, 500];
+
+type AmountOptionButtonProps = {
+  isSelected: boolean;
+  label: string;
+  onClick: () => void;
+};
+
+type ActionButtonProps = {
+  children: React.ReactNode;
+  disabled?: boolean;
+  onClick?: () => void;
+  type?: "button" | "submit";
+  variant: "primary" | "secondary";
+};
+
+const amountOptionBaseClassName =
+  "flex h-9 w-[72px] items-center justify-center border px-6 text-[12px] leading-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25";
+
+const actionButtonBaseClassName =
+  "flex h-12 w-full items-center justify-center gap-1 border-b-[4px] border-l border-r border-t px-3 pb-[2px] pt-0 font-mono-display text-[12px] font-medium leading-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25 disabled:cursor-not-allowed disabled:border-[#e4e4e7] disabled:bg-[#f4f4f5] disabled:text-[#a1a1aa] sm:h-9 sm:w-auto";
+
+const AmountOptionButton = ({ isSelected, label, onClick }: AmountOptionButtonProps) => {
+  return (
+    <button
+      type="button"
+      className={cn(
+        amountOptionBaseClassName,
+        isSelected
+          ? "border-[#5d0ec0] bg-[#7f22fe] font-bold text-[#f5f3ff]"
+          : "border-[#e4e4e7] bg-white font-normal text-[#3f3f46] hover:bg-[#fafafa]"
+      )}
+      onClick={onClick}
+    >
+      {label}
+    </button>
+  );
+};
+
+const ActionButton = ({
+  children,
+  disabled = false,
+  onClick,
+  type = "button",
+  variant,
+}: ActionButtonProps) => {
+  return (
+    <button
+      type={type}
+      disabled={disabled}
+      onClick={onClick}
+      className={cn(
+        actionButtonBaseClassName,
+        variant === "primary"
+          ? "border-[#7008e7] bg-[#7f22fe] text-[#f5f3ff] hover:bg-[#7008e7] sm:min-w-[173px]"
+          : "border-[#f4f4f5] bg-white text-[#27272a] hover:bg-[#fafafa] sm:min-w-[71px]"
+      )}
+    >
+      {children}
+    </button>
+  );
+};
 
 export function BuyCreditsModal() {
   const t = useTranslations("BuyCredits");
@@ -56,8 +115,8 @@ export function BuyCreditsModal() {
   const customInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (isCustom && customInputRef.current) {
-      customInputRef.current.focus();
+    if (isCustom) {
+      customInputRef.current?.focus();
     }
   }, [isCustom]);
 
@@ -73,63 +132,61 @@ export function BuyCreditsModal() {
     setSelectedAmount(amount);
     setIsCustom(false);
     setCustomAmountStr("");
-    setAmountParam(String(amount));
+    void setAmountParam(String(amount));
   };
 
   const handleCustomSelect = () => {
     setIsCustom(true);
     setSelectedAmount(null);
     setCustomAmountStr("");
-    setAmountParam(null);
+    void setAmountParam(null);
   };
 
-  const handleCustomInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (value === "" || /^\d*\.?\d*$/.test(value)) {
-      setCustomAmountStr(value);
-      const num = Number(value);
-      if (value && !Number.isNaN(num) && num >= MIN_CREDITS_PURCHASE) {
-        setAmountParam(value);
+  const handleCustomInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const nextValue = event.target.value;
+
+    if (nextValue === "" || /^\d*\.?\d*$/.test(nextValue)) {
+      setCustomAmountStr(nextValue);
+      const parsedValue = Number(nextValue);
+
+      if (nextValue && !Number.isNaN(parsedValue) && parsedValue >= MIN_CREDITS_PURCHASE) {
+        void setAmountParam(nextValue);
       } else {
-        setAmountParam(null);
+        void setAmountParam(null);
       }
     }
   };
 
-  const multiplier = packages.length > 0 ? packages[0].credits_amount : 1;
-
-  const getDisplayAmount = () => {
-    if (isCustom) return customAmountStr === "" ? "0" : customAmountStr;
-    if (selectedAmount) return selectedAmount.toString();
-    return "0";
-  };
-
-  const displayAmount = getDisplayAmount();
-  const currentAmountNum = isCustom ? Number.parseFloat(customAmountStr) : selectedAmount || 0;
-  const creditsToBuy = Number.isNaN(currentAmountNum)
-    ? 0
-    : Math.floor(currentAmountNum * multiplier);
-  const quantity = Number.isNaN(currentAmountNum) ? 0 : Math.floor(currentAmountNum);
-  const isValid = isCustom
-    ? !Number.isNaN(currentAmountNum) && currentAmountNum >= MIN_CREDITS_PURCHASE
-    : !!selectedAmount;
+  const currentAmount = isCustom ? Number.parseFloat(customAmountStr) : (selectedAmount ?? 0);
+  const safeAmount = Number.isNaN(currentAmount) ? 0 : currentAmount;
+  const displayAmount = isCustom ? customAmountStr || "0" : String(selectedAmount ?? 0);
+  const quantity = Math.floor(safeAmount);
+  const isValidSelection = isCustom
+    ? !Number.isNaN(safeAmount) && safeAmount >= MIN_CREDITS_PURCHASE
+    : selectedAmount !== null;
+  const isPurchaseDisabled =
+    isFetching || packages.length === 0 || !isValidSelection || buyMutation.isPending;
 
   const handlePurchase = () => {
-    if (!isValid || packages.length === 0) {
-      if (packages.length === 0) toast.error(t("priceConfigNotFound"));
+    if (packages.length === 0) {
+      toast.error(t("priceConfigNotFound"));
       return;
     }
 
-    const priceId = packages[0].price_id;
+    if (!isValidSelection) {
+      return;
+    }
+
     buyMutation.mutate(
-      { priceId, quantity },
+      { priceId: packages[0].price_id, quantity },
       {
         onSuccess: (response) => {
           if (response.checkout_url) {
             window.location.href = response.checkout_url;
-          } else {
-            toast.error(t("checkoutFailed"));
+            return;
           }
+
+          toast.error(t("checkoutFailed"));
         },
         onError: (error) => {
           console.error("Purchase failed:", error);
@@ -143,130 +200,105 @@ export function BuyCreditsModal() {
     <Dialog
       open={true}
       onOpenChange={(open) => {
-        if (!open) handleClose();
+        if (!open) {
+          handleClose();
+        }
       }}
     >
-      <DialogContent className="sm:max-w-[425px] md:max-w-[550px] gap-6">
-        <DialogHeader>
-          <DialogTitle className="text-xl">{t("title")}</DialogTitle>
-          <DialogDescription className="text-base pt-2">{t("description")}</DialogDescription>
-        </DialogHeader>
+      <DialogContent className="w-screen max-w-none gap-0 rounded-none border-[#e4e4e7] bg-[#fafafa] p-0 shadow-none sm:w-[calc(100vw-2rem)] sm:max-w-[560px] [&>button]:hidden">
+        <div className="flex flex-col gap-[34px] px-0 py-[22px] sm:gap-14 sm:py-10">
+          <div className="mx-auto flex w-[331px] max-w-[calc(100vw-44px)] items-start justify-between gap-8 sm:w-[464px] sm:max-w-none">
+            <div className="min-w-0 flex-1">
+              <DialogTitle className="text-[20px] font-bold leading-[26px] text-[#09090b] sm:leading-7">
+                {t("title")}
+              </DialogTitle>
+              <DialogDescription className="mt-0.5 max-w-[277px] text-[14px] leading-[18px] text-[#71717b] sm:mt-1 sm:max-w-[408px] sm:leading-5">
+                {t("description")}
+              </DialogDescription>
+            </div>
 
-        <div className="flex flex-col items-center justify-center py-6 space-y-8">
-          <div className="text-6xl font-bold tracking-tighter">
-            ${Number(displayAmount).toFixed(2)}
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-2 w-full">
-            {isFetching ? (
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-            ) : (
-              <>
-                {PRESET_AMOUNTS.map((amount) => {
-                  const isSelected = !isCustom && selectedAmount === amount;
-                  return (
-                    <Button
-                      key={amount}
-                      variant={isSelected ? "default" : "outline"}
-                      className={cn(
-                        "w-[70px]",
-                        isSelected
-                          ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                          : "bg-transparent"
-                      )}
-                      onClick={() => handlePresetSelect(amount)}
-                    >
-                      ${amount}
-                    </Button>
-                  );
-                })}
-                <Button
-                  variant={isCustom ? "default" : "outline"}
-                  className={cn(
-                    "w-[80px]",
-                    isCustom
-                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                      : "bg-transparent"
-                  )}
-                  onClick={handleCustomSelect}
-                >
-                  {t("custom")}
-                </Button>
-              </>
-            )}
-          </div>
-
-          <div
-            className={cn(
-              "w-full max-w-[200px] grid transition-[grid-template-rows] duration-300 ease-out",
-              isCustom ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-            )}
-          >
-            <div className="overflow-hidden">
-              <div
-                className={cn(
-                  "pt-4 px-1 transition-all duration-300",
-                  isCustom ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
-                )}
+            <DialogClose asChild>
+              <button
+                type="button"
+                className="flex size-6 shrink-0 items-center justify-center rounded-full text-[#3f3f46] transition-colors hover:bg-[#f4f4f5]"
+                aria-label={t("cancel")}
               >
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                <Image
+                  src="/icons/common/close-dialog.svg"
+                  alt=""
+                  aria-hidden
+                  width={8.87}
+                  height={8.87}
+                  className="h-[8.87px] w-[8.87px]"
+                />
+              </button>
+            </DialogClose>
+          </div>
+
+          <div className="mx-auto flex w-[331px] max-w-[calc(100vw-44px)] flex-col gap-[22px] sm:w-[464px] sm:max-w-none sm:gap-10">
+            <div className="flex items-center justify-center">
+              <p className="text-center text-[42px] font-bold leading-[42px] tracking-normal text-black sm:text-[48px] sm:leading-[48px]">
+                ${Number(displayAmount).toFixed(2)}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5 sm:gap-2">
+              {PRESET_AMOUNTS.map((amount) => (
+                <AmountOptionButton
+                  key={amount}
+                  isSelected={!isCustom && selectedAmount === amount}
+                  label={`$${amount}`}
+                  onClick={() => handlePresetSelect(amount)}
+                />
+              ))}
+              <AmountOptionButton
+                isSelected={isCustom}
+                label={t("custom")}
+                onClick={handleCustomSelect}
+              />
+            </div>
+
+            {isCustom ? (
+              <div className="flex w-full justify-center">
+                <div className="relative w-full max-w-[207px] sm:max-w-[336px]">
+                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[12px] leading-4 text-[#18181b]">
                     $
                   </span>
-                  <Input
+                  <input
                     ref={customInputRef}
                     type="text"
-                    placeholder={t("amountPlaceholder")}
+                    inputMode="decimal"
                     value={customAmountStr}
                     onChange={handleCustomInputChange}
-                    className="pl-7"
-                    tabIndex={isCustom ? 0 : -1}
+                    placeholder={t("amountPlaceholder")}
+                    aria-invalid={customAmountStr !== "" && !isValidSelection}
+                    className="h-10 w-full border border-[#a684ff] bg-white px-3 pl-8 text-[12px] leading-4 text-[#18181b] placeholder:text-[#9f9fa9] focus:outline-none"
                   />
                 </div>
-                <p
-                  className={cn(
-                    "text-xs text-destructive mt-2 text-center h-4 transition-opacity duration-200",
-                    !isValid && customAmountStr !== "" ? "opacity-100" : "opacity-0"
-                  )}
-                >
-                  {t("minPurchaseError", { amount: MIN_CREDITS_PURCHASE })}
-                </p>
-                <p className="text-xs text-muted-foreground mt-1 text-center">
-                  {creditsToBuy > 0
-                    ? t("creditsEstimate", { credits: creditsToBuy.toLocaleString() })
-                    : ""}
-                </p>
               </div>
-            </div>
+            ) : null}
+          </div>
+
+          <div className="mx-auto flex w-[331px] max-w-[calc(100vw-44px)] flex-col gap-1.5 sm:w-[464px] sm:max-w-none sm:flex-row sm:justify-end sm:gap-2">
+            <ActionButton
+              variant="secondary"
+              disabled={buyMutation.isPending}
+              onClick={handleClose}
+            >
+              {t("cancel")}
+            </ActionButton>
+            <ActionButton variant="primary" disabled={isPurchaseDisabled} onClick={handlePurchase}>
+              {buyMutation.isPending ? (
+                <>
+                  <Loader2 className="size-3 animate-spin" />
+                  {t("processing")}
+                </>
+              ) : (
+                t("purchase")
+              )}
+            </ActionButton>
           </div>
         </div>
-
-        <DialogFooter className="gap-2 sm:gap-0">
-          <Button
-            variant="outline"
-            onClick={handleClose}
-            className="h-10"
-            disabled={buyMutation.isPending}
-          >
-            {t("cancel")}
-          </Button>
-          <Button
-            className="h-10 min-w-[150px]"
-            disabled={
-              (!isCustom && !selectedAmount) || (isCustom && !isValid) || buyMutation.isPending
-            }
-            onClick={handlePurchase}
-          >
-            {buyMutation.isPending ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {t("processing")}
-              </>
-            ) : (
-              t("purchase")
-            )}
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

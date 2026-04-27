@@ -35,7 +35,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <ThemeProvider attribute="class" enableSystem={true} disableTransitionOnChange>
               <PostHogProvider>
                 <Providers>
-                  <div className="min-h-screen bg-background">{children}</div>
+                  <div className="min-h-dvh">{children}</div>
                 </Providers>
               </PostHogProvider>
             </ThemeProvider>

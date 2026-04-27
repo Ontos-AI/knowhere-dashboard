@@ -1,64 +1,152 @@
 "use client";
 
-import { Button } from "@components/ui/button";
 import { Calendar } from "@components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@components/ui/popover";
 import { useIsMobile } from "@hooks/use-mobile";
 import { cn } from "@lib/utils";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
-import type { DateRange } from "react-day-picker";
+import * as React from "react";
+import type { DateRange, DayButton } from "react-day-picker";
 
-export function DatePickerWithRange({
-  className,
-  date,
-  setDate,
-}: {
+type DatePickerWithRangeProps = {
   className?: string;
   date: DateRange | undefined;
   setDate: (date: DateRange | undefined) => void;
-}) {
+};
+
+const formatRangeLabel = (date: DateRange | undefined, fallback: string) => {
+  if (!date?.from) {
+    return fallback;
+  }
+
+  if (!date.to) {
+    return format(date.from, "MMM dd,yyyy");
+  }
+
+  return `${format(date.from, "MMM dd,yyyy")} - ${format(date.to, "MMM dd,yyyy")}`;
+};
+
+const RangeCalendarDayButton = ({
+  className,
+  day,
+  modifiers,
+  ...props
+}: React.ComponentProps<typeof DayButton>) => {
+  const ref = React.useRef<HTMLButtonElement>(null);
+
+  React.useEffect(() => {
+    if (modifiers.focused) {
+      ref.current?.focus();
+    }
+  }, [modifiers.focused]);
+
+  return (
+    <button
+      ref={ref}
+      data-day={day.date.toLocaleDateString()}
+      data-selected-single={
+        modifiers.selected &&
+        !modifiers.range_start &&
+        !modifiers.range_end &&
+        !modifiers.range_middle
+      }
+      data-range-start={modifiers.range_start}
+      data-range-end={modifiers.range_end}
+      data-range-middle={modifiers.range_middle}
+      className={cn(
+        "flex size-8 items-center justify-center rounded-[8px] border-0 bg-transparent p-0 text-[14px] font-normal leading-5 tracking-normal text-[#09090b] outline-none transition-colors hover:bg-[#f4f4f5] focus-visible:ring-0 data-[selected-single=true]:bg-[#7008e7] data-[selected-single=true]:text-white data-[range-start=true]:bg-[#7008e7] data-[range-start=true]:text-white data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-[#f5f3ff] data-[range-middle=true]:text-[#2f0d68] data-[range-end=true]:bg-[#7008e7] data-[range-end=true]:text-white",
+        className
+      )}
+      {...props}
+    />
+  );
+};
+
+export function DatePickerWithRange({ className, date, setDate }: DatePickerWithRangeProps) {
   const t = useTranslations("Usage");
   const isMobile = useIsMobile();
 
   return (
-    <div className={cn("grid w-full gap-2", className)}>
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            id="date"
-            variant={"outline"}
-            className={cn(
-              "w-full justify-start text-left font-normal sm:w-[260px]",
-              !date && "text-muted-foreground"
-            )}
-          >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {date?.from ? (
-              date.to ? (
-                <>
-                  {format(date.from, "LLL dd, y")} - {format(date.to, "LLL dd, y")}
-                </>
-              ) : (
-                format(date.from, "LLL dd, y")
-              )
-            ) : (
-              <span>{t("pickDate")}</span>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            initialFocus
-            mode="range"
-            defaultMonth={date?.from}
-            selected={date}
-            onSelect={setDate}
-            numberOfMonths={isMobile ? 1 : 2}
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className={cn(
+            "flex h-9 w-full max-w-[222px] items-center gap-1.5 border border-[#e4e4e7] bg-white pl-[10px] pr-3 text-left sm:h-8 sm:max-w-[224px] lg:max-w-[238px]",
+            className
+          )}
+        >
+          {date?.from ? (
+            <>
+              <span className="truncate font-mono-display text-[12px] font-light leading-4 text-[#27272a]">
+                {format(date.from, "MMM dd,yyyy")}
+              </span>
+              <span className="font-mono-display text-[14px] font-light leading-5 text-[#9f9fa9]">
+                -
+              </span>
+              <span className="truncate font-mono-display text-[12px] font-light leading-4 text-[#27272a]">
+                {format(date.to ?? date.from, "MMM dd,yyyy")}
+              </span>
+            </>
+          ) : (
+            <span className="truncate font-mono-display text-[12px] font-light leading-4 text-[#27272a]">
+              {formatRangeLabel(date, t("pickDate"))}
+            </span>
+          )}
+          <Image
+            src="/icons/usage/calendar.svg"
+            alt=""
+            aria-hidden
+            width={10.67}
+            height={12.15}
+            className="ml-auto h-[12.15px] w-[10.67px] shrink-0"
           />
-        </PopoverContent>
-      </Popover>
-    </div>
+        </button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="start"
+        sideOffset={6}
+        className="w-[248px] rounded-none border-[#f4f4f5] bg-white p-3 text-[#09090b] shadow-[0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_0_rgba(0,0,0,0.06)] backdrop-blur-0 sm:w-auto"
+      >
+        <Calendar
+          initialFocus
+          mode="range"
+          fixedWeeks
+          defaultMonth={date?.from}
+          selected={date}
+          onSelect={setDate}
+          numberOfMonths={isMobile ? 1 : 2}
+          className="bg-white p-0 [--cell-size:32px]"
+          classNames={{
+            root: "w-fit",
+            months: "flex flex-col gap-4 md:flex-row",
+            month: "flex w-full flex-col gap-4 sm:w-[224px]",
+            nav: "absolute inset-x-0 top-0 flex w-full items-center justify-between",
+            button_previous:
+              "flex size-8 items-center justify-center rounded-md border-0 p-0 text-[#09090b] hover:bg-transparent",
+            button_next:
+              "flex size-8 items-center justify-center rounded-md border-0 p-0 text-[#09090b] hover:bg-transparent",
+            month_caption: "relative flex h-8 w-full items-center justify-center px-8",
+            caption_label: "text-[14px] font-medium leading-5 text-[#09090b]",
+            weekdays: "mt-4 flex",
+            weekday:
+              "flex h-[21px] w-8 items-center justify-center rounded-md text-[12px] font-normal leading-4 text-[#9f9fa9]",
+            week: "mt-2 flex w-full",
+            day: "relative size-8 p-0 text-center",
+            range_start: "rounded-l-[8px]",
+            range_middle: "rounded-none",
+            range_end: "rounded-r-[8px]",
+            today: "text-[#09090b]",
+            outside: "text-[#09090b] opacity-50",
+            disabled: "text-[#9f9fa9] opacity-50",
+          }}
+          components={{
+            DayButton: RangeCalendarDayButton,
+          }}
+        />
+      </PopoverContent>
+    </Popover>
   );
 }

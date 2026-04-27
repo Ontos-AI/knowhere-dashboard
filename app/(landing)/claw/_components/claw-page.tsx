@@ -7,27 +7,23 @@ import { ClawWorkflowSection } from "@app/(landing)/claw/_components/claw-workfl
 
 export const ClawPage = () => {
   return (
-    <div className="bg-[#fafafa] text-[#09090b]">
-      <div className="mx-auto w-full">
-        <ClawHeader />
-        <main>
-          <div className="mx-auto w-full max-w-[1280px]">
-            <ClawHeroSection />
-            <div className="-mt-px">
-              <ClawWorkflowSection />
-            </div>
-            <div className="-mt-px">
-              <ClawIntegrationSection />
-            </div>
-            <div className="-mt-px">
-              <ClawCtaSection />
-            </div>
-            <div className="-mt-px">
-              <ClawFooter />
-            </div>
-          </div>
-        </main>
-      </div>
+    <div className="min-h-dvh bg-[#fafafa] text-[#09090b]">
+      <ClawHeader />
+      <main className="mx-auto w-full min-[769px]:max-w-[976px]">
+        <ClawHeroSection />
+        <div className="-mt-px">
+          <ClawWorkflowSection />
+        </div>
+        <div className="-mt-px">
+          <ClawIntegrationSection />
+        </div>
+        <div className="-mt-px">
+          <ClawCtaSection />
+        </div>
+        <div className="-mt-px">
+          <ClawFooter />
+        </div>
+      </main>
     </div>
   );
 };

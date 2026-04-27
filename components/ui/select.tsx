@@ -1,8 +1,9 @@
 "use client";
 
 import { cn } from "@lib/utils";
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons";
+import { ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons";
 import * as SelectPrimitive from "@radix-ui/react-select";
+import Image from "next/image";
 import * as React from "react";
 
 const Select = SelectPrimitive.Root;
@@ -67,7 +68,7 @@ const SelectContent = React.forwardRef<
     <SelectPrimitive.Content
       ref={ref}
       className={cn(
-        "relative z-50 max-h-[--radix-select-content-available-height] min-w-[8rem] max-w-[var(--radix-select-content-available-width)] overflow-y-auto overflow-x-hidden rounded-none border border-slate-500 bg-white text-slate-950 shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-select-content-transform-origin]",
+        "relative z-50 max-h-[--radix-select-content-available-height] min-w-[8rem] max-w-[var(--radix-select-content-available-width)] overflow-hidden rounded-none border border-[#e4e4e7] bg-white text-[#09090b] shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-1px_rgba(0,0,0,0.06)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-[--radix-select-content-transform-origin]",
         position === "popper" &&
           "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
         className
@@ -80,7 +81,7 @@ const SelectContent = React.forwardRef<
         className={cn(
           "p-0",
           position === "popper" &&
-            "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)] max-w-[calc(100vw-2rem)]"
+            "w-full min-w-[var(--radix-select-trigger-width)] max-w-[calc(100vw-2rem)]"
         )}
       >
         {children}
@@ -110,17 +111,24 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex w-full cursor-default select-none items-center py-2 pl-3 pr-8 text-base leading-6 outline-none transition-colors data-[highlighted]:bg-slate-100 data-[highlighted]:text-slate-950 data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      "flex w-full cursor-default select-none items-center justify-between gap-4 border-b border-[#f4f4f5] px-5 py-3 text-[16px] font-normal leading-6 text-black outline-none transition-colors last:border-b-0 data-[highlighted]:bg-[#fafafa] data-[highlighted]:text-black data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       className
     )}
     {...props}
   >
-    <span className="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
+    <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+    <span className="ml-4 flex size-[19px] shrink-0 items-center justify-center">
       <SelectPrimitive.ItemIndicator>
-        <CheckIcon className="h-4 w-4" />
+        <Image
+          src="/icons/common/check-green.svg"
+          alt=""
+          aria-hidden
+          width={13.21}
+          height={9.83}
+          className="h-[9.83px] w-[13.21px]"
+        />
       </SelectPrimitive.ItemIndicator>
     </span>
-    <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
   </SelectPrimitive.Item>
 ));
 SelectItem.displayName = SelectPrimitive.Item.displayName;

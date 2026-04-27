@@ -18,7 +18,7 @@ export const ClawActionButton = ({
   return (
     <Link
       className={cn(
-        "inline-flex h-[52px] items-center justify-center rounded-full px-7 pb-1 font-mono-display text-xl font-semibold leading-7 tracking-normal transition-colors duration-150 sm:h-[72px] sm:px-9",
+        "inline-flex h-[52px] items-center justify-center rounded-full px-7 pb-1 font-mono-display text-lg font-semibold leading-6 tracking-normal transition-colors duration-150 min-[640px]:h-[72px] min-[640px]:px-9 min-[640px]:max-[767px]:h-[52px] min-[640px]:max-[767px]:px-7 min-[640px]:max-[767px]:text-lg min-[640px]:max-[767px]:leading-6 min-[768px]:max-[768px]:h-[52px] min-[768px]:max-[768px]:px-7 min-[768px]:max-[768px]:text-lg min-[768px]:max-[768px]:leading-6 min-[769px]:h-[52px] min-[769px]:px-7 min-[769px]:text-lg min-[769px]:leading-6",
         variant === "primary"
           ? "border-b-[6px] border-[#c10007] bg-[#e7000b] text-[#f5f3ff] hover:bg-[#c10007]"
           : "border-x-2 border-t-2 border-b-[6px] border-[#e4e4e7] bg-[#fafafa] text-[#27272a] hover:bg-[#f4f4f5]",
@@ -45,15 +45,21 @@ export const ClawSectionHeading = ({
   title,
 }: ClawSectionHeadingProps) => {
   return (
-    <div className={cn("space-y-2 px-5 sm:space-y-3 sm:px-16", className)}>
-      <p className="text-base font-bold leading-6 text-[#ff6467] sm:text-xl sm:leading-7">
+    <div
+      className={cn(
+        "space-y-2 px-5 min-[640px]:space-y-3 min-[640px]:px-16 min-[769px]:space-y-2 min-[769px]:px-12",
+        "min-[640px]:max-[767px]:space-y-2 min-[640px]:max-[767px]:px-12 min-[768px]:max-[768px]:space-y-2 min-[768px]:max-[768px]:px-12",
+        className
+      )}
+    >
+      <p className="text-base font-bold leading-6 text-[#ff6467] min-[640px]:text-xl min-[640px]:leading-7 min-[640px]:max-[767px]:text-xl min-[640px]:max-[767px]:leading-7 min-[768px]:max-[768px]:text-base min-[768px]:max-[768px]:leading-6 min-[769px]:text-base min-[769px]:leading-6">
         {eyebrow}
       </p>
-      <div className="space-y-2 sm:space-y-3">
-        <h2 className="text-[24px] font-bold leading-8 tracking-normal text-[#09090b] sm:text-4xl sm:leading-10">
+      <div className="space-y-2 min-[640px]:space-y-3 min-[640px]:max-[767px]:space-y-2 min-[768px]:max-[768px]:space-y-2 min-[769px]:space-y-2">
+        <h2 className="text-[24px] font-bold leading-8 tracking-normal text-[#09090b] min-[640px]:text-4xl min-[640px]:leading-10 min-[640px]:max-[767px]:text-[30px] min-[640px]:max-[767px]:leading-9 min-[768px]:max-[768px]:text-[30px] min-[768px]:max-[768px]:leading-9 min-[769px]:text-[30px] min-[769px]:leading-9">
           {title}
         </h2>
-        <p className="max-w-[1152px] text-base leading-6 text-[#71717b] sm:text-xl sm:leading-7">
+        <p className="max-w-[1152px] text-base leading-6 text-[#71717b] min-[640px]:text-xl min-[640px]:leading-7 min-[640px]:max-[767px]:text-base min-[640px]:max-[767px]:leading-6 min-[768px]:max-[768px]:text-base min-[768px]:max-[768px]:leading-6 min-[769px]:text-base min-[769px]:leading-6">
           {description}
         </p>
       </div>
@@ -107,7 +113,7 @@ export const FileFormatBadge = ({
 
   return (
     <span
-      className="relative inline-flex items-center overflow-hidden border px-3 py-1 font-mono-display text-base leading-6 sm:px-4 sm:py-2 sm:text-2xl sm:leading-8"
+      className="relative inline-flex items-center overflow-hidden border px-3 py-1 font-mono-display text-base leading-6 min-[640px]:px-4 min-[640px]:py-2 min-[640px]:text-2xl min-[640px]:leading-8 min-[640px]:max-[767px]:px-3 min-[640px]:max-[767px]:py-2 min-[640px]:max-[767px]:text-lg min-[640px]:max-[767px]:leading-6 min-[768px]:max-[768px]:px-3 min-[768px]:max-[768px]:py-2 min-[768px]:max-[768px]:text-lg min-[768px]:max-[768px]:leading-6 min-[769px]:px-3 min-[769px]:py-2 min-[769px]:text-lg min-[769px]:leading-6"
       style={{
         backgroundColor,
         borderColor,
@@ -307,14 +313,18 @@ type KnowhereWordmarkProps = {
 };
 
 export const KnowhereWordmark = ({ className, compact = false }: KnowhereWordmarkProps) => {
-  const iconContainerClassName = compact ? "h-[20.203px] w-[28px]" : "h-[49.73px] w-[68px]";
+  const iconContainerClassName = compact
+    ? "h-[20.203px] w-[28px]"
+    : "h-[49.73px] w-[68px] min-[640px]:max-[767px]:h-[38.664px] min-[640px]:max-[767px]:w-[48px] min-[768px]:max-[768px]:h-[38.664px] min-[768px]:max-[768px]:w-[48px] min-[769px]:h-[38.664px] min-[769px]:w-[48px]";
   const primaryWingClassName = compact
     ? "left-0 top-0 h-[20.203px] w-[14.973px]"
-    : "left-0 top-0 h-[49.73px] w-[36.362px]";
+    : "left-0 top-0 h-[49.73px] w-[36.362px] min-[640px]:max-[767px]:h-[38.664px] min-[640px]:max-[767px]:w-[28.534px] min-[768px]:max-[768px]:h-[38.664px] min-[768px]:max-[768px]:w-[28.534px] min-[769px]:h-[38.664px] min-[769px]:w-[28.534px]";
   const secondaryWingClassName = compact
     ? "left-[13.03px] top-[5.8px] h-[20.203px] w-[14.973px] rotate-180"
-    : "left-[31.64px] top-[14.27px] h-[49.73px] w-[36.362px] rotate-180";
-  const textClassName = compact ? "text-[22px] leading-none" : "text-5xl leading-[48px]";
+    : "left-[31.64px] top-[14.27px] h-[49.73px] w-[36.362px] rotate-180 min-[640px]:max-[767px]:left-[19.47px] min-[640px]:max-[767px]:top-[9.34px] min-[640px]:max-[767px]:h-[38.664px] min-[640px]:max-[767px]:w-[28.534px] min-[768px]:max-[768px]:left-[19.47px] min-[768px]:max-[768px]:top-[9.34px] min-[768px]:max-[768px]:h-[38.664px] min-[768px]:max-[768px]:w-[28.534px] min-[769px]:left-[19.47px] min-[769px]:top-[9.34px] min-[769px]:h-[38.664px] min-[769px]:w-[28.534px]";
+  const textClassName = compact
+    ? "text-[22px] leading-none"
+    : "text-5xl leading-[48px] min-[640px]:max-[767px]:text-[32px] min-[640px]:max-[767px]:leading-normal min-[768px]:max-[768px]:text-[36px] min-[768px]:max-[768px]:leading-normal min-[769px]:text-[36px] min-[769px]:leading-normal";
 
   return (
     <span className={cn("inline-flex items-center gap-[10px]", className)}>
@@ -342,8 +352,12 @@ export const OpenClawWordmark = ({
   compact = false,
   textClassName,
 }: OpenClawWordmarkProps) => {
-  const iconClassName = compact ? "h-7 w-8" : "h-[50px] w-[56px]";
-  const defaultTextClassName = compact ? "text-2xl leading-8" : "text-5xl leading-[48px]";
+  const iconClassName = compact
+    ? "h-7 w-8"
+    : "h-[50px] w-[56px] min-[640px]:max-[767px]:h-[35.714px] min-[640px]:max-[767px]:w-[40px] min-[768px]:max-[768px]:h-[35.714px] min-[768px]:max-[768px]:w-[40px] min-[769px]:h-[35.714px] min-[769px]:w-[40px]";
+  const defaultTextClassName = compact
+    ? "text-2xl leading-8"
+    : "text-5xl leading-[48px] min-[640px]:max-[767px]:text-[36px] min-[640px]:max-[767px]:leading-10 min-[768px]:max-[768px]:text-[36px] min-[768px]:max-[768px]:leading-10 min-[769px]:text-[36px] min-[769px]:leading-10";
 
   return (
     <span className={cn("inline-flex items-center gap-2", className)}>
