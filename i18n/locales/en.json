@@ -48,6 +48,8 @@
   "Usage": {
     "title": "Usage & Billing",
     "description": "Track your API usage, costs, and job history.",
+    "selfHostedTitle": "Usage",
+    "selfHostedDescription": "Track API usage and job history. Billing is disabled for this self-hosted deployment.",
     "subtitle": "Track your API usage, costs, and job history.",
     "totalRequests": "Total Requests",
     "totalCost": "Total Cost",
@@ -67,6 +69,7 @@
     "comparedToLastMonth": "{value} vs last month",
     "estCost": "est. {cost}",
     "avgProcessingTime": "Average processing time: {time}",
+    "billingDisabled": "Billing disabled for this self-hosted deployment",
     "1d": "1d",
     "7d": "7d",
     "30d": "30d",
@@ -117,12 +120,18 @@
     "usernamePlaceholder": "Enter your username",
     "sendMagicLink": "Sign in with Email",
     "sending": "Sending...",
+    "signingIn": "Signing in...",
+    "signInWithPassword": "Sign in",
+    "signUpWithPassword": "Create account",
     "registering": "Signing up...",
     "haveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
     "loginNow": "Sign in now",
+    "registerNow": "Create one",
     "emailInvalid": "Please enter a valid email address",
     "magicLinkFailed": "Failed to send magic link",
     "magicLinkSent": "Magic link sent, please check your email",
+    "loginSuccess": "Signed in successfully",
     "loginFailed": "Login failed",
     "oauthFailed": "OAuth login failed",
     "usernameMinLength": "Username must be at least 2 characters",
@@ -369,11 +378,14 @@
       "description": "You have canceled the payment operation."
     },
     "buttons": {
-      "returnToConsole": "Return to Console"
+      "returnToConsole": "Return to Console",
+      "manageApiKeys": "Manage API Keys"
     },
     "page": {
       "title": "Billing & Top-up Center",
-      "instruction": "Here you can view your recharge history, purchase new credit packages, and manage subscription plans. Knowhere offers flexible billing to help you parse documents efficiently."
+      "instruction": "Here you can view your recharge history, purchase new credit packages, and manage subscription plans. Knowhere offers flexible billing to help you parse documents efficiently.",
+      "billingDisabledTitle": "Billing is disabled",
+      "billingDisabledDescription": "This self-hosted dashboard runs without paid billing. You can manage API keys and process jobs without purchasing credits."
     }
   },
   "CreditPayment": {

@@ -4,7 +4,7 @@ import { magicLinkClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 import { env } from "@/lib/env";
 
-// 统一初始化 Better Auth 客户端，启用 Magic Link 插件
+// Shared Better Auth client. Magic Link is optional; email/password is available by default.
 export const authClient = createAuthClient({
   baseURL:
     typeof window === "undefined"

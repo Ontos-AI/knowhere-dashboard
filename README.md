@@ -1,6 +1,6 @@
 # Knowhere API Dashboard
 
-Knowhere API Dashboard is the Next.js web application for managing Knowhere API usage, API keys, billing, webhooks, and document-processing jobs.
+Knowhere API Dashboard is the Next.js web application for managing Knowhere API usage, API keys, optional billing, webhooks, and document-processing jobs.
 
 - Product: https://knowhereto.ai/
 - Docs: https://docs.knowhereto.ai/
@@ -35,6 +35,21 @@ pnpm dev
 
 The app runs on `http://localhost:3000` by default.
 
+## Self-hosted Dashboard Flow
+
+For the combined open-source stack, start the dashboard migration/bootstrap step before the API service runs its Alembic migrations. The dashboard owns the Better Auth user/auth schema and provides the normal first-user registration flow.
+
+The default self-hosted flow is:
+
+1. Start PostgreSQL, Redis, object storage, and other shared dependencies.
+2. Start the dashboard migration/bootstrap step so Better Auth tables exist.
+3. Start the API with standalone mode disabled, then run API migrations.
+4. Register or sign in through the dashboard with email and password.
+5. Create and manage API keys from the dashboard.
+6. Process jobs through the API/worker with dashboard billing disabled.
+
+Use `BILLING_ENABLED=false` for the open-source self-hosted dashboard unless the matching paid billing endpoints are deployed and configured.
+
 ## Environment Variables
 
 Required for startup:
@@ -47,6 +62,8 @@ Required for startup:
 | `BETTER_AUTH_URL` | Base URL used by Better Auth callbacks. |
 | `BETTER_AUTH_SECRET` | Random secret with at least 32 characters. |
 | `DATABASE_URL` | PostgreSQL connection URL for dashboard auth/account data. |
+
+Email/password registration and login are enabled by default for self-hosted deployments. OAuth and magic-link login are optional add-ons.
 
 Required for specific features:
 
@@ -62,6 +79,7 @@ Optional:
 | --- | --- |
 | `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_POSTHOG_HOST` | PostHog analytics. |
 | `GA_MEASUREMENT_ID` | Google Analytics measurement ID. |
+| `BILLING_ENABLED` | Set to `true` only when the API billing endpoints and payment configuration are available. Defaults to disabled for open-source self-hosted deployments. |
 | `COMPANY_NAME`, `SIMPLE_COMPANY_NAME` | Runtime branding text. |
 | `ICP_NUMBER`, `ICP_URL` | ICP footer metadata for deployments that need it. |
 | `HTTPS_PROXY`, `HTTP_PROXY` | Development proxy for outbound auth/email calls. |

@@ -4,12 +4,13 @@ import { Button } from "@components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
 import { Skeleton } from "@components/ui/skeleton";
 import { useCredits } from "@hooks/use-credits";
-import { CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, CreditCard, XCircle } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Suspense, useEffect } from "react";
 import { toast } from "sonner";
+import { useAppConfigContext } from "@/providers/config-provider";
 
 function BillingPageSkeleton() {
   return (
@@ -25,8 +26,11 @@ function BillingContent() {
   const t = useTranslations("Pricing");
   const searchParams = useSearchParams();
   const { refetch: refreshCredits } = useCredits();
+  const { billingEnabled } = useAppConfigContext();
 
   useEffect(() => {
+    if (!billingEnabled) return;
+
     // Handle payment success/cancel callbacks
     if (searchParams.get("success") === "true") {
       // Refresh credits if it's a credit package purchase
@@ -37,7 +41,31 @@ function BillingContent() {
     } else if (searchParams.get("canceled") === "true") {
       toast.error(t("toast.canceled"));
     }
-  }, [searchParams, t, refreshCredits]);
+  }, [billingEnabled, searchParams, t, refreshCredits]);
+
+  if (!billingEnabled) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center p-4">
+        <Card className="w-full max-w-lg">
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+              <CreditCard className="h-6 w-6 text-muted-foreground" />
+            </div>
+            <CardTitle className="text-2xl">{t("page.billingDisabledTitle")}</CardTitle>
+            <CardDescription>{t("page.billingDisabledDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col justify-center gap-3 sm:flex-row">
+            <Button asChild>
+              <Link href="/usage">{t("buttons.returnToConsole")}</Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link href="/api-keys">{t("buttons.manageApiKeys")}</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   const isSuccess = searchParams.get("success") === "true";
   const isCanceled = searchParams.get("canceled") === "true";

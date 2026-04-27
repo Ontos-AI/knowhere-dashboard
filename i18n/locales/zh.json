@@ -48,6 +48,8 @@
   "Usage": {
     "title": "用量与账单",
     "description": "追踪您的API用量、成本和任务历史。",
+    "selfHostedTitle": "使用情况",
+    "selfHostedDescription": "查看 API 使用情况和任务历史。当前自托管部署已禁用计费。",
     "subtitle": "追踪您的API用量、成本和任务历史。",
     "totalRequests": "总请求数",
     "totalCost": "总消耗",
@@ -67,6 +69,7 @@
     "comparedToLastMonth": "{value} 较上月",
     "estCost": "预估 {cost}",
     "avgProcessingTime": "平均处理时间: {time}",
+    "billingDisabled": "当前自托管部署已禁用计费",
     "1d": "1天",
     "7d": "7天",
     "30d": "30天",
@@ -135,12 +138,18 @@
     "usernamePlaceholder": "请输入用户名",
     "sendMagicLink": "通过邮箱获取登录链接",
     "sending": "发送中...",
+    "signingIn": "登录中...",
+    "signInWithPassword": "登录",
+    "signUpWithPassword": "创建账户",
     "registering": "注册中...",
     "haveAccount": "已有账户？",
+    "noAccount": "还没有账户？",
     "loginNow": "立即登录",
+    "registerNow": "立即注册",
     "emailInvalid": "请输入有效的邮箱地址",
     "magicLinkFailed": "魔法链接发送失败",
     "magicLinkSent": "魔法链接已发送，请检查邮箱",
+    "loginSuccess": "登录成功",
     "loginFailed": "登录失败",
     "oauthFailed": "OAuth登录失败",
     "usernameMinLength": "用户名至少需要2个字符",
@@ -370,11 +379,14 @@
       "description": "您已取消支付操作。"
     },
     "buttons": {
-      "returnToConsole": "返回控制台"
+      "returnToConsole": "返回控制台",
+      "manageApiKeys": "管理 API 密钥"
     },
     "page": {
       "title": "充值与账单中心",
-      "instruction": "您可以在此处查看您的充值记录、购买新的积分包以及管理订阅套餐。Knowhere 提供灵活的计费方式，助您高效解析文档。"
+      "instruction": "您可以在此处查看您的充值记录、购买新的积分包以及管理订阅套餐。Knowhere 提供灵活的计费方式，助您高效解析文档。",
+      "billingDisabledTitle": "计费已禁用",
+      "billingDisabledDescription": "当前自托管控制台不启用付费计费。您可以直接管理 API 密钥并处理任务，无需购买积分。"
     }
   },
   "CreditPayment": {

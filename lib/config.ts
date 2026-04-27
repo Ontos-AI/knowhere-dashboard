@@ -12,6 +12,7 @@
  * 2. 默认值
  */
 
+import { isBillingEnabled } from "@lib/billing";
 import { env } from "@lib/env";
 
 // 配置类型
@@ -27,6 +28,7 @@ export type AppConfigType = {
   googleClientId: string;
   githubClientId: string;
   appleClientId: string;
+  billingEnabled: boolean;
 };
 
 // 获取配置（用于服务端组件）
@@ -75,5 +77,7 @@ export const getDefaultConfig = (): AppConfigType => {
     googleClientId,
     githubClientId,
     appleClientId,
+
+    billingEnabled: isBillingEnabled(),
   };
 };

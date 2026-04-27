@@ -6,6 +6,7 @@ import { Header } from "@/app/(dashboard)/_components/header";
 import { Sidebar } from "@/app/(dashboard)/_components/sidebar";
 import { BuyCreditsModal } from "@/app/(dashboard)/billing/_components/buy-credits-modal";
 import type { AuthUser } from "@/hooks/use-auth";
+import { useAppConfigContext } from "@/providers/config-provider";
 
 type DashboardClientProps = {
   user: AuthUser;
@@ -15,7 +16,8 @@ type DashboardClientProps = {
 export function DashboardClient({ user, children }: DashboardClientProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const searchParams = useSearchParams();
-  const isBuyCreditsOpen = searchParams.get("buy") === "true";
+  const { billingEnabled } = useAppConfigContext();
+  const isBuyCreditsOpen = billingEnabled && searchParams.get("buy") === "true";
 
   useEffect(() => {
     document.body.classList.add("console-tone");

@@ -19,6 +19,7 @@ import { UsageTable } from "@/app/(dashboard)/usage/_components/usage-table";
 import { useExportAllJobs, useJobs } from "@/app/(dashboard)/usage/_hooks/use-jobs";
 import { useParseUsage } from "@/app/(dashboard)/usage/_hooks/use-usage-stats";
 import { useToast } from "@/hooks/use-toast";
+import { useAppConfigContext } from "@/providers/config-provider";
 
 function UsagePageSkeleton() {
   return (
@@ -79,6 +80,7 @@ export default function UsagePage() {
   const t = useTranslations("Usage");
   const tTable = useTranslations("UsageTable");
   const _toast = useToast();
+  const { billingEnabled } = useAppConfigContext();
   const [date, setDate] = useState<DateRange | undefined>({
     from: subDays(new Date(), 30),
     to: new Date(),
@@ -129,7 +131,7 @@ export default function UsagePage() {
   const { data: usageStats, isPending: isPendingStats } = useParseUsage();
   const { mutateAsync: fetchAllJobs, isPending: isExporting } = useExportAllJobs();
 
-  const isPending = isPendingJobs || isPendingStats;
+  const isPending = isPendingJobs || (billingEnabled && isPendingStats);
   const jobs = jobsData?.jobs || [];
   const totalCount = jobsData?.total || 0;
 
@@ -238,12 +240,18 @@ export default function UsagePage() {
     <div className="flex flex-col gap-6 p-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{t("title")}</h1>
-          <p className="text-muted-foreground">{t("description")}</p>
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            {billingEnabled ? t("title") : t("selfHostedTitle")}
+          </h1>
+          <p className="text-muted-foreground">
+            {billingEnabled ? t("description") : t("selfHostedDescription")}
+          </p>
         </div>
-        <div className="self-start sm:self-auto">
-          <BuyCreditsDialog currentCredits={credits || 0} />
-        </div>
+        {billingEnabled ? (
+          <div className="self-start sm:self-auto">
+            <BuyCreditsDialog currentCredits={credits || 0} />
+          </div>
+        ) : null}
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
@@ -258,9 +266,11 @@ export default function UsagePage() {
               pts
             </div>
             <p className="text-xs text-muted-foreground">
-              {usageStats
-                ? t("estCost", { cost: `$${usageStats.estimated_amount}` })
-                : t("estCost", { cost: `$${estimatedCost.toFixed(2)}` })}
+              {billingEnabled
+                ? usageStats
+                  ? t("estCost", { cost: `$${usageStats.estimated_amount}` })
+                  : t("estCost", { cost: `$${estimatedCost.toFixed(2)}` })
+                : t("billingDisabled")}
             </p>
           </CardContent>
         </Card>

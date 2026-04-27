@@ -7,6 +7,7 @@ import { useCredits } from "@hooks/use-credits";
 import { Bell, Menu } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { BuyCreditsDialog } from "@/app/(dashboard)/billing/_components/buy-credits-dialog";
+import { useAppConfigContext } from "@/providers/config-provider";
 
 type HeaderProps = {
   onMenuClick: () => void;
@@ -14,6 +15,7 @@ type HeaderProps = {
 
 export function Header({ onMenuClick }: HeaderProps) {
   const { data: credits } = useCredits();
+  const { billingEnabled } = useAppConfigContext();
   const t = useTranslations("Common");
 
   return (
@@ -32,10 +34,11 @@ export function Header({ onMenuClick }: HeaderProps) {
 
       {/* 右侧操作区 */}
       <div className="flex items-center gap-x-4 lg:gap-x-6">
-        {/* Credits余额 & 购买按钮 */}
-        <div className="hidden sm:flex items-center space-x-3">
-          <BuyCreditsDialog currentCredits={credits || 0} />
-        </div>
+        {billingEnabled ? (
+          <div className="hidden sm:flex items-center space-x-3">
+            <BuyCreditsDialog currentCredits={credits || 0} />
+          </div>
+        ) : null}
 
         {/* 通知 */}
         <Button variant="ghost" size="icon" className="relative">

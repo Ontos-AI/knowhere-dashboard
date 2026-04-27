@@ -22,8 +22,6 @@ if (env.NODE_ENV === "development" || env.HTTPS_PROXY) {
   }
 }
 
-const resend = new Resend(env.RESEND_API_KEY);
-
 export const auth = betterAuth({
   baseURL: env.BETTER_AUTH_URL,
   // Explicitly specify trustedOrigins to prevent host validation failures in reverse proxy or Docker environments
@@ -58,7 +56,12 @@ export const auth = betterAuth({
     },
   },
 
-  // Only Magic Link and OAuth are supported — no email/password authentication
+  emailAndPassword: {
+    enabled: true,
+    minPasswordLength: 8,
+  },
+
+  // Email/password is the self-hosted baseline. OAuth and Magic Link remain optional add-ons.
   socialProviders: {
     ...(env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET
       ? {
@@ -91,6 +94,15 @@ export const auth = betterAuth({
     magicLink({
       sendMagicLink: async ({ email, url }) => {
         try {
+          if (!env.RESEND_API_KEY) {
+            if (env.NODE_ENV === "development") {
+              console.log(`\n⚠️ [FALLBACK] RESEND_API_KEY is not set. Magic Link:\n${url}\n`);
+              return;
+            }
+            throw new Error("RESEND_API_KEY is required for magic-link email login");
+          }
+
+          const resend = new Resend(env.RESEND_API_KEY);
           const { data, error } = await resend.emails.send({
             from: env.RESEND_FROM,
             to: email,

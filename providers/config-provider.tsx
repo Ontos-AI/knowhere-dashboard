@@ -29,6 +29,7 @@ export function useAppConfigContext(): AppConfigType {
       googleClientId: "",
       githubClientId: "",
       appleClientId: "",
+      billingEnabled: false,
     };
   }
   return config;
