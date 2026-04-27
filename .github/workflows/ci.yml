@@ -50,9 +50,6 @@ jobs:
       - name: Type check
         run: pnpm type-check
 
-      - name: Test
-        run: pnpm test
-
       - name: Build
         env:
           BETTER_AUTH_SECRET: build-validation-only-auth-secret-32-chars

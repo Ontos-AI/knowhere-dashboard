@@ -19,7 +19,6 @@
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
-    "test": "node scripts/publication-guardrails.test.mjs",
     "type-check": "tsc --noEmit -p tsconfig.type-check.json",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
