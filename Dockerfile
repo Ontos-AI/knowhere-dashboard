@@ -17,16 +17,7 @@ FROM base AS builder
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN BETTER_AUTH_SECRET=public-build-placeholder-secret-32-chars \
-  BETTER_AUTH_URL=http://localhost:3000 \
-  DATABASE_URL=postgres://postgres:postgres@localhost:5432/knowhere_dashboard \
-  NEXT_PUBLIC_API_URL=http://localhost:5005/api \
-  NEXT_PUBLIC_APP_URL=http://localhost:3000 \
-  NEXT_PUBLIC_AUTH_BASE_URL=/api/auth \
-  RESEND_API_KEY=public-build-placeholder \
-  RESEND_FROM=onboarding@example.com \
-  SKIP_ENV_VALIDATION=1 \
-  pnpm build
+RUN SKIP_ENV_VALIDATION=1 pnpm build
 
 FROM node:22-alpine AS runner
 
@@ -48,9 +39,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/drizzle ./drizzle
 COPY --from=builder --chown=nextjs:nodejs /app/scripts/migrate.js ./scripts/migrate.js
+COPY --from=builder --chown=nextjs:nodejs /app/scripts/start-with-migrations.js ./scripts/start-with-migrations.js
 
 USER nextjs
 
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+CMD ["node", "scripts/start-with-migrations.js"]

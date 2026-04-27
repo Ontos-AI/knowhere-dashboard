@@ -8,6 +8,9 @@ import { ProxyAgent, setGlobalDispatcher } from "undici";
 import { db } from "@/lib/db";
 import { env } from "@/lib/env";
 
+const BUILD_VALIDATION_AUTH_SECRET = "build-validation-only-better-auth-secret";
+const DEFAULT_LOCAL_APP_URL = "http://localhost:3000";
+
 // Enable global proxy in development to resolve domestic network issues with Google/GitHub OAuth
 if (env.NODE_ENV === "development" || env.HTTPS_PROXY) {
   const proxyUrl = env.HTTPS_PROXY || env.HTTP_PROXY;
@@ -30,11 +33,35 @@ const createResendClient = (): Resend => {
   return new Resend(env.RESEND_API_KEY);
 };
 
+const isNonEmptyString = (value: string | undefined): value is string => {
+  return typeof value === "string" && value.trim() !== "";
+};
+
+const getAuthBaseUrl = (): string => {
+  return env.BETTER_AUTH_URL || DEFAULT_LOCAL_APP_URL;
+};
+
+const getAuthSecret = (): string => {
+  if (env.BETTER_AUTH_SECRET) {
+    return env.BETTER_AUTH_SECRET;
+  }
+
+  if (process.env.SKIP_ENV_VALIDATION) {
+    return BUILD_VALIDATION_AUTH_SECRET;
+  }
+
+  throw new Error("BETTER_AUTH_SECRET is required to initialize authentication");
+};
+
+const getTrustedOrigins = (): string[] => {
+  return Array.from(new Set([env.NEXT_PUBLIC_APP_URL, getAuthBaseUrl()].filter(isNonEmptyString)));
+};
+
 export const auth = betterAuth({
-  baseURL: env.BETTER_AUTH_URL,
+  baseURL: getAuthBaseUrl(),
   // Explicitly specify trustedOrigins to prevent host validation failures in reverse proxy or Docker environments
-  trustedOrigins: [env.NEXT_PUBLIC_APP_URL, env.BETTER_AUTH_URL],
-  secret: env.BETTER_AUTH_SECRET,
+  trustedOrigins: getTrustedOrigins(),
+  secret: getAuthSecret(),
 
   // Drizzle ORM adapter — schema is automatically loaded from db instance
   database: drizzleAdapter(db, {

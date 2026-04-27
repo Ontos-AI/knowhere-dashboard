@@ -27,19 +27,6 @@ jobs:
   quality:
     name: Quality
     runs-on: ubuntu-latest
-    env:
-      BETTER_AUTH_SECRET: public-ci-placeholder-secret-32-chars
-      BETTER_AUTH_URL: http://localhost:3000
-      DATABASE_URL: postgres://postgres:postgres@localhost:5432/knowhere_dashboard
-      GITHUB_CLIENT_ID: public-ci-placeholder
-      GITHUB_CLIENT_SECRET: public-ci-placeholder
-      GOOGLE_CLIENT_ID: public-ci-placeholder
-      GOOGLE_CLIENT_SECRET: public-ci-placeholder
-      NEXT_PUBLIC_API_URL: http://localhost:5005/api
-      NEXT_PUBLIC_APP_URL: http://localhost:3000
-      NEXT_PUBLIC_AUTH_BASE_URL: /api/auth
-      RESEND_API_KEY: public-ci-placeholder
-      RESEND_FROM: onboarding@example.com
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -66,7 +53,7 @@ jobs:
         run: pnpm test
 
       - name: Build
-        run: pnpm build
+        run: SKIP_ENV_VALIDATION=1 pnpm build
 
   image:
     name: Image

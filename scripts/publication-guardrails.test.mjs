@@ -42,6 +42,11 @@ const forbiddenPatterns = [
     name: "public default API password",
     regex: /NEXT_PUBLIC_DEFAULT_API_PASSWORD|DefaultPass123/,
   },
+  {
+    name: "baked placeholder runtime environment",
+    regex:
+      /public-ci-placeholder|public-build-placeholder|BETTER_AUTH_SECRET:\s+public-|DATABASE_URL:\s+postgres:\/\/postgres/,
+  },
 ];
 
 const getTrackedTextFiles = () => {
@@ -91,4 +96,18 @@ test("publication tree does not contain private deployment or credential default
   }
 
   assert.deepEqual(violations, []);
+});
+
+test("container startup runs migrations before starting the app server", () => {
+  const dockerfile = readFileSync("Dockerfile", "utf8");
+
+  assert.match(dockerfile, /CMD \["node", "scripts\/start-with-migrations\.js"\]/);
+
+  const startupScript = readFileSync("scripts/start-with-migrations.js", "utf8");
+  const migrationIndex = startupScript.indexOf("scripts/migrate.js");
+  const serverIndex = startupScript.indexOf("server.js");
+
+  assert.notEqual(migrationIndex, -1);
+  assert.notEqual(serverIndex, -1);
+  assert.ok(migrationIndex < serverIndex);
 });

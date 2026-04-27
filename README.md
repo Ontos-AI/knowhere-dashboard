@@ -87,17 +87,13 @@ Build the image:
 docker build -t knowhere-api-dashboard .
 ```
 
-Run database migrations as a separate step:
-
-```bash
-docker run --rm --env-file .env.local knowhere-api-dashboard node scripts/migrate.js
-```
-
 Run the dashboard:
 
 ```bash
 docker run --rm -p 3000:3000 --env-file .env.local knowhere-api-dashboard
 ```
+
+The container runs database migrations before starting the Next.js server. If migrations fail, the app server is not started.
 
 The image is built from Next.js standalone output. Runtime configuration is injected through environment variables; the Docker build does not create or bake `.env.production`.
 
