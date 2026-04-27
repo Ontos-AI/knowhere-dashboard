@@ -27,6 +27,8 @@ env:
   DASHBOARD_KUBE_DEPLOYMENT: ${{ secrets.DASHBOARD_KUBE_DEPLOYMENT }}
   DASHBOARD_KUBE_NAMESPACE_PROD: ${{ secrets.DASHBOARD_KUBE_NAMESPACE_PROD }}
   DASHBOARD_KUBE_NAMESPACE_STAGING: ${{ secrets.DASHBOARD_KUBE_NAMESPACE_STAGING }}
+  DASHBOARD_APP_URL_PROD: https://knowhereto.ai
+  DASHBOARD_APP_URL_STAGING: https://staging.knowhereto.ai
 
 jobs:
   build-and-publish:
@@ -52,8 +54,10 @@ jobs:
 
           if [ "$environment" = "prod" ]; then
             kube_namespace="${DASHBOARD_KUBE_NAMESPACE_PROD}"
+            app_url="${DASHBOARD_APP_URL_PROD}"
           else
             kube_namespace="${DASHBOARD_KUBE_NAMESPACE_STAGING}"
+            app_url="${DASHBOARD_APP_URL_STAGING}"
           fi
 
           missing=()
@@ -64,6 +68,7 @@ jobs:
             DASHBOARD_IMAGE_REPOSITORY \
             DASHBOARD_KUBE_CONTAINER \
             DASHBOARD_KUBE_DEPLOYMENT \
+            app_url \
             kube_namespace
           do
             if [ -z "${!variable_name}" ]; then
@@ -143,8 +148,10 @@ jobs:
 
           if [ "$environment" = "prod" ]; then
             kube_namespace="${DASHBOARD_KUBE_NAMESPACE_PROD}"
+            app_url="${DASHBOARD_APP_URL_PROD}"
           else
             kube_namespace="${DASHBOARD_KUBE_NAMESPACE_STAGING}"
+            app_url="${DASHBOARD_APP_URL_STAGING}"
           fi
 
           missing=()
@@ -155,6 +162,7 @@ jobs:
             DASHBOARD_IMAGE_REPOSITORY \
             DASHBOARD_KUBE_CONTAINER \
             DASHBOARD_KUBE_DEPLOYMENT \
+            app_url \
             kube_namespace
           do
             if [ -z "${!variable_name}" ]; then
@@ -176,6 +184,7 @@ jobs:
           echo "DEPLOY_KUBE_CONTAINER=${DASHBOARD_KUBE_CONTAINER}" >> "$GITHUB_ENV"
           echo "DEPLOY_KUBE_DEPLOYMENT=${DASHBOARD_KUBE_DEPLOYMENT}" >> "$GITHUB_ENV"
           echo "DEPLOY_KUBE_NAMESPACE=${kube_namespace}" >> "$GITHUB_ENV"
+          echo "DEPLOY_APP_URL=${app_url}" >> "$GITHUB_ENV"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -197,6 +206,10 @@ jobs:
       - name: Roll out dashboard
         shell: bash
         run: |
+          kubectl set env "deployment/${DEPLOY_KUBE_DEPLOYMENT}" \
+            "NEXT_PUBLIC_APP_URL=${DEPLOY_APP_URL}" \
+            --namespace "${DEPLOY_KUBE_NAMESPACE}"
+
           kubectl set image "deployment/${DEPLOY_KUBE_DEPLOYMENT}" \
             "${DEPLOY_KUBE_CONTAINER}=${DEPLOY_IMAGE_URI}" \
             --namespace "${DEPLOY_KUBE_NAMESPACE}"
@@ -213,3 +226,4 @@ jobs:
           echo "Deployment: ${DEPLOY_KUBE_DEPLOYMENT}"
           echo "Container: ${DEPLOY_KUBE_CONTAINER}"
           echo "Namespace: ${DEPLOY_KUBE_NAMESPACE}"
+          echo "App URL: ${DEPLOY_APP_URL}"
