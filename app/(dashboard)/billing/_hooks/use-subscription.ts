@@ -1,14 +1,18 @@
 import { orpcQuery } from "@lib/orpc/client";
 import type { CreditsPackage, SubscriptionPlan } from "@server/external-api/subscriptions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAppConfigContext } from "@/providers/config-provider";
 
 /**
  * Hook to fetch current subscription
  * Uses oRPC for type-safe API calls
  */
 export function useSubscription() {
+  const { billingEnabled } = useAppConfigContext();
+
   return useQuery({
     ...orpcQuery.subscriptions.getCurrent.queryOptions(),
+    enabled: billingEnabled,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
@@ -24,10 +28,13 @@ export function usePriceConfigs(
   productType: "subscription"
 ): ReturnType<typeof useQuery<unknown, Error, SubscriptionPlan[]>>;
 export function usePriceConfigs(productType: "subscription" | "credits_package") {
+  const { billingEnabled } = useAppConfigContext();
+
   return useQuery({
     ...orpcQuery.subscriptions.getPriceConfigs.queryOptions({ input: { productType } }),
     select: (data) =>
       productType === "credits_package" ? data.credits_packages || [] : data.subscriptions || [],
+    enabled: billingEnabled,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 30 * 60 * 1000, // 30 minutes
   });
@@ -98,8 +105,11 @@ export function useBuyCreditsPackage() {
  * Uses oRPC for type-safe API calls
  */
 export function useCreditPackages() {
+  const { billingEnabled } = useAppConfigContext();
+
   return useQuery({
     ...orpcQuery.credits.getPackages.queryOptions(),
+    enabled: billingEnabled,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }

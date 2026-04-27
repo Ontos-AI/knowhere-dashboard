@@ -16,6 +16,7 @@ import { useTranslations } from "next-intl";
 import { useQueryState } from "nuqs";
 import { startTransition, useState } from "react";
 import type { DateRange } from "react-day-picker";
+import { useAppConfigContext } from "@/providers/config-provider";
 
 type TimeRangePreset = 1 | 3 | 7;
 
@@ -129,6 +130,7 @@ const UsagePageSkeleton = () => {
 export default function UsagePage() {
   const t = useTranslations("Usage");
   const tTable = useTranslations("UsageTable");
+  const { billingEnabled } = useAppConfigContext();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const buyCreditsHref = buildBuyCreditsHref(
@@ -213,8 +215,8 @@ export default function UsagePage() {
       return (totalDuration / doneJobs.length).toFixed(2);
     })();
 
-  const isInitialLoading = isPendingJobs || isPendingUsageStats;
-  const isRefreshing = isFetchingJobs || isFetchingUsageStats;
+  const isInitialLoading = isPendingJobs || (billingEnabled && isPendingUsageStats);
+  const isRefreshing = isFetchingJobs || (billingEnabled && isFetchingUsageStats);
 
   const handleExportCsv = async () => {
     if (totalCount === 0) {
@@ -302,36 +304,47 @@ export default function UsagePage() {
   return (
     <div className="w-full space-y-[18px] sm:space-y-[22px] lg:space-y-5">
       <section className="space-y-1 sm:hidden">
-        <h1 className="text-base font-bold leading-6 text-black">{t("title")}</h1>
-        <p className="text-[14px] leading-5 text-[#52525c]">{t("description")}</p>
+        <h1 className="text-base font-bold leading-6 text-black">
+          {billingEnabled ? t("title") : t("selfHostedTitle")}
+        </h1>
+        <p className="text-[14px] leading-5 text-[#52525c]">
+          {billingEnabled ? t("description") : ""}
+        </p>
       </section>
       <p className="hidden text-base leading-[22px] text-[#52525c] sm:block lg:leading-6">
-        {t("description")}
+        {billingEnabled ? t("description") : ""}
       </p>
 
-      <section className="grid grid-cols-1 gap-0 border border-[#e4e4e7] lg:grid-cols-3">
-        <UsageSummaryCard
-          title={t("remainingCredits")}
-          value={formatMetricNumber(credits ?? 0)}
-          unit={tTable("pts")}
-          valueClassName="text-[#ff6900]"
-          icon={
-            <SummaryIcon
-              src="/icons/usage/summary-remaining.svg"
-              width={21}
-              height={15}
-              className="pt-[2px]"
-            />
-          }
-          helper={
-            <Link
-              href={buyCreditsHref}
-              className="text-[#ff6900] transition-opacity hover:opacity-80"
-            >
-              Buy Knowhere API Credit &gt;&gt;
-            </Link>
-          }
-        />
+      <section
+        className={cn(
+          "grid grid-cols-1 gap-0 border border-[#e4e4e7]",
+          billingEnabled ? "lg:grid-cols-3" : "lg:grid-cols-2"
+        )}
+      >
+        {billingEnabled ? (
+          <UsageSummaryCard
+            title={t("remainingCredits")}
+            value={formatMetricNumber(credits ?? 0)}
+            unit={tTable("pts")}
+            valueClassName="text-[#ff6900]"
+            icon={
+              <SummaryIcon
+                src="/icons/usage/summary-remaining.svg"
+                width={21}
+                height={15}
+                className="pt-[2px]"
+              />
+            }
+            helper={
+              <Link
+                href={buyCreditsHref}
+                className="text-[#ff6900] transition-opacity hover:opacity-80"
+              >
+                Buy Knowhere API Credit &gt;&gt;
+              </Link>
+            }
+          />
+        ) : null}
         <UsageSummaryCard
           title={t("totalCreditsUsed")}
           value={formatMetricNumber(totalCreditsUsed)}
@@ -340,7 +353,7 @@ export default function UsagePage() {
           icon={<SummaryIcon src="/icons/usage/summary-used.svg" width={19} height={19} />}
           helper={
             <span className="text-[#27272a]">
-              {t("estCost", { cost: `$${estimatedCostLabel}` })}
+              {billingEnabled ? t("estCost", { cost: `$${estimatedCostLabel}` }) : ""}
             </span>
           }
         />

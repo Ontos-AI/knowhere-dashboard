@@ -57,6 +57,7 @@ jobs:
           NEXT_PUBLIC_API_URL: http://localhost:5005/api
           NEXT_PUBLIC_AUTH_BASE_URL: /api/auth
           NEXT_PUBLIC_APP_URL: http://localhost:3000
+          BILLING_ENABLED: "false"
           RESEND_API_KEY: re_build_validation_placeholder
           SKIP_ENV_VALIDATION: "1"
         run: pnpm build

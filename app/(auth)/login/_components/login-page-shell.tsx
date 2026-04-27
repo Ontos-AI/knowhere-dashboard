@@ -6,14 +6,19 @@ import { EmailLoginForm } from "@/app/(auth)/login/_components/email-login-form"
 import { LoginBrand } from "@/app/(auth)/login/_components/login-brand";
 import { SocialLoginButtons } from "@/app/(auth)/login/_components/social-login-buttons";
 import { useLoginActions } from "@/app/(auth)/login/_hooks/use-login-actions";
+import { useAppConfigContext } from "@/providers/config-provider";
 
 export const LoginPageShell = () => {
   const t = useTranslations("Auth");
+  const { passwordLoginEnabled } = useAppConfigContext();
   const {
     activeOAuthProvider,
+    forgotPasswordPath,
     isMagicLinkLoading,
     isOAuthLoading,
+    isPasswordLoading,
     signInWithMagicLink,
+    signInWithPassword,
     signInWithProvider,
   } = useLoginActions();
 
@@ -58,8 +63,12 @@ export const LoginPageShell = () => {
 
             <EmailLoginForm
               disabled={isOAuthLoading}
-              isLoading={isMagicLinkLoading}
-              onSubmit={signInWithMagicLink}
+              forgotPasswordPath={forgotPasswordPath}
+              isMagicLinkLoading={isMagicLinkLoading}
+              isPasswordLoading={isPasswordLoading}
+              onMagicLinkSubmit={signInWithMagicLink}
+              onPasswordSubmit={signInWithPassword}
+              passwordLoginEnabled={passwordLoginEnabled}
             />
           </div>
         </section>

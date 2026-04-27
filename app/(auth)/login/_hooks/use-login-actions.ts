@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -11,9 +11,11 @@ export type OAuthProvider = "github" | "google";
 
 export const useLoginActions = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const t = useTranslations("Auth");
   const toast = useToast();
   const [isMagicLinkLoading, setIsMagicLinkLoading] = useState(false);
+  const [isPasswordLoading, setIsPasswordLoading] = useState(false);
   const [activeOAuthProvider, setActiveOAuthProvider] = useState<OAuthProvider | null>(null);
 
   const rawCallbackURL = searchParams.get("callbackURL");
@@ -26,9 +28,12 @@ export const useLoginActions = () => {
     callbackURL: rawCallbackURL,
     error: "magic",
   });
+  const forgotPasswordPath = authRedirect.buildAuthPagePath("/forgot-password", {
+    callbackURL: rawCallbackURL,
+  });
 
   const signInWithProvider = async (provider: OAuthProvider) => {
-    if (isMagicLinkLoading || activeOAuthProvider) {
+    if (isMagicLinkLoading || isPasswordLoading || activeOAuthProvider) {
       return;
     }
 
@@ -49,7 +54,7 @@ export const useLoginActions = () => {
   };
 
   const signInWithMagicLink = async (email: string) => {
-    if (isMagicLinkLoading || activeOAuthProvider) {
+    if (isMagicLinkLoading || isPasswordLoading || activeOAuthProvider) {
       return false;
     }
 
@@ -78,11 +83,44 @@ export const useLoginActions = () => {
     }
   };
 
+  const signInWithPassword = async (email: string, password: string) => {
+    if (isMagicLinkLoading || isPasswordLoading || activeOAuthProvider) {
+      return false;
+    }
+
+    setIsPasswordLoading(true);
+
+    try {
+      const { error } = await authClient.signIn.email({
+        email: email.trim(),
+        password,
+      });
+
+      if (error) {
+        throw new Error(error.message || t("loginFailed"));
+      }
+
+      toast.success(t("loginSuccess"));
+      router.push(callbackURL);
+      router.refresh();
+      return true;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : t("loginFailed");
+      toast.error(t("loginFailed"), message);
+      return false;
+    } finally {
+      setIsPasswordLoading(false);
+    }
+  };
+
   return {
     activeOAuthProvider,
+    forgotPasswordPath,
     isMagicLinkLoading,
     isOAuthLoading: activeOAuthProvider !== null,
+    isPasswordLoading,
     signInWithMagicLink,
+    signInWithPassword,
     signInWithProvider,
   };
 };

@@ -10,6 +10,7 @@ import { SettingsDashboardShell } from "@/app/(dashboard)/settings/_components/s
 import { UsageDashboardShell } from "@/app/(dashboard)/usage/_components/usage-dashboard-shell";
 import { WebhooksDashboardShell } from "@/app/(dashboard)/webhooks/_components/webhooks-dashboard-shell";
 import type { AuthUser } from "@/hooks/use-auth";
+import { useAppConfigContext } from "@/providers/config-provider";
 
 type DashboardClientProps = {
   user: AuthUser;
@@ -20,7 +21,8 @@ export function DashboardClient({ user, children }: DashboardClientProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const isBuyCreditsOpen = searchParams.get("buy") === "true";
+  const { billingEnabled } = useAppConfigContext();
+  const isBuyCreditsOpen = billingEnabled && searchParams.get("buy") === "true";
   const isUsageRoute = pathname === "/usage" || pathname.startsWith("/usage/");
   const isApiKeysRoute = pathname === "/api-keys" || pathname.startsWith("/api-keys/");
   const isSettingsRoute = pathname === "/settings" || pathname.startsWith("/settings/");

@@ -1,3 +1,5 @@
+import { isBillingEnabled } from "@lib/billing";
+import { ORPCError } from "@orpc/server";
 import {
   buyCredits,
   buyCreditsPackage,
@@ -13,6 +15,10 @@ export const creditsRouter = protectedProcedure.router({
   // Get credits balance - Protected endpoint
   // Returns current credits balance for the authenticated user
   getBalance: protectedProcedure.handler(async ({ context }) => {
+    if (!isBillingEnabled()) {
+      return { credits_balance: 0 };
+    }
+
     return getCreditsBalance({ userId: context.user.id });
   }),
 
@@ -25,12 +31,20 @@ export const creditsRouter = protectedProcedure.router({
       })
     )
     .handler(async ({ input, context }) => {
+      if (!isBillingEnabled()) {
+        throw new ORPCError("FORBIDDEN", { message: "Billing is disabled" });
+      }
+
       return buyCredits({ userId: context.user.id, amount: input.amount });
     }),
 
   // Get credit packages - Protected endpoint
   // Returns available credit packages for purchase
   getPackages: protectedProcedure.handler(async ({ context }) => {
+    if (!isBillingEnabled()) {
+      return [];
+    }
+
     return getCreditPackages({ userId: context.user.id });
   }),
 
@@ -44,6 +58,10 @@ export const creditsRouter = protectedProcedure.router({
       })
     )
     .handler(async ({ input, context }) => {
+      if (!isBillingEnabled()) {
+        throw new ORPCError("FORBIDDEN", { message: "Billing is disabled" });
+      }
+
       return buyCreditsPackage({
         userId: context.user.id,
         priceId: input.priceId,

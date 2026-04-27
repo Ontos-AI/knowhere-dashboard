@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTimezone } from "@hooks/use-timezone";
 import { useToast } from "@hooks/use-toast";
 import * as SwitchPrimitives from "@radix-ui/react-switch";
+import { useQueryClient } from "@tanstack/react-query";
 import { formatDate } from "@utils/format";
 import { Check, Loader2, Lock, MoonStar, SunMedium } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -23,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { type AuthUser, useAuth } from "@/hooks/use-auth";
+import { authClient } from "@/lib/better-auth-client";
 import { cn } from "@/lib/utils";
 import { setCookie } from "@/utils/cookies";
 
@@ -53,8 +55,9 @@ const TIMEZONES = [
 ] as const;
 
 const SECTION_ELEMENT_IDS = {
-  preferences: "settings-preferences",
   profile: "settings-profile",
+  security: "settings-security",
+  preferences: "settings-preferences",
 } as const;
 
 type SettingsSectionId = keyof typeof SECTION_ELEMENT_IDS;
@@ -79,6 +82,61 @@ const createProfileSchema = (messages: { emailInvalid: string; usernameMinLength
 
 type ProfileFormValues = z.infer<ReturnType<typeof createProfileSchema>>;
 
+const createSetPasswordSchema = (messages: {
+  newPasswordMinLength: string;
+  passwordMismatch: string;
+}) =>
+  z
+    .object({
+      confirmPassword: z.string().min(8, { message: messages.newPasswordMinLength }),
+      newPassword: z.string().min(8, { message: messages.newPasswordMinLength }),
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, {
+      message: messages.passwordMismatch,
+      path: ["confirmPassword"],
+    });
+
+type SetPasswordFormValues = z.infer<ReturnType<typeof createSetPasswordSchema>>;
+
+const createChangePasswordSchema = (messages: {
+  currentPasswordRequired: string;
+  newPasswordMinLength: string;
+  passwordMismatch: string;
+}) =>
+  z
+    .object({
+      confirmPassword: z.string().min(8, { message: messages.newPasswordMinLength }),
+      currentPassword: z.string().min(1, { message: messages.currentPasswordRequired }),
+      newPassword: z.string().min(8, { message: messages.newPasswordMinLength }),
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, {
+      message: messages.passwordMismatch,
+      path: ["confirmPassword"],
+    });
+
+type ChangePasswordFormValues = z.infer<ReturnType<typeof createChangePasswordSchema>>;
+
+type PasswordApiErrorResponse = {
+  readonly message?: string;
+};
+
+async function setPasswordWithCurrentSession(newPassword: string): Promise<void> {
+  const response = await fetch("/api/account/password", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ newPassword }),
+  });
+
+  if (!response.ok) {
+    const errorPayload = (await response
+      .json()
+      .catch(() => null)) as PasswordApiErrorResponse | null;
+    throw new Error(errorPayload?.message || "Failed to set password");
+  }
+}
+
 const SettingsPageSkeleton = () => {
   return (
     <div className="w-full space-y-5" aria-busy="true">
@@ -93,10 +151,11 @@ const SettingsPageSkeleton = () => {
 
 export const SettingsPage = () => {
   const { user, isLoading } = useAuth();
-  const { hasOAuthAccount, oAuthProviderName } = useLinkedAccounts();
+  const { hasOAuthAccount, hasPasswordCredential, oAuthProviderName } = useLinkedAccounts();
   const updateProfileMutation = useUpdateProfile();
   const updateEmailMutation = useUpdateEmail();
   const sendVerificationMutation = useSendVerificationEmail();
+  const queryClient = useQueryClient();
   const { timezone, setTimezone } = useTimezone();
   const { resolvedTheme, setTheme } = useTheme();
   const toast = useToast();
@@ -105,6 +164,7 @@ export const SettingsPage = () => {
   const t = useTranslations("Settings");
   const tTimezones = useTranslations("Timezones");
   const [activeSection, setActiveSection] = useState<SettingsSectionId>("profile");
+  const [isPasswordSaving, setIsPasswordSaving] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
   const hasUser = Boolean(user);
   const userEmail = user?.email ?? "";
@@ -119,6 +179,34 @@ export const SettingsPage = () => {
       createProfileSchema({
         emailInvalid: t("emailInvalid"),
         usernameMinLength: t("usernameMinLength"),
+      })
+    ),
+  });
+
+  const setPasswordForm = useForm<SetPasswordFormValues>({
+    defaultValues: {
+      confirmPassword: "",
+      newPassword: "",
+    },
+    resolver: zodResolver(
+      createSetPasswordSchema({
+        newPasswordMinLength: t("newPasswordMinLength"),
+        passwordMismatch: t("passwordMismatch"),
+      })
+    ),
+  });
+
+  const changePasswordForm = useForm<ChangePasswordFormValues>({
+    defaultValues: {
+      confirmPassword: "",
+      currentPassword: "",
+      newPassword: "",
+    },
+    resolver: zodResolver(
+      createChangePasswordSchema({
+        currentPasswordRequired: t("currentPasswordRequired"),
+        newPasswordMinLength: t("newPasswordMinLength"),
+        passwordMismatch: t("passwordMismatch"),
       })
     ),
   });
@@ -165,14 +253,21 @@ export const SettingsPage = () => {
 
   useEffect(() => {
     const syncActiveSection = () => {
-      const preferencesSection = document.getElementById(SECTION_ELEMENT_IDS.preferences);
+      const sectionIds = Object.keys(SECTION_ELEMENT_IDS) as SettingsSectionId[];
+      const nextActiveSection = sectionIds.reduce<SettingsSectionId>(
+        (currentSection, sectionId) => {
+          const sectionElement = document.getElementById(SECTION_ELEMENT_IDS[sectionId]);
 
-      if (!preferencesSection) {
-        return;
-      }
+          if (!sectionElement) {
+            return currentSection;
+          }
 
-      const preferencesTop = preferencesSection.getBoundingClientRect().top;
-      setActiveSection(preferencesTop <= 140 ? "preferences" : "profile");
+          return sectionElement.getBoundingClientRect().top <= 140 ? sectionId : currentSection;
+        },
+        "profile"
+      );
+
+      setActiveSection(nextActiveSection);
     };
 
     syncActiveSection();
@@ -227,6 +322,55 @@ export const SettingsPage = () => {
     toast.success(t("timezoneUpdated"));
   };
 
+  const refreshPasswordState = async (): Promise<void> => {
+    await authClient.getSession({
+      query: { disableCookieCache: true },
+    });
+    await queryClient.invalidateQueries({ queryKey: ["session"] });
+    await queryClient.invalidateQueries({ queryKey: ["linked-accounts"] });
+  };
+
+  const handleSetPassword = async (values: SetPasswordFormValues): Promise<void> => {
+    setIsPasswordSaving(true);
+
+    try {
+      await setPasswordWithCurrentSession(values.newPassword);
+      setPasswordForm.reset();
+      await refreshPasswordState();
+      toast.success(t("passwordSet"));
+    } catch (error) {
+      const message = error instanceof Error ? error.message : t("passwordUpdateFailed");
+      toast.error(message);
+    } finally {
+      setIsPasswordSaving(false);
+    }
+  };
+
+  const handleChangePassword = async (values: ChangePasswordFormValues): Promise<void> => {
+    setIsPasswordSaving(true);
+
+    try {
+      const { error } = await authClient.changePassword({
+        currentPassword: values.currentPassword,
+        newPassword: values.newPassword,
+        revokeOtherSessions: true,
+      });
+
+      if (error) {
+        throw new Error(error.message || t("passwordUpdateFailed"));
+      }
+
+      changePasswordForm.reset();
+      await refreshPasswordState();
+      toast.success(t("passwordUpdated"));
+    } catch (error) {
+      const message = error instanceof Error ? error.message : t("passwordUpdateFailed");
+      toast.error(message);
+    } finally {
+      setIsPasswordSaving(false);
+    }
+  };
+
   const handleResendVerification = async () => {
     if (!user?.email) {
       return;
@@ -273,6 +417,7 @@ export const SettingsPage = () => {
         onSectionSelect={handleSectionSelect}
         preferencesLabel={t("preferences")}
         profileLabel={t("profile")}
+        securityLabel={t("security")}
       />
 
       <SettingsProfileSection
@@ -312,6 +457,25 @@ export const SettingsPage = () => {
         verifiedLabel={t("verified")}
       />
 
+      <SettingsPasswordSection
+        changePasswordForm={changePasswordForm}
+        confirmPasswordLabel={t("confirmPassword")}
+        currentPasswordLabel={t("currentPassword")}
+        description={hasPasswordCredential ? t("passwordDesc") : t("setPasswordDesc")}
+        hasPasswordCredential={hasPasswordCredential}
+        id={SECTION_ELEMENT_IDS.security}
+        isSaving={isPasswordSaving}
+        newPasswordLabel={t("newPassword")}
+        noPasswordCredentialDescription={t("noPasswordCredentialDesc")}
+        onChangePassword={handleChangePassword}
+        onSetPassword={handleSetPassword}
+        setPasswordForm={setPasswordForm}
+        setPasswordLabel={t("setPassword")}
+        title={t("passwordSettings")}
+        updatePasswordLabel={t("updatePassword")}
+        updatingLabel={t("updating")}
+      />
+
       <SettingsPreferencesSection
         darkModeEnabled={isDarkTheme}
         id={SECTION_ELEMENT_IDS.preferences}
@@ -336,11 +500,13 @@ const SettingsSectionTabs = ({
   onSectionSelect,
   preferencesLabel,
   profileLabel,
+  securityLabel,
 }: {
   activeSection: SettingsSectionId;
   onSectionSelect: (sectionId: SettingsSectionId) => void;
   preferencesLabel: string;
   profileLabel: string;
+  securityLabel: string;
 }) => {
   return (
     <nav aria-label="Settings sections" className="flex items-center gap-px">
@@ -356,6 +522,19 @@ const SettingsSectionTabs = ({
         onClick={() => onSectionSelect("profile")}
       >
         {profileLabel}
+      </button>
+      <button
+        type="button"
+        className={cn(
+          "flex h-8 min-w-[87px] items-end justify-center px-4 pb-2 pt-2 font-mono-display text-xs leading-4 transition-colors",
+          activeSection === "security"
+            ? "border-b-4 border-[#52525c] bg-[#71717b] font-bold text-white"
+            : "bg-[#e4e4e7] font-light text-[#09090b]"
+        )}
+        aria-current={activeSection === "security" ? "page" : undefined}
+        onClick={() => onSectionSelect("security")}
+      >
+        {securityLabel}
       </button>
       <button
         type="button"
@@ -560,6 +739,164 @@ const SettingsProfileSection = ({
         </div>
       </div>
     </section>
+  );
+};
+
+const SettingsPasswordSection = ({
+  changePasswordForm,
+  confirmPasswordLabel,
+  currentPasswordLabel,
+  description,
+  hasPasswordCredential,
+  id,
+  isSaving,
+  newPasswordLabel,
+  noPasswordCredentialDescription,
+  onChangePassword,
+  onSetPassword,
+  setPasswordForm,
+  setPasswordLabel,
+  title,
+  updatePasswordLabel,
+  updatingLabel,
+}: {
+  changePasswordForm: UseFormReturn<ChangePasswordFormValues>;
+  confirmPasswordLabel: string;
+  currentPasswordLabel: string;
+  description: string;
+  hasPasswordCredential: boolean;
+  id: string;
+  isSaving: boolean;
+  newPasswordLabel: string;
+  noPasswordCredentialDescription: string;
+  onChangePassword: (values: ChangePasswordFormValues) => void | Promise<void>;
+  onSetPassword: (values: SetPasswordFormValues) => void | Promise<void>;
+  setPasswordForm: UseFormReturn<SetPasswordFormValues>;
+  setPasswordLabel: string;
+  title: string;
+  updatePasswordLabel: string;
+  updatingLabel: string;
+}) => {
+  return (
+    <section
+      id={id}
+      className="scroll-mt-6 border border-[#e4e4e7] bg-[#fafafa] px-6 py-8 sm:px-10 sm:py-8"
+    >
+      <div className="flex flex-col gap-6">
+        <div className="space-y-2">
+          <h2 className="text-sm font-bold leading-5 text-[#09090b]">{title}</h2>
+          <p className="max-w-[520px] text-sm leading-5 text-[#52525c]">{description}</p>
+        </div>
+
+        {hasPasswordCredential ? (
+          <form
+            className="flex w-full flex-col gap-5 lg:w-[420px]"
+            onSubmit={changePasswordForm.handleSubmit(onChangePassword)}
+          >
+            <SettingsPasswordField
+              autoComplete="current-password"
+              error={changePasswordForm.formState.errors.currentPassword?.message}
+              id="settings-current-password"
+              isSaving={isSaving}
+              label={currentPasswordLabel}
+              registration={changePasswordForm.register("currentPassword")}
+            />
+            <SettingsPasswordField
+              autoComplete="new-password"
+              error={changePasswordForm.formState.errors.newPassword?.message}
+              id="settings-new-password"
+              isSaving={isSaving}
+              label={newPasswordLabel}
+              registration={changePasswordForm.register("newPassword")}
+            />
+            <SettingsPasswordField
+              autoComplete="new-password"
+              error={changePasswordForm.formState.errors.confirmPassword?.message}
+              id="settings-confirm-password"
+              isSaving={isSaving}
+              label={confirmPasswordLabel}
+              registration={changePasswordForm.register("confirmPassword")}
+            />
+
+            <button
+              className={cn(primaryButtonClassName, "w-fit min-w-[132px]")}
+              disabled={isSaving}
+              type="submit"
+            >
+              {isSaving ? <Loader2 className="size-4 animate-spin" /> : null}
+              <span>{isSaving ? updatingLabel : updatePasswordLabel}</span>
+            </button>
+          </form>
+        ) : (
+          <form
+            className="flex w-full flex-col gap-5 lg:w-[420px]"
+            onSubmit={setPasswordForm.handleSubmit(onSetPassword)}
+          >
+            <div className="border border-[#e4e4e7] bg-white px-4 py-3 text-sm leading-5 text-[#52525c]">
+              {noPasswordCredentialDescription}
+            </div>
+            <SettingsPasswordField
+              autoComplete="new-password"
+              error={setPasswordForm.formState.errors.newPassword?.message}
+              id="settings-set-new-password"
+              isSaving={isSaving}
+              label={newPasswordLabel}
+              registration={setPasswordForm.register("newPassword")}
+            />
+            <SettingsPasswordField
+              autoComplete="new-password"
+              error={setPasswordForm.formState.errors.confirmPassword?.message}
+              id="settings-set-confirm-password"
+              isSaving={isSaving}
+              label={confirmPasswordLabel}
+              registration={setPasswordForm.register("confirmPassword")}
+            />
+
+            <button
+              className={cn(primaryButtonClassName, "w-fit min-w-[118px]")}
+              disabled={isSaving}
+              type="submit"
+            >
+              {isSaving ? <Loader2 className="size-4 animate-spin" /> : null}
+              <span>{isSaving ? updatingLabel : setPasswordLabel}</span>
+            </button>
+          </form>
+        )}
+      </div>
+    </section>
+  );
+};
+
+const SettingsPasswordField = ({
+  autoComplete,
+  error,
+  id,
+  isSaving,
+  label,
+  registration,
+}: {
+  autoComplete: string;
+  error?: string;
+  id: string;
+  isSaving: boolean;
+  label: string;
+  registration: ReturnType<UseFormReturn<ChangePasswordFormValues>["register"]>;
+}) => {
+  return (
+    <div className="space-y-2">
+      <label className={fieldLabelClassName} htmlFor={id}>
+        {label}
+      </label>
+      <input
+        autoComplete={autoComplete}
+        className={cn(formInputClassName, "border-[#e4e4e7]")}
+        disabled={isSaving}
+        id={id}
+        type="password"
+        {...registration}
+      />
+      {error ? <p className="text-xs leading-4 text-[#dc2626]">{error}</p> : null}
+    </div>
   );
 };
 
