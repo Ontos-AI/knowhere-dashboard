@@ -8,9 +8,6 @@ import { ProxyAgent, setGlobalDispatcher } from "undici";
 import { db } from "@/lib/db";
 import { env } from "@/lib/env";
 
-const BUILD_VALIDATION_AUTH_SECRET = "build-validation-only-better-auth-secret";
-const DEFAULT_LOCAL_APP_URL = "http://localhost:3000";
-
 // Enable global proxy in development to resolve domestic network issues with Google/GitHub OAuth
 if (env.NODE_ENV === "development" || env.HTTPS_PROXY) {
   const proxyUrl = env.HTTPS_PROXY || env.HTTP_PROXY;
@@ -37,99 +34,86 @@ const isNonEmptyString = (value: string | undefined): value is string => {
   return typeof value === "string" && value.trim() !== "";
 };
 
-const getAuthBaseUrl = (): string => {
-  return env.BETTER_AUTH_URL || DEFAULT_LOCAL_APP_URL;
-};
-
-const getAuthSecret = (): string => {
-  if (env.BETTER_AUTH_SECRET) {
-    return env.BETTER_AUTH_SECRET;
-  }
-
-  if (process.env.SKIP_ENV_VALIDATION) {
-    return BUILD_VALIDATION_AUTH_SECRET;
-  }
-
-  throw new Error("BETTER_AUTH_SECRET is required to initialize authentication");
-};
-
 const getTrustedOrigins = (): string[] => {
-  return Array.from(new Set([env.NEXT_PUBLIC_APP_URL, getAuthBaseUrl()].filter(isNonEmptyString)));
+  return Array.from(
+    new Set([env.NEXT_PUBLIC_APP_URL, env.BETTER_AUTH_URL].filter(isNonEmptyString))
+  );
 };
 
-export const auth = betterAuth({
-  baseURL: getAuthBaseUrl(),
-  // Explicitly specify trustedOrigins to prevent host validation failures in reverse proxy or Docker environments
-  trustedOrigins: getTrustedOrigins(),
-  secret: getAuthSecret(),
+const createAuth = () => {
+  return betterAuth({
+    baseURL: env.BETTER_AUTH_URL,
+    // Explicitly specify trustedOrigins to prevent host validation failures in reverse proxy or Docker environments
+    trustedOrigins: getTrustedOrigins(),
+    secret: env.BETTER_AUTH_SECRET,
 
-  // Drizzle ORM adapter — schema is automatically loaded from db instance
-  database: drizzleAdapter(db, {
-    provider: "pg",
-  }),
-
-  // Enable performance optimization with joins (2-3x faster)
-  experimental: {
-    joins: true,
-  },
-
-  // Extend the default user schema with a custom role field for RBAC
-  user: {
-    additionalFields: {
-      role: {
-        type: "string",
-        defaultValue: "user",
-      },
-    },
-  },
-
-  session: {
-    // Cookie-based session caching reduces DB queries; session is valid for 30 days
-    cookieCache: {
-      enabled: true,
-      maxAge: 30 * 24 * 60 * 60, // 30 days
-    },
-  },
-
-  // Only Magic Link and OAuth are supported — no email/password authentication
-  socialProviders: {
-    ...(env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET
-      ? {
-          github: {
-            clientId: env.GITHUB_CLIENT_ID,
-            clientSecret: env.GITHUB_CLIENT_SECRET,
-            redirectURI: `${env.BETTER_AUTH_URL}/api/auth/callback/github`,
-          },
-        }
-      : {}),
-    ...(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
-      ? {
-          google: {
-            clientId: env.GOOGLE_CLIENT_ID,
-            clientSecret: env.GOOGLE_CLIENT_SECRET,
-            redirectURI: `${env.BETTER_AUTH_URL}/api/auth/callback/google`,
-          },
-        }
-      : {}),
-  },
-  plugins: [
-    jwt({
-      jwt: {
-        expirationTime: "15m", // JWT expires in 15 minutes
-        definePayload: ({ user }) => ({
-          id: user.id, // Only include userId to maintain single source of truth
-        }),
-      },
+    // Drizzle ORM adapter — schema is automatically loaded from db instance
+    database: drizzleAdapter(db, {
+      provider: "pg",
     }),
-    magicLink({
-      sendMagicLink: async ({ email, url }) => {
-        try {
-          const resend = createResendClient();
-          const { data, error } = await resend.emails.send({
-            from: env.RESEND_FROM,
-            to: email,
-            subject: "Knowhere Account Login Link",
-            html: `
+
+    // Enable performance optimization with joins (2-3x faster)
+    experimental: {
+      joins: true,
+    },
+
+    // Extend the default user schema with a custom role field for RBAC
+    user: {
+      additionalFields: {
+        role: {
+          type: "string",
+          defaultValue: "user",
+        },
+      },
+    },
+
+    session: {
+      // Cookie-based session caching reduces DB queries; session is valid for 30 days
+      cookieCache: {
+        enabled: true,
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+      },
+    },
+
+    // Only Magic Link and OAuth are supported — no email/password authentication
+    socialProviders: {
+      ...(env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET
+        ? {
+            github: {
+              clientId: env.GITHUB_CLIENT_ID,
+              clientSecret: env.GITHUB_CLIENT_SECRET,
+              redirectURI: `${env.BETTER_AUTH_URL}/api/auth/callback/github`,
+            },
+          }
+        : {}),
+      ...(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
+        ? {
+            google: {
+              clientId: env.GOOGLE_CLIENT_ID,
+              clientSecret: env.GOOGLE_CLIENT_SECRET,
+              redirectURI: `${env.BETTER_AUTH_URL}/api/auth/callback/google`,
+            },
+          }
+        : {}),
+    },
+    plugins: [
+      jwt({
+        jwt: {
+          expirationTime: "15m", // JWT expires in 15 minutes
+          definePayload: ({ user }) => ({
+            id: user.id, // Only include userId to maintain single source of truth
+          }),
+        },
+      }),
+      magicLink({
+        sendMagicLink: async ({ email, url }) => {
+          try {
+            const resend = createResendClient();
+            const { data, error } = await resend.emails.send({
+              from: env.RESEND_FROM,
+              to: email,
+              subject: "Knowhere Account Login Link",
+              html: `
               <!DOCTYPE html>
               <html>
               <head>
@@ -169,26 +153,39 @@ export const auth = betterAuth({
               </body>
               </html>
             `,
-          });
+            });
 
-          if (error) {
-            console.error("Resend error:", error);
+            if (error) {
+              console.error("Resend error:", error);
+              throw error;
+            }
+
+            console.log(`Magic link sent to ${email}. Id: ${data?.id}`);
+          } catch (error) {
+            console.error("Failed to send magic link:", error);
+            // In development, print the link as fallback so the flow is not blocked
+            if (env.NODE_ENV === "development") {
+              console.log(`\n⚠️ [FALLBACK] Email failed. Here is the Magic Link:\n${url}\n`);
+              return;
+            }
+            // In production, throw to surface the error to the frontend
             throw error;
           }
+        },
+      }),
+      nextCookies(),
+    ],
+  });
+};
 
-          console.log(`Magic link sent to ${email}. Id: ${data?.id}`);
-        } catch (error) {
-          console.error("Failed to send magic link:", error);
-          // In development, print the link as fallback so the flow is not blocked
-          if (env.NODE_ENV === "development") {
-            console.log(`\n⚠️ [FALLBACK] Email failed. Here is the Magic Link:\n${url}\n`);
-            return;
-          }
-          // In production, throw to surface the error to the frontend
-          throw error;
-        }
-      },
-    }),
-    nextCookies(),
-  ],
-});
+type AuthInstance = ReturnType<typeof createAuth>;
+
+let authInstance: AuthInstance | null = null;
+
+export const getAuth = (): AuthInstance => {
+  if (!authInstance) {
+    authInstance = createAuth();
+  }
+
+  return authInstance;
+};

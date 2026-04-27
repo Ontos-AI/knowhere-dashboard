@@ -45,7 +45,7 @@ const forbiddenPatterns = [
   {
     name: "baked placeholder runtime environment",
     regex:
-      /public-ci-placeholder|public-build-placeholder|BETTER_AUTH_SECRET:\s+public-|DATABASE_URL:\s+postgres:\/\/postgres/,
+      /public-ci-placeholder|public-build-placeholder|BUILD_VALIDATION_AUTH_SECRET|DEFAULT_LOCAL_APP_URL|BETTER_AUTH_SECRET:\s+public-|DATABASE_URL:\s+postgres:\/\/postgres/,
   },
 ];
 
@@ -98,16 +98,20 @@ test("publication tree does not contain private deployment or credential default
   assert.deepEqual(violations, []);
 });
 
-test("container startup runs migrations before starting the app server", () => {
+test("container startup uses Drizzle generate and migrate before starting the app server", () => {
   const dockerfile = readFileSync("Dockerfile", "utf8");
 
   assert.match(dockerfile, /CMD \["node", "scripts\/start-with-migrations\.js"\]/);
 
   const startupScript = readFileSync("scripts/start-with-migrations.js", "utf8");
-  const migrationIndex = startupScript.indexOf("scripts/migrate.js");
+  const generateIndex = startupScript.indexOf("db:generate");
+  const migrateIndex = startupScript.indexOf("db:migrate");
   const serverIndex = startupScript.indexOf("server.js");
 
-  assert.notEqual(migrationIndex, -1);
+  assert.notEqual(generateIndex, -1);
+  assert.notEqual(migrateIndex, -1);
   assert.notEqual(serverIndex, -1);
-  assert.ok(migrationIndex < serverIndex);
+  assert.ok(generateIndex < migrateIndex);
+  assert.ok(migrateIndex < serverIndex);
+  assert.doesNotMatch(startupScript, /scripts\/migrate\.js/);
 });

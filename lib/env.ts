@@ -4,7 +4,7 @@ import { z } from "zod";
 export const env = createEnv({
   server: {
     BETTER_AUTH_SECRET: z.string().min(32),
-    BETTER_AUTH_URL: z.url().default("http://localhost:3000"),
+    BETTER_AUTH_URL: z.url(),
     DATABASE_URL: z.url(),
     GA_MEASUREMENT_ID: z
       .string()
@@ -22,8 +22,8 @@ export const env = createEnv({
   },
   client: {
     NEXT_PUBLIC_API_URL: z.url(),
-    NEXT_PUBLIC_AUTH_BASE_URL: z.string().default("/api/auth"),
-    NEXT_PUBLIC_APP_URL: z.url().default("http://localhost:3000"),
+    NEXT_PUBLIC_AUTH_BASE_URL: z.string(),
+    NEXT_PUBLIC_APP_URL: z.url(),
     NEXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
     NEXT_PUBLIC_POSTHOG_HOST: z.url().default("https://app.posthog.com"),
   },

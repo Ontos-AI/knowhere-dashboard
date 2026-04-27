@@ -19,7 +19,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN SKIP_ENV_VALIDATION=1 pnpm build
 
-FROM node:22-alpine AS runner
+FROM base AS runner
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -37,9 +37,15 @@ RUN apk add --no-cache ca-certificates postgresql-client \
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/drizzle ./drizzle
-COPY --from=builder --chown=nextjs:nodejs /app/scripts/migrate.js ./scripts/migrate.js
 COPY --from=builder --chown=nextjs:nodejs /app/scripts/start-with-migrations.js ./scripts/start-with-migrations.js
+
+COPY --from=deps --chown=nextjs:nodejs /app/node_modules /migration/node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/package.json /migration/package.json
+COPY --from=builder --chown=nextjs:nodejs /app/pnpm-lock.yaml /migration/pnpm-lock.yaml
+COPY --from=builder --chown=nextjs:nodejs /app/drizzle.config.ts /migration/drizzle.config.ts
+COPY --from=builder --chown=nextjs:nodejs /app/tsconfig.json /migration/tsconfig.json
+COPY --from=builder --chown=nextjs:nodejs /app/drizzle /migration/drizzle
+COPY --from=builder --chown=nextjs:nodejs /app/lib/db /migration/lib/db
 
 USER nextjs
 

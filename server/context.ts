@@ -1,4 +1,4 @@
-import { auth } from "@lib/auth";
+import { getAuth } from "@lib/auth";
 import { os } from "@orpc/server";
 import type { Session, User } from "better-auth/types";
 
@@ -14,6 +14,7 @@ export const base = os.$context<Context>();
 
 // Helper function to create context from request headers
 export async function createContext(headers: Headers): Promise<Context> {
+  const auth = getAuth();
   const sessionData = await auth.api.getSession({ headers });
 
   return {

@@ -1,19 +1,26 @@
 const { spawn, spawnSync } = require("node:child_process");
 
-const runMigration = () => {
-  const result = spawnSync(process.execPath, ["scripts/migrate.js"], {
+const MIGRATION_WORKDIR = "/migration";
+
+const runCommand = (command, args) => {
+  const result = spawnSync(command, args, {
     env: process.env,
     stdio: "inherit",
   });
 
   if (result.error) {
-    console.error("Failed to start migration process:", result.error);
+    console.error(`Failed to start ${command} ${args.join(" ")}:`, result.error);
     process.exit(1);
   }
 
   if (result.status !== 0) {
     process.exit(result.status ?? 1);
   }
+};
+
+const runMigrations = () => {
+  runCommand("pnpm", ["--dir", MIGRATION_WORKDIR, "db:generate"]);
+  runCommand("pnpm", ["--dir", MIGRATION_WORKDIR, "db:migrate"]);
 };
 
 const startServer = () => {
@@ -39,5 +46,5 @@ const startServer = () => {
   });
 };
 
-runMigration();
+runMigrations();
 startServer();

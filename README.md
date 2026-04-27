@@ -43,7 +43,7 @@ Required for startup:
 | --- | --- |
 | `NEXT_PUBLIC_APP_URL` | Public dashboard URL, for example `http://localhost:3000`. |
 | `NEXT_PUBLIC_API_URL` | Knowhere API backend URL, for example `http://localhost:5005/api`. |
-| `NEXT_PUBLIC_AUTH_BASE_URL` | Auth route base path. The default is `/api/auth`. |
+| `NEXT_PUBLIC_AUTH_BASE_URL` | Auth route base path. Use `/api/auth` for the built-in route. |
 | `BETTER_AUTH_URL` | Base URL used by Better Auth callbacks. |
 | `BETTER_AUTH_SECRET` | Random secret with at least 32 characters. |
 | `DATABASE_URL` | PostgreSQL connection URL for dashboard auth/account data. |
@@ -93,7 +93,7 @@ Run the dashboard:
 docker run --rm -p 3000:3000 --env-file .env.local knowhere-api-dashboard
 ```
 
-The container runs database migrations before starting the Next.js server. If migrations fail, the app server is not started.
+The container runs `pnpm db:generate` and `pnpm db:migrate` before starting the Next.js server. If either command fails, the app server is not started.
 
 The image is built from Next.js standalone output. Runtime configuration is injected through environment variables; the Docker build does not create or bake `.env.production`.
 

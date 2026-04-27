@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { auth } from "@lib/auth";
+import { getAuth } from "@lib/auth";
 import { db } from "@lib/db";
 import { emailVerificationToken, user as userTable } from "@lib/db/auth-schema";
 import { env } from "@lib/env";
@@ -150,6 +150,7 @@ export const usersRouter = protectedProcedure.router({
     )
     .handler(async ({ input, context }) => {
       try {
+        const auth = getAuth();
         // Build update body with only defined fields
         const updateBody: { name?: string; image?: string } = {};
         if (input.name !== undefined) updateBody.name = input.name;
