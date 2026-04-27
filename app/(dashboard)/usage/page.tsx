@@ -308,11 +308,11 @@ export default function UsagePage() {
           {billingEnabled ? t("title") : t("selfHostedTitle")}
         </h1>
         <p className="text-[14px] leading-5 text-[#52525c]">
-          {billingEnabled ? t("description") : t("selfHostedDescription")}
+          {billingEnabled ? t("description") : ""}
         </p>
       </section>
       <p className="hidden text-base leading-[22px] text-[#52525c] sm:block lg:leading-6">
-        {billingEnabled ? t("description") : t("selfHostedDescription")}
+        {billingEnabled ? t("description") : ""}
       </p>
 
       <section
@@ -353,9 +353,7 @@ export default function UsagePage() {
           icon={<SummaryIcon src="/icons/usage/summary-used.svg" width={19} height={19} />}
           helper={
             <span className="text-[#27272a]">
-              {billingEnabled
-                ? t("estCost", { cost: `$${estimatedCostLabel}` })
-                : t("billingDisabled")}
+              {billingEnabled ? t("estCost", { cost: `$${estimatedCostLabel}` }) : ""}
             </span>
           }
         />
