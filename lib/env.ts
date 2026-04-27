@@ -5,31 +5,32 @@ export const env = createEnv({
   server: {
     BETTER_AUTH_SECRET: z.string().min(32),
     BETTER_AUTH_URL: z.url().default("http://localhost:3000"),
+    DATABASE_URL: z.url(),
     GA_MEASUREMENT_ID: z
       .string()
       .regex(/^G-[A-Z0-9]+$/)
       .optional(),
-    GITHUB_CLIENT_ID: z.string(),
-    GITHUB_CLIENT_SECRET: z.string(),
-    GOOGLE_CLIENT_ID: z.string(),
-    GOOGLE_CLIENT_SECRET: z.string(),
-    RESEND_API_KEY: z.string(),
+    GITHUB_CLIENT_ID: z.string().default(""),
+    GITHUB_CLIENT_SECRET: z.string().default(""),
+    GOOGLE_CLIENT_ID: z.string().default(""),
+    GOOGLE_CLIENT_SECRET: z.string().default(""),
+    RESEND_API_KEY: z.string().default(""),
     RESEND_FROM: z.string().default("onboarding@resend.dev"),
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     HTTPS_PROXY: z.string().optional(),
     HTTP_PROXY: z.string().optional(),
   },
   client: {
-    NEXT_PUBLIC_API_URL: z.url().default("http://218.17.187.47:5005/api"),
+    NEXT_PUBLIC_API_URL: z.url(),
     NEXT_PUBLIC_AUTH_BASE_URL: z.string().default("/api/auth"),
     NEXT_PUBLIC_APP_URL: z.url().default("http://localhost:3000"),
     NEXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
     NEXT_PUBLIC_POSTHOG_HOST: z.url().default("https://app.posthog.com"),
-    NEXT_PUBLIC_DEFAULT_API_PASSWORD: z.string().default("DefaultPass123!@#"),
   },
   runtimeEnv: {
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
     BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
+    DATABASE_URL: process.env.DATABASE_URL,
     GA_MEASUREMENT_ID: process.env.GA_MEASUREMENT_ID,
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
@@ -45,7 +46,6 @@ export const env = createEnv({
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-    NEXT_PUBLIC_DEFAULT_API_PASSWORD: process.env.NEXT_PUBLIC_DEFAULT_API_PASSWORD,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 });

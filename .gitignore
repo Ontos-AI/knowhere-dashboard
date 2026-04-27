@@ -4,6 +4,8 @@
 
 # testing
 /coverage
+/playwright-report
+/test-results
 
 # next.js
 /.next/
@@ -12,6 +14,7 @@ next-env.d.ts
 
 # build cache
 tsconfig.tsbuildinfo
+*.tsbuildinfo
 
 # production
 /build
@@ -38,9 +41,14 @@ pnpm-debug.log*
 # Editor & Tooling
 .claude
 .cursor
+.codex
+.agent
+.agent-hooks
+.vercel
 
 .spec/
 CLAUDE.md
 AGENTS.md
+*.backup
 
 .playwright*

@@ -22,7 +22,13 @@ if (env.NODE_ENV === "development" || env.HTTPS_PROXY) {
   }
 }
 
-const resend = new Resend(env.RESEND_API_KEY);
+const createResendClient = (): Resend => {
+  if (!env.RESEND_API_KEY) {
+    throw new Error("RESEND_API_KEY is required to send magic links");
+  }
+
+  return new Resend(env.RESEND_API_KEY);
+};
 
 export const auth = betterAuth({
   baseURL: env.BETTER_AUTH_URL,
@@ -91,6 +97,7 @@ export const auth = betterAuth({
     magicLink({
       sendMagicLink: async ({ email, url }) => {
         try {
+          const resend = createResendClient();
           const { data, error } = await resend.emails.send({
             from: env.RESEND_FROM,
             to: email,

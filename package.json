@@ -2,6 +2,16 @@
   "name": "@knowhere/web",
   "version": "0.0.1",
   "private": true,
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@10.30.3",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ontos-AI/knowhere-api-dashboard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Ontos-AI/knowhere-api-dashboard/issues"
+  },
+  "homepage": "https://knowhereto.ai/",
   "scripts": {
     "dev": "next dev --turbo",
     "build": "next build",
@@ -9,7 +19,8 @@
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
-    "type-check": "tsc --noEmit",
+    "test": "node scripts/publication-guardrails.test.mjs",
+    "type-check": "tsc --noEmit -p tsconfig.type-check.json",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
