@@ -113,13 +113,8 @@ DevOps must configure these GitHub repository secrets:
 | --- | --- |
 | `AWS_ACCESS_KEY_ID` | AWS principal allowed to push images and update the cluster. |
 | `AWS_SECRET_ACCESS_KEY` | Secret key for the AWS principal. |
-
-DevOps must configure these GitHub repository variables:
-
-| Name | Purpose |
-| --- | --- |
-| `DASHBOARD_AWS_REGION` | AWS region for the image registry and cluster. |
-| `DASHBOARD_EKS_CLUSTER_NAME` | Kubernetes cluster name used by `aws eks update-kubeconfig`. |
+| `AWS_EKS_PROD_CLUSTER_NAME` | Kubernetes cluster name used by `aws eks update-kubeconfig`. |
+| `AWS_EKS_PROD_REGION` | AWS region for the image registry and cluster. |
 | `DASHBOARD_IMAGE_REGISTRY` | Registry host, for example an AWS account registry host. |
 | `DASHBOARD_IMAGE_REPOSITORY` | Dashboard image repository path inside the registry. |
 | `DASHBOARD_KUBE_CONTAINER` | Container name inside the dashboard Deployment. |

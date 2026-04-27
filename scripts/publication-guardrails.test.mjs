@@ -147,9 +147,9 @@ test("deploy workflow deploys merged branch pushes without hard-coded private in
   assert.equal(existsSync(deployWorkflowPath), true);
 
   const deployWorkflow = readFileSync(deployWorkflowPath, "utf8");
-  const requiredVariables = [
-    "DASHBOARD_AWS_REGION",
-    "DASHBOARD_EKS_CLUSTER_NAME",
+  const requiredSecrets = [
+    "AWS_EKS_PROD_CLUSTER_NAME",
+    "AWS_EKS_PROD_REGION",
     "DASHBOARD_IMAGE_REGISTRY",
     "DASHBOARD_IMAGE_REPOSITORY",
     "DASHBOARD_KUBE_CONTAINER",
@@ -164,9 +164,10 @@ test("deploy workflow deploys merged branch pushes without hard-coded private in
   assert.match(deployWorkflow, /aws eks update-kubeconfig/);
   assert.match(deployWorkflow, /kubectl set image/);
   assert.match(deployWorkflow, /kubectl rollout status/);
+  assert.doesNotMatch(deployWorkflow, /vars\./);
 
-  for (const variableName of requiredVariables) {
-    assert.match(deployWorkflow, new RegExp(`vars\\.${variableName}`));
+  for (const secretName of requiredSecrets) {
+    assert.match(deployWorkflow, new RegExp(`secrets\\.${secretName}`));
   }
 });
 

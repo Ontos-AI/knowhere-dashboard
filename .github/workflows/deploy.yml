@@ -19,14 +19,14 @@ permissions:
   contents: read
 
 env:
-  AWS_REGION: ${{ vars.DASHBOARD_AWS_REGION }}
-  CLUSTER_NAME: ${{ vars.DASHBOARD_EKS_CLUSTER_NAME }}
-  IMAGE_REGISTRY: ${{ vars.DASHBOARD_IMAGE_REGISTRY }}
-  IMAGE_REPOSITORY: ${{ vars.DASHBOARD_IMAGE_REPOSITORY }}
-  KUBE_CONTAINER: ${{ vars.DASHBOARD_KUBE_CONTAINER }}
-  KUBE_DEPLOYMENT: ${{ vars.DASHBOARD_KUBE_DEPLOYMENT }}
-  KUBE_NAMESPACE_PROD: ${{ vars.DASHBOARD_KUBE_NAMESPACE_PROD }}
-  KUBE_NAMESPACE_STAGING: ${{ vars.DASHBOARD_KUBE_NAMESPACE_STAGING }}
+  AWS_EKS_PROD_CLUSTER_NAME: ${{ secrets.AWS_EKS_PROD_CLUSTER_NAME }}
+  AWS_EKS_PROD_REGION: ${{ secrets.AWS_EKS_PROD_REGION }}
+  DASHBOARD_IMAGE_REGISTRY: ${{ secrets.DASHBOARD_IMAGE_REGISTRY }}
+  DASHBOARD_IMAGE_REPOSITORY: ${{ secrets.DASHBOARD_IMAGE_REPOSITORY }}
+  DASHBOARD_KUBE_CONTAINER: ${{ secrets.DASHBOARD_KUBE_CONTAINER }}
+  DASHBOARD_KUBE_DEPLOYMENT: ${{ secrets.DASHBOARD_KUBE_DEPLOYMENT }}
+  DASHBOARD_KUBE_NAMESPACE_PROD: ${{ secrets.DASHBOARD_KUBE_NAMESPACE_PROD }}
+  DASHBOARD_KUBE_NAMESPACE_STAGING: ${{ secrets.DASHBOARD_KUBE_NAMESPACE_STAGING }}
 
 jobs:
   build-and-publish:
@@ -64,12 +64,12 @@ jobs:
 
           missing=()
           for variable_name in \
-            AWS_REGION \
-            CLUSTER_NAME \
-            IMAGE_REGISTRY \
-            IMAGE_REPOSITORY \
-            KUBE_CONTAINER \
-            KUBE_DEPLOYMENT \
+            AWS_EKS_PROD_CLUSTER_NAME \
+            AWS_EKS_PROD_REGION \
+            DASHBOARD_IMAGE_REGISTRY \
+            DASHBOARD_IMAGE_REPOSITORY \
+            DASHBOARD_KUBE_CONTAINER \
+            DASHBOARD_KUBE_DEPLOYMENT \
             kube_namespace
           do
             if [ -z "${!variable_name}" ]; then
@@ -85,14 +85,14 @@ jobs:
           short_sha="${GITHUB_SHA::8}"
           image_tag="${environment}-${short_sha}"
           latest_tag="${environment}-latest"
-          image_uri="${IMAGE_REGISTRY}/${IMAGE_REPOSITORY}:${image_tag}"
-          latest_uri="${IMAGE_REGISTRY}/${IMAGE_REPOSITORY}:${latest_tag}"
+          image_uri="${DASHBOARD_IMAGE_REGISTRY}/${DASHBOARD_IMAGE_REPOSITORY}:${image_tag}"
+          latest_uri="${DASHBOARD_IMAGE_REGISTRY}/${DASHBOARD_IMAGE_REPOSITORY}:${latest_tag}"
 
           echo "environment=${environment}" >> "$GITHUB_OUTPUT"
           echo "image_tag=${image_tag}" >> "$GITHUB_OUTPUT"
           echo "image_uri=${image_uri}" >> "$GITHUB_OUTPUT"
-          echo "kube_container=${KUBE_CONTAINER}" >> "$GITHUB_OUTPUT"
-          echo "kube_deployment=${KUBE_DEPLOYMENT}" >> "$GITHUB_OUTPUT"
+          echo "kube_container=${DASHBOARD_KUBE_CONTAINER}" >> "$GITHUB_OUTPUT"
+          echo "kube_deployment=${DASHBOARD_KUBE_DEPLOYMENT}" >> "$GITHUB_OUTPUT"
           echo "kube_namespace=${kube_namespace}" >> "$GITHUB_OUTPUT"
           echo "latest_uri=${latest_uri}" >> "$GITHUB_OUTPUT"
 
@@ -101,13 +101,13 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ env.AWS_EKS_PROD_REGION }}
 
       - name: Login to AWS image registry
         shell: bash
         run: |
-          aws ecr get-login-password --region "${AWS_REGION}" \
-            | docker login --username AWS --password-stdin "${IMAGE_REGISTRY}"
+          aws ecr get-login-password --region "${AWS_EKS_PROD_REGION}" \
+            | docker login --username AWS --password-stdin "${DASHBOARD_IMAGE_REGISTRY}"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -141,7 +141,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ env.AWS_EKS_PROD_REGION }}
 
       - name: Setup kubectl
         uses: azure/setup-kubectl@v3
@@ -150,8 +150,8 @@ jobs:
         shell: bash
         run: |
           aws eks update-kubeconfig \
-            --name "${CLUSTER_NAME}" \
-            --region "${AWS_REGION}"
+            --name "${AWS_EKS_PROD_CLUSTER_NAME}" \
+            --region "${AWS_EKS_PROD_REGION}"
 
       - name: Roll out dashboard
         shell: bash
