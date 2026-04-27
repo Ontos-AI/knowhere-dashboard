@@ -1,4 +1,4 @@
-import { getAuth } from "@lib/auth";
+import { auth } from "@lib/auth";
 import { env } from "@lib/env";
 
 export type CheckoutSessionResponse = {
@@ -197,7 +197,6 @@ export async function jwtRequest<T = unknown>({
   userId: string;
   body?: unknown;
 }): Promise<T> {
-  const auth = getAuth();
   const { token } = await auth.api.signJWT({
     body: {
       payload: { id: userId },

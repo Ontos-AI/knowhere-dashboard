@@ -17,7 +17,11 @@ FROM base AS builder
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN SKIP_ENV_VALIDATION=1 pnpm build
+RUN BETTER_AUTH_SECRET=build-validation-only-auth-secret-32-chars \
+  BETTER_AUTH_URL=http://localhost:3000 \
+  NEXT_PUBLIC_APP_URL=http://localhost:3000 \
+  SKIP_ENV_VALIDATION=1 \
+  pnpm build
 
 FROM base AS runner
 

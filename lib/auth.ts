@@ -178,14 +178,4 @@ const createAuth = () => {
   });
 };
 
-type AuthInstance = ReturnType<typeof createAuth>;
-
-let authInstance: AuthInstance | null = null;
-
-export const getAuth = (): AuthInstance => {
-  if (!authInstance) {
-    authInstance = createAuth();
-  }
-
-  return authInstance;
-};
+export const auth = createAuth();

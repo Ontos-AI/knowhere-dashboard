@@ -125,13 +125,32 @@ test("Next config uses the standard node server runtime", () => {
   assert.doesNotMatch(nextConfig, /outputFileTracingIncludes/);
 });
 
-test("auth route uses a synchronous lazy auth adapter", () => {
-  const authRoute = readFileSync("app/api/auth/[...path]/route.ts", "utf8");
+test("build steps provide auth-only placeholder env for build-time auth initialization", () => {
+  const dockerfile = readFileSync("Dockerfile", "utf8");
+  const ciWorkflow = readFileSync(".github/workflows/ci.yml", "utf8");
+  const requiredBuildEnv = [
+    "BETTER_AUTH_SECRET",
+    "BETTER_AUTH_URL",
+    "NEXT_PUBLIC_APP_URL",
+    "SKIP_ENV_VALIDATION",
+  ];
 
-  assert.match(authRoute, /import \{ getAuth \} from "@lib\/auth";/);
-  assert.match(authRoute, /toNextJsHandler\(handleAuthRequest\)/);
+  for (const envName of requiredBuildEnv) {
+    assert.match(dockerfile, new RegExp(`${envName}=`));
+    assert.match(ciWorkflow, new RegExp(`${envName}:`));
+  }
+});
+
+test("auth route uses the Better Auth Next handler directly", () => {
+  const authRoute = readFileSync("app/api/auth/[...path]/route.ts", "utf8");
+  const authModule = readFileSync("lib/auth.ts", "utf8");
+
+  assert.match(authRoute, /import \{ auth \} from "@lib\/auth";/);
+  assert.match(authRoute, /export const \{ GET, POST \} = toNextJsHandler\(auth\);/);
+  assert.doesNotMatch(authRoute, /getAuth|handleAuthRequest/);
   assert.doesNotMatch(authRoute, /await import\("@lib\/auth"\)/);
-  assert.doesNotMatch(authRoute, /async function (GET|POST)/);
+  assert.match(authModule, /export const auth = createAuth\(\);/);
+  assert.doesNotMatch(authModule, /export const getAuth/);
 });
 
 test("optional auth providers do not get synthetic empty-string defaults", () => {
