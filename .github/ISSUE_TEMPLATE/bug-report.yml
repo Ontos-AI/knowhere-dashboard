@@ -1,0 +1,87 @@
+name: Bug report
+description: Report a reproducible problem in the Knowhere dashboard.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping us improve Knowhere. Please include enough detail for maintainers to reproduce the issue safely.
+  - type: dropdown
+    id: affected-area
+    attributes:
+      label: Affected area
+      description: Which dashboard area is affected?
+      multiple: true
+      options:
+        - Login or registration
+        - API keys
+        - Usage
+        - Billing or credits
+        - Document upload
+        - Parsed results
+        - Settings
+        - Landing pages
+        - Self-hosted deployment
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened, and what did you expect instead?
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: Provide the deployed version, image tag, release tag, or commit SHA.
+      placeholder: 2026.04.28.1 / ghcr.io/ontos-ai/knowhere:... / 76aefc3
+    validations:
+      required: true
+  - type: input
+    id: deployment
+    attributes:
+      label: Deployment
+      description: Where did you see the problem?
+      placeholder: local development / staging / production / self-hosted Docker Compose
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      placeholder: Chrome 124 / Safari 17.4 / Firefox 125
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: List the smallest set of clicks, routes, form inputs, or configuration values that reproduce the issue.
+      placeholder: |
+        1. Open /...
+        2. Click ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or recordings
+      description: Drag screenshots or short recordings here if the issue is visual.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Paste redacted browser console, network, Next.js, auth, or API logs.
+      render: text
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment details
+      description: Include relevant flags such as BILLING_ENABLED, PASSWORD_LOGIN_ENABLED, OAuth providers, or public URLs.
+      render: text
