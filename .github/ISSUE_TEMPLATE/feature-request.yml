@@ -1,0 +1,52 @@
+name: Feature request
+description: Propose an improvement to the Knowhere dashboard.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What problem should this solve?
+    validations:
+      required: true
+  - type: dropdown
+    id: affected-area
+    attributes:
+      label: Affected area
+      description: Which dashboard area should change?
+      multiple: true
+      options:
+        - Login or registration
+        - API keys
+        - Usage
+        - Billing or credits
+        - Settings
+        - Landing pages
+        - Self-hosted deployment
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the user flow, page, component, API integration, or configuration behavior you want to add or improve.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Describe workarounds or alternative designs you considered.
+  - type: textarea
+    id: design
+    attributes:
+      label: Design or UX notes
+      description: Add screenshots, wireframes, copy, accessibility expectations, or responsive layout notes.
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add links, examples, screenshots, logs, or related issues.

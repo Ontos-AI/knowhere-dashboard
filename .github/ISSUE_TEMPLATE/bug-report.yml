@@ -1,0 +1,63 @@
+name: Bug report
+description: Report a reproducible problem in the Knowhere dashboard.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping us improve Knowhere. Please include enough detail for maintainers to reproduce the issue safely.
+  - type: dropdown
+    id: affected-area
+    attributes:
+      label: Affected area
+      description: Which dashboard area is affected?
+      multiple: true
+      options:
+        - Login or registration
+        - API keys
+        - Usage
+        - Billing or credits
+        - Settings
+        - Landing pages
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened, and what did you expect instead?
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      placeholder: Chrome 124 / Safari 17.4 / Firefox 125
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: List the smallest set of clicks, routes, form inputs, or configuration values that reproduce the issue.
+      placeholder: |
+        1. Open /...
+        2. Click ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or recordings
+      description: Drag screenshots or short recordings here if the issue is visual.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Paste redacted browser console, network, Next.js, auth, or API logs.
+      render: text
+
