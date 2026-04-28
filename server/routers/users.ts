@@ -4,6 +4,7 @@ import { db } from "@lib/db";
 import { emailVerificationToken, user as userTable } from "@lib/db/auth-schema";
 import { env } from "@lib/env";
 import { ORPCError } from "@orpc/server";
+import { createApiKey } from "@server/external-api/api-keys";
 import { protectedProcedure, publicProcedure } from "@server/orpc";
 import type { User } from "better-auth/types";
 import { and, eq, gt } from "drizzle-orm";
@@ -12,6 +13,68 @@ import { z } from "zod";
 
 // Extended User type that includes the custom role field added via Better Auth additionalFields
 type UserWithRole = User & { role: "user" | "premium" | "admin" };
+type UsageWelcomeStatus = "hidden" | "pending" | "provisioning" | "ready" | "completed" | "failed";
+
+const USAGE_WELCOME_API_KEY_NAME = "Welcome API Key";
+const NEVER_EXPIRES_AT = "9999-12-31T23:59:59";
+
+const buildUsageWelcomeResponse = ({
+  apiKey,
+  status,
+}: {
+  apiKey: string | null;
+  status: string;
+}) => {
+  const normalizedStatus = status as UsageWelcomeStatus;
+
+  switch (normalizedStatus) {
+    case "completed":
+    case "hidden":
+      return {
+        apiKey: null,
+        hasProvisionError: false,
+        isProvisioning: false,
+        shouldShow: false,
+      };
+    case "failed":
+      return {
+        apiKey: null,
+        hasProvisionError: true,
+        isProvisioning: false,
+        shouldShow: true,
+      };
+    case "provisioning":
+      return {
+        apiKey: null,
+        hasProvisionError: false,
+        isProvisioning: true,
+        shouldShow: true,
+      };
+    case "ready":
+      if (!apiKey) {
+        return {
+          apiKey: null,
+          hasProvisionError: true,
+          isProvisioning: false,
+          shouldShow: true,
+        };
+      }
+
+      return {
+        apiKey,
+        hasProvisionError: false,
+        isProvisioning: false,
+        shouldShow: true,
+      };
+    default:
+      return {
+        apiKey: null,
+        hasProvisionError: false,
+        isProvisioning: false,
+        shouldShow: true,
+      };
+  }
+};
 
 /**
  * Helper function to send email verification
@@ -132,6 +195,153 @@ export const usersRouter = protectedProcedure.router({
   // Returns the authenticated user from the Better Auth session
   getCurrentUser: publicProcedure.handler(async ({ context }) => {
     return { user: context.user };
+  }),
+
+  getUsageWelcomeState: protectedProcedure.handler(async ({ context }) => {
+    const existingUser = await db.query.user.findFirst({
+      columns: {
+        usageWelcomeApiKey: true,
+        usageWelcomeStatus: true,
+      },
+      where: eq(userTable.id, context.user.id),
+    });
+
+    if (!existingUser) {
+      throw new ORPCError("NOT_FOUND", {
+        message: "User not found",
+      });
+    }
+
+    if (existingUser.usageWelcomeStatus === "hidden") {
+      return buildUsageWelcomeResponse({
+        apiKey: null,
+        status: existingUser.usageWelcomeStatus,
+      });
+    }
+
+    if (existingUser.usageWelcomeStatus === "ready" && existingUser.usageWelcomeApiKey) {
+      return buildUsageWelcomeResponse({
+        apiKey: existingUser.usageWelcomeApiKey,
+        status: existingUser.usageWelcomeStatus,
+      });
+    }
+
+    if (
+      existingUser.usageWelcomeStatus === "completed" ||
+      existingUser.usageWelcomeStatus === "failed" ||
+      existingUser.usageWelcomeStatus === "provisioning"
+    ) {
+      return buildUsageWelcomeResponse({
+        apiKey: existingUser.usageWelcomeApiKey ?? null,
+        status: existingUser.usageWelcomeStatus,
+      });
+    }
+
+    const [claimedProvisioning] = await db
+      .update(userTable)
+      .set({
+        updatedAt: new Date(),
+        usageWelcomeStatus: "provisioning",
+      })
+      .where(and(eq(userTable.id, context.user.id), eq(userTable.usageWelcomeStatus, "pending")))
+      .returning({
+        id: userTable.id,
+      });
+
+    if (!claimedProvisioning) {
+      const refreshedUser = await db.query.user.findFirst({
+        columns: {
+          usageWelcomeApiKey: true,
+          usageWelcomeStatus: true,
+        },
+        where: eq(userTable.id, context.user.id),
+      });
+
+      if (!refreshedUser) {
+        throw new ORPCError("NOT_FOUND", {
+          message: "User not found",
+        });
+      }
+
+      return buildUsageWelcomeResponse({
+        apiKey: refreshedUser.usageWelcomeApiKey ?? null,
+        status: refreshedUser.usageWelcomeStatus,
+      });
+    }
+
+    try {
+      const createdApiKey = await createApiKey({
+        userId: context.user.id,
+        data: {
+          enabled_modules: [],
+          expires_at: NEVER_EXPIRES_AT,
+          name: USAGE_WELCOME_API_KEY_NAME,
+        },
+      });
+
+      if (!createdApiKey.api_key) {
+        throw new Error("Missing API key payload");
+      }
+
+      const [updatedUser] = await db
+        .update(userTable)
+        .set({
+          updatedAt: new Date(),
+          usageWelcomeApiKey: createdApiKey.api_key,
+          usageWelcomeStatus: "ready",
+        })
+        .where(
+          and(eq(userTable.id, context.user.id), eq(userTable.usageWelcomeStatus, "provisioning"))
+        )
+        .returning({
+          usageWelcomeApiKey: userTable.usageWelcomeApiKey,
+          usageWelcomeStatus: userTable.usageWelcomeStatus,
+        });
+
+      if (!updatedUser) {
+        return {
+          apiKey: null,
+          hasProvisionError: false,
+          isProvisioning: true,
+          shouldShow: true,
+        };
+      }
+
+      return buildUsageWelcomeResponse({
+        apiKey: updatedUser.usageWelcomeApiKey,
+        status: updatedUser.usageWelcomeStatus,
+      });
+    } catch (error) {
+      console.error("[getUsageWelcomeState] Failed to provision onboarding API key:", error);
+
+      await db
+        .update(userTable)
+        .set({
+          updatedAt: new Date(),
+          usageWelcomeStatus: "failed",
+        })
+        .where(eq(userTable.id, context.user.id));
+
+      return {
+        apiKey: null,
+        hasProvisionError: true,
+        isProvisioning: false,
+        shouldShow: true,
+      };
+    }
+  }),
+
+  dismissUsageWelcome: protectedProcedure.handler(async ({ context }) => {
+    await db
+      .update(userTable)
+      .set({
+        updatedAt: new Date(),
+        usageWelcomeApiKey: null,
+        usageWelcomeStatus: "completed",
+      })
+      .where(eq(userTable.id, context.user.id));
+
+    return { success: true };
   }),
 
   // Allows partial updates to user name and avatar image

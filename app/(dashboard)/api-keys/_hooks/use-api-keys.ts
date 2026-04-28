@@ -25,7 +25,6 @@ export function useCreateApiKey() {
   return useMutation({
     ...orpcQuery.apiKeys.create.mutationOptions(),
     onSuccess: () => {
-      // Invalidate the API keys list cache
       queryClient.invalidateQueries({
         queryKey: orpcQuery.apiKeys.list.queryKey(),
       });
@@ -43,15 +42,12 @@ export function useToggleApiKey() {
   return useMutation({
     ...orpcQuery.apiKeys.toggle.mutationOptions(),
     onMutate: async ({ id }) => {
-      // Cancel any outgoing refetches
       await queryClient.cancelQueries({
         queryKey: orpcQuery.apiKeys.list.queryKey(),
       });
 
-      // Snapshot the previous value
       const previousData = queryClient.getQueryData(orpcQuery.apiKeys.list.queryKey());
 
-      // Optimistically update to the new value
       queryClient.setQueryData(
         orpcQuery.apiKeys.list.queryKey(),
         (old: ListAPIKeysResponse | undefined) => {
@@ -65,17 +61,14 @@ export function useToggleApiKey() {
         }
       );
 
-      // Return context object with the snapshot
       return { previousData };
     },
     onError: (_err, _variables, context) => {
-      // Rollback on error
       if (context?.previousData) {
         queryClient.setQueryData(orpcQuery.apiKeys.list.queryKey(), context.previousData);
       }
     },
     onSettled: () => {
-      // Always refetch after error or success
       queryClient.invalidateQueries({
         queryKey: orpcQuery.apiKeys.list.queryKey(),
       });
@@ -93,15 +86,12 @@ export function useRevokeApiKey() {
   return useMutation({
     ...orpcQuery.apiKeys.revoke.mutationOptions(),
     onMutate: async ({ id }) => {
-      // Cancel any outgoing refetches
       await queryClient.cancelQueries({
         queryKey: orpcQuery.apiKeys.list.queryKey(),
       });
 
-      // Snapshot the previous value
       const previousData = queryClient.getQueryData(orpcQuery.apiKeys.list.queryKey());
 
-      // Optimistically remove from list
       queryClient.setQueryData(
         orpcQuery.apiKeys.list.queryKey(),
         (old: ListAPIKeysResponse | undefined) => {
@@ -113,17 +103,14 @@ export function useRevokeApiKey() {
         }
       );
 
-      // Return context object with the snapshot
       return { previousData };
     },
     onError: (_err, _variables, context) => {
-      // Rollback on error
       if (context?.previousData) {
         queryClient.setQueryData(orpcQuery.apiKeys.list.queryKey(), context.previousData);
       }
     },
     onSettled: () => {
-      // Always refetch after error or success
       queryClient.invalidateQueries({
         queryKey: orpcQuery.apiKeys.list.queryKey(),
       });

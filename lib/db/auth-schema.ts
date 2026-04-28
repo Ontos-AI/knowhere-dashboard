@@ -13,6 +13,8 @@ export const user = pgTable("user", {
   emailVerified: boolean("emailVerified").notNull().default(false),
   image: text("image"),
   role: text("role").notNull().default("user"),
+  usageWelcomeStatus: text("usageWelcomeStatus").notNull().default("pending"),
+  usageWelcomeApiKey: text("usageWelcomeApiKey"),
   createdAt: timestamp("createdAt", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updatedAt", { withTimezone: true }).notNull().defaultNow(),
 });

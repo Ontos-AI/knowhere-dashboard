@@ -2,6 +2,7 @@
 
 import { DatePickerWithRange } from "@app/(dashboard)/usage/_components/date-range-picker";
 import { UsageTable } from "@app/(dashboard)/usage/_components/usage-table";
+import { UsageWelcomeModal } from "@app/(dashboard)/usage/_components/usage-welcome-modal";
 import { useExportAllJobs, useJobs } from "@app/(dashboard)/usage/_hooks/use-jobs";
 import { useParseUsage } from "@app/(dashboard)/usage/_hooks/use-usage-stats";
 import { useCredits } from "@hooks/use-credits";
@@ -298,173 +299,186 @@ export default function UsagePage() {
   };
 
   if (isInitialLoading) {
-    return <UsagePageSkeleton />;
+    return (
+      <>
+        <UsageWelcomeModal />
+        <UsagePageSkeleton />
+      </>
+    );
   }
 
   return (
-    <div className="w-full space-y-[18px] sm:space-y-[22px] lg:space-y-5">
-      <section className="space-y-1 sm:hidden">
-        <h1 className="text-base font-bold leading-6 text-black">
-          {billingEnabled ? t("title") : t("selfHostedTitle")}
-        </h1>
-        <p className="text-[14px] leading-5 text-[#52525c]">
+    <>
+      <UsageWelcomeModal />
+      <div className="w-full space-y-[18px] sm:space-y-[22px] lg:space-y-5">
+        <section className="space-y-1 sm:hidden">
+          <h1 className="text-base font-bold leading-6 text-black">
+            {billingEnabled ? t("title") : t("selfHostedTitle")}
+          </h1>
+          <p className="text-[14px] leading-5 text-[#52525c]">
+            {billingEnabled ? t("description") : ""}
+          </p>
+        </section>
+        <p className="hidden text-base leading-[22px] text-[#52525c] sm:block lg:leading-6">
           {billingEnabled ? t("description") : ""}
         </p>
-      </section>
-      <p className="hidden text-base leading-[22px] text-[#52525c] sm:block lg:leading-6">
-        {billingEnabled ? t("description") : ""}
-      </p>
 
-      <section
-        className={cn(
-          "grid grid-cols-1 gap-0 border border-[#e4e4e7]",
-          billingEnabled ? "lg:grid-cols-3" : "lg:grid-cols-2"
-        )}
-      >
-        {billingEnabled ? (
+        <section
+          className={cn(
+            "grid grid-cols-1 gap-0 border border-[#e4e4e7]",
+            billingEnabled ? "lg:grid-cols-3" : "lg:grid-cols-2"
+          )}
+        >
+          {billingEnabled ? (
+            <UsageSummaryCard
+              title={t("remainingCredits")}
+              value={formatMetricNumber(credits ?? 0)}
+              unit={tTable("pts")}
+              valueClassName="text-[#ff6900]"
+              icon={
+                <SummaryIcon
+                  src="/icons/usage/summary-remaining.svg"
+                  width={21}
+                  height={15}
+                  className="pt-[2px]"
+                />
+              }
+              helper={
+                <Link
+                  href={buyCreditsHref}
+                  className="text-[#ff6900] transition-opacity hover:opacity-80"
+                >
+                  Buy Knowhere API Credit &gt;&gt;
+                </Link>
+              }
+            />
+          ) : null}
           <UsageSummaryCard
-            title={t("remainingCredits")}
-            value={formatMetricNumber(credits ?? 0)}
+            title={t("totalCreditsUsed")}
+            value={formatMetricNumber(totalCreditsUsed)}
             unit={tTable("pts")}
-            valueClassName="text-[#ff6900]"
+            valueClassName="text-[#00a63e]"
+            icon={<SummaryIcon src="/icons/usage/summary-used.svg" width={19} height={19} />}
+            helper={
+              <span className="text-[#27272a]">
+                {billingEnabled ? t("estCost", { cost: `$${estimatedCostLabel}` }) : ""}
+              </span>
+            }
+          />
+          <UsageSummaryCard
+            title={t("successRate")}
+            value={formatMetricNumber(Number(successRate), 2)}
+            unit="%"
+            valueClassName="text-[#2b7fff]"
             icon={
               <SummaryIcon
-                src="/icons/usage/summary-remaining.svg"
-                width={21}
-                height={15}
-                className="pt-[2px]"
+                src="/icons/usage/summary-success-fill.svg"
+                width={20.65}
+                height={19.73}
               />
             }
             helper={
-              <Link
-                href={buyCreditsHref}
-                className="text-[#ff6900] transition-opacity hover:opacity-80"
-              >
-                Buy Knowhere API Credit &gt;&gt;
-              </Link>
+              <span className="text-[#27272a]">
+                {t("avgProcessingTime", { time: `${averageDuration}s` })}
+              </span>
             }
           />
-        ) : null}
-        <UsageSummaryCard
-          title={t("totalCreditsUsed")}
-          value={formatMetricNumber(totalCreditsUsed)}
-          unit={tTable("pts")}
-          valueClassName="text-[#00a63e]"
-          icon={<SummaryIcon src="/icons/usage/summary-used.svg" width={19} height={19} />}
-          helper={
-            <span className="text-[#27272a]">
-              {billingEnabled ? t("estCost", { cost: `$${estimatedCostLabel}` }) : ""}
-            </span>
-          }
-        />
-        <UsageSummaryCard
-          title={t("successRate")}
-          value={formatMetricNumber(Number(successRate), 2)}
-          unit="%"
-          valueClassName="text-[#2b7fff]"
-          icon={
-            <SummaryIcon src="/icons/usage/summary-success-fill.svg" width={20.65} height={19.73} />
-          }
-          helper={
-            <span className="text-[#27272a]">
-              {t("avgProcessingTime", { time: `${averageDuration}s` })}
-            </span>
-          }
-        />
-      </section>
+        </section>
 
-      <section className="space-y-3">
-        <div className="flex flex-wrap items-start gap-[6px] sm:gap-x-2 sm:gap-y-[6px] lg:gap-2">
-          <DatePickerWithRange
-            className="w-full max-w-[222px] sm:max-w-[224px] lg:max-w-[238px]"
-            date={date}
-            setDate={(nextDate) => {
-              setDate(nextDate);
-              setActiveRange(null);
-              startTransition(() => {
-                setPage("1");
-              });
-            }}
-          />
+        <section className="space-y-3">
+          <div className="flex flex-wrap items-start gap-[6px] sm:gap-x-2 sm:gap-y-[6px] lg:gap-2">
+            <DatePickerWithRange
+              className="w-full max-w-[222px] sm:max-w-[224px] lg:max-w-[238px]"
+              date={date}
+              setDate={(nextDate) => {
+                setDate(nextDate);
+                setActiveRange(null);
+                startTransition(() => {
+                  setPage("1");
+                });
+              }}
+            />
 
-          <div className="flex h-9 w-[205px] items-center gap-px overflow-hidden sm:h-8">
-            {[1, 3, 7].map((range) => {
-              const isActive = activeRange === range;
+            <div className="flex h-9 w-[205px] items-center gap-px overflow-hidden sm:h-8">
+              {[1, 3, 7].map((range) => {
+                const isActive = activeRange === range;
 
-              return (
-                <button
-                  key={`range-${range}`}
-                  type="button"
-                  className={cn(
-                    "flex h-9 w-[68px] items-center justify-center overflow-hidden bg-[#e4e4e7] px-4 pb-[10px] pt-2 font-mono-display text-[12px] font-light leading-4 tracking-normal text-[#09090b] sm:h-8 sm:pb-[10px] whitespace-nowrap",
-                    isActive && "border-b-4 border-[#52525c] bg-[#71717b] pb-3 font-bold text-white"
-                  )}
-                  onClick={() => {
-                    setActiveRange(range as TimeRangePreset);
-                    setDate(getPresetDateRange(range as TimeRangePreset));
-                    startTransition(() => {
-                      setPage("1");
-                    });
-                  }}
-                >
-                  {range} Day
-                </button>
-              );
-            })}
+                return (
+                  <button
+                    key={`range-${range}`}
+                    type="button"
+                    className={cn(
+                      "flex h-9 w-[68px] items-center justify-center overflow-hidden bg-[#e4e4e7] px-4 pb-[10px] pt-2 font-mono-display text-[12px] font-light leading-4 tracking-normal text-[#09090b] sm:h-8 sm:pb-[10px] whitespace-nowrap",
+                      isActive &&
+                        "border-b-4 border-[#52525c] bg-[#71717b] pb-3 font-bold text-white"
+                    )}
+                    onClick={() => {
+                      setActiveRange(range as TimeRangePreset);
+                      setDate(getPresetDateRange(range as TimeRangePreset));
+                      startTransition(() => {
+                        setPage("1");
+                      });
+                    }}
+                  >
+                    {range} Day
+                  </button>
+                );
+              })}
+            </div>
+
+            <button
+              type="button"
+              className="flex h-9 w-[121px] items-center justify-center gap-1 border-x border-t border-b-4 border-[#f4f4f5] bg-white px-3 pb-0.5 font-mono-display text-[12px] font-medium leading-5 text-[#27272a] transition-colors hover:bg-[#fafafa] disabled:cursor-not-allowed disabled:opacity-60 sm:h-8 lg:ml-auto lg:w-[127px]"
+              onClick={() => void handleExportCsv()}
+              disabled={isExporting || totalCount === 0}
+            >
+              {isExporting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Image
+                  src="/icons/usage/export.svg"
+                  alt=""
+                  aria-hidden
+                  width={13.33}
+                  height={13.33}
+                  className="h-[13.33px] w-[13.33px]"
+                />
+              )}
+              {t("exportCSV")}
+            </button>
           </div>
 
-          <button
-            type="button"
-            className="flex h-9 w-[121px] items-center justify-center gap-1 border-x border-t border-b-4 border-[#f4f4f5] bg-white px-3 pb-0.5 font-mono-display text-[12px] font-medium leading-5 text-[#27272a] transition-colors hover:bg-[#fafafa] disabled:cursor-not-allowed disabled:opacity-60 sm:h-8 lg:ml-auto lg:w-[127px]"
-            onClick={() => void handleExportCsv()}
-            disabled={isExporting || totalCount === 0}
-          >
-            {isExporting ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Image
-                src="/icons/usage/export.svg"
-                alt=""
-                aria-hidden
-                width={13.33}
-                height={13.33}
-                className="h-[13.33px] w-[13.33px]"
-              />
-            )}
-            {t("exportCSV")}
-          </button>
-        </div>
-
-        <UsageTable
-          data={jobs}
-          total={totalCount}
-          page={currentPage}
-          pageSize={currentPageSize}
-          pageCount={pageCount}
-          isLoading={isRefreshing}
-          formatDateLabel={(value) =>
-            formatDate({ date: value, formatStr: "MM/dd/yyyy, hh:mm:ss aa" }).toLowerCase()
-          }
-          onPageChange={(nextPage) => {
-            startTransition(() => {
-              setPage(String(nextPage));
-            });
-          }}
-          onPageSizeChange={(nextPageSize) => {
-            startTransition(() => {
-              setPage("1");
-              setPageSize(String(nextPageSize));
-            });
-          }}
-          onDownloadResult={(_jobId, resultUrl) => {
-            if (!resultUrl) {
-              return;
+          <UsageTable
+            data={jobs}
+            total={totalCount}
+            page={currentPage}
+            pageSize={currentPageSize}
+            pageCount={pageCount}
+            isLoading={isRefreshing}
+            formatDateLabel={(value) =>
+              formatDate({ date: value, formatStr: "MM/dd/yyyy, hh:mm:ss aa" }).toLowerCase()
             }
+            onPageChange={(nextPage) => {
+              startTransition(() => {
+                setPage(String(nextPage));
+              });
+            }}
+            onPageSizeChange={(nextPageSize) => {
+              startTransition(() => {
+                setPage("1");
+                setPageSize(String(nextPageSize));
+              });
+            }}
+            onDownloadResult={(_jobId, resultUrl) => {
+              if (!resultUrl) {
+                return;
+              }
 
-            window.open(resultUrl, "_blank", "noopener,noreferrer");
-          }}
-        />
-      </section>
-    </div>
+              window.open(resultUrl, "_blank", "noopener,noreferrer");
+            }}
+          />
+        </section>
+      </div>
+    </>
   );
 }
