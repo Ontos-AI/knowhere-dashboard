@@ -19,11 +19,8 @@ body:
         - API keys
         - Usage
         - Billing or credits
-        - Document upload
-        - Parsed results
         - Settings
         - Landing pages
-        - Self-hosted deployment
         - Other
     validations:
       required: true
@@ -32,22 +29,6 @@ body:
     attributes:
       label: Summary
       description: What happened, and what did you expect instead?
-    validations:
-      required: true
-  - type: input
-    id: version
-    attributes:
-      label: Version or commit
-      description: Provide the deployed version, image tag, release tag, or commit SHA.
-      placeholder: 2026.04.28.1 / ghcr.io/ontos-ai/knowhere:... / 76aefc3
-    validations:
-      required: true
-  - type: input
-    id: deployment
-    attributes:
-      label: Deployment
-      description: Where did you see the problem?
-      placeholder: local development / production / self-hosted Docker Compose
     validations:
       required: true
   - type: input
@@ -79,9 +60,4 @@ body:
       label: Relevant logs
       description: Paste redacted browser console, network, Next.js, auth, or API logs.
       render: text
-  - type: textarea
-    id: environment
-    attributes:
-      label: Environment details
-      description: Include relevant flags such as BILLING_ENABLED, PASSWORD_LOGIN_ENABLED, OAuth providers, or public URLs.
-      render: text
+
