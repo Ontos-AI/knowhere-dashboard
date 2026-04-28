@@ -62,6 +62,7 @@ Required for startup:
 | `BETTER_AUTH_URL` | Base URL used by Better Auth callbacks. |
 | `BETTER_AUTH_SECRET` | Random secret with at least 32 characters. |
 | `DATABASE_URL` | PostgreSQL connection URL for dashboard auth/account data. |
+| `UNSAFE_DB_SSL_ENABLED` | Optional escape hatch for local/self-hosted PostgreSQL without SSL. Set to `true` only when the database does not support SSL. Defaults to `false`, so hosted SaaS keeps SSL enabled without extra config. |
 
 Email/password registration is enabled for self-hosted deployments. The login page defaults to SSO plus Resend-backed email links; set `PASSWORD_LOGIN_ENABLED=true` only when you want to expose the password-login entry point. OAuth and Resend-backed magic-link login are optional add-ons. Password reset emails also use Resend; signed-in OAuth users can set a password from dashboard settings.
 
@@ -120,7 +121,7 @@ The image runs the standard Next.js Node server with `pnpm start`. Runtime confi
 
 The public workflow runs lint, type-check, tests, and build on pull requests and pushes to `main` and `staging`.
 
-The CI workflow can publish Docker images to GitHub Container Registry for version tags such as `v1.0.0`, or when a maintainer runs it manually with image publishing enabled.
+This repository does not publish standalone public dashboard images. Public self-hosted image publishing is handled by the combined self-hosted release workflow.
 
 ## Deployment
 

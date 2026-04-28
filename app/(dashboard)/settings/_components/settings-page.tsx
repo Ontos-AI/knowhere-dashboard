@@ -10,7 +10,7 @@ import { Check, Loader2, Lock, MoonStar, SunMedium } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
-import { startTransition, useEffect, useState } from "react";
+import { startTransition, useEffect, useMemo, useState } from "react";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { z } from "zod";
 import { useLinkedAccounts } from "@/app/(dashboard)/settings/_hooks/use-accounts";
@@ -26,6 +26,7 @@ import {
 import { type AuthUser, useAuth } from "@/hooks/use-auth";
 import { authClient } from "@/lib/better-auth-client";
 import { cn } from "@/lib/utils";
+import { useAppConfigContext } from "@/providers/config-provider";
 import { setCookie } from "@/utils/cookies";
 
 const TIMEZONES = [
@@ -163,6 +164,7 @@ export const SettingsPage = () => {
   const router = useRouter();
   const t = useTranslations("Settings");
   const tTimezones = useTranslations("Timezones");
+  const { passwordLoginEnabled } = useAppConfigContext();
   const [activeSection, setActiveSection] = useState<SettingsSectionId>("profile");
   const [isPasswordSaving, setIsPasswordSaving] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
@@ -213,6 +215,13 @@ export const SettingsPage = () => {
 
   const isSaving = updateProfileMutation.isPending || updateEmailMutation.isPending;
   const isDarkTheme = resolvedTheme === "dark";
+  const visibleSectionIds = useMemo<SettingsSectionId[]>(
+    () =>
+      passwordLoginEnabled
+        ? (Object.keys(SECTION_ELEMENT_IDS) as SettingsSectionId[])
+        : ["profile", "preferences"],
+    [passwordLoginEnabled]
+  );
 
   useEffect(() => {
     if (!hasUser) {
@@ -253,8 +262,7 @@ export const SettingsPage = () => {
 
   useEffect(() => {
     const syncActiveSection = () => {
-      const sectionIds = Object.keys(SECTION_ELEMENT_IDS) as SettingsSectionId[];
-      const nextActiveSection = sectionIds.reduce<SettingsSectionId>(
+      const nextActiveSection = visibleSectionIds.reduce<SettingsSectionId>(
         (currentSection, sectionId) => {
           const sectionElement = document.getElementById(SECTION_ELEMENT_IDS[sectionId]);
 
@@ -274,7 +282,7 @@ export const SettingsPage = () => {
 
     window.addEventListener("scroll", syncActiveSection, { passive: true });
     return () => window.removeEventListener("scroll", syncActiveSection);
-  }, []);
+  }, [visibleSectionIds]);
 
   const handleSectionSelect = (sectionId: SettingsSectionId) => {
     setActiveSection(sectionId);
@@ -418,6 +426,7 @@ export const SettingsPage = () => {
         preferencesLabel={t("preferences")}
         profileLabel={t("profile")}
         securityLabel={t("security")}
+        showSecurity={passwordLoginEnabled}
       />
 
       <SettingsProfileSection
@@ -457,24 +466,26 @@ export const SettingsPage = () => {
         verifiedLabel={t("verified")}
       />
 
-      <SettingsPasswordSection
-        changePasswordForm={changePasswordForm}
-        confirmPasswordLabel={t("confirmPassword")}
-        currentPasswordLabel={t("currentPassword")}
-        description={hasPasswordCredential ? t("passwordDesc") : t("setPasswordDesc")}
-        hasPasswordCredential={hasPasswordCredential}
-        id={SECTION_ELEMENT_IDS.security}
-        isSaving={isPasswordSaving}
-        newPasswordLabel={t("newPassword")}
-        noPasswordCredentialDescription={t("noPasswordCredentialDesc")}
-        onChangePassword={handleChangePassword}
-        onSetPassword={handleSetPassword}
-        setPasswordForm={setPasswordForm}
-        setPasswordLabel={t("setPassword")}
-        title={t("passwordSettings")}
-        updatePasswordLabel={t("updatePassword")}
-        updatingLabel={t("updating")}
-      />
+      {passwordLoginEnabled ? (
+        <SettingsPasswordSection
+          changePasswordForm={changePasswordForm}
+          confirmPasswordLabel={t("confirmPassword")}
+          currentPasswordLabel={t("currentPassword")}
+          description={hasPasswordCredential ? t("passwordDesc") : t("setPasswordDesc")}
+          hasPasswordCredential={hasPasswordCredential}
+          id={SECTION_ELEMENT_IDS.security}
+          isSaving={isPasswordSaving}
+          newPasswordLabel={t("newPassword")}
+          noPasswordCredentialDescription={t("noPasswordCredentialDesc")}
+          onChangePassword={handleChangePassword}
+          onSetPassword={handleSetPassword}
+          setPasswordForm={setPasswordForm}
+          setPasswordLabel={t("setPassword")}
+          title={t("passwordSettings")}
+          updatePasswordLabel={t("updatePassword")}
+          updatingLabel={t("updating")}
+        />
+      ) : null}
 
       <SettingsPreferencesSection
         darkModeEnabled={isDarkTheme}
@@ -501,12 +512,14 @@ const SettingsSectionTabs = ({
   preferencesLabel,
   profileLabel,
   securityLabel,
+  showSecurity,
 }: {
   activeSection: SettingsSectionId;
   onSectionSelect: (sectionId: SettingsSectionId) => void;
   preferencesLabel: string;
   profileLabel: string;
   securityLabel: string;
+  showSecurity: boolean;
 }) => {
   return (
     <nav aria-label="Settings sections" className="flex items-center gap-px">
@@ -523,19 +536,21 @@ const SettingsSectionTabs = ({
       >
         {profileLabel}
       </button>
-      <button
-        type="button"
-        className={cn(
-          "flex h-8 min-w-[87px] items-end justify-center px-4 pb-2 pt-2 font-mono-display text-xs leading-4 transition-colors",
-          activeSection === "security"
-            ? "border-b-4 border-[#52525c] bg-[#71717b] font-bold text-white"
-            : "bg-[#e4e4e7] font-light text-[#09090b]"
-        )}
-        aria-current={activeSection === "security" ? "page" : undefined}
-        onClick={() => onSectionSelect("security")}
-      >
-        {securityLabel}
-      </button>
+      {showSecurity ? (
+        <button
+          type="button"
+          className={cn(
+            "flex h-8 min-w-[87px] items-end justify-center px-4 pb-2 pt-2 font-mono-display text-xs leading-4 transition-colors",
+            activeSection === "security"
+              ? "border-b-4 border-[#52525c] bg-[#71717b] font-bold text-white"
+              : "bg-[#e4e4e7] font-light text-[#09090b]"
+          )}
+          aria-current={activeSection === "security" ? "page" : undefined}
+          onClick={() => onSectionSelect("security")}
+        >
+          {securityLabel}
+        </button>
+      ) : null}
       <button
         type="button"
         className={cn(

@@ -150,14 +150,26 @@ export const EmailLoginForm = ({
       </LoginButton>
 
       {passwordLoginEnabled ? (
-        <LoginButton
-          disabled={disabled || isSubmitting}
-          onClick={togglePasswordLogin}
-          type="button"
-          variant="secondary"
-        >
-          {isPasswordLoginEnabled ? t("useEmailLinkInstead") : t("loginWithPassword")}
-        </LoginButton>
+        <>
+          <LoginButton
+            disabled={disabled || isSubmitting}
+            onClick={togglePasswordLogin}
+            type="button"
+            variant="secondary"
+          >
+            {isPasswordLoginEnabled ? t("useEmailLinkInstead") : t("loginWithPassword")}
+          </LoginButton>
+
+          <p className="text-center text-sm leading-5 text-[#71717a] max-[639px]:text-xs max-[639px]:leading-[18px]">
+            {t("noAccount")}{" "}
+            <Link
+              className="font-medium text-[#7f22fe] transition-opacity hover:opacity-80"
+              href="/register"
+            >
+              {t("signUpWithPassword")}
+            </Link>
+          </p>
+        </>
       ) : null}
     </form>
   );
