@@ -8,7 +8,7 @@ body:
     id: problem
     attributes:
       label: Problem statement
-      description: What user, developer, or operator problem should this solve?
+      description: What problem should this solve?
     validations:
       required: true
   - type: dropdown
@@ -22,8 +22,6 @@ body:
         - API keys
         - Usage
         - Billing or credits
-        - Document upload
-        - Parsed results
         - Settings
         - Landing pages
         - Self-hosted deployment
