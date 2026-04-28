@@ -5,6 +5,7 @@ export const env = createEnv({
   server: {
     BETTER_AUTH_SECRET: z.string().min(32),
     BETTER_AUTH_URL: z.url(),
+    BETTER_AUTH_TRUSTED_ORIGINS: z.string().optional(),
     DATABASE_URL: z.url(),
     UNSAFE_DB_SSL_ENABLED: z.string().default("false"),
     GA_MEASUREMENT_ID: z
@@ -34,6 +35,7 @@ export const env = createEnv({
   runtimeEnv: {
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
     BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
+    BETTER_AUTH_TRUSTED_ORIGINS: process.env.BETTER_AUTH_TRUSTED_ORIGINS,
     DATABASE_URL: process.env.DATABASE_URL,
     UNSAFE_DB_SSL_ENABLED: process.env.UNSAFE_DB_SSL_ENABLED,
     GA_MEASUREMENT_ID: process.env.GA_MEASUREMENT_ID,

@@ -60,6 +60,7 @@ Required for startup:
 | `NEXT_PUBLIC_API_URL` | Knowhere API backend URL, for example `http://localhost:5005/api`. |
 | `NEXT_PUBLIC_AUTH_BASE_URL` | Auth route base path. Use `/api/auth` for the built-in route. |
 | `BETTER_AUTH_URL` | Base URL used by Better Auth callbacks. |
+| `BETTER_AUTH_TRUSTED_ORIGINS` | Optional comma-separated extra browser origins allowed by Better Auth, useful for preview/self-hosted URLs. |
 | `BETTER_AUTH_SECRET` | Random secret with at least 32 characters. |
 | `DATABASE_URL` | PostgreSQL connection URL for dashboard auth/account data. |
 | `UNSAFE_DB_SSL_ENABLED` | Optional escape hatch for local/self-hosted PostgreSQL without SSL. Set to `true` only when the database does not support SSL. Defaults to `false`, so hosted SaaS keeps SSL enabled without extra config. |

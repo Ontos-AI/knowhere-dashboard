@@ -19,6 +19,15 @@ type AuthEmailOptions = {
   readonly missingApiKeyMessage: string;
 };
 
+function getTrustedOrigins(): string[] {
+  const configuredOrigins =
+    env.BETTER_AUTH_TRUSTED_ORIGINS?.split(",")
+      .map((origin) => origin.trim())
+      .filter((origin) => origin.length > 0) ?? [];
+
+  return Array.from(new Set([env.NEXT_PUBLIC_APP_URL, env.BETTER_AUTH_URL, ...configuredOrigins]));
+}
+
 function createAuthEmailHtml(options: AuthEmailOptions): string {
   return `
     <!DOCTYPE html>
@@ -115,7 +124,7 @@ if (env.NODE_ENV === "development" || env.HTTPS_PROXY) {
 export const auth = betterAuth({
   baseURL: env.BETTER_AUTH_URL,
   // Explicitly specify trustedOrigins to prevent host validation failures in reverse proxy or Docker environments
-  trustedOrigins: [env.NEXT_PUBLIC_APP_URL, env.BETTER_AUTH_URL],
+  trustedOrigins: getTrustedOrigins(),
   secret: env.BETTER_AUTH_SECRET,
 
   // Drizzle ORM adapter — schema is automatically loaded from db instance
