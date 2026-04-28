@@ -3,7 +3,7 @@ name: Release SaaS deployment
 on:
   workflow_run:
     workflows:
-      - Deploy to EKS
+      - Deploy Dashboard
     branches:
       - main
     types:
