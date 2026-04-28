@@ -1,0 +1,393 @@
+{
+  "chengke_kb": {
+    "EN_Atlas Technical Handbook rev Aug 2013.pdf": {
+      "THE FAMILY OF MATERIALS": {
+        "_summary": "Materials are divided into metals and non-metals. Historically, civilizations were classified by their ability to work with metals. Modern materials include a wide variety such as ceramics, plastics, glass, and composites. Metals must compete in the market through superior performance and are categorized into ferrous (iron-based) and non-ferrous (non-iron-based) metals. Among non-ferrous metals, aluminum and copper alloys are widely used; ferrous metals include cast iron and steel, with steel classified by alloying elements. Steel designation systems are diverse, including AISI, ASTM, UNS, German Werkstoff, DIN, ISO, and Euronorm. Standards vary by country but are gradually moving toward unification."
+      },
+      "STAINLESS STEELS - INTRODUCTION TO THE GRADES AND FAMILIES": {
+        "The Families of Stainless Steels": {
+          "Austenitic Stainless Steels": {
+            "_summary": "Austenitic Stainless Steels\nThis group contain at least $16\\%$ chromium and $6\\%$ nickel (the basic grade 304 is sometimes referred to as 18/8) and range through to the high alloy or \"super austenitics\" such as 904L and $6\\%$ mo\nAustenitic Stainless Steels\nThe austenitic grades are all very readily welded (with the exception of the free-machining grade 303 noted elsewhere). All the usual electric welding processes can be used - Manual Metal Arc (MMAW or\nAustenitic Stainless Steels\nThe austenitic stainless steels cannot be hardened by thermal treatments (but they do harden rapidly by cold work). Annealing (often referred to as \"solution treatment\") not only recrystallises the wo"
+          },
+          "Ferritic Stainless Steels": {
+            "_summary": "Ferritic Stainless Steels\nThese are plain chromium (10½ to 29%) grades such as Grades 430 and 409. Their moderate corrosion resistance and poor fabrication properties are improved in the higher alloyed and stabilised grades su\nFerritic Stainless Steels\nThe ferritic grades are weldable but not as readily as the austenitic grades. The three major problems encountered are sensitisation, excessive grain growth and lack of ductility, particularly at low "
+          },
+          "Martensitic Stainless Steels": {
+            "_summary": "Martensitic Stainless Steels\nMartensitic stainless steels are also based on the addition of chromium as the major alloying element but with a higher carbon and generally lower chromium content (eg $12\\%$ in Grades 410 and 416) th\nMartensitic Stainless Steels\nMartensitic stainless steels can if necessary be welded (again with the high sulphur free machining grade 416 being not recommended) but caution needs to be exercised as they will produce a very hard \nMartensitic stainless steels are hardened by austenitizing, quenching, and tempering, with austenitizing temperatures typically ranging from 980 to 1010°C. Quenched hardness increases with temperature up to about 980°C, then decreases due to retained austenite. High-carbon types and complex sections require preheating at 790°C to prevent cracking. Due to high alloy content, air cooling is usually sufficient to achieve full hardness, but oil quenching is sometimes used for large sections. Tempering should be performed as soon as possible after quenching to avoid delayed cracking; for parts requiring high dimensional stability, cooling to -75°C before tempering can transform retained austenite. After tempering above 510°C, rapid cooling to below 400°C is necessary to avoid 475°C embrittlement."
+          },
+          "Duplex Stainless Steels": {
+            "_summary": "Duplex Stainless Steels\nDuplex stainless steels such as 2205 and 2507 (these designations indicate compositions of $22\\%$ chromium, $5\\%$ nickel and $25\\%$ chromium, $7\\%$ nickel but both grades contain further minor alloyin\nDuplex Stainless Steels\nDuplex stainless steels also have good weldability, albeit not quite as good as that of the austenitics. Again all the usual processes can be used, and a range of consumables is available. For the mos\nDuplex Stainless Steels\nThe duplex grades are generally solution treated in a very similar way to the austenitics, and at very similar temperatures. Duplex grades are more susceptible than are austenitics to precipitation of"
+          },
+          "Precipitation Hardening Stainless Steels": {
+            "_summary": "Precipitation Hardening Stainless Steels\nThese are chromium and nickel containing steels which can develop very high tensile strengths. The most common grade in this group is \"17-4 PH\"; also known as Grade 630, with the composition of $17\\%$"
+          },
+          "Characteristics of Stainless Steels": {
+            "_summary": "Characteristics of Stainless Steels\nThe characteristics of the broad group of stainless steels can be viewed as compared to the more familiar plain carbon \"mild\" steels. As a generalisation the stainless steels have:-\nHigher work harden"
+          },
+          "Standard Classifications": {
+            "_summary": "Standard Classifications\nThere are many different varieties of stainless steel and the American Iron and Steel Institute (AISI) in the past designated some as standard compositions, resulting in the commonly used three digit "
+          },
+          "Austenitic and Duplex Stainless Steels": {
+            "_summary": "Austenitic and Duplex Stainless Steels\nThese properties apply particularly to the austenitic family and to varying degrees to other grades and families. Austenitic Stainless Steel0\n\nAustenitic Stainless Steel\n\n### Standard Classifications "
+          },
+          "Ferritic and Martensitic Stainless Steels": {
+            "_summary": "Ferritic and Martensitic Stainless Steels\nAustenitic Stainless Steel Ferritic Stainless Steels0\n\nFerritic Stainless Steels\n\nDuplex Stainless Steels Figure 4 The families of Ferritic and Martensitic Stainless Steels0\n\nFigure 4 The families of "
+          },
+          "_summary": "Stainless steels include austenitic, ferritic, martensitic, duplex, and precipitation hardening families with distinct properties."
+        },
+        "Comparative Properties of the Stainless Steel Alloy Families": {
+          "_summary": "Comparative Properties of the Stainless Steel Alloy Families\nNotes\n1. Attraction of the steel to a magnet. Note some austenitic grades can be attracted to a magnet if cold worked, cast or welded.\n2. Varies significantly between grades within each group. e.g. fr"
+        },
+        "_summary": "Stainless steel families include austenitic, ferritic, martensitic, duplex, and precipitation hardening types."
+      },
+      "CORROSION RESISTANCE": {
+        "General Corrosion": {
+          "_summary": "General Corrosion\nCorrosion whereby there is a general uniform removal of material, by dissolution, eg when stainless steel is used in chemical plant for containing strong acids. Design in this instance is based on pub"
+        },
+        "Pitting corrosion": {
+          "_summary": "This text describes localized pitting corrosion in stainless steel under conditions of chlorides, high temperature, and low pH, which can lead to pipe perforation. Pitting resistance is related to chromium, molybdenum, and nitrogen content, and can be evaluated using the PRE value (%Cr + 3.3 × %Mo + 16 × %N). The ASTM G48A test is used to determine the critical pitting temperature. In marine environments, 316 stainless steel may not fully resist pitting or tea staining; finer surface finishes (Ra ≤ 0.5 μm) help reduce tea staining. Alloys with higher chromium, molybdenum, and nitrogen content offer better pitting resistance."
+        },
+        "Crevice corrosion": {
+          "_summary": "Crevice corrosion\nThe corrosion resistance of a stainless steel is dependent on the presence of a protective oxide layer on its surface, but it is possible under certain conditions for this oxide layer to break down, f"
+        },
+        "Stress corrosion cracking (SCC)": {
+          "_summary": "This text discusses stress corrosion cracking (SCC), a rapid and severe form of corrosion that occurs in stainless steel under the combined action of stress and a corrosive environment. The stress must be tensile, which can come from service loads, assembly stresses, or residual stresses from cold working. The most harmful environments are chloride-containing aqueous solutions (e.g., seawater), especially at high temperatures. Austenitic stainless steels (such as 304 and 316) are susceptible to this, with 316 being no more resistant than 304; duplex stainless steels (e.g., 2205) are almost immune below 150°C, super duplex stainless steels are even better, and ferritic stainless steels are generally unaffected. Improvement methods include introducing compressive stress through shot peening or eliminating tensile stress via final annealing, but careful evaluation is required. In practice, 304 can be used in water containing 100-300 ppm chlorides at moderate temperatures, but wet-dry conditions can concentrate chlorides, increasing the risk. Seawater contains about 2% chlorides and is used in heat exchangers above 50°C. Recent cases of chloride stress corrosion failure have been found at low temperatures (30-40°C), such as with 316 stainless steel fasteners above indoor chlorinated swimming pools, as well as failures at high temperatures with as little as 10 ppm chlorides; the issue is not yet fully understood."
+        },
+        "Sulphide Stress Corrosion Cracking (SSC)": {
+          "a) Stress level": {
+            "_summary": "a) Stress level\nA threshold stress can sometimes be identified for each material - environment combination. Some published data show a continuous fall of threshold stress with increasing H2S levels. To guard against "
+          },
+          "b) Environment": {
+            "_summary": "b) Environment\nThe principal agents being chloride, hydrogen sulphide and pH. There is synergism between these effects, with an apparently inhibiting effect of sulphide at high H2S levels."
+          },
+          "c) Temperature": {
+            "_summary": "c) Temperature\nWith increasing temperature, the contribution of chloride increases but the effect of hydrogen decreases due to its increased mobility in the ferrite matrix. The net result is a maximum susceptibility"
+          },
+          "_summary": "SSC depends on stress level, environment (chloride, H₂S, pH), and temperature effects."
+        },
+        "Intergranular corrosion": {
+          "_summary": "Intergranular corrosion is a rapid, localized form of corrosion associated with carbide precipitation. When austenitic steels are exposed to or slowly cooled within the temperature range of 425-850°C, chromium and carbon form chromium carbides along grain boundaries, depleting the adjacent areas of chromium and reducing corrosion resistance—a phenomenon known as sensitization. Carbon content, temperature, and time influence precipitation, with the most sensitive temperature being approximately 700°C. This condition can be remedied by heating above 1000°C followed by water quenching, or avoided by using stabilized grades (321, 347) or extra-low carbon steels (304L, 316L). Certain environments (e.g., room-temperature glacial acetic acid, alkaline solutions, fresh water) do not cause intergranular corrosion, and thin sheets are generally unaffected due to rapid cooling. Grain boundary carbides do not harm high-temperature strength, and high-carbon H-grade steels (e.g., 304H) are used for high-temperature applications. Sensitized steels may also be susceptible to intergranular stress corrosion cracking (IGSCC), though this is relatively rare."
+        },
+        "Galvanic corrosion": {
+          "_summary": "Galvanic corrosion is an electrochemical process caused by contact between dissimilar metals in an electrolyte. Three conditions are required: metals must be widely separated on the galvanic series, be in electrical contact, and have surfaces bridged by a conductive fluid. Prevention includes avoiding mixed metals, using insulating materials, or removing the electrolyte. The relative surface areas of the metals also affect corrosion rate; a large anodic area reduces corrosion, while a large cathodic area accelerates it. Examples include zinc-plated steel fasteners in stainless steel."
+        },
+        "Contact corrosion": {
+          "_summary": "This content discusses galvanic corrosion caused by contamination of stainless steel surfaces with carbon steel particles, including its mechanism (carbon steel particles act as an anode and corrode, potentially causing pitting of stainless steel), common causes (grinding of nearby carbon steel or tool contamination), and preventive measures (avoiding mixed metals, using insulating gaskets, improving drainage, protecting storage equipment, etc.). It also introduces methods for detecting contamination (rust test, copper sulfate test, 24-hour wet observation) and methods for removing contamination (passivation or pickling)."
+        },
+        "_summary": "Corrosion resistance covers general, pitting, crevice, SCC, SSC, intergranular, galvanic, and contact corrosion."
+      },
+      "HIGH TEMPERATURE RESISTANCE": {
+        "Scaling Resistance": {
+          "_summary": "Scaling Resistance\nResistance to oxidation, or scaling, is dependent on the chromium content in the same way as the corrosion resistance is, as shown in the graph of Figure 10. Most austenitic steels, with chromium cont"
+        },
+        "Creep Strength": {
+          "_summary": "This article discusses the performance of different types of stainless steel at high temperatures. Austenitic stainless steels (such as 304H, 316L) have excellent creep strength and are suitable for high-temperature structural applications, while low-carbon versions (304L, 316L) have lower high-temperature strength. The oxidation resistance of ferritic stainless steels (such as 409, 430, 446) increases with chromium content, but their creep strength is lower than that of austenitic steels, making them commonly used in low-stress high-temperature environments. Duplex stainless steels are limited to use below 350°C due to high-temperature embrittlement. Martensitic and precipitation-hardening stainless steels are rarely used in high-temperature applications due to softening after heat treatment."
+        },
+        "Structural Stability": {
+          "_summary": "Discusses the issues of grain boundary carbide precipitation and sigma phase formation in stainless steel at high temperatures. Grain boundary carbides reduce corrosion resistance at 425-815°C, and stabilized or low-carbon grades are recommended. Sigma phase embrittles steel during prolonged exposure at 590-870°C, with high chromium, molybdenum, and silicon grades being susceptible, such as 310, 316, 317, and 314 grades. Grade 314 has been replaced due to severe embrittlement. Grade 310 is also unsuitable in this temperature range, and Grade 321 is often a better choice."
+        },
+        "Environmental Factors": {
+          "_summary": "Environmental Factors\nOther factors which can be important in the use of steels for high temperature applications are carburisation and sulphidation resistance. Sulphur bearing gases under reducing conditions greatly accel"
+        },
+        "Thermal Expansion": {
+          "_summary": "This text discusses the importance of thermal expansion of materials in high-temperature applications. The coefficient of thermal expansion is expressed as the proportional change in length per degree Celsius, with units such as ×10⁻⁶/°C or μm/m/°C. The expansion amount can be calculated by multiplying the original size by the temperature change and then by the coefficient. For example, a 3-meter-long 304 stainless steel rod heated from 20°C to 200°C will increase in length by 9.3 mm. The thermal expansion coefficient of austenitic stainless steel is higher than that of most other steel types and increases with temperature. Thermal expansion can cause bending or warping when components are constrained, especially when two different metals are connected and heated. The high expansion rate of austenitic stainless steel may lead to more dimensional issues than carbon steel or low-alloy steel. Non-austenitic stainless steel has higher thermal conductivity. Local stresses during heating and cooling can lead to stress corrosion cracking. Expansion joints should be used in design, and notches and abrupt cross-section changes should be avoided."
+        },
+        "_summary": "High temperature resistance depends on scaling, creep, structural stability, environmental factors, and thermal expansion."
+      },
+      "CRYOGENIC PROPERTIES": {
+        "_summary": "Austenitic stainless steel has a unique combination of properties at cryogenic temperatures, with tensile strength significantly higher than at room temperature and only a slight decrease in toughness, making it suitable for cryogenic environments such as liquefied natural gas (-161°C), liquid oxygen (-183°C), and liquid nitrogen (-196°C). Its high coefficient of thermal expansion may lead to dimensional issues. Ferritic, martensitic, and precipitation-hardening stainless steels exhibit a significant decrease in toughness at cryogenic temperatures and are not recommended. Duplex stainless steel can be used above -50°C, but its toughness decreases below this temperature. Carbon steel and low-alloy steel also have a ductile-to-brittle transition temperature (DBTT), and these limitations are incorporated into design codes (e.g., AS1210). The ductile-to-brittle transition is reversible; steel that becomes brittle at low temperatures regains toughness upon warming."
+      },
+      "MAGNETIC PROPERTIES": {
+        "_summary": "This article mainly discusses the magnetic permeability characteristics of stainless steel. Austenitic stainless steel is almost non-magnetic in the annealed state, but cold working (such as wire drawing, rolling, and polishing) can induce martensite formation, leading to enhanced magnetic response. This is more pronounced in grades 304 and 303, while grades 310 and 316, due to their higher nickel-to-chromium ratio and more stable austenitic structure, exhibit a weaker magnetic response. The non-magnetic state can be restored through stress relief (heating at approximately 700-800°C) or solution treatment (1000-1150°C). Duplex stainless steel has better low-temperature toughness than ferritic and martensitic grades, but it has a ductile-to-brittle transition temperature. Castings and welds often contain 5-12% ferrite to prevent hot cracking, which can be measured using a ferrite meter. If magnetic permeability is a design factor, it must be specified at the time of procurement. Additionally, magnetically soft stainless steels (such as grade 18/2) are introduced for corrosion-resistant applications requiring rapid magnetic response, such as solenoid valves."
+      },
+      "MECHANICAL PROPERTIES": {
+        "Mechanical Properties of Wire": {
+          "_summary": "This article introduces the mechanical properties of stainless steel wire and bar, primarily described through tensile strength. Wires for different applications require carefully selected mechanical properties to enable forming during manufacturing and to withstand service loads. Spring wire has the highest tensile strength, making it suitable for coiling into springs; while braiding wire requires an appropriate balance of strength and flexibility for crimping and forming. Cold heading wire is used for fasteners, such as roofing bolts and self-tapping screws, requiring good ductility to form complex heads while being hard enough to prevent thread deformation, which necessitates careful consideration of steel composition to control the work hardening rate."
+        },
+        "Mechanical Properties of Bar": {
+          "_summary": "This article discusses two main manufacturing processes for austenitic stainless steel round bars: cold drawing (BD) for bars with diameters approximately 5mm to 26mm, which increases strength and yield stress through an area reduction of about 10%; and bars with diameters of approximately 26mm and above, which are made by hot rolling, annealing, and then turning (ST), with properties close to the annealed state. ST bars offer better machinability due to lower hardness and have a defect-free surface; BD bars may have minor surface imperfections. Cold working results in higher surface hardness than the core, while ST bars also exhibit surface hardening due to final machining and straightening. Figure 17 shows typical mechanical properties."
+        },
+        "_summary": "This article covers the mechanical properties of stainless steel wire and bar, including manufacturing processes."
+      },
+      "FABRICATION": {
+        "Forming Operations": {
+          "_summary": "This article mainly introduces the cold working characteristics of stainless steel, especially austenitic stainless steel. Austenitic stainless steel has high strength and an extremely high work hardening rate, so cold working requires greater force than carbon steel, and springback must be considered. Despite the high work hardening rate, its high ductility allows for deep cold forming, such as in the manufacture of kitchen sinks. Work hardening is the only way to harden austenitic stainless steel, while martensitic stainless steel can be hardened by quenching and tempering heat treatment. Although ferritic stainless steel can only be hardened by cold working, its hardening rate is low. Cold working can significantly increase strength; for example, 301, 302, and 304 stainless steel can achieve tensile strengths exceeding 2000 MPa after cold drawing, but this is limited to fine wires and small cross-sections. Large cross-sections are difficult to process uniformly due to rapid surface hardening. The work hardening rate decreases with increasing temperature, making deformation easier at low temperatures. Additionally, stainless steel deforms more severely during slow forming, unlike carbon steel. The work hardening rates of ferritic and martensitic stainless steels are similar to those of low-carbon steel, and they are magnetic. Martensitic stainless steel is typically heat-treated to obtain its properties, with cold working being more of a sizing operation."
+        },
+        "Machining": {
+          "Ugima Improved Machinability Grades": {
+            "_summary": "Ugima Improved Machinability Grades\nRecently a number of manufacturers have offered \"Improved Machinability\" versions of the standard austenitic Grades 304 and 316. These steels are produced by proprietary steel melting techniques which"
+          },
+          "Rules for Machining Stainless Steels": {
+            "_summary": "General rules for machining austenitic stainless steel include: the machine tool must be rigid and free from vibration; cutting edges must be kept sharp, as dull tools cause surface work hardening; light but sufficiently deep cuts should be used to avoid tool sliding on the surface; all clearances should be adequate to prevent friction; tools should be as large as possible to dissipate heat; use chip breakers; maintain constant feed; use ample coolant and lubricant, as stainless steel has low thermal conductivity and heat concentrates at the cutting edge."
+          },
+          "_summary": "Ugima improved machinability grades and general rules for machining austenitic stainless steels."
+        },
+        "Welding": {
+          "Austenitic Stainless Steels": {
+            "_summary": "Austenitic Stainless Steels\nThis group contain at least $16\\%$ chromium and $6\\%$ nickel (the basic grade 304 is sometimes referred to as 18/8) and range through to the high alloy or \"super austenitics\" such as 904L and $6\\%$ mo\nAustenitic Stainless Steels\nThe austenitic grades are all very readily welded (with the exception of the free-machining grade 303 noted elsewhere). All the usual electric welding processes can be used - Manual Metal Arc (MMAW or\nAustenitic Stainless Steels\nThe austenitic stainless steels cannot be hardened by thermal treatments (but they do harden rapidly by cold work). Annealing (often referred to as \"solution treatment\") not only recrystallises the wo"
+          },
+          "Duplex Stainless Steels": {
+            "_summary": "Duplex Stainless Steels\nDuplex stainless steels such as 2205 and 2507 (these designations indicate compositions of $22\\%$ chromium, $5\\%$ nickel and $25\\%$ chromium, $7\\%$ nickel but both grades contain further minor alloyin\nDuplex Stainless Steels\nDuplex stainless steels also have good weldability, albeit not quite as good as that of the austenitics. Again all the usual processes can be used, and a range of consumables is available. For the mos\nDuplex Stainless Steels\nThe duplex grades are generally solution treated in a very similar way to the austenitics, and at very similar temperatures. Duplex grades are more susceptible than are austenitics to precipitation of"
+          },
+          "Ferritic Stainless Steels": {
+            "_summary": "Ferritic Stainless Steels\nThese are plain chromium (10½ to 29%) grades such as Grades 430 and 409. Their moderate corrosion resistance and poor fabrication properties are improved in the higher alloyed and stabilised grades su\nFerritic Stainless Steels\nThe ferritic grades are weldable but not as readily as the austenitic grades. The three major problems encountered are sensitisation, excessive grain growth and lack of ductility, particularly at low "
+          },
+          "Martensitic Stainless Steels": {
+            "_summary": "Martensitic Stainless Steels\nMartensitic stainless steels are also based on the addition of chromium as the major alloying element but with a higher carbon and generally lower chromium content (eg $12\\%$ in Grades 410 and 416) th\nMartensitic Stainless Steels\nMartensitic stainless steels can if necessary be welded (again with the high sulphur free machining grade 416 being not recommended) but caution needs to be exercised as they will produce a very hard \nMartensitic stainless steels are hardened by austenitizing, quenching, and tempering, with austenitizing temperatures typically ranging from 980 to 1010°C. Quenched hardness increases with temperature up to about 980°C, then decreases due to retained austenite. High-carbon types and complex sections require preheating at 790°C to prevent cracking. Due to high alloy content, air cooling is usually sufficient to achieve full hardness, but oil quenching is sometimes used for large sections. Tempering should be performed as soon as possible after quenching to avoid delayed cracking; for parts requiring high dimensional stability, cooling to -75°C before tempering can transform retained austenite. After tempering above 510°C, rapid cooling to below 400°C is necessary to avoid 475°C embrittlement."
+          },
+          "Welding Dissimilar Metals": {
+            "_summary": "Welding Dissimilar Metals\nWelding together of different metals, such as of Grade 316 to Grade 444 or a stainless steel to a mild steel, can be carried out, although some extra precautions need to be taken. It is usually recomm"
+          },
+          "Further Information on Welding": {
+            "_summary": "Further Information on Welding\nSpecific recommendations are given in Figure 19. Further details on welding of stainless steels are given in the booklet \"Guidelines for the Welded Fabrication of Nickel-containing Stainless Steels fo"
+          },
+          "_summary": "Austenitic, duplex, ferritic, martensitic stainless steels, dissimilar metals welding, and further info."
+        },
+        "Soft Soldering": {
+          "_summary": "Soft Soldering\nAll grades of stainless steel can be soldered with lead-tin soft solder. Leaded solders should not be used when the product being soldered is used for food processing, serving or transport. Soldered j"
+        },
+        "Brazing (\"Silver Soldering\")": {
+          "_summary": "This article introduces the brazing method for stainless steel, which is suitable when welding is not feasible and a stronger joint than soft soldering is required. Brazing can be used to join non-ferrous metals such as copper, bronze, and nickel to stainless steel. The corrosion resistance of the joint is slightly lower than that of stainless steel, but it can meet requirements under normal temperature and mildly corrosive conditions. Since brazing temperatures may cause carbide precipitation (sensitization) in austenitic stainless steel, it is recommended to use low-carbon or stabilized grades (304L, 316L, 321). Ferritic grades (such as 430) can be quenched from brazing temperature, but martensitic grades (410, 420, 431) should not be heated above 760°C. Free-machining grades (303, 416, 430F) are generally not recommended due to the formation of dark slag on the surface. Recommended steps include: using silver brazing filler metal with a melting point of 590-870°C, cleaning the surface and immediately applying flux, heating uniformly with a slightly reducing flame, and using induction heating or controlled atmosphere furnaces for batch production. After brazing, remove residual flux. When brazing grade 430, it is recommended to use silver solder containing 3% nickel. Additionally, a general recommendation table for welding stainless steel is provided, covering precautions such as preheating, post-weld heat treatment, and filler metal selection."
+        },
+        "_summary": "Stainless steel fabrication covers forming, machining, welding, soldering, and brazing methods."
+      },
+      "HEAT TREATMENT": {
+        "Annealing": {
+          "Austenitic Stainless Steels": {
+            "_summary": "Austenitic Stainless Steels\nThis group contain at least $16\\%$ chromium and $6\\%$ nickel (the basic grade 304 is sometimes referred to as 18/8) and range through to the high alloy or \"super austenitics\" such as 904L and $6\\%$ mo\nAustenitic Stainless Steels\nThe austenitic grades are all very readily welded (with the exception of the free-machining grade 303 noted elsewhere). All the usual electric welding processes can be used - Manual Metal Arc (MMAW or\nAustenitic Stainless Steels\nThe austenitic stainless steels cannot be hardened by thermal treatments (but they do harden rapidly by cold work). Annealing (often referred to as \"solution treatment\") not only recrystallises the wo"
+          },
+          "Duplex Stainless Steels": {
+            "_summary": "Duplex Stainless Steels\nDuplex stainless steels such as 2205 and 2507 (these designations indicate compositions of $22\\%$ chromium, $5\\%$ nickel and $25\\%$ chromium, $7\\%$ nickel but both grades contain further minor alloyin\nDuplex Stainless Steels\nDuplex stainless steels also have good weldability, albeit not quite as good as that of the austenitics. Again all the usual processes can be used, and a range of consumables is available. For the mos\nDuplex Stainless Steels\nThe duplex grades are generally solution treated in a very similar way to the austenitics, and at very similar temperatures. Duplex grades are more susceptible than are austenitics to precipitation of"
+          },
+          "Martensitic and Ferritic Stainless Steels": {
+            "_summary": "Martensitic and Ferritic Stainless Steels\nAll martensitic and most ferritic stainless steels can be subcritical annealed (process annealed) by heating into the upper part of the ferrite\ntemperature range, or full annealed by heating above the"
+          },
+          "Atmosphere Control": {
+            "_summary": "Atmosphere Control\nStainless steels are usually annealed in controlled atmospheres to prevent or at least reduce scaling. Treatment can be in a salt bath, or in a vacuum annealing furnace. Steel mills anneal most stainl"
+          },
+          "Stabilising Annealing": {
+            "_summary": "Stabilising Annealing\nA stabilising anneal is sometimes performed after conventional annealing for grades 321 and 347. Most of the carbon content is combined with titanium in grade 321 or with niobium in grade 347 when the"
+          },
+          "_summary": "Annealing of stainless steels covers austenitic, duplex, martensitic/ferritic types, atmosphere control, and stabilising annealing."
+        },
+        "Hardening": {
+          "Martensitic Stainless Steels": {
+            "_summary": "Martensitic Stainless Steels\nMartensitic stainless steels are also based on the addition of chromium as the major alloying element but with a higher carbon and generally lower chromium content (eg $12\\%$ in Grades 410 and 416) th\nMartensitic Stainless Steels\nMartensitic stainless steels can if necessary be welded (again with the high sulphur free machining grade 416 being not recommended) but caution needs to be exercised as they will produce a very hard \nMartensitic stainless steels are hardened by austenitizing, quenching, and tempering, with austenitizing temperatures typically ranging from 980 to 1010°C. Quenched hardness increases with temperature up to about 980°C, then decreases due to retained austenite. High-carbon types and complex sections require preheating at 790°C to prevent cracking. Due to high alloy content, air cooling is usually sufficient to achieve full hardness, but oil quenching is sometimes used for large sections. Tempering should be performed as soon as possible after quenching to avoid delayed cracking; for parts requiring high dimensional stability, cooling to -75°C before tempering can transform retained austenite. After tempering above 510°C, rapid cooling to below 400°C is necessary to avoid 475°C embrittlement."
+          },
+          "Precipitation Hardening Steels": {
+            "_summary": "Precipitation Hardening Steels\nPrecipitation hardening stainless steels are usually supplied in the \"solution treated\" condition, often referred to as \"Condition A\". The intention is that any fabrication will be done while the stee"
+          },
+          "_summary": "Martensitic and precipitation hardening stainless steels are hardened by chromium addition and heat treatment."
+        },
+        "Stress Relieving": {
+          "_summary": "For austenitic stainless steel, stress relief is limited below 400°C; 425-925°C can significantly reduce residual stress (e.g., 870°C for one hour eliminates about 85%), but may cause grain boundary carbide precipitation and sensitization, impairing corrosion resistance. Stabilized or low-carbon grades (321, 304L, 316L) are recommended. Full annealing (approximately 1080°C with rapid cooling) can eliminate all stress but is not suitable for large or complex components. After cold working strengthening, treatment at 345-400°C for two hours can increase yield strength, commonly used for spring wire. Welded parts can be stress relieved below annealing temperature, especially suitable for large or dissimilar metal welds. Stress relief for martensitic or ferritic stainless steel welds can simultaneously temper and partially restore corrosion resistance, typically using subcritical annealing."
+        },
+        "Surface Hardening": {
+          "_summary": "Stainless steel has limited surface hardening capabilities. Carbon steel and low-alloy steel are hardened through martensitic transformation, but this mechanism is not very effective for stainless steel due to its low carbon content. Austenitic stainless steel can be surface hardened through nitriding, but the hardened layer is thin and hard, while the core remains soft, resulting in limited load-bearing capacity and reduced corrosion resistance. Other proprietary processes have not yet been commercialized in Australia. The PVD (Physical Vapor Deposition) process can deposit thin, hard coatings such as titanium nitride (TiN), which has a golden color and is commonly used on mirror-polished panels. However, due to the soft core, its engineering applications are also limited."
+        },
+        "_summary": "Heat treatment of stainless steels includes annealing, hardening, stress relieving, and surface hardening."
+      },
+      "SURFACE FINISHING": {
+        "Passivation": {
+          "_summary": "This content describes the method of removing contamination and enhancing corrosion resistance through passivation treatment after stainless steel surfaces are contaminated by \"free iron\". Passivation is a chemical process that removes iron contamination caused by carbon steel tools or grinding debris and promotes the formation of a passivation layer. Depending on the chromium content and steel type, the treatment procedures include: for steels with chromium ≥ 16% (except free-machining types such as 303), use 20-50% nitric acid at room temperature to 40°C for 30-60 minutes; for steels with chromium < 16% (except 416), use the same nitric acid treatment for 60 minutes; for free-machining types (such as 303, 416, 430F), use 20-50% nitric acid plus 2-6% sodium dichromate at room temperature to 50°C for 25-40 minutes. Precautions include: if the metallic surface luster needs to be maintained, test first; thorough rinsing is required after treatment; be aware of the corrosive hazards of nitric acid. Reference standard: ASTM A380."
+        },
+        "Pickling": {
+          "_summary": "This article introduces the pickling process for stainless steel, used to remove high-temperature oxide scale and red rust generated by welding, heat treatment, or hot working. Pickling enhances the corrosion resistance of stainless steel. Specific pickling solution formulations and operating conditions are provided for different stainless steel grades: for all stainless steels (except free-machining steels), use 8-11% sulfuric acid at 65-80°C for 5-45 minutes; for steels with chromium content ≥16% (except free-machining steels), use 15-25% nitric acid + 1-8% hydrofluoric acid at 20-60°C for 5-30 minutes; for free-machining steels and steels with chromium content <16%, use 10-15% nitric acid + 0.5-1.5% hydrofluoric acid at 20-60°C for 5-30 minutes. The article also emphasizes pre-treatment testing before pickling, priority treatment for annealed steel, the necessity of thorough rinsing, and safe handling of acids. Additionally, the use of pickling paste is introduced, particularly for removing heat tint after welding. Finally, it notes that the optimal approach is to avoid oxide scale formation altogether, such as by using vacuum or controlled atmosphere heat treatment."
+        },
+        "Degreasing": {
+          "_summary": "Degreasing\nGrease, oil, cutting fluids, drawing compounds and other lubricants must be removed from the surface of stainless steel components before heat treatment (to prevent carbon pick-up) or final passivatin"
+        },
+        "Electropolishing": {
+          "_summary": "Electropolishing\nElectropolishing is an electrochemical process which brightens the steel surface by selective dissolution of the high points - it is the opposite of electroplating, and is carried out with broadly sim"
+        },
+        "Grinding and Polishing": {
+          "_summary": "Stainless steel can be ground, polished, and buffed, but techniques must be adjusted to avoid surface overheating, which can cause oxidation or sensitization. Using lower speeds and feeds, selecting appropriate lubricants and abrasive grit sizes can reduce heat buildup. Coarse abrasives may impair corrosion resistance, while fine polishing (e.g., No. 4 to No. 8) can improve the surface and enhance corrosion resistance. Surface roughness Ra exceeding 0.5 microns reduces corrosion resistance. Iron contamination must be avoided; use iron-free abrasives, and perform passivation or electropolishing if necessary."
+        },
+        "Mechanical Cleaning": {
+          "_summary": "Mechanical Cleaning\nProblems associated with chemical cleaning processes can be avoided by using mechanical cleaning. With all mechanical cleaning processes great care must be taken to prevent the stainless steel surface"
+        },
+        "Blackening": {
+          "_summary": "Blackening\nBlackening to produce a non-reflective or low reflective black oxide surface can be accomplished by several methods. Immersion in sulphuric acid/potassium dichromate solutions at 80 to $99^{\\circ} \\ma"
+        },
+        "_summary": "Surface finishing includes passivation, pickling, degreasing, electropolishing, grinding, mechanical cleaning, and blackening."
+      },
+      "SURFACE CONTAMINATION IN FABRICATION": {
+        "Contamination by Carbon Steel": {
+          "_summary": "Non-stainless ferritic materials such as carbon steel, low alloy steel, tool steel, or cast iron contacting stainless steel surfaces can cause red rust spots on the stainless steel. The source of contamination can be identified by the rust pattern: intermittent or continuous rust marks indicate scratches, while scattered spots suggest airborne dust. In the early stages of contamination, only slight scratches may be visible, with rust appearing only after wetting. Detection methods include the ferroxyl test per ASTM A380 or wetting the surface with water for 24-48 hours. There are two corrosion mechanisms: one involves contact damaging the oxide film to form a corrosion cell; the other involves corrosion of carbon steel in a humid environment, leading to oxygen depletion and changes in ion concentration. Common causes of contamination include the use of carbon steel slings, contaminated lifting equipment, dragging carbon steel over stainless steel, carbon steel welding spatter, grinding dust, and tools previously used on carbon steel."
+        },
+        "Contamination by Chlorides": {
+          "_summary": "Contamination by Chlorides\nWhen contamination by common salt (sodium chloride) occurs the dissolved chloride ions enter the structure of the protective oxide film on the surface of the stainless steel. When moisture evaporates "
+        },
+        "Contamination by Carbon": {
+          "_summary": "Contamination by Carbon\nCarbon contamination usually occurs when the metal is heated (e.g. during welding), under which conditions any organic materials may break down on the surface of the metal and contaminate both the sol"
+        },
+        "_summary": "The section covers contamination by carbon steel, chlorides, and carbon during fabrication."
+      },
+      "DESIGN CONSIDERATIONS IN FABRICATION OF STAINLESS STEELS": {
+        "Grade Selection for Fabrication": {
+          "_summary": "This article introduces key considerations for selecting stainless steel grades, including machinability, corrosion resistance, weldability, and formability. For applications requiring extensive machining, free-machining grades such as 303 or 416 may be considered, but attention should be paid to their lower corrosion resistance and weldability. Improved free-machining grades, such as the Ugima series (303, 304, 316), enhance machinability while maintaining the excellent performance of standard grades. For cold forming, 302HQ is suitable for fastener manufacturing, while 301 and 304, due to their high work-hardening rates, are appropriate for spring production. When welding, low-carbon L-grade or stabilized grades such as 321 should be selected to avoid sensitization issues, and welding consumables must match the base metal. It is recommended to refer to the relevant sections of this handbook on intergranular corrosion, welding, and grade selection."
+        },
+        "Design to Avoid Corrosion": {
+          "_summary": "This article introduces corrosion issues to be aware of in the fabrication of stainless steel, including general corrosion, pitting, crevice corrosion, intergranular corrosion, stress corrosion cracking, galvanic corrosion, and contact corrosion. Preventive measures include designing to avoid water accumulation, promoting liquid circulation, preventing evaporative concentration, reducing stress and temperature, and recommending the use of professional stainless steel manufacturers."
+        },
+        "Specific Design Points - To Retain Corrosion Resistance": {
+          "1. Invert Structural Members": {
+            "_summary": "1. Invert Structural Members\nAvoid entrapment of moisture within members and within attachments, as shown in Figure 23. Stagnant liquid remnants are likely to concentrate and to lead to pitting corrosion.\n\nGood design alone is no"
+          },
+          "2. Ensure Tanks & Pipes Drain Fully When Idle": {
+            "_summary": "2. Ensure Tanks & Pipes Drain Fully When Idle\nTanks and pipelines left with small residual fluid quantities also encourage pitting corrosion, as shown in Figure 24. The problem is made worse if the fluid is spread to a thin film.\n\nAvoid entrapmen"
+          },
+          "3. Raise Tanks Off the Floor": {
+            "_summary": "3. Raise Tanks Off the Floor\nTank bottoms placed directly on concrete floors will create crevices; ideal sites for corrosion in the event of liquid spillage. Sealing the gap improves the position, but is subject to misapplication"
+          },
+          "4. Smooth, Rounded Corners Inside Tanks": {
+            "_summary": "4. Smooth, Rounded Corners Inside Tanks\nEfficient maintenance cleaning of tanks is often important to remove built-up debris or stains; this reduces the likelihood of crevice corrosion under sediments and also may be important to retain hyg"
+          },
+          "5. Insulation or Lagging of Pipelines and Vessels": {
+            "_summary": "5. Insulation or Lagging of Pipelines and Vessels\nThermal insulation of tanks and pipes should be free of chlorides. The insulation should be clad to totally prevent entry of water, as pitting corrosion or stress corrosion cracking can occur in the w"
+          },
+          "6. Incomplete Filling Problems": {
+            "_summary": "6. Incomplete Filling Problems\nVapour phases given off by some fluids can be quite corrosive; in these cases if the tank cannot be filled completely the vapour space should be well ventilated to remove the vapour."
+          },
+          "7. Inlet Location": {
+            "_summary": "7. Inlet Location\nWhen dosing or making up a tank a highly corrosive chemical may be added. In these instances it is important that the inlet be located away from side walls and in a moving liquid stream, so that the a"
+          },
+          "8. Reduce Splashing Within Tanks": {
+            "_summary": "8. Reduce Splashing Within Tanks\nA further problem may be caused by splashing during filling or mixing - splash drops on the inside tank walls will undergo evaporation and hence concentration of the corrosive species. Splashing shoul"
+          },
+          "9. Heater Location": {
+            "_summary": "9. Heater Location\nCorrosion of all types proceeds more rapidly at higher temperatures. It is therefore important that immersion heaters in vessels are placed so\nas not to locally heat any section of the vessel wall, an"
+          },
+          "10. Avoid Settling in Pipes and Vessels": {
+            "_summary": "10. Avoid Settling in Pipes and Vessels\nCrevice corrosion can occur beneath debris which settles out of stagnant or slow moving liquid, and in some environments low liquid velocity also permits marine organisms to grow on the steel, with si"
+          },
+          "11. Pipe Welds": {
+            "_summary": "11. Pipe Welds\nWhen joining pipe runs or using butt welding or socket weld fittings it is highly desirable to achieve full penetration welds. Incomplete weld penetration will result in a joint which appears good on "
+          },
+          "12. Structural Attachments": {
+            "_summary": "12. Structural Attachments\nCrevices are readily created when supporting rings, attachment pads etc are welded to stainless steel vessels. Intermittent weld runs may give adequate mechanical strength but only fully sealed welds "
+          },
+          "13. Welding Mild Steel to Stainless Steel": {
+            "_summary": "13. Welding Mild Steel to Stainless Steel\nMixed-metal welding can be satisfactory, generally using an over-alloyed welding consumable such as Grade 309L, but caution must be exercised to prevent carbon migration into the part of the stainless"
+          },
+          "14. Weld Repair to Avoid Crevices": {
+            "_summary": "14. Weld Repair to Avoid Crevices\nIf a leaking tank is patched this should be done in a manner which avoids creating further crevices, on either inside or outside, as in Figure 26.\n\nCrevices are readily created when supporting rings, "
+          },
+          "15. Preparation for Welding": {
+            "_summary": "15. Preparation for Welding\nMinimum amounts of energy should always be put into stainless steel welds. The material should be carefully prepared and shaped before welding commences. The welder should avoid chill casting the firs"
+          },
+          "16. De-scaling of Welds and Surface Cleaning": {
+            "_summary": "16. De-scaling of Welds and Surface Cleaning\nTo achieve maximum corrosion resistance all weld scale must be removed and the surface ground, polished and possibly buffed to the specified finish. Best resistance to corrosion is achieved when the s"
+          },
+          "17. Avoid Sharp Machined Corners": {
+            "_summary": "17. Avoid Sharp Machined Corners\nMachining should avoid sharp internal corners at sites such as changes of shaft diameter and the corners of keyways, as these may act as crevices both by their own geometry and by the tendency during "
+          },
+          "18. Avoid Sleeving of Shafts": {
+            "_summary": "18. Avoid Sleeving of Shafts\nFitting of sleeves to shafts creates possible crevice sites between the inner and outer components. A better solution from this point of view is to machine from a solid bar."
+          },
+          "_summary": "Design points to retain corrosion resistance: avoid moisture traps, ensure drainage, smooth surfaces, proper welding, and prevent crevices."
+        },
+        "_summary": "Key design considerations for stainless steel fabrication include grade selection, corrosion avoidance, and maintaining corrosion resistance."
+      },
+      "GUIDELINES FOR STAINLESS STEEL GRADE SELECTION": {
+        "Fundamental Properties for Selection": {
+          "_summary": "Fundamental Properties for Selection\nWhen considering the choice of a stainless steel for a particular application, the first consideration needs to be on the basis of which of the fundamental \"competitive advantage\" properties needs to "
+        },
+        "Selection for Corrosion Resistance": {
+          "_summary": "This article discusses the complexity of selecting the most cost-effective stainless steel grade for corrosive environments. Typically, referencing past service experience serves as an important guide. For uniform corrosion environments such as strong acids, recommended grade tables and iso-corrosion curves can be used for comparison and selection, but it is important to note that minor differences in the environment (e.g., chlorides) can significantly affect the corrosion rate. Localized corrosion (such as pitting and crevice corrosion) is a common mechanism, influenced by chlorides and high temperatures. Its resistance is measured by the Pitting Resistance Equivalent (PRE), calculated as PRE = %Cr + 3.3%Mo + 16%N (with 0.5%W added when tungsten is present). Grades with high chromium, molybdenum, and nitrogen content (such as 316, 2205 duplex stainless steel, super austenitic, and super duplex stainless steels) exhibit stronger corrosion resistance. Additionally, common austenitic steels (e.g., 304, 316) are prone to stress corrosion cracking (SCC) in environments containing chlorides at temperatures above 60°C, while ferritic steels are almost immune, and duplex steels are highly resistant to SCC. Therefore, the appropriate grade should be selected based on the specific environment."
+        },
+        "Selection for Mechanical and Physical Properties": {
+          "_summary": "Selection for Mechanical and Physical Properties\nHigh strength martensitic (e.g. 431) and precipitation hardening (e.g. 630 / 17-4PH) grades are often the material of choice for shafts and valve spindles - here the high strength is as fundamental to"
+        },
+        "Selection for Fabrication": {
+          "_summary": "Selection for Fabrication\nAgain it is usually the case that grades are selected for corrosion resistance and then consideration is given to how the product can be fabricated. Fabrication should be considered as early as possib"
+        },
+        "Selection Criteria": {
+          "_summary": "Selection Criteria\nBefore selecting a grade of stainless steel it is essential to consider the required properties such as corrosion resistance, but it is also important to consider the secondary properties such as the "
+        },
+        "_summary": "Stainless steel grade selection requires evaluating corrosion resistance, mechanical properties, fabrication needs, and overall criteria."
+      },
+      "Appendix 1": {
+        "_summary": "Appendix 1\nGrade Summary - Stainless & Heat Resisting Steels\n\n\nStainless & Heat Resisting Steels"
+      },
+      "Appendix 2": {
+        "_summary": "Appendix 2\nComparison of Grade Specifications of Stainless Steels\n\n\nDesignations in (parentheses) not recognised by ASTM; some are registered trade marks. The above comparisons are approximate only - in some ins"
+      },
+      "Appendix 3": {
+        "_summary": "Appendix 3\nTypical Physical Properties - Annealed Condition\n\n\nNotes: (a) $1\\mathrm{GPa} = 1000\\mathrm{MPa}$ (b) $\\mu \\mathrm{m / m / }^{\\circ}\\mathrm{C} = \\times 10^{-6} / ^{\\circ}\\mathrm{C}$ Magnetic Permeabili"
+      },
+      "Appendix 4": {
+        "Hardness Conversions": {
+          "Approximate conversions for Austenitic Stainless Steels and High Nickel Alloys": {},
+          "Note:": {
+            "_summary": "Note:\nConversions between hardness scales are approximate only and should not be used to determine conformance with specifications. Data from ASTM A370 and ASTM E140. Actual values obtained for hardness wil"
+          },
+          "_summary": "Note:\nConversions between hardness scales are approximate only and should not be used to determine c"
+        },
+        "_summary": "Note:\nConversions between hardness scales are approximate only and should not be used to determine c"
+      },
+      "Appendix 5": {
+        "_summary": "Appendix 5\nUnit Conversions\nFormulae\n\n\n\n\nMore complete unit conversion factors are given in the table on the Atlas Website.\nA spreadsheet for mass calculations of common products is also available on the Atlas w"
+      },
+      "Appendix 6": {
+        "Dimensional Tolerances for Bar": {
+          "25.40mm diameter bar to h9 = +Nil, -0.052mm": {
+            "_summary": "25.40mm diameter bar to h9 = +Nil, -0.052mm\n160mm hot rolled bar to k14 = +1.000mm, - Nil"
+          },
+          "Notes:": {
+            "_summary": "Notes:\n1. Tolerances are as given for shafts in ISO 286.2 and AS 1654.2. These references should be consulted for full details and for other tolerances.\n2. Shaft k tolerances are according to the above table"
+          },
+          "_summary": "Dimensional tolerances for 25.40mm h9 and 160mm k14 bars per ISO 286.2 and AS 1654.2."
+        },
+        "_summary": "Dimensional tolerances for 25.40mm h9 and 160mm k14 bars per ISO 286.2 and AS 1654.2."
+      },
+      "Appendix 7": {
+        "_summary": "This content lists bibliographic references and internet resources for a stainless steel technical handbook, including over 16 references such as Stahlschlüssel, Woldman's Engineering Alloys, ASTM standards, the UNS numbering system, and ASM handbooks. These cover topics such as composition specifications, corrosion control, welding, and processing. It also notes that the Atlas Steels technical department can provide additional information."
+      },
+      "_summary": "Stainless steel families, properties, fabrication, finishing, selection, and appendices."
+    },
+    "_summary": "Stainless steel families, properties, fabrication, finishing, selection, and appendices."
+  },
+  "tables": {
+    "table-0 Steel Classification and Uses.html": {},
+    "table-1 Stainless Steel Alloy Properties.html": {},
+    "table-2 Stainless Steel Temperature Resistance Data.html": {},
+    "table-3 Thermal Expansion Coefficient Table.html": {},
+    "table-4 Material Properties Table.html": {},
+    "table-5 Welding Parameter Table.html": {},
+    "table-6 Stainless Steel PRE Values Table.html": {},
+    "table-7 Selection of Stainless Steel Properties.html": {},
+    "table-8 Stainless Steel Grade Properties.html": {},
+    "table-9 Stainless Steel Grade Table.html": {},
+    "table-10 Stainless Steel Grade Table.html": {},
+    "table-11 Stainless Steel Grade Comparison.html": {},
+    "table-12 Physical Properties of Stainless Steel.html": {},
+    "table-13 Hardness Conversion Table.html": {},
+    "table-14 Unit Conversion Table.html": {},
+    "table-15 Metal Mass Calculation.html": {},
+    "table-16 Tolerance Value Table.html": {},
+    "table-17 Stainless Steel Organization Websites.html": {}
+  },
+  "images": {
+    "image-1-Classification of Stainless Steels.jpg": {},
+    "image-2-Stainless Steel Grades.jpg": {},
+    "image-3-Duplex Steel Grades.jpg": {},
+    "image-4-Stainless Steel Grades.jpg": {},
+    "image-5-Martensitic Stainless Steels.jpg": {},
+    "image-6-Corrosion Resistance of Steels.jpg": {},
+    "image-7-Critical Pitting Temperature Comparison.jpg": {},
+    "image-8-Time-Temperature-Sensitisation Curves.jpg": {},
+    "image-9-Galvanic Series Chart.jpg": {},
+    "image-10-Chromium Effect on Scaling.jpg": {},
+    "image-11-Charpy Impact Energy vs Temperature.jpg": {},
+    "image-12-Permeability vs Area Reduction.jpg": {},
+    "image-13-Material Strength Comparison.jpg": {},
+    "image-14-Elongation Comparison.jpg": {},
+    "image-15-Tensile Strength vs Reduction of Area.jpg": {},
+    "image-16-Relative Machinability Comparison.jpg": {},
+    "image-17-Welding Joint Designs.jpg": {},
+    "image-18-Tank Bottom Designs.jpg": {},
+    "image-19-Tank Installation Methods.jpg": {},
+    "image-20-Weld Comparison.jpg": {}
+  }
+}

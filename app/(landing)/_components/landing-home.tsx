@@ -1,4 +1,5 @@
 import { ComparisonShowcase } from "@app/(landing)/_components/comparison-showcase";
+import { HeroPlayground } from "@app/(landing)/_components/hero-playground";
 import { IntegrateCodePanel } from "@app/(landing)/_components/integrate-code-panel";
 import { LandingBrand } from "@app/(landing)/_components/landing-brand";
 import { LandingHeader } from "@app/(landing)/_components/landing-header";
@@ -69,39 +70,6 @@ const cardStripePattern = (color: string): CSSProperties => ({
   backgroundImage: `repeating-linear-gradient(-45deg, ${color} 0 1px, transparent 1px 7px)`,
 });
 
-const processCardIconAssetMap = {
-  doc: "/icons/knowhere/process-document.svg",
-} as const;
-
-const heroFieldPatternStyle: CSSProperties = {
-  backgroundImage: "radial-gradient(rgba(228,228,231,0.9) 1px, transparent 1px)",
-  backgroundSize: "14px 14px",
-};
-
-const heroDemoFiles = [
-  {
-    active: false,
-    fileName: "Invoice.pdf",
-    extension: ".pdf",
-    style: { left: "calc(50% - 67px)", top: "calc(50% + 31px)" },
-    tone: { background: "#fb2c36", text: "#fef2f2" },
-  },
-  {
-    active: true,
-    fileName: "Report.pdf",
-    extension: ".pdf",
-    style: { left: "calc(50% + 8.5px)", top: "calc(50% - 59px)" },
-    tone: { background: "#fb2c36", text: "#fef2f2" },
-  },
-  {
-    active: false,
-    fileName: "Database.csv",
-    extension: ".csv",
-    style: { left: "calc(50% + 63px)", top: "calc(50% + 47px)" },
-    tone: { background: "#00b8db", text: "#ecfeff" },
-  },
-] as const;
-
 type ActionLinkProps = {
   children: ReactNode;
   href: string;
@@ -144,36 +112,6 @@ const ActionLink = ({
   );
 };
 
-const ProcessCardIcon = ({
-  name,
-  className,
-}: {
-  name: "doc" | "api" | "json";
-  className?: string;
-}) => {
-  if (name !== "doc") {
-    return <KnowhereIcon className={className} name={name} />;
-  }
-
-  return (
-    <span
-      aria-hidden="true"
-      className={cn("inline-block size-5 shrink-0 align-middle", className)}
-      style={{
-        backgroundColor: "currentColor",
-        WebkitMaskImage: `url("${processCardIconAssetMap.doc}")`,
-        maskImage: `url("${processCardIconAssetMap.doc}")`,
-        WebkitMaskPosition: "center",
-        maskPosition: "center",
-        WebkitMaskRepeat: "no-repeat",
-        maskRepeat: "no-repeat",
-        WebkitMaskSize: "contain",
-        maskSize: "contain",
-      }}
-    />
-  );
-};
-
 const SectionTitle = ({
   title,
   description,
@@ -194,32 +132,6 @@ const SectionTitle = ({
         {description}
       </p>
     ) : null}
-  </div>
-);
-
-const DemoProcessCard = ({
-  icon,
-  title,
-  caption,
-}: {
-  icon: "doc" | "api" | "json";
-  title: string;
-  caption: string;
-}) => (
-  <div className="w-[104px] overflow-hidden rounded-lg border border-zinc-600 bg-zinc-800 text-nowrap">
-    <div className="flex items-center justify-center gap-1.5 border-b border-zinc-600 bg-zinc-700 px-[10px] pb-1.5 pt-2 text-zinc-400">
-      <ProcessCardIcon className="size-3 text-current" name={icon} />
-      <span className={cn("text-xs leading-4", monoDisplayClassName)}>{title}</span>
-    </div>
-    <div className="flex items-center justify-center px-[10px] py-1.5 text-center">
-      <span className={cn("text-xs leading-4 text-zinc-500", monoDisplayClassName)}>{caption}</span>
-    </div>
-  </div>
-);
-
-const DemoProcessConnector = () => (
-  <div className="flex h-full items-center">
-    <div className="w-2 border-t border-zinc-600" />
   </div>
 );
 
@@ -497,88 +409,6 @@ const FooterChip = ({ color, children }: { color: string; children: string }) =>
   </p>
 );
 
-const HeroFileCard = ({
-  active,
-  fileName,
-  extension,
-  style,
-  tone,
-}: {
-  active: boolean;
-  fileName: string;
-  extension: string;
-  style: CSSProperties;
-  tone: { background: string; text: string };
-}) => (
-  <div className="absolute -translate-x-1/2 -translate-y-1/2" style={style}>
-    <div className="flex flex-col items-center gap-1">
-      <div className="relative h-16 w-[65px]">
-        <Image
-          alt=""
-          aria-hidden="true"
-          className="absolute left-[7px] top-0 h-16 w-[50px]"
-          height={64}
-          src={
-            active
-              ? "/images/knowhere/hero-demo-page-active.svg"
-              : "/images/knowhere/hero-demo-page-default.svg"
-          }
-          width={50}
-        />
-        <span
-          className={cn(
-            "absolute bottom-2 right-[5px] inline-flex items-center justify-center px-1 py-0.5 text-[18px] leading-6",
-            monoDisplayClassName
-          )}
-          style={{ backgroundColor: tone.background, color: tone.text }}
-        >
-          {extension}
-        </span>
-      </div>
-      <span className={cn("text-xs leading-4 text-zinc-900", monoDisplayClassName)}>
-        {fileName}
-      </span>
-    </div>
-  </div>
-);
-
-const HeroDemoSplit = () => (
-  <div className="grid grid-cols-2 max-[639px]:grid-cols-1 min-[640px]:max-[767px]:grid-cols-1">
-    <div
-      className="relative min-h-[260px] border-r border-t border-zinc-200 bg-white max-[639px]:border-b max-[639px]:border-r-0 min-[640px]:max-[767px]:border-b min-[640px]:max-[767px]:border-r-0"
-      style={heroFieldPatternStyle}
-    >
-      <div className="relative min-h-[260px]">
-        {heroDemoFiles.map((file) => (
-          <HeroFileCard
-            key={file.fileName}
-            active={file.active}
-            extension={file.extension}
-            fileName={file.fileName}
-            style={file.style}
-            tone={file.tone}
-          />
-        ))}
-      </div>
-    </div>
-    <div
-      className="flex min-h-[260px] flex-col items-center justify-center gap-10 border-t border-zinc-200 bg-zinc-800 px-12 py-10 text-center max-[639px]:border-t-0 max-[639px]:px-6 min-[640px]:max-[767px]:border-t-0"
-      style={cardStripePattern("rgba(255,255,255,0.06)")}
-    >
-      <p className={cn("w-full text-xs leading-4 text-zinc-200", monoDisplayClassName)}>
-        Drop a file here or pick a sample on the left
-      </p>
-      <div className="flex items-center justify-center">
-        <DemoProcessCard caption="input" icon="doc" title="Document" />
-        <DemoProcessConnector />
-        <DemoProcessCard caption="API" icon="api" title="Processing" />
-        <DemoProcessConnector />
-        <DemoProcessCard caption="output" icon="json" title="Clean JOSN" />
-      </div>
-    </div>
-  </div>
-);
-
 export const LandingHome = () => {
   return (
     <div className="min-h-dvh bg-[#fafafa] text-[#09090b]">
@@ -699,7 +529,7 @@ export const LandingHome = () => {
             <StatsItem icon={<Zap className="size-5" />} leading="<200ms" trailing="Speed" />
           </div>
 
-          <HeroDemoSplit />
+          <HeroPlayground />
         </section>
 
         <section

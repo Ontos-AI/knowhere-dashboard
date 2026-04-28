@@ -48,7 +48,7 @@ function DocumentPanel() {
           <span className="h-3 w-3 rounded-full border border-black/10 bg-[#febc2e]" />
           <span className="h-3 w-3 rounded-full border border-black/10 bg-[#28c840]" />
           <span className="ml-3 font-pixel text-[10px] uppercase tracking-[0.14em] text-pixel-muted">
-            TSLA-Q4-2025-Update.pdf
+            Tesla-Q4-2025-Update.pdf
           </span>
         </div>
 

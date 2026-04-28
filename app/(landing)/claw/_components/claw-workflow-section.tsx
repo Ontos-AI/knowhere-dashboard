@@ -114,7 +114,7 @@ const WorkflowSourceHeader = () => {
         </div>
         <div className="relative flex h-10 w-full items-center gap-2 border-b border-[#ffd6a8] bg-[#ffedd4] px-5 font-mono-display text-sm leading-6 sm:h-[50px] sm:gap-3 sm:px-[30px] sm:text-[18px] sm:leading-[26px]">
           <p className="shrink-0 font-semibold text-[#ff8904] sm:text-[18px]">Raw source:</p>
-          <p className="truncate text-[#71717b]">TSLA-Q4-2025-Update.pdf</p>
+          <p className="truncate text-[#71717b]">Tesla-Q4-2025-Update.pdf</p>
         </div>
       </div>
       <div className="relative hidden h-12 items-center justify-between border-b border-[#ffd6a8] bg-[#fff7ed] px-5 min-[640px]:max-[767px]:flex min-[768px]:max-[768px]:flex min-[769px]:flex">
@@ -126,7 +126,7 @@ const WorkflowSourceHeader = () => {
           </div>
         </div>
         <p className="relative font-mono-display text-sm leading-6 text-[#ff8904]">
-          Raw source: <span className="text-[#71717b]">TSLA-Q4-2025-Update.pdf</span>
+          Raw source: <span className="text-[#71717b]">Tesla-Q4-2025-Update.pdf</span>
         </p>
       </div>
     </>

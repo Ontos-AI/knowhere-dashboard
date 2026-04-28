@@ -1,0 +1,180 @@
+{
+  "chengke_kb": {
+    "EN_Atlas Technical Handbook rev Aug 2013.pdf": {
+      "THE FAMILY OF MATERIALS": {},
+      "STAINLESS STEELS - INTRODUCTION TO THE GRADES AND FAMILIES": {
+        "The Families of Stainless Steels": {
+          "Austenitic Stainless Steels": {},
+          "Ferritic Stainless Steels": {},
+          "Martensitic Stainless Steels": {},
+          "Duplex Stainless Steels": {},
+          "Precipitation Hardening Stainless Steels": {},
+          "Characteristics of Stainless Steels": {},
+          "Standard Classifications": {},
+          "Austenitic and Duplex Stainless Steels": {},
+          "Ferritic and Martensitic Stainless Steels": {}
+        },
+        "Comparative Properties of the Stainless Steel Alloy Families": {}
+      },
+      "CORROSION RESISTANCE": {
+        "General Corrosion": {},
+        "Pitting corrosion": {},
+        "Crevice corrosion": {},
+        "Stress corrosion cracking (SCC)": {},
+        "Sulphide Stress Corrosion Cracking (SSC)": {
+          "a) Stress level": {},
+          "b) Environment": {},
+          "c) Temperature": {}
+        },
+        "Intergranular corrosion": {},
+        "Galvanic corrosion": {},
+        "Contact corrosion": {}
+      },
+      "HIGH TEMPERATURE RESISTANCE": {
+        "Scaling Resistance": {},
+        "Creep Strength": {},
+        "Structural Stability": {},
+        "Environmental Factors": {},
+        "Thermal Expansion": {}
+      },
+      "CRYOGENIC PROPERTIES": {},
+      "MAGNETIC PROPERTIES": {},
+      "MECHANICAL PROPERTIES": {
+        "Mechanical Properties of Wire": {},
+        "Mechanical Properties of Bar": {}
+      },
+      "FABRICATION": {
+        "Forming Operations": {},
+        "Machining": {
+          "Ugima Improved Machinability Grades": {},
+          "Rules for Machining Stainless Steels": {}
+        },
+        "Welding": {
+          "Austenitic Stainless Steels": {},
+          "Duplex Stainless Steels": {},
+          "Ferritic Stainless Steels": {},
+          "Martensitic Stainless Steels": {},
+          "Welding Dissimilar Metals": {},
+          "Further Information on Welding": {}
+        },
+        "Soft Soldering": {},
+        "Brazing (\"Silver Soldering\")": {}
+      },
+      "HEAT TREATMENT": {
+        "Annealing": {
+          "Austenitic Stainless Steels": {},
+          "Duplex Stainless Steels": {},
+          "Martensitic and Ferritic Stainless Steels": {},
+          "Atmosphere Control": {},
+          "Stabilising Annealing": {}
+        },
+        "Hardening": {
+          "Martensitic Stainless Steels": {},
+          "Precipitation Hardening Steels": {}
+        },
+        "Stress Relieving": {},
+        "Surface Hardening": {}
+      },
+      "SURFACE FINISHING": {
+        "Passivation": {},
+        "Pickling": {},
+        "Degreasing": {},
+        "Electropolishing": {},
+        "Grinding and Polishing": {},
+        "Mechanical Cleaning": {},
+        "Blackening": {}
+      },
+      "SURFACE CONTAMINATION IN FABRICATION": {
+        "Contamination by Carbon Steel": {},
+        "Contamination by Chlorides": {},
+        "Contamination by Carbon": {}
+      },
+      "DESIGN CONSIDERATIONS IN FABRICATION OF STAINLESS STEELS": {
+        "Grade Selection for Fabrication": {},
+        "Design to Avoid Corrosion": {},
+        "Specific Design Points - To Retain Corrosion Resistance": {
+          "1. Invert Structural Members": {},
+          "2. Ensure Tanks & Pipes Drain Fully When Idle": {},
+          "3. Raise Tanks Off the Floor": {},
+          "4. Smooth, Rounded Corners Inside Tanks": {},
+          "5. Insulation or Lagging of Pipelines and Vessels": {},
+          "6. Incomplete Filling Problems": {},
+          "7. Inlet Location": {},
+          "8. Reduce Splashing Within Tanks": {},
+          "9. Heater Location": {},
+          "10. Avoid Settling in Pipes and Vessels": {},
+          "11. Pipe Welds": {},
+          "12. Structural Attachments": {},
+          "13. Welding Mild Steel to Stainless Steel": {},
+          "14. Weld Repair to Avoid Crevices": {},
+          "15. Preparation for Welding": {},
+          "16. De-scaling of Welds and Surface Cleaning": {},
+          "17. Avoid Sharp Machined Corners": {},
+          "18. Avoid Sleeving of Shafts": {}
+        }
+      },
+      "GUIDELINES FOR STAINLESS STEEL GRADE SELECTION": {
+        "Fundamental Properties for Selection": {},
+        "Selection for Corrosion Resistance": {},
+        "Selection for Mechanical and Physical Properties": {},
+        "Selection for Fabrication": {},
+        "Selection Criteria": {}
+      },
+      "Appendix 1": {},
+      "Appendix 2": {},
+      "Appendix 3": {},
+      "Appendix 4": {
+        "Hardness Conversions": {
+          "Approximate conversions for Austenitic Stainless Steels and High Nickel Alloys": {}
+        }
+      },
+      "Appendix 5": {},
+      "Appendix 6": {
+        "Dimensional Tolerances for Bar": {}
+      },
+      "Appendix 7": {}
+    }
+  },
+  "tables": {
+    "table-0 钢种分类与用途.html": {},
+    "table-1 不锈钢合金特性.html": {},
+    "table-2 不锈钢耐温数据.html": {},
+    "table-3 热膨胀系数表.html": {},
+    "table-4 材料性能表.html": {},
+    "table-5 焊接参数表.html": {},
+    "table-6 不锈钢PRE值表.html": {},
+    "table-7 不锈钢性能选择.html": {},
+    "table-8 不锈钢等级特性.html": {},
+    "table-9 不锈钢牌号表.html": {},
+    "table-10 不锈钢牌号表.html": {},
+    "table-11 不锈钢牌号对照.html": {},
+    "table-12 不锈钢物理性能表.html": {},
+    "table-13 硬度换算表.html": {},
+    "table-14 单位换算表.html": {},
+    "table-15 金属质量计算.html": {},
+    "table-16 公差数值表.html": {},
+    "table-17 不锈钢组织网址.html": {}
+  },
+  "images": {
+    "image-1-Classification of Stainless Steels.jpg": {},
+    "image-2-Stainless Steel Grades.jpg": {},
+    "image-3-Duplex Steel Grades.jpg": {},
+    "image-4-Stainless Steel Grades.jpg": {},
+    "image-5-Martensitic Stainless Steels.jpg": {},
+    "image-6-Corrosion Resistance of Steels.jpg": {},
+    "image-7-Critical Pitting Temperature Comparison.jpg": {},
+    "image-8-Time-Temperature-Sensitisation Curves.jpg": {},
+    "image-9-Galvanic Series Chart.jpg": {},
+    "image-10-Chromium Effect on Scaling.jpg": {},
+    "image-11-Charpy Impact Energy vs Temperature.jpg": {},
+    "image-12-Permeability vs Area Reduction.jpg": {},
+    "image-13-Material Strength Comparison.jpg": {},
+    "image-14-Elongation Comparison.jpg": {},
+    "image-15-Tensile Strength vs Reduction of Area.jpg": {},
+    "image-16-Relative Machinability Comparison.jpg": {},
+    "image-17-Welding Joint Designs.jpg": {},
+    "image-18-Tank Bottom Designs.jpg": {},
+    "image-19-Tank Installation Methods.jpg": {},
+    "image-20-Weld Comparison.jpg": {}
+  }
+}
