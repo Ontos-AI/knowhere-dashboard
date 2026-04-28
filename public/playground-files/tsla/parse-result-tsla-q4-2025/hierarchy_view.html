@@ -1167,7 +1167,7 @@
         
         // 渲染树
         function renderTree() {
-            const docTree = hierarchyData['Default_Root'] || {};
+            const docTree = hierarchyData.Default_Root || {};
             document.getElementById('tree').innerHTML = renderNode(docTree, '');
             bindEvents();
         }
@@ -1178,7 +1178,7 @@
             
             for (const [key, value] of Object.entries(node)) {
                 const currentPath = parentPath ? `${parentPath}/${key}` : key;
-                const fullPath = 'Default_Root/' + currentPath;
+                const fullPath = `Default_Root/${currentPath}`;
                 const hasChildren = value && Object.keys(value).length > 0;
                 const content = pathContentMap[fullPath] || '';
                 
@@ -1230,8 +1230,12 @@
         
         // 展开内容：展开所有
         function expandAll() {
-            document.querySelectorAll('.children').forEach(el => el.classList.remove('collapsed'));
-            document.querySelectorAll('.toggle').forEach(el => el.classList.remove('collapsed'));
+            document.querySelectorAll('.children').forEach(el => {
+                el.classList.remove('collapsed');
+            });
+            document.querySelectorAll('.toggle').forEach(el => {
+                el.classList.remove('collapsed');
+            });
         }
         
         // 折叠内容：只折叠叶节点内容，保持树结构展开
