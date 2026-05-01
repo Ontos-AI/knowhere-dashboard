@@ -25,11 +25,13 @@ const landingNavItems: LandingNavItem[] = [
 
 const LandingHeaderLink = ({
   href,
+  label,
   children,
   active = false,
   external = false,
 }: {
   href: string;
+  label: string;
   children: ReactNode;
   active?: boolean;
   external?: boolean;
@@ -37,16 +39,37 @@ const LandingHeaderLink = ({
   <Link
     aria-current={active ? "location" : undefined}
     className={cn(
-      "relative flex h-16 items-center justify-center px-4 text-sm leading-5 text-zinc-950 transition-colors hover:bg-zinc-100/70",
+      "group relative flex h-16 items-center justify-center px-4 text-[14px] leading-5 text-zinc-950 max-[639px]:h-12",
       active
-        ? "font-semibold after:absolute after:bottom-[13px] after:left-4 after:right-4 after:h-px after:bg-zinc-950"
-        : "font-light"
+        ? "font-semibold opacity-100"
+        : "font-normal opacity-100 transition-opacity duration-150 ease-out hover:opacity-60 active:opacity-100 active:font-medium"
     )}
     href={href}
     rel={external ? "noreferrer" : undefined}
     target={external ? "_blank" : undefined}
   >
-    {children}
+    <span
+      data-label={label}
+      className={cn(
+        "relative inline-grid",
+        "before:invisible before:col-start-1 before:row-start-1 before:font-semibold before:content-[attr(data-label)]",
+        "after:pointer-events-none after:absolute after:bottom-[2px] after:left-0 after:h-px after:w-full after:bg-current after:content-['']",
+        "after:origin-left after:transition-transform after:duration-200 after:ease-out",
+        active
+          ? "after:scale-x-100 after:opacity-100"
+          : "after:scale-x-0 after:opacity-100 group-hover:after:scale-x-100 group-hover:after:opacity-60 group-active:after:scale-x-100 group-active:after:opacity-100"
+      )}
+    >
+      <span
+        className={cn(
+          "col-start-1 row-start-1",
+          "transition-[font-weight,opacity] duration-150 ease-out",
+          active ? "font-semibold opacity-100" : "font-normal opacity-100 group-hover:opacity-60"
+        )}
+      >
+        {children}
+      </span>
+    </span>
   </Link>
 );
 
@@ -84,6 +107,7 @@ export const LandingHeader = () => {
                 active={targetSection === activeSection}
                 external={item.external}
                 href={item.href}
+                label={item.label}
               >
                 {item.label}
               </LandingHeaderLink>
@@ -97,9 +121,9 @@ export const LandingHeader = () => {
           </HeaderIconButton>
           <Link
             className={cn(
-              "inline-flex items-center justify-center border border-b-[6px] border-[#7f22fe] bg-[#8e51ff] pb-1 text-[#f5f3ff] transition-transform hover:-translate-y-0.5",
+              "inline-flex items-center justify-center border-b-[6px] border-b-[#7f22fe] bg-[#8e51ff] pt-[4px] pb-[4px] px-6 text-[#f5f3ff] transition-all hover:border-b-[8px] hover:border-b-[#7008e7] hover:bg-[#7f22fe] hover:pb-[6px] active:border-b-0 active:bg-[#7008e7] active:pb-[6px]",
               monoDisplayClassName,
-              "h-full w-[152px] flex-none rounded-none px-0 text-sm font-semibold max-[639px]:hidden"
+              "h-full w-[152px] flex-none rounded-none text-sm font-semibold max-[639px]:hidden"
             )}
             href="/login"
           >

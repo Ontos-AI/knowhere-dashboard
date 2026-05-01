@@ -28,7 +28,7 @@ const WorkflowTagFileIcon = () => {
 
 const WorkflowTag = ({ children }: WorkflowTagProps) => {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-md border border-[#52525c] bg-[#3f3f46] px-[10px] py-1 font-mono-display text-sm leading-5 text-[#9f9fa9] min-[640px]:gap-2 min-[640px]:rounded-lg min-[640px]:px-3 min-[640px]:py-2 min-[640px]:max-[767px]:gap-1 min-[640px]:max-[767px]:rounded-lg min-[640px]:max-[767px]:px-[10px] min-[640px]:max-[767px]:py-[6px] min-[640px]:max-[767px]:text-xs min-[640px]:max-[767px]:leading-5 min-[768px]:max-[768px]:gap-1 min-[768px]:max-[768px]:rounded-lg min-[768px]:max-[768px]:px-[10px] min-[768px]:max-[768px]:py-[6px] min-[768px]:max-[768px]:text-xs min-[768px]:max-[768px]:leading-5 min-[769px]:gap-1 min-[769px]:rounded-lg min-[769px]:px-[10px] min-[769px]:py-[6px] min-[769px]:text-xs min-[769px]:leading-5">
+    <span className="inline-flex items-center gap-1.5 rounded-md border border-[#52525c] bg-[#3f3f46] px-[10px] py-1 font-sans text-sm leading-5 text-[#9f9fa9] min-[640px]:gap-2 min-[640px]:rounded-lg min-[640px]:px-3 min-[640px]:py-2 min-[640px]:max-[767px]:gap-1 min-[640px]:max-[767px]:rounded-lg min-[640px]:max-[767px]:px-[10px] min-[640px]:max-[767px]:py-[6px] min-[640px]:max-[767px]:text-xs min-[640px]:max-[767px]:leading-5 min-[768px]:max-[768px]:gap-1 min-[768px]:max-[768px]:rounded-lg min-[768px]:max-[768px]:px-[10px] min-[768px]:max-[768px]:py-[6px] min-[768px]:max-[768px]:text-xs min-[768px]:max-[768px]:leading-5 min-[769px]:gap-1 min-[769px]:rounded-lg min-[769px]:px-[10px] min-[769px]:py-[6px] min-[769px]:text-xs min-[769px]:leading-5">
       <WorkflowTagFileIcon />
       {children}
     </span>
@@ -108,24 +108,24 @@ const WorkflowSourceHeader = () => {
   return (
     <>
       <div className="relative flex flex-col min-[640px]:max-[767px]:hidden min-[768px]:max-[768px]:hidden min-[769px]:hidden">
-        <div className="relative flex h-14 w-full items-center gap-[10px] overflow-hidden rounded-t-[24px] border-b border-[#ffd6a8] bg-[#ffedd4] px-5 font-mono-display text-base font-bold leading-6 text-[#f54a00] after:absolute after:inset-y-0 after:right-0 after:w-1 after:bg-[#f54a00] after:content-[''] sm:h-[72px] sm:px-8 sm:py-[10px] sm:text-[18px] sm:leading-[26px]">
+        <div className="relative flex h-14 w-full items-center gap-[10px] overflow-hidden rounded-t-[24px] border-b border-[#ffd6a8] bg-[#ffedd4] px-5 font-sans text-base font-bold leading-6 text-[#f54a00] after:absolute after:inset-y-0 after:right-0 after:w-1 after:bg-[#f54a00] after:content-[''] sm:h-[72px] sm:px-8 sm:py-[10px] sm:text-[18px] sm:leading-[26px]">
           <KnowhereIcon className="size-5 text-current" name="state-x" />
           UNSTRUCTURED
         </div>
-        <div className="relative flex h-10 w-full items-center gap-2 border-b border-[#ffd6a8] bg-[#ffedd4] px-5 font-mono-display text-sm leading-6 sm:h-[50px] sm:gap-3 sm:px-[30px] sm:text-[18px] sm:leading-[26px]">
+        <div className="relative flex h-10 w-full items-center gap-2 border-b border-[#ffd6a8] bg-[#ffedd4] px-5 font-sans text-sm leading-6 sm:h-[50px] sm:gap-3 sm:px-[30px] sm:text-[18px] sm:leading-[26px]">
           <p className="shrink-0 font-semibold text-[#ff8904] sm:text-[18px]">Raw source:</p>
           <p className="truncate text-[#71717b]">Tesla-Q4-2025-Update.pdf</p>
         </div>
       </div>
-      <div className="relative hidden h-12 items-center justify-between border-b border-[#ffd6a8] bg-[#fff7ed] px-5 min-[640px]:max-[767px]:flex min-[768px]:max-[768px]:flex min-[769px]:flex">
+      <div className="relative hidden h-12 items-center justify-between border-b border-[#ffd6a8] bg-[#fff7ed] pl-0 pr-5 min-[640px]:max-[767px]:flex min-[768px]:max-[768px]:flex min-[769px]:flex">
         <ClawStripedOverlay tint="orange" />
         <div className="relative flex h-full items-center">
-          <div className="inline-flex h-full items-center gap-2 border-r-4 border-[#f54a00] border-l border-b border-[#ff8904] bg-[#fff7ed] px-5 font-mono-display text-base font-bold leading-6 text-[#f54a00]">
+          <div className="inline-flex h-full items-center gap-2 border-r-4 border-[#f54a00] border-l border-b border-[#ff8904] bg-[#fff7ed] px-5 font-sans text-base font-bold leading-6 text-[#f54a00]">
             <KnowhereIcon className="size-5 text-current" name="state-x" />
             UNSTRUCTURED
           </div>
         </div>
-        <p className="relative font-mono-display text-sm leading-6 text-[#ff8904]">
+        <p className="relative font-sans text-sm leading-6 text-[#ff8904]">
           Raw source: <span className="text-[#71717b]">Tesla-Q4-2025-Update.pdf</span>
         </p>
       </div>
@@ -141,11 +141,11 @@ type UserBubbleProps = {
 const UserBubble = ({ count, text }: UserBubbleProps) => {
   return (
     <div className="pl-12 min-[640px]:pl-20 min-[640px]:max-[767px]:pl-32 min-[768px]:max-[768px]:pl-20 min-[769px]:pl-32">
-      <div className="rounded-tl-[32px] rounded-bl-[32px] rounded-br-[32px] bg-[#a684ff] px-5 py-4 font-mono-display text-sm leading-[18px] text-[#2f0d68] min-[640px]:px-8 min-[640px]:py-6 min-[640px]:text-lg min-[640px]:leading-6 min-[640px]:max-[767px]:px-7 min-[640px]:max-[767px]:py-5 min-[640px]:max-[767px]:text-base min-[640px]:max-[767px]:leading-5 min-[768px]:max-[768px]:px-7 min-[768px]:max-[768px]:py-5 min-[768px]:max-[768px]:text-base min-[768px]:max-[768px]:leading-5 min-[769px]:px-7 min-[769px]:py-5 min-[769px]:text-base min-[769px]:leading-5">
+      <div className="rounded-tl-[32px] rounded-bl-[32px] rounded-br-[32px] bg-[#a684ff] px-5 py-4 font-sans text-sm leading-[18px] text-[#2f0d68] min-[640px]:px-8 min-[640px]:py-6 min-[640px]:text-lg min-[640px]:leading-6 min-[640px]:max-[767px]:px-7 min-[640px]:max-[767px]:py-5 min-[640px]:max-[767px]:text-base min-[640px]:max-[767px]:leading-5 min-[768px]:max-[768px]:px-7 min-[768px]:max-[768px]:py-5 min-[768px]:max-[768px]:text-base min-[768px]:max-[768px]:leading-5 min-[769px]:px-7 min-[769px]:py-5 min-[769px]:text-base min-[769px]:leading-5">
         {text}
       </div>
       <div className="mt-2 flex justify-end">
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-[#71717b] bg-[#3f3f46] py-1.5 pl-[14px] pr-4 font-mono-display text-xl leading-7 text-[#fafafa] min-[640px]:gap-2 min-[640px]:px-4 min-[640px]:py-2 min-[640px]:max-[767px]:text-lg min-[640px]:max-[767px]:leading-6 min-[768px]:max-[768px]:text-lg min-[768px]:max-[768px]:leading-6 min-[769px]:text-lg min-[769px]:leading-6">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-[#71717b] bg-[#3f3f46] py-1.5 pl-[14px] pr-4 font-sans text-xl leading-7 text-[#fafafa] min-[640px]:gap-2 min-[640px]:px-4 min-[640px]:py-2 min-[640px]:max-[767px]:text-lg min-[640px]:max-[767px]:leading-6 min-[768px]:max-[768px]:text-lg min-[768px]:max-[768px]:leading-6 min-[769px]:text-lg min-[769px]:leading-6">
           <KnowhereIcon className="size-6 text-current" name="search" />
           {count}
         </span>
@@ -167,7 +167,7 @@ const AssistantBubble = ({ emphasis, tags, text }: AssistantBubbleProps) => {
         <OpenClawMark className="h-6 w-7" />
       </div>
       <div className="flex min-h-0 flex-1 self-stretch flex-col gap-5 rounded-tr-[32px] rounded-br-[32px] rounded-bl-[32px] bg-[#3f3f46] px-5 py-4 min-[640px]:min-h-[204px] min-[640px]:gap-8 min-[640px]:px-8 min-[640px]:py-6 min-[640px]:max-[767px]:gap-6 min-[640px]:max-[767px]:px-7 min-[640px]:max-[767px]:py-5 min-[768px]:max-[768px]:gap-6 min-[768px]:max-[768px]:px-7 min-[768px]:max-[768px]:py-5 min-[769px]:gap-6 min-[769px]:px-7 min-[769px]:py-5">
-        <p className="font-mono-display text-[18px] leading-6 text-[#fafafa] min-[640px]:max-[767px]:text-base min-[640px]:max-[767px]:leading-5 min-[768px]:max-[768px]:text-base min-[768px]:max-[768px]:leading-5 min-[769px]:text-base min-[769px]:leading-5">
+        <p className="font-sans text-[18px] leading-6 text-[#fafafa] min-[640px]:max-[767px]:text-base min-[640px]:max-[767px]:leading-5 min-[768px]:max-[768px]:text-base min-[768px]:max-[768px]:leading-5 min-[769px]:text-base min-[769px]:leading-5">
           {text}
         </p>
         <p className="font-accent text-4xl font-extrabold leading-none text-[#c4b4ff] min-[640px]:max-[767px]:text-[30px] min-[768px]:max-[768px]:text-[30px] min-[769px]:text-[30px]">
@@ -224,7 +224,7 @@ export const ClawWorkflowSection = () => {
           <div className="overflow-hidden rounded-[24px] border border-[#3f3f46] bg-[#27272a] min-[640px]:max-[767px]:rounded-[12px] min-[768px]:max-[768px]:rounded-[12px] min-[769px]:rounded-[12px]">
             <div className="min-[640px]:max-[767px]:hidden min-[768px]:max-[768px]:hidden min-[769px]:hidden">
               <div className="relative flex flex-col overflow-hidden border-b border-[#52525c] bg-[#3f3f46]">
-                <div className="relative flex h-14 w-full items-center gap-[10px] border-r-4 border-[#008236] border-b border-[#008236] bg-[#016630] px-8 font-mono-display text-base font-bold leading-7 text-[#d0fae5]">
+                <div className="relative flex h-14 w-full items-center gap-[10px] border-r-4 border-[#008236] border-b border-[#008236] bg-[#016630] px-8 font-sans text-base font-bold leading-7 text-[#d0fae5]">
                   <StructuredStatusCheckIcon />
                   STRUCTURED
                 </div>
@@ -232,11 +232,11 @@ export const ClawWorkflowSection = () => {
                   <ClawStripedOverlay className="opacity-40" tint="violet" />
                   <div className="relative flex h-10 items-center justify-center gap-3">
                     <OpenClawMark className="h-5 w-[22px]" />
-                    <span className="font-mono-display text-sm font-medium leading-[26px] text-[#ff6467]">
+                    <span className="font-sans text-sm font-medium leading-[26px] text-[#ff6467]">
                       OpenClaw
                     </span>
                   </div>
-                  <div className="relative flex h-10 items-center justify-center gap-[10px] border-t border-[#52525c] bg-[#52525c] px-4 font-mono-display text-xs leading-[26px] text-[#c4b4ff]">
+                  <div className="relative flex h-10 items-center justify-center gap-[10px] border-t border-[#52525c] bg-[#52525c] px-4 font-sans text-xs leading-[26px] text-[#c4b4ff]">
                     <SkillLoadedCheckIcon />
                     knowhere skill loaded
                   </div>
@@ -245,18 +245,18 @@ export const ClawWorkflowSection = () => {
             </div>
             <div className="relative hidden h-12 items-center justify-between overflow-hidden border-b border-[#52525c] bg-[#3f3f46] min-[640px]:max-[767px]:flex min-[768px]:max-[768px]:flex min-[769px]:flex">
               <ClawStripedOverlay className="opacity-40" tint="violet" />
-              <div className="relative inline-flex h-full items-center gap-2 border-x border-b border-[#52525c] px-5 py-[10px] font-mono-display text-base font-bold leading-6 text-[#00d492]">
+              <div className="relative inline-flex h-full items-center gap-2 border-x border-b border-[#52525c] px-5 py-[10px] font-sans text-base font-bold leading-6 text-[#00d492]">
                 <StructuredStatusCheckIcon />
                 STRUCTURED
               </div>
               <div className="relative flex h-full shrink-0 items-center gap-5 border-l border-[#52525c] pl-5">
                 <div className="inline-flex items-center gap-[6px]">
                   <OpenClawMark className="h-[18px] w-5" />
-                  <span className="font-mono-display text-sm font-medium leading-7 text-[#ff6467]">
+                  <span className="font-sans text-sm font-medium leading-7 text-[#ff6467]">
                     OpenClaw
                   </span>
                 </div>
-                <div className="inline-flex h-full items-center gap-[10px] border-x border-[#52525c] px-5 py-[10px] font-mono-display text-sm leading-7 text-[#c4b4ff]">
+                <div className="inline-flex h-full items-center gap-[10px] border-x border-[#52525c] px-5 py-[10px] font-sans text-sm leading-7 text-[#c4b4ff]">
                   <SkillLoadedCheckIcon />
                   knowhere skill loaded
                 </div>

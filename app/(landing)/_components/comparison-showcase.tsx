@@ -7,13 +7,26 @@ import {
   comparisonRows,
   comparisonTabs,
 } from "@app/(landing)/_components/landing-home-data";
+import { StatefulTab } from "@app/(landing)/_components/stateful-tab";
+import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { cn } from "@lib/utils";
-import { CheckCircle2, Minus, Plus, X } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 
 const monoDisplayClassName = "font-[family-name:var(--font-mono-display)]";
 const comparisonTableGridClassName =
   "min-w-[720px] grid grid-cols-[1.35fr_0.9fr_0.9fr] min-[769px]:min-w-0";
+const comparisonTabTone = {
+  selectedBg: "#fd9a00",
+  selectedBorder: "#e17100",
+  selectedText: "#ffffff",
+  enabledBg: "#fee685",
+  enabledText: "#461901",
+  hoverBg: "#ffd230",
+  hoverBorder: "#ffba00",
+  activeBg: "#ffba00",
+  activeBorder: "#fd9a00",
+} as const;
 
 const stripePattern = (color: string, thickness = 1, size = 8) => ({
   backgroundImage: `repeating-linear-gradient(-45deg, transparent 0 ${size - thickness}px, ${color} ${size - thickness}px ${size}px)`,
@@ -22,17 +35,17 @@ const stripePattern = (color: string, thickness = 1, size = 8) => ({
 const ComparisonIndicator = ({ status }: { status: ComparisonStatus }) => {
   const map = {
     yes: {
-      icon: <CheckCircle2 className="size-4" />,
+      icon: <KnowhereIcon className="size-4" name="check-2" />,
       label: "Yes",
       color: "#10b981",
     },
     bad: {
-      icon: <Minus className="size-4" />,
+      icon: <KnowhereIcon className="size-4" name="component" />,
       label: "Bad",
       color: "#f59e0b",
     },
     no: {
-      icon: <X className="size-4" />,
+      icon: <KnowhereIcon className="size-4" name="state-x" />,
       label: "No",
       color: "#fb2c36",
     },
@@ -61,24 +74,20 @@ export const ComparisonShowcase = () => {
   const filteredRows = getFilteredRows(activeTab);
 
   return (
-    <>
+    <div className="flex flex-col gap-2">
       <div className="overflow-x-auto">
         <div className="flex w-max flex-nowrap gap-px">
           {comparisonTabs.map((tab) => (
-            <button
+            <StatefulTab
+              active={activeTab === tab}
               key={tab}
-              className={cn(
-                "px-4 py-2 text-xs leading-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f97316]",
-                monoDisplayClassName,
-                activeTab === tab
-                  ? "border-b-4 border-[#d97706] bg-[#ff8904] text-[#fff7db]"
-                  : "bg-[#fde68a] text-[#5b3716] hover:bg-[#fcd34d]"
-              )}
+              className={cn(monoDisplayClassName, "focus-visible:ring-[#f97316]")}
               onClick={() => setActiveTab(tab)}
+              tone={comparisonTabTone}
               type="button"
             >
               {tab}
-            </button>
+            </StatefulTab>
           ))}
         </div>
       </div>
@@ -125,8 +134,7 @@ export const ComparisonShowcase = () => {
                 <div className="flex items-center justify-between gap-4">
                   <span
                     className={cn(
-                      "text-base leading-6 text-[#92400e] min-[769px]:text-[18px] min-[769px]:leading-8",
-                      monoDisplayClassName
+                      "text-base leading-6 text-[#92400e] min-[769px]:text-[18px] min-[769px]:leading-8 font-sans"
                     )}
                   >
                     {row.feature}
@@ -145,17 +153,30 @@ export const ComparisonShowcase = () => {
               </div>
             </div>
             <div className="relative flex items-center justify-center border-r border-[#fde68a] bg-[#fffbeb] px-6 py-6">
-              <div className="absolute inset-0 opacity-25" style={stripePattern("#fde68a", 1, 8)} />
+              {row.knowhereStripe ? (
+                <div
+                  className="absolute inset-0 opacity-25"
+                  style={stripePattern("#fde68a", 1, 8)}
+                />
+              ) : null}
               <div className="relative">
                 <ComparisonIndicator status={row.knowhere} />
               </div>
             </div>
-            <div className="flex items-center justify-center px-6 py-6">
-              <ComparisonIndicator status={row.others} />
+            <div className="relative flex items-center justify-center px-6 py-6">
+              {row.othersStripe ? (
+                <div
+                  className="absolute inset-0 opacity-25"
+                  style={stripePattern("#fde68a", 1, 8)}
+                />
+              ) : null}
+              <div className="relative">
+                <ComparisonIndicator status={row.others} />
+              </div>
             </div>
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 };

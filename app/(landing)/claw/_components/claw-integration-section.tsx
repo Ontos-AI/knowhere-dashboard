@@ -102,8 +102,10 @@ export const ClawIntegrationSection = () => {
     <section className="border border-[#e4e4e7] bg-[#fafafa] scroll-mt-20" id="integration">
       <div className="flex flex-col gap-8 pt-10 min-[640px]:gap-12 min-[640px]:pt-20 min-[640px]:max-[767px]:gap-9 min-[640px]:max-[767px]:pt-14 min-[768px]:max-[768px]:gap-9 min-[768px]:max-[768px]:pt-14 min-[769px]:gap-9 min-[769px]:pt-14">
         <ClawSectionHeading
+          className="!space-y-0 min-[640px]:!space-y-0 min-[769px]:!space-y-0"
           description="Follow the same rhythm as a developer-tool homepage: read the steps once, copy the commands in order, and replace the API key only in step 02."
           eyebrow="Integration Guide"
+          eyebrowSpacingClassName="mb-[30px] min-[768px]:max-[768px]:mb-[34px] min-[769px]:mb-[36px]"
           title={
             <>
               Install it in <span className="text-[#e7000b]">OpenClaw</span> in three commands.

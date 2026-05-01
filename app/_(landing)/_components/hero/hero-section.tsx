@@ -151,10 +151,10 @@ const HeroAnnouncementBar = () => {
           <span className="inline-flex items-center border-2 border-pixel-fg bg-pixel-green px-2 py-0.5 font-pixel text-[9px] uppercase tracking-[0.14em] text-pixel-bg shadow-[2px_2px_0_rgba(0,0,0,0.12)]">
             New
           </span>
-          <p className="font-sans text-[11px] leading-none text-pixel-fg sm:text-sm sm:leading-5">
-            <span className="font-semibold sm:hidden">Now live on 🦞 OpenClaw</span>
+          <p className="text-[11px] leading-none text-pixel-fg sm:text-sm sm:leading-5">
+            <span className="font-bold sm:hidden">Now live on 🦞 OpenClaw</span>
             <span className="hidden sm:inline">
-              <span className="font-semibold">Now live on 🦞 OpenClaw</span>
+              <span className="font-bold">Now live on 🦞 OpenClaw</span>
               <span className="text-pixel-muted"> with an installable plugin and skill.</span>
             </span>
           </p>

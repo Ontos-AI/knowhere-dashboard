@@ -14,7 +14,7 @@ import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { cn } from "@lib/utils";
 
 const monoHeadlineClassName =
-  "font-mono-display text-[22px] font-bold leading-[1.2] tracking-[-1px] text-[#09090b] min-[640px]:text-[42px] min-[640px]:leading-[42px] min-[640px]:max-[767px]:text-[32px] min-[640px]:max-[767px]:leading-[1.2] min-[768px]:max-[768px]:text-[36px] min-[768px]:max-[768px]:leading-[1.2] min-[769px]:text-[36px] min-[769px]:leading-[1.2]";
+  "font-sans text-[22px] font-bold leading-[1.2] tracking-[-1px] text-[#09090b] min-[640px]:text-[42px] min-[640px]:leading-[42px] min-[640px]:max-[767px]:text-[32px] min-[640px]:max-[767px]:leading-[1.2] min-[768px]:max-[768px]:text-[36px] min-[768px]:max-[768px]:leading-[1.2] min-[769px]:text-[36px] min-[769px]:leading-[1.2]";
 
 type FeatureCardProps = {
   card: ClawFeatureCard;
@@ -39,7 +39,7 @@ const FeatureCard = ({ card }: FeatureCardProps) => {
           />
         </div>
         <p
-          className="font-mono-display text-sm leading-6 tracking-normal min-[640px]:text-base min-[640px]:max-[767px]:text-sm min-[640px]:max-[767px]:leading-[22px] min-[768px]:max-[768px]:text-base min-[768px]:max-[768px]:leading-6 min-[769px]:text-base min-[769px]:leading-6"
+          className="font-sans text-sm leading-6 tracking-normal min-[640px]:text-base min-[640px]:max-[767px]:text-sm min-[640px]:max-[767px]:leading-[22px] min-[768px]:max-[768px]:text-base min-[768px]:max-[768px]:leading-6 min-[769px]:text-base min-[769px]:leading-6"
           style={{ color: card.iconColor }}
         >
           {card.label}
@@ -76,7 +76,7 @@ export const ClawHeroSection = () => {
                 <p className={monoHeadlineClassName}>become</p>
                 <span className="inline-flex items-center gap-1.5">
                   <OpenClawMark className="h-7 w-8 min-[640px]:h-[50px] min-[640px]:w-[56px] min-[640px]:max-[767px]:h-[35px] min-[640px]:max-[767px]:w-[40px] min-[768px]:max-[768px]:h-[35px] min-[768px]:max-[768px]:w-[40px] min-[769px]:h-[35px] min-[769px]:w-[40px]" />
-                  <span className="font-mono-display text-[24px] font-bold leading-8 tracking-[-1px] text-[#e7000b] min-[640px]:text-[48px] min-[640px]:leading-[1.2] min-[640px]:max-[767px]:text-[36px] min-[640px]:max-[767px]:leading-[1.2] min-[768px]:max-[768px]:text-[36px] min-[768px]:max-[768px]:leading-[1.2] min-[769px]:text-[36px] min-[769px]:leading-[1.2]">
+                  <span className="font-sans text-[24px] font-bold leading-8 tracking-[-1px] text-[#e7000b] min-[640px]:text-[48px] min-[640px]:leading-[1.2] min-[640px]:max-[767px]:text-[36px] min-[640px]:max-[767px]:leading-[1.2] min-[768px]:max-[768px]:text-[36px] min-[768px]:max-[768px]:leading-[1.2] min-[769px]:text-[36px] min-[769px]:leading-[1.2]">
                     OpenClaw-native
                   </span>
                 </span>
@@ -93,7 +93,7 @@ export const ClawHeroSection = () => {
               <p className={cn(monoHeadlineClassName, "w-full")}>with grounded retrieval</p>
             </div>
 
-            <p className="mx-auto max-w-none font-mono-display text-base font-light leading-6 tracking-[-0.5px] text-[#52525c] min-[640px]:max-[767px]:max-w-[544px] min-[640px]:max-[767px]:text-base min-[640px]:max-[767px]:leading-6 min-[768px]:max-[768px]:max-w-[640px] min-[768px]:max-[768px]:text-base min-[768px]:max-[768px]:leading-6 min-[769px]:max-w-[860px] min-[769px]:text-base min-[769px]:leading-6">
+            <p className="mx-auto max-w-none font-sans text-base font-normal leading-6 tracking-[-0.5px] text-[#52525c] min-[640px]:max-[767px]:max-w-[544px] min-[640px]:max-[767px]:text-base min-[640px]:max-[767px]:leading-6 min-[768px]:max-[768px]:max-w-[640px] min-[768px]:max-[768px]:text-base min-[768px]:max-[768px]:leading-6 min-[769px]:max-w-[860px] min-[769px]:text-base min-[769px]:leading-6">
               The plugin uses Knowhere for parsing and job orchestration, stores the returned result
               package inside OpenClaw-managed local storage, and gives agents a browse-first path to
               previews, chunks, hierarchy, and raw files before they answer.

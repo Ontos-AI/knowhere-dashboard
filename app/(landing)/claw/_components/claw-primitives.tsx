@@ -35,6 +35,8 @@ type ClawSectionHeadingProps = {
   className?: string;
   description: string;
   eyebrow: string;
+  eyebrowSpacingClassName?: string;
+  titleBlockClassName?: string;
   title: ReactNode;
 };
 
@@ -42,6 +44,8 @@ export const ClawSectionHeading = ({
   className,
   description,
   eyebrow,
+  eyebrowSpacingClassName,
+  titleBlockClassName,
   title,
 }: ClawSectionHeadingProps) => {
   return (
@@ -52,10 +56,20 @@ export const ClawSectionHeading = ({
         className
       )}
     >
-      <p className="text-base font-bold leading-6 text-[#ff6467] min-[640px]:text-xl min-[640px]:leading-7 min-[640px]:max-[767px]:text-xl min-[640px]:max-[767px]:leading-7 min-[768px]:max-[768px]:text-base min-[768px]:max-[768px]:leading-6 min-[769px]:text-base min-[769px]:leading-6">
+      <p
+        className={cn(
+          "text-base font-bold leading-6 text-[#ff6467] min-[640px]:text-xl min-[640px]:leading-7 min-[640px]:max-[767px]:text-xl min-[640px]:max-[767px]:leading-7 min-[768px]:max-[768px]:text-base min-[768px]:max-[768px]:leading-6 min-[769px]:text-base min-[769px]:leading-6",
+          eyebrowSpacingClassName
+        )}
+      >
         {eyebrow}
       </p>
-      <div className="space-y-2 min-[640px]:space-y-3 min-[640px]:max-[767px]:space-y-2 min-[768px]:max-[768px]:space-y-2 min-[769px]:space-y-2">
+      <div
+        className={cn(
+          "space-y-2 min-[640px]:space-y-3 min-[640px]:max-[767px]:space-y-2 min-[768px]:max-[768px]:space-y-2 min-[769px]:space-y-2",
+          titleBlockClassName
+        )}
+      >
         <h2 className="text-[24px] font-bold leading-8 tracking-normal text-[#09090b] min-[640px]:text-4xl min-[640px]:leading-10 min-[640px]:max-[767px]:text-[30px] min-[640px]:max-[767px]:leading-9 min-[768px]:max-[768px]:text-[30px] min-[768px]:max-[768px]:leading-9 min-[769px]:text-[30px] min-[769px]:leading-9">
           {title}
         </h2>

@@ -176,7 +176,9 @@ export const IntegrateCodePanel = () => {
                 className={cn(
                   "px-3 py-2 text-xs leading-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a684ff]",
                   monoDisplayClassName,
-                  isActive ? "bg-[#fafafa] text-zinc-950" : "bg-zinc-700 text-zinc-50"
+                  isActive
+                    ? "bg-zinc-50 text-zinc-950"
+                    : "bg-zinc-700 text-zinc-50 hover:bg-zinc-600 active:bg-zinc-500"
                 )}
                 id={`${panelId}-${tab}-tab`}
                 onClick={() => handleTabChange(tab)}

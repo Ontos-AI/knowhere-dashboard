@@ -1,0 +1,13 @@
+{
+  "name": "selection-context-injector",
+  "version": "0.1.0",
+  "description": "Automatically injects currently selected preview element into chat context before send.",
+  "main": "src/index.ts",
+  "author": "[TODO: your-name]",
+  "license": "MIT",
+  "interface": {
+    "displayName": "Selection Context Injector",
+    "description": "Sync selected preview element into chat payload context.",
+    "icon": "assets/icon.png"
+  }
+}

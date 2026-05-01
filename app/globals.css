@@ -6,21 +6,22 @@
   :root {
     /* Offline-safe font tokens used by Tailwind font families. */
     --font-sans:
-      "Inter", "Segoe UI", "Helvetica Neue", Arial, system-ui, -apple-system, BlinkMacSystemFont,
-      sans-serif;
+      "Geist", "Inter", "Segoe UI", "Helvetica Neue", Arial, system-ui, -apple-system,
+      BlinkMacSystemFont, sans-serif;
     --font-mono:
-      "JetBrains Mono", "SFMono-Regular", "SF Mono", "Cascadia Code", Menlo, Consolas, ui-monospace,
-      monospace;
+      "Azeret Mono", "JetBrains Mono", "SFMono-Regular", "SF Mono", "Cascadia Code", Menlo,
+      Consolas, ui-monospace, monospace;
     --font-mono-display:
       "Azeret Mono", "JetBrains Mono", "SFMono-Regular", "SF Mono", "Cascadia Code", Menlo,
       Consolas, ui-monospace, monospace;
     --font-mono-readable:
-      "Atkinson Hyperlegible Mono", "JetBrains Mono", "SFMono-Regular", "SF Mono", "Cascadia Code",
-      Menlo, Consolas, ui-monospace, monospace;
+      "Azeret Mono", "Atkinson Hyperlegible Mono", "JetBrains Mono", "SFMono-Regular", "SF Mono",
+      "Cascadia Code", Menlo, Consolas, ui-monospace, monospace;
     --font-accent:
       "Anuphan", "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, system-ui, sans-serif;
     --font-brand:
-      "Ysabeau", "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, ui-serif, serif;
+      "Geist", "Ysabeau", "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, ui-serif,
+      serif;
     --font-pixel-primary: "Press Start 2P", "Courier New", "Lucida Console", monospace;
 
     /* Legacy landing page tokens */
@@ -205,6 +206,19 @@
     --sidebar-accent-foreground: 30 14% 93%;
     --sidebar-border: 24 10% 22%;
     --sidebar-ring: 31 90% 56%;
+  }
+}
+
+@layer utilities {
+  .font-geist-sans-var {
+    font-family:
+      "Geist", "Inter", "Segoe UI", "Helvetica Neue", Arial, system-ui, -apple-system,
+      BlinkMacSystemFont, sans-serif;
+  }
+
+  .font-anuphan-var {
+    font-family:
+      "Anuphan", "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, system-ui, sans-serif;
   }
 }
 

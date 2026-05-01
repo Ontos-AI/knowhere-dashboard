@@ -31,6 +31,21 @@ import {
 
 const monoDisplayClassName = "font-[family-name:var(--font-mono-display)]";
 const monoReadableClassName = "font-[family-name:var(--font-mono-readable)]";
+const epsteinChunksPreview = `{
+  "dataset": "EPSTEIN FLIGHT LOGS UNREDACTED",
+  "summary": {
+    "pagesWithTables": 116,
+    "totalRecords": 6857,
+    "tableChunks": 116
+  },
+  "files": [
+    "chunks.json",
+    "doc_nav.json",
+    "full.md",
+    "manifest.json",
+    "tables/*.html"
+  ]
+}`;
 const tslaChunksPreview = `{
   "project": "Luma App",
   "version": "1.0.0",
@@ -64,7 +79,7 @@ const tslaChunksPreview = `{
   ]
 }`;
 
-type PlaygroundSampleId = "atlas" | "tsla";
+type PlaygroundSampleId = "atlas" | "epstein" | "tsla";
 type PlaygroundStage = "idle" | "loading" | "success" | "result";
 type PreviewLanguage = "json" | "markdown" | "markup" | "text";
 type ResultFileKind = "csv" | "directory" | "html" | "image" | "json" | "markdown" | "unknown";
@@ -91,8 +106,8 @@ type PlaygroundImageMetadata = {
 };
 
 type PlaygroundManifest = {
-  files: {
-    images: PlaygroundImageMetadata[];
+  files?: {
+    images?: PlaygroundImageMetadata[];
   };
   statistics?: {
     image_chunks?: number;
@@ -175,6 +190,23 @@ const playgroundSamples: Record<PlaygroundSampleId, PlaygroundSample> = {
     style: { left: "calc(50% - 67px)", top: "calc(50% + 31px)" },
     tone: { background: "#fb2c36", text: "#fef2f2" },
   },
+  epstein: {
+    cardLabel: "Epstein Flight Logs.pdf",
+    extension: ".pdf",
+    id: "epstein",
+    modalLabel: "Epstein Flight Logs.pdf",
+    pdfPath: "/playground-files/epstein/Epstein_Flight_Logs.pdf",
+    previewOverrides: {
+      "chunks.json": {
+        content: epsteinChunksPreview,
+        language: "json",
+      },
+    },
+    resultRoot: "/playground-files/epstein/parse-result-Epstein_Flight_Logs",
+    rootEntries: ["chunks.json", "doc_nav.json", "full.md", "manifest.json", "tables"],
+    style: { left: "calc(50% + 84px)", top: "calc(50% + 29px)" },
+    tone: { background: "#fb2c36", text: "#fef2f2" },
+  },
   tsla: {
     cardLabel: "Tesla Q4 2025.pdf",
     extension: ".pdf",
@@ -224,6 +256,15 @@ const heroDemoFiles: readonly HeroDemoFile[] = [
     tone: playgroundSamples.atlas.tone,
   },
   {
+    extension: playgroundSamples.epstein.extension,
+    fileId: playgroundSamples.epstein.id,
+    fileName: playgroundSamples.epstein.cardLabel,
+    interactive: true,
+    sampleId: playgroundSamples.epstein.id,
+    style: playgroundSamples.epstein.style,
+    tone: playgroundSamples.epstein.tone,
+  },
+  {
     extension: playgroundSamples.tsla.extension,
     fileId: playgroundSamples.tsla.id,
     fileName: playgroundSamples.tsla.cardLabel,
@@ -235,7 +276,7 @@ const heroDemoFiles: readonly HeroDemoFile[] = [
 ] as const;
 
 const isPlaygroundSampleId = (value: string): value is PlaygroundSampleId =>
-  value === "atlas" || value === "tsla";
+  value === "atlas" || value === "epstein" || value === "tsla";
 
 const formatBytes = (value: number) => {
   if (value < 1024) {
@@ -406,7 +447,7 @@ const useHeroPlaygroundExplorer = (sample: PlaygroundSample) => {
     [tree]
   );
   const imageMetadataByPath = useMemo(
-    () => new Map((manifest?.files.images ?? []).map((image) => [image.file_path, image])),
+    () => new Map((manifest?.files?.images ?? []).map((image) => [image.file_path, image])),
     [manifest]
   );
   const directoryCounts = useMemo<DirectoryCounts>(
@@ -643,6 +684,8 @@ const HeroFileCard = ({
   tone: { background: string; text: string };
 }) => {
   const clickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -676,20 +719,44 @@ const HeroFileCard = ({
     onPreview();
   };
 
+  const cardState: "dragging" | "hover" | "normal" | "selected" = isDragging
+    ? "dragging"
+    : active
+      ? "selected"
+      : isHovering
+        ? "hover"
+        : "normal";
+  const showEmphasisIcon = cardState === "hover" || cardState === "selected";
+
   return (
     <div className="absolute -translate-x-1/2 -translate-y-1/2" style={style}>
       {interactive ? (
         <button
           aria-label={`${fileName}. Click to run the sample, drag it to the right, or double click to preview the PDF.`}
           className={cn(
-            "group flex flex-col items-center gap-1 rounded-xl border-none bg-transparent px-2 py-1 text-left",
-            "cursor-grab transition-transform hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/35 active:cursor-grabbing"
+            "group relative flex flex-col items-center justify-center gap-1 border-none bg-transparent px-[10px] py-[8px] text-left transition-all duration-150",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/35",
+            isDragging &&
+              "cursor-grabbing opacity-80 shadow-[0_20px_25px_-5px_rgba(0,0,0,0.10),0_10px_10px_-5px_rgba(0,0,0,0.04)]",
+            !isDragging && "cursor-grab",
+            cardState === "selected" && "rounded-[12px] border-2 border-[#3690ff] bg-[#bcdfff]",
+            cardState === "hover" && "rounded-[10px] bg-[#f5f5f5]",
+            cardState !== "dragging" && "hover:-translate-y-0.5"
           )}
           draggable
+          onBlur={() => setIsHovering(false)}
           onClick={triggerActivation}
           onDoubleClick={triggerPreview}
-          onDragEnd={onSampleDragEnd}
-          onDragStart={onSampleDragStart}
+          onDragEnd={() => {
+            setIsDragging(false);
+            onSampleDragEnd();
+          }}
+          onDragStart={(event) => {
+            setIsDragging(true);
+            onSampleDragStart(event);
+          }}
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
           title="Click to parse. Double click to preview the PDF."
           type="button"
         >
@@ -700,7 +767,7 @@ const HeroFileCard = ({
               className="absolute left-[7px] top-0 h-16 w-[50px]"
               height={64}
               src={
-                active
+                showEmphasisIcon
                   ? "/images/knowhere/hero-demo-page-active.svg"
                   : "/images/knowhere/hero-demo-page-default.svg"
               }
@@ -718,8 +785,8 @@ const HeroFileCard = ({
           </div>
           <span
             className={cn(
-              "max-w-[96px] text-center text-xs leading-4 text-zinc-900 transition-colors group-hover:text-[#4f39f6]",
-              monoDisplayClassName
+              "max-w-[96px] text-center text-xs leading-4 font-sans transition-colors",
+              cardState === "dragging" ? "text-zinc-500" : "text-zinc-900"
             )}
           >
             {fileName}
@@ -751,10 +818,7 @@ const HeroFileCard = ({
             </span>
           </div>
           <span
-            className={cn(
-              "max-w-[96px] text-center text-xs leading-4 text-zinc-900",
-              monoDisplayClassName
-            )}
+            className={cn("max-w-[96px] text-center text-xs leading-4 text-zinc-900 font-sans")}
           >
             {fileName}
           </span>
@@ -775,7 +839,7 @@ const DragFieldIllustration = () => {
         src="/images/knowhere/hero-demo-page-default.svg"
         width={56}
       />
-      <span className="absolute -bottom-1 flex size-8 items-center justify-center rounded-full border border-zinc-600 bg-zinc-700 text-zinc-200 shadow-[0_8px_18px_-10px_rgba(0,0,0,0.65)]">
+      <span className="absolute -bottom-1 left-[-13px] flex size-8 items-center justify-center rounded-full border border-zinc-600 bg-zinc-700 text-zinc-200 shadow-[0_8px_18px_-10px_rgba(0,0,0,0.65)]">
         <Plus className="size-4" />
       </span>
     </div>
@@ -1291,17 +1355,18 @@ export const HeroPlayground = () => {
               style={dragFieldStripeStyle}
             >
               <DragFieldIllustration />
-              <p className={cn("text-xs leading-4 text-zinc-200", monoDisplayClassName)}>
+              <p className="text-xs leading-4 text-zinc-200 font-sans">
                 Drop a file here or pick a sample on the left
               </p>
               <Link
                 className={cn(
-                  "inline-flex h-12 items-center justify-center rounded-full border border-b-[6px] border-[#7f22fe] bg-[#8e51ff] px-6 pb-1 text-sm text-[#f5f3ff] transition-transform hover:-translate-y-0.5",
-                  monoDisplayClassName
+                  "group inline-flex h-12 items-center justify-center rounded-full border border-b-[6px] border-[#7f22fe] bg-[#8e51ff] px-6 text-sm font-medium text-[#f5f3ff] [--btn-bottom:6px] transition-[background-color,border-color,border-bottom-width] hover:border-[#7008e7] hover:bg-[#7f22fe] hover:border-b-[8px] hover:[--btn-bottom:8px] active:border-[#7008e7] active:bg-[#7008e7] active:border-b-[6px] active:[--btn-bottom:6px] font-sans"
                 )}
                 href="/login"
               >
-                Get $5 free credits, no card
+                <span className="inline-flex h-full translate-y-1 items-center pb-[var(--btn-bottom)] transition-[padding-bottom,transform] duration-150 ease-out">
+                  Get $5 free credits, no card
+                </span>
               </Link>
             </div>
           ) : null}

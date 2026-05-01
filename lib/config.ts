@@ -17,8 +17,9 @@ import { env } from "@lib/env";
 
 const ENABLED_VALUES = new Set(["1", "true", "yes", "on"]);
 
-function getBooleanEnv(value: string): boolean {
-  return ENABLED_VALUES.has(value.trim().toLowerCase());
+function getBooleanEnv(value?: string): boolean {
+  const normalizedValue = value?.trim().toLowerCase() ?? "false";
+  return ENABLED_VALUES.has(normalizedValue);
 }
 
 // 配置类型

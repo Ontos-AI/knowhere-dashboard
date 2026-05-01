@@ -33,10 +33,10 @@ export const ClawHeader = () => {
                 <Link
                   aria-current={isActive ? "location" : undefined}
                   className={cn(
-                    "inline-flex h-full items-center justify-center px-[14px] text-[#09090b] min-[768px]:max-[768px]:px-3",
+                    "inline-flex h-full items-center justify-center px-[14px] text-[#09090b] leading-5 min-[768px]:max-[768px]:px-3",
                     isActive
-                      ? "text-sm font-semibold leading-5 underline decoration-solid underline-offset-2 min-[769px]:text-sm"
-                      : "text-xs font-light leading-4 transition-colors hover:text-[#52525c]"
+                      ? "text-[14px] font-semibold underline decoration-solid underline-offset-2"
+                      : "text-[14px] font-normal transition-opacity hover:opacity-60"
                   )}
                   href={item.href}
                   key={item.label}
@@ -58,7 +58,7 @@ export const ClawHeader = () => {
             <KnowhereIcon className="size-5 text-current" name="menu" />
           </button>
           <Link
-            className="hidden h-full w-full items-center justify-center border-b-[6px] border-[#7f22fe] bg-[#8e51ff] pb-1 font-mono-readable text-sm font-semibold leading-5 text-[#f5f3ff] transition-colors hover:bg-[#7f22fe] min-[640px]:inline-flex"
+            className="hidden h-full w-full items-center justify-center border-b-[6px] border-b-[#c10007] bg-[#e7000b] pt-[4px] pb-[4px] px-6 font-mono-readable text-sm font-semibold leading-5 text-[#fef2f2] transition-all hover:border-b-[8px] hover:border-b-[#9f0712] hover:bg-[#c10007] hover:pb-[6px] active:border-b-0 active:bg-[#9f0712] active:pb-[6px] min-[640px]:inline-flex"
             href="/login"
           >
             GET API KEY

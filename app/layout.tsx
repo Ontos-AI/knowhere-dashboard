@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import { cookies } from "next/headers";
 import Script from "next/script";
 import "./globals.css";
@@ -16,6 +17,20 @@ export const metadata: Metadata = {
     "The most accurate document parsing API for AI agents. Extract tables, formulas, and structured data with unmatched precision.",
 };
 
+const geistSans = localFont({
+  src: "../public/fonts/Geist-VariableFont_wght.ttf",
+  weight: "100 900",
+  variable: "--font-geist-sans",
+  display: "swap",
+});
+
+const anuphan = localFont({
+  src: "../public/fonts/Anuphan-VariableFont_wght.ttf",
+  weight: "100 900",
+  variable: "--font-anuphan",
+  display: "swap",
+});
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
   const locale = cookieStore.get("NEXT_LOCALE")?.value || "en";
@@ -29,7 +44,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body className="font-sans antialiased">
+      <body className={"font-sans antialiased"}>
         <NextIntlClientProvider messages={messages} locale={locale}>
           <ConfigProvider config={appConfig}>
             <ThemeProvider attribute="class" enableSystem={true} disableTransitionOnChange>

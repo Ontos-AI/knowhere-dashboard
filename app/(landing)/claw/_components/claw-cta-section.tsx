@@ -6,6 +6,7 @@ import {
   OpenClawWordmark,
 } from "@app/(landing)/claw/_components/claw-primitives";
 import { cn } from "@lib/utils";
+import Image from "next/image";
 
 export const ClawCtaSection = () => {
   return (
@@ -14,11 +15,11 @@ export const ClawCtaSection = () => {
         <div className="space-y-4 px-5 text-center min-[640px]:space-y-6 min-[640px]:px-16 min-[640px]:max-[767px]:space-y-4 min-[640px]:max-[767px]:px-12 min-[768px]:max-[768px]:space-y-4 min-[768px]:max-[768px]:px-12 min-[769px]:space-y-4 min-[769px]:px-12">
           <div className="space-y-2 min-[640px]:hidden">
             <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2">
-              <span className="font-mono-display text-[22px] font-bold leading-none text-[#09090b]">
+              <span className="font-sans text-[22px] font-bold leading-none text-[#09090b]">
                 Bring
               </span>
               <KnowhereWordmark compact />
-              <span className="font-mono-display text-[22px] font-bold leading-none text-[#09090b]">
+              <span className="font-sans text-[22px] font-bold leading-none text-[#09090b]">
                 into
               </span>
             </div>
@@ -27,11 +28,19 @@ export const ClawCtaSection = () => {
             </div>
           </div>
           <div className="mx-auto hidden max-w-[700px] flex-wrap items-center justify-center gap-x-6 gap-y-4 min-[640px]:flex min-[640px]:max-[767px]:max-w-[544px] min-[640px]:max-[767px]:gap-x-8 min-[640px]:max-[767px]:gap-y-4 min-[768px]:max-[768px]:max-w-[560px] min-[768px]:max-[768px]:gap-x-4 min-[768px]:max-[768px]:gap-y-[18px] min-[769px]:max-w-none min-[769px]:gap-x-8">
-            <span className="font-mono-display text-[42px] font-bold leading-[42px] text-[#09090b] min-[640px]:max-[767px]:text-[32px] min-[640px]:max-[767px]:leading-[42px] min-[768px]:max-[768px]:text-[36px] min-[768px]:max-[768px]:leading-10 min-[769px]:text-[36px] min-[769px]:leading-[48px]">
+            <span className="font-sans text-[42px] font-bold leading-[42px] text-[#09090b] min-[640px]:max-[767px]:text-[32px] min-[640px]:max-[767px]:leading-[42px] min-[768px]:max-[768px]:text-[36px] min-[768px]:max-[768px]:leading-10 min-[769px]:text-[36px] min-[769px]:leading-[48px]">
               Bring
             </span>
-            <KnowhereWordmark className="min-[640px]:max-[767px]:gap-[10px] min-[769px]:gap-[10px]" />
-            <span className="font-mono-display text-[42px] font-bold leading-[42px] text-[#09090b] min-[640px]:max-[767px]:text-[32px] min-[640px]:max-[767px]:leading-[42px] min-[768px]:max-[768px]:text-[36px] min-[768px]:max-[768px]:leading-10 min-[769px]:text-[36px] min-[769px]:leading-[48px]">
+            <span className="inline-flex h-[38.664px] w-[165.714px] items-center min-[640px]:max-[767px]:h-[34px] min-[640px]:max-[767px]:w-[145.711px] min-[768px]:max-[768px]:h-[34px] min-[768px]:max-[768px]:w-[145.711px] min-[769px]:h-[34px] min-[769px]:w-[145.711px]">
+              <Image
+                alt="Knowhere"
+                className="h-full w-full object-contain"
+                height={84}
+                src="/images/knowhere/logo.png"
+                width={360}
+              />
+            </span>
+            <span className="font-sans text-[42px] font-bold leading-[42px] text-[#09090b] min-[640px]:max-[767px]:text-[32px] min-[640px]:max-[767px]:leading-[42px] min-[768px]:max-[768px]:text-[36px] min-[768px]:max-[768px]:leading-10 min-[769px]:text-[36px] min-[769px]:leading-[48px]">
               into
             </span>
             <OpenClawWordmark
@@ -52,13 +61,13 @@ export const ClawCtaSection = () => {
           </ClawActionButton>
         </div>
 
-        <p className="px-5 pb-[10px] text-center font-mono-display text-sm leading-[22px] text-[#27272a] min-[640px]:px-16 min-[640px]:pb-8 min-[640px]:text-lg min-[640px]:leading-[26px] min-[640px]:max-[767px]:mx-auto min-[640px]:max-[767px]:max-w-[560px] min-[640px]:max-[767px]:px-12 min-[640px]:max-[767px]:pb-6 min-[640px]:max-[767px]:text-sm min-[640px]:max-[767px]:leading-[18px] min-[768px]:max-[768px]:mx-auto min-[768px]:max-[768px]:max-w-[620px] min-[768px]:max-[768px]:px-12 min-[768px]:max-[768px]:pb-6 min-[768px]:max-[768px]:text-sm min-[768px]:max-[768px]:leading-5 min-[769px]:px-12 min-[769px]:pb-6 min-[769px]:text-sm min-[769px]:leading-5">
+        <p className="px-5 pb-[10px] text-center font-sans text-sm leading-[22px] text-[#27272a] min-[640px]:px-16 min-[640px]:pb-8 min-[640px]:text-lg min-[640px]:leading-[26px] min-[640px]:max-[767px]:mx-auto min-[640px]:max-[767px]:max-w-[560px] min-[640px]:max-[767px]:px-12 min-[640px]:max-[767px]:pb-6 min-[640px]:max-[767px]:text-sm min-[640px]:max-[767px]:leading-[18px] min-[768px]:max-[768px]:mx-auto min-[768px]:max-[768px]:max-w-[620px] min-[768px]:max-[768px]:px-12 min-[768px]:max-[768px]:pb-6 min-[768px]:max-[768px]:text-sm min-[768px]:max-[768px]:leading-5 min-[769px]:px-12 min-[769px]:pb-6 min-[769px]:text-sm min-[769px]:leading-5">
           PDFs, scanned files, tables, manifests, chunks, and raw result files stay reopenable
           instead of disappearing into one generated reply.
         </p>
 
         <div className="border-t border-[#f4f4f5]">
-          <div className="border-b border-[#ffe2e2] bg-[#fef2f2] px-5 py-[14px] text-center min-[640px]:px-16 min-[640px]:py-6 min-[640px]:max-[767px]:px-12 min-[640px]:max-[767px]:py-4 min-[768px]:max-[768px]:px-12 min-[768px]:max-[768px]:py-4 min-[769px]:px-12 min-[769px]:py-4">
+          <div className="border-y border-[#ffe2e2] bg-[#fef2f2] px-5 py-[14px] text-center min-[640px]:px-16 min-[640px]:py-6 min-[640px]:max-[767px]:px-12 min-[640px]:max-[767px]:py-4 min-[768px]:max-[768px]:px-12 min-[768px]:max-[768px]:py-4 min-[769px]:px-12 min-[769px]:py-4">
             <h2 className="text-lg font-bold leading-7 text-[#e7000b] min-[640px]:text-2xl min-[640px]:leading-8 min-[640px]:max-[767px]:text-lg min-[640px]:max-[767px]:leading-7 min-[768px]:max-[768px]:text-lg min-[768px]:max-[768px]:leading-7 min-[769px]:text-lg min-[769px]:leading-7">
               What changes inside OpenClaw
             </h2>
@@ -79,7 +88,7 @@ export const ClawCtaSection = () => {
                 >
                   {item.label}
                 </div>
-                <p className="relative flex-1 font-mono-display text-base leading-[22px] text-[#52525c] min-[640px]:text-sm min-[640px]:max-[767px]:leading-[18px] min-[768px]:max-[768px]:text-sm min-[768px]:max-[768px]:leading-5 min-[769px]:text-sm min-[769px]:leading-5">
+                <p className="relative flex-1 font-sans text-base leading-[22px] text-[#52525c] min-[640px]:text-sm min-[640px]:max-[767px]:leading-[18px] min-[768px]:max-[768px]:text-sm min-[768px]:max-[768px]:leading-5 min-[769px]:text-sm min-[769px]:leading-5">
                   {item.description}
                 </p>
               </div>

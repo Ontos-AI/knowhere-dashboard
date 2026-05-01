@@ -2,6 +2,7 @@ export type FormatTone = {
   background: string;
   border: string;
   text: string;
+  numberBg?: string;
 };
 
 export type FormatChip = {
@@ -28,6 +29,8 @@ export type ComparisonRow = {
   others: ComparisonStatus;
   description?: string;
   emphasize?: boolean;
+  knowhereStripe?: boolean;
+  othersStripe?: boolean;
   callout?: boolean;
 };
 
@@ -49,6 +52,7 @@ export type MetricCard = {
   value: string;
   label: string;
   tone: FormatTone;
+  stripe?: boolean;
 };
 
 export type PriceExample = {
@@ -153,6 +157,8 @@ export const comparisonRows: ComparisonRow[] = [
     others: "bad",
     description: "Accurately handle multi-level merged cells in both doc files and tables",
     emphasize: true,
+    knowhereStripe: true,
+    othersStripe: true,
   },
   {
     category: "Tables",
@@ -169,6 +175,8 @@ export const comparisonRows: ComparisonRow[] = [
     description:
       "Trace each information piece to its original section in the raw source with clear boundary",
     emphasize: true,
+    knowhereStripe: true,
+    othersStripe: true,
   },
   {
     category: "Downstream",
@@ -176,7 +184,6 @@ export const comparisonRows: ComparisonRow[] = [
     knowhere: "yes",
     others: "no",
     description: "Naturally supports hierarchical memory and progressive disclosure",
-    callout: true,
   },
   {
     category: "Downstream",
@@ -185,6 +192,8 @@ export const comparisonRows: ComparisonRow[] = [
     others: "no",
     description: "Naturally enables vectorless RAG and hybrid RAG",
     emphasize: true,
+    knowhereStripe: true,
+    othersStripe: true,
   },
   {
     category: "Downstream",
@@ -193,7 +202,6 @@ export const comparisonRows: ComparisonRow[] = [
     others: "no",
     description:
       "Boost Top-K by ~10%+ in production data when applying RAG pipelines to parsed data",
-    callout: true,
   },
   {
     category: "Downstream",
@@ -202,6 +210,8 @@ export const comparisonRows: ComparisonRow[] = [
     others: "no",
     description: "Save 50%+ tokens when developing graphs",
     emphasize: true,
+    knowhereStripe: true,
+    othersStripe: true,
   },
 ];
 
@@ -302,25 +312,25 @@ export const transformSteps: TransformStep[] = [
     number: "1",
     title: "Input",
     description: "Upload document (PDF, DOCX, XLSX, etc.)",
-    tone: { background: "#f5f3ff", border: "#ddd6ff", text: "#7c3aed" },
+    tone: { background: "#f5f3ff", border: "#ddd6ff", text: "#7c3aed", numberBg: "#a78bfa" },
   },
   {
     number: "2",
     title: "OCR & Detection",
     description: "Extract text, detect tables, formulas, images",
-    tone: { background: "#eff6ff", border: "#bfdbfe", text: "#4338ca" },
+    tone: { background: "#eef2ff", border: "#c7d2fe", text: "#4338ca", numberBg: "#818cf8" },
   },
   {
     number: "3",
     title: "Structure Analysis",
     description: "Analyze layout, relationships, hierarchies",
-    tone: { background: "#eff6ff", border: "#93c5fd", text: "#2563eb" },
+    tone: { background: "#eff6ff", border: "#bfdbfe", text: "#2563eb", numberBg: "#60a5fa" },
   },
   {
     number: "4",
     title: "JSON Output",
     description: "Clean, structured data for AI consumption",
-    tone: { background: "#f0f9ff", border: "#bae6fd", text: "#0284c7" },
+    tone: { background: "#f0f9ff", border: "#bae6fd", text: "#0284c7", numberBg: "#38bdf8" },
   },
 ];
 
@@ -329,6 +339,7 @@ export const transformMetrics: MetricCard[] = [
     value: "20+",
     label: "File Formats",
     tone: { background: "#f5f3ff", border: "#ede9fe", text: "#7c3aed" },
+    stripe: true,
   },
   {
     value: "~95%",
