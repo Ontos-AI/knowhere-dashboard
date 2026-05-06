@@ -14,6 +14,7 @@ export const LoginPageShell = () => {
   const {
     activeOAuthProvider,
     forgotPasswordPath,
+    registerPath,
     isMagicLinkLoading,
     isOAuthLoading,
     isPasswordLoading,
@@ -69,6 +70,7 @@ export const LoginPageShell = () => {
               onMagicLinkSubmit={signInWithMagicLink}
               onPasswordSubmit={signInWithPassword}
               passwordLoginEnabled={passwordLoginEnabled}
+              registerPath={registerPath}
             />
           </div>
         </section>
