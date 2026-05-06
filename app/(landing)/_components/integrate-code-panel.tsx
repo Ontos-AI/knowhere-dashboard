@@ -54,7 +54,10 @@ const codeMarkupByTab = {
       {"\n"}
       {"  "}
       <span className="text-[#ff6467]">"Authorization"</span>:{" "}
-      <span className="text-[#ff6467]">f"Bearer {"{"}KNOWHERE_API_KEY{"}"}"</span>,{"\n"}
+      <span className="text-[#ff6467]">
+        f"Bearer {"{"}KNOWHERE_API_KEY{"}"}"
+      </span>
+      ,{"\n"}
       {"  "}
       <span className="text-[#ff6467]">"Content-Type"</span>:{" "}
       <span className="text-[#ff6467]">"application/json"</span>

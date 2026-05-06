@@ -43,7 +43,11 @@ pnpm-debug.log*
 .cursor
 .codex
 .agent
+.agents
 .agent-hooks
+.idea
+.junie
+.trae
 .vercel
 
 .spec/
