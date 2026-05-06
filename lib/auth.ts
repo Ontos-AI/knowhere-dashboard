@@ -5,6 +5,7 @@ import { nextCookies } from "better-auth/next-js";
 import { jwt, magicLink } from "better-auth/plugins";
 import { Resend } from "resend";
 import { ProxyAgent, setGlobalDispatcher } from "undici";
+import { authRedirect } from "@/lib/auth-redirect";
 import { db } from "@/lib/db";
 import { env } from "@/lib/env";
 
@@ -114,14 +115,34 @@ if (env.NODE_ENV === "development" || env.HTTPS_PROXY) {
 
 export const auth = betterAuth({
   baseURL: env.BETTER_AUTH_URL,
-  // Explicitly specify trustedOrigins to prevent host validation failures in reverse proxy or Docker environments
-  trustedOrigins: [env.NEXT_PUBLIC_APP_URL, env.BETTER_AUTH_URL],
+  // Explicitly specify trustedOrigins to prevent host validation failures in reverse proxy or Docker environments.
+  // Allowlisted Notebook callback origins are folded in so Better Auth accepts
+  // them as post-login redirect targets in cross-subdomain deployments.
+  trustedOrigins: [
+    env.NEXT_PUBLIC_APP_URL,
+    env.BETTER_AUTH_URL,
+    ...authRedirect.allowedExternalOrigins,
+  ],
   secret: env.BETTER_AUTH_SECRET,
 
   // Drizzle ORM adapter — schema is automatically loaded from db instance
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
+
+  // When `AUTH_COOKIE_DOMAIN` is set, enable cross-subdomain session cookies
+  // so the Better Auth session token is sent to sibling apps (e.g. Notebook
+  // at `notebook.${AUTH_COOKIE_DOMAIN}`). Unset → current host-only behavior.
+  ...(env.AUTH_COOKIE_DOMAIN
+    ? {
+        advanced: {
+          crossSubDomainCookies: {
+            enabled: true,
+            domain: env.AUTH_COOKIE_DOMAIN,
+          },
+        },
+      }
+    : {}),
 
   // Enable performance optimization with joins (2-3x faster)
   experimental: {

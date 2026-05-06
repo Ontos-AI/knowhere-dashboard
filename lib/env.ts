@@ -19,6 +19,32 @@ export const env = createEnv({
     RESEND_FROM: z.string().default("onboarding@resend.dev"),
     BILLING_ENABLED: z.string().default("false"),
     PASSWORD_LOGIN_ENABLED: z.string().default("false"),
+    /**
+     * Parent domain for the Better Auth session cookie. When set, Dashboard
+     * enables `advanced.crossSubDomainCookies` with this value so the cookie
+     * is shared across subdomains.
+     *
+     * Examples:
+     *   - prod:  `knowhereto.ai`
+     *   - local: `local.knowhereto.ai`
+     *   - test/CI: unset — keeps host-only cookies
+     *
+     * Leave unset to preserve the pre-PR-3 host-only cookie behavior.
+     */
+    AUTH_COOKIE_DOMAIN: z.string().optional(),
+    /**
+     * Comma-separated list of external origins (scheme + host + optional
+     * port, no trailing slash) that Dashboard is allowed to redirect to
+     * post-login.
+     *
+     * Example:
+     *   `https://notebook.knowhereto.ai,http://notebook.local.knowhereto.ai:3001`
+     *
+     * Arbitrary external callback URLs are rejected. Leave unset to
+     * disable all external callbacks (internal `/usage`, `/settings`, etc.
+     * still work — that path uses the relative-URL sanitizer).
+     */
+    AUTH_ALLOWED_CALLBACK_ORIGINS: z.string().optional(),
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     DEV_EXTERNAL_API_AUTHORIZATION: z.string().optional(),
     HTTPS_PROXY: z.string().optional(),
@@ -45,6 +71,8 @@ export const env = createEnv({
     RESEND_FROM: process.env.RESEND_FROM,
     BILLING_ENABLED: process.env.BILLING_ENABLED,
     PASSWORD_LOGIN_ENABLED: process.env.PASSWORD_LOGIN_ENABLED,
+    AUTH_COOKIE_DOMAIN: process.env.AUTH_COOKIE_DOMAIN,
+    AUTH_ALLOWED_CALLBACK_ORIGINS: process.env.AUTH_ALLOWED_CALLBACK_ORIGINS,
     NODE_ENV: process.env.NODE_ENV,
     DEV_EXTERNAL_API_AUTHORIZATION: process.env.DEV_EXTERNAL_API_AUTHORIZATION,
     HTTPS_PROXY: process.env.HTTPS_PROXY,
