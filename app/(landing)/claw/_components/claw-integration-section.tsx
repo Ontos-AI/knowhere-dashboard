@@ -99,7 +99,10 @@ const IntegrationStepRow = ({ step }: IntegrationStepRowProps) => {
 
 export const ClawIntegrationSection = () => {
   return (
-    <section className="border border-[#e4e4e7] bg-[#fafafa] scroll-mt-20" id="integration">
+    <section
+      className="bg-[#fafafa] scroll-mt-20 shadow-[inset_0_0_0_1px_#e4e4e7]"
+      id="integration"
+    >
       <div className="flex flex-col gap-8 pt-10 min-[640px]:gap-12 min-[640px]:pt-20 min-[640px]:max-[767px]:gap-9 min-[640px]:max-[767px]:pt-14 min-[768px]:max-[768px]:gap-9 min-[768px]:max-[768px]:pt-14 min-[769px]:gap-9 min-[769px]:pt-14">
         <ClawSectionHeading
           className="!space-y-0 min-[640px]:!space-y-0 min-[769px]:!space-y-0"

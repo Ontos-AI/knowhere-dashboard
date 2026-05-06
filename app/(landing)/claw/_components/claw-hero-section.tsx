@@ -14,7 +14,7 @@ import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { cn } from "@lib/utils";
 
 const monoHeadlineClassName =
-  "font-sans text-[22px] font-bold leading-[1.2] tracking-[-1px] text-[#09090b] min-[640px]:text-[42px] min-[640px]:leading-[42px] min-[640px]:max-[767px]:text-[32px] min-[640px]:max-[767px]:leading-[1.2] min-[768px]:max-[768px]:text-[36px] min-[768px]:max-[768px]:leading-[1.2] min-[769px]:text-[36px] min-[769px]:leading-[1.2]";
+  "font-mono-readable text-[22px] font-bold leading-[1.2] tracking-[-1px] text-[#09090b] min-[640px]:text-[42px] min-[640px]:leading-[42px] min-[640px]:max-[767px]:text-[32px] min-[640px]:max-[767px]:leading-[1.2] min-[768px]:max-[768px]:text-[36px] min-[768px]:max-[768px]:leading-[1.2] min-[769px]:text-[36px] min-[769px]:leading-[1.2]";
 
 type FeatureCardProps = {
   card: ClawFeatureCard;
@@ -22,14 +22,14 @@ type FeatureCardProps = {
 
 const FeatureCard = ({ card }: FeatureCardProps) => {
   return (
-    <article className="relative flex min-h-[260px] flex-col gap-4 overflow-hidden border border-[#e4e4e7] px-5 py-6 min-[640px]:gap-8 min-[640px]:px-16 min-[640px]:py-10 min-[640px]:max-[767px]:h-[340px] min-[640px]:max-[767px]:min-h-[340px] min-[640px]:max-[767px]:gap-8 min-[640px]:max-[767px]:px-5 min-[640px]:max-[767px]:py-7 min-[768px]:max-[768px]:h-[298px] min-[768px]:max-[768px]:min-h-[298px] min-[768px]:max-[768px]:gap-8 min-[768px]:max-[768px]:px-10 min-[768px]:max-[768px]:py-7 min-[769px]:h-[300px] min-[769px]:min-h-[300px] min-[769px]:gap-8 min-[769px]:px-12 min-[769px]:py-8">
+    <article className="relative flex h-full min-h-[260px] flex-col gap-4 overflow-hidden px-5 py-6 min-[640px]:gap-8 min-[640px]:px-16 min-[640px]:py-10 min-[640px]:max-[767px]:gap-8 min-[640px]:max-[767px]:px-5 min-[640px]:max-[767px]:py-7 min-[768px]:max-[768px]:gap-8 min-[768px]:max-[768px]:px-10 min-[768px]:max-[768px]:py-7 min-[769px]:gap-8 min-[769px]:px-12 min-[769px]:py-8">
       {card.withStripes ? <ClawStripedOverlay tint="pink" /> : null}
       <div className="relative space-y-3 min-[768px]:max-[768px]:space-y-3 min-[769px]:space-y-3">
         <div
-          className="flex h-12 w-12 items-center justify-center border-b border-r border-t border-l-4 min-[640px]:max-[767px]:h-10 min-[640px]:max-[767px]:w-10 min-[768px]:max-[768px]:h-10 min-[768px]:max-[768px]:w-10 min-[769px]:h-10 min-[769px]:w-10"
+          className="flex h-12 w-12 items-center justify-center min-[640px]:max-[767px]:h-10 min-[640px]:max-[767px]:w-10 min-[768px]:max-[768px]:h-10 min-[768px]:max-[768px]:w-10 min-[769px]:h-10 min-[769px]:w-10"
           style={{
             backgroundColor: card.iconSurfaceColor,
-            borderColor: card.iconBorderColor,
+            boxShadow: `inset 0 0 0 1px ${card.iconBorderColor}`,
             color: card.iconColor,
           }}
         >
@@ -59,8 +59,8 @@ const FeatureCard = ({ card }: FeatureCardProps) => {
 
 export const ClawHeroSection = () => {
   return (
-    <section className="border border-[#e4e4e7] bg-[#fafafa] scroll-mt-20" id="overview">
-      <div className="border-b border-[#ede9fe] bg-[#fef2f2] py-10 min-[640px]:py-16 min-[640px]:max-[767px]:pb-14 min-[640px]:max-[767px]:pt-12 min-[768px]:max-[768px]:pb-[44px] min-[768px]:max-[768px]:pt-12 min-[769px]:pb-14 min-[769px]:pt-12">
+    <section className="bg-[#fafafa] scroll-mt-20 shadow-[inset_0_0_0_1px_#e4e4e7]" id="overview">
+      <div className="border-x border-b border-[#e4e4e7] bg-[#fef2f2] py-10 min-[640px]:py-16 min-[640px]:max-[767px]:pb-14 min-[640px]:max-[767px]:pt-12 min-[768px]:max-[768px]:pb-[44px] min-[768px]:max-[768px]:pt-12 min-[769px]:pb-14 min-[769px]:pt-12">
         <div className="flex flex-col gap-8 px-5 min-[640px]:gap-12 min-[640px]:px-16 min-[640px]:max-[767px]:gap-9 min-[640px]:max-[767px]:px-12 min-[768px]:max-[768px]:gap-9 min-[768px]:max-[768px]:px-12 min-[769px]:gap-9 min-[769px]:px-12">
           <div className="space-y-5 text-center min-[640px]:space-y-8 min-[640px]:max-[767px]:space-y-7 min-[640px]:max-[767px]:pt-3 min-[768px]:max-[768px]:space-y-7 min-[769px]:space-y-7 min-[769px]:pt-3">
             <div className="space-y-[10px] min-[640px]:space-y-2 min-[768px]:max-[768px]:space-y-1">
@@ -76,7 +76,7 @@ export const ClawHeroSection = () => {
                 <p className={monoHeadlineClassName}>become</p>
                 <span className="inline-flex items-center gap-1.5">
                   <OpenClawMark className="h-7 w-8 min-[640px]:h-[50px] min-[640px]:w-[56px] min-[640px]:max-[767px]:h-[35px] min-[640px]:max-[767px]:w-[40px] min-[768px]:max-[768px]:h-[35px] min-[768px]:max-[768px]:w-[40px] min-[769px]:h-[35px] min-[769px]:w-[40px]" />
-                  <span className="font-sans text-[24px] font-bold leading-8 tracking-[-1px] text-[#e7000b] min-[640px]:text-[48px] min-[640px]:leading-[1.2] min-[640px]:max-[767px]:text-[36px] min-[640px]:max-[767px]:leading-[1.2] min-[768px]:max-[768px]:text-[36px] min-[768px]:max-[768px]:leading-[1.2] min-[769px]:text-[36px] min-[769px]:leading-[1.2]">
+                  <span className="font-mono-readable text-[24px] font-bold leading-8 tracking-[-1px] text-[#e7000b] min-[640px]:text-[48px] min-[640px]:leading-[1.2] min-[640px]:max-[767px]:text-[36px] min-[640px]:max-[767px]:leading-[1.2] min-[768px]:max-[768px]:text-[36px] min-[768px]:max-[768px]:leading-[1.2] min-[769px]:text-[36px] min-[769px]:leading-[1.2]">
                     OpenClaw-native
                   </span>
                 </span>
@@ -135,7 +135,7 @@ export const ClawHeroSection = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 min-[640px]:max-[767px]:grid-cols-3 min-[768px]:max-[768px]:grid-cols-3 min-[769px]:grid-cols-3">
+      <div className="grid grid-cols-1 border-b border-[#e4e4e7] divide-y divide-[#e4e4e7] min-[640px]:max-[767px]:grid-cols-3 min-[640px]:max-[767px]:divide-x min-[640px]:max-[767px]:divide-y-0 min-[768px]:max-[768px]:grid-cols-3 min-[768px]:max-[768px]:divide-x min-[768px]:max-[768px]:divide-y-0 min-[769px]:grid-cols-3 min-[769px]:divide-x min-[769px]:divide-y-0">
         {clawFeatureCards.map((card) => (
           <FeatureCard card={card} key={card.label} />
         ))}

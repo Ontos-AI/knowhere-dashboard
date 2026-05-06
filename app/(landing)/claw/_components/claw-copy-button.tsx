@@ -40,7 +40,7 @@ export const ClawCopyButton = ({ className, value }: ClawCopyButtonProps) => {
   return (
     <button
       className={cn(
-        "inline-flex h-9 w-[72px] items-center justify-center rounded-full bg-[#27272a] px-0 py-2 text-sm leading-5 text-[#a684ff] transition-colors hover:bg-[#18181b]",
+        "inline-flex h-9 w-[72px] items-center justify-center rounded-full bg-[#27272a] px-0 py-2 text-[12px] leading-5 text-[#a684ff] transition-colors hover:bg-[#18181b]",
         className
       )}
       onClick={handleCopy}

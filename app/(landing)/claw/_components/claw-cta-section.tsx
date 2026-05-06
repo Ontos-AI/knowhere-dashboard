@@ -10,7 +10,7 @@ import Image from "next/image";
 
 export const ClawCtaSection = () => {
   return (
-    <section className="border border-[#e4e4e7] bg-[#fafafa] scroll-mt-20" id="docs">
+    <section className="bg-[#fafafa] scroll-mt-20 shadow-[inset_0_0_0_1px_#e4e4e7]" id="docs">
       <div className="flex flex-col gap-8 pt-10 min-[640px]:gap-12 min-[640px]:pt-20 min-[640px]:max-[767px]:gap-9 min-[640px]:max-[767px]:pt-20 min-[768px]:max-[768px]:gap-9 min-[768px]:max-[768px]:pt-20 min-[769px]:gap-9 min-[769px]:pt-20">
         <div className="space-y-4 px-5 text-center min-[640px]:space-y-6 min-[640px]:px-16 min-[640px]:max-[767px]:space-y-4 min-[640px]:max-[767px]:px-12 min-[768px]:max-[768px]:space-y-4 min-[768px]:max-[768px]:px-12 min-[769px]:space-y-4 min-[769px]:px-12">
           <div className="space-y-2 min-[640px]:hidden">
@@ -28,19 +28,19 @@ export const ClawCtaSection = () => {
             </div>
           </div>
           <div className="mx-auto hidden max-w-[700px] flex-wrap items-center justify-center gap-x-6 gap-y-4 min-[640px]:flex min-[640px]:max-[767px]:max-w-[544px] min-[640px]:max-[767px]:gap-x-8 min-[640px]:max-[767px]:gap-y-4 min-[768px]:max-[768px]:max-w-[560px] min-[768px]:max-[768px]:gap-x-4 min-[768px]:max-[768px]:gap-y-[18px] min-[769px]:max-w-none min-[769px]:gap-x-8">
-            <span className="font-sans text-[42px] font-bold leading-[42px] text-[#09090b] min-[640px]:max-[767px]:text-[32px] min-[640px]:max-[767px]:leading-[42px] min-[768px]:max-[768px]:text-[36px] min-[768px]:max-[768px]:leading-10 min-[769px]:text-[36px] min-[769px]:leading-[48px]">
+            <span className="font-mono-readable text-[42px] font-bold leading-[42px] text-[#09090b] min-[640px]:max-[767px]:text-[32px] min-[640px]:max-[767px]:leading-[42px] min-[768px]:max-[768px]:text-[36px] min-[768px]:max-[768px]:leading-10 min-[769px]:text-[36px] min-[769px]:leading-[48px]">
               Bring
             </span>
-            <span className="inline-flex h-[38.664px] w-[165.714px] items-center min-[640px]:max-[767px]:h-[34px] min-[640px]:max-[767px]:w-[145.711px] min-[768px]:max-[768px]:h-[34px] min-[768px]:max-[768px]:w-[145.711px] min-[769px]:h-[34px] min-[769px]:w-[145.711px]">
+            <span className="inline-flex w-[200px] items-center">
               <Image
                 alt="Knowhere"
-                className="h-full w-full object-contain"
+                className="h-auto w-full object-contain"
                 height={84}
                 src="/images/knowhere/logo.png"
                 width={360}
               />
             </span>
-            <span className="font-sans text-[42px] font-bold leading-[42px] text-[#09090b] min-[640px]:max-[767px]:text-[32px] min-[640px]:max-[767px]:leading-[42px] min-[768px]:max-[768px]:text-[36px] min-[768px]:max-[768px]:leading-10 min-[769px]:text-[36px] min-[769px]:leading-[48px]">
+            <span className="font-mono-readable text-[42px] font-bold leading-[42px] text-[#09090b] min-[640px]:max-[767px]:text-[32px] min-[640px]:max-[767px]:leading-[42px] min-[768px]:max-[768px]:text-[36px] min-[768px]:max-[768px]:leading-10 min-[769px]:text-[36px] min-[769px]:leading-[48px]">
               into
             </span>
             <OpenClawWordmark
