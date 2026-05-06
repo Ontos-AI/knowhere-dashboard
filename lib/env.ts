@@ -32,19 +32,6 @@ export const env = createEnv({
      * Leave unset to preserve the pre-PR-3 host-only cookie behavior.
      */
     AUTH_COOKIE_DOMAIN: z.string().optional(),
-    /**
-     * Comma-separated list of external origins (scheme + host + optional
-     * port, no trailing slash) that Dashboard is allowed to redirect to
-     * post-login.
-     *
-     * Example:
-     *   `https://notebook.knowhereto.ai,http://notebook.local.knowhereto.ai:3001`
-     *
-     * Arbitrary external callback URLs are rejected. Leave unset to
-     * disable all external callbacks (internal `/usage`, `/settings`, etc.
-     * still work — that path uses the relative-URL sanitizer).
-     */
-    AUTH_ALLOWED_CALLBACK_ORIGINS: z.string().optional(),
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     DEV_EXTERNAL_API_AUTHORIZATION: z.string().optional(),
     HTTPS_PROXY: z.string().optional(),
@@ -56,6 +43,22 @@ export const env = createEnv({
     NEXT_PUBLIC_APP_URL: z.url(),
     NEXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
     NEXT_PUBLIC_POSTHOG_HOST: z.url().default("https://app.posthog.com"),
+    /**
+     * Comma-separated list of external origins (scheme + host + optional
+     * port, no trailing slash) that Dashboard is allowed to redirect to
+     * post-login. The allowlist is not a secret — it simply declares
+     * which Notebook / relying-app hostnames Dashboard trusts as
+     * post-login targets. Same value is read from client code (for the
+     * login action's `router.push`) and server code (for Better Auth's
+     * trustedOrigins), so it's a NEXT_PUBLIC variable.
+     *
+     * Example:
+     *   `https://notebook.knowhereto.ai,http://notebook.local.knowhereto.ai:3001`
+     *
+     * Arbitrary external callback URLs are rejected. Leave unset to
+     * disable all external callbacks.
+     */
+    NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: z.string().optional(),
   },
   runtimeEnv: {
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
@@ -72,7 +75,6 @@ export const env = createEnv({
     BILLING_ENABLED: process.env.BILLING_ENABLED,
     PASSWORD_LOGIN_ENABLED: process.env.PASSWORD_LOGIN_ENABLED,
     AUTH_COOKIE_DOMAIN: process.env.AUTH_COOKIE_DOMAIN,
-    AUTH_ALLOWED_CALLBACK_ORIGINS: process.env.AUTH_ALLOWED_CALLBACK_ORIGINS,
     NODE_ENV: process.env.NODE_ENV,
     DEV_EXTERNAL_API_AUTHORIZATION: process.env.DEV_EXTERNAL_API_AUTHORIZATION,
     HTTPS_PROXY: process.env.HTTPS_PROXY,
@@ -82,6 +84,8 @@ export const env = createEnv({
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+    NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS:
+      process.env.NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 });

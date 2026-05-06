@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
  * Tests for the callback sanitizer and allowlist.
  *
  * The allowlist is parsed once at module load from
- * `AUTH_ALLOWED_CALLBACK_ORIGINS`. We reset modules between test cases so
+ * `NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS`. We reset modules between test cases so
  * each one can stub `@/lib/env` with a different value and load a fresh
  * `auth-redirect` module.
  */
@@ -18,7 +18,7 @@ function setEnv(env: Record<string, string | undefined>): LoadFn {
       NEXT_PUBLIC_APP_URL: "https://dashboard.example",
       BETTER_AUTH_URL: "https://dashboard.example",
       AUTH_COOKIE_DOMAIN: undefined,
-      AUTH_ALLOWED_CALLBACK_ORIGINS: undefined,
+      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: undefined,
       ...env,
     },
   }));
@@ -31,19 +31,23 @@ afterEach(() => {
 });
 
 describe("parseAllowedExternalOrigins (via authRedirect.allowedExternalOrigins)", () => {
-  it("is empty when AUTH_ALLOWED_CALLBACK_ORIGINS is unset", async () => {
-    const { authRedirect } = await setEnv({ AUTH_ALLOWED_CALLBACK_ORIGINS: undefined })();
+  it("is empty when NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS is unset", async () => {
+    const { authRedirect } = await setEnv({
+      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: undefined,
+    })();
     expect(authRedirect.allowedExternalOrigins).toEqual([]);
   });
 
   it("is empty when the value is only whitespace", async () => {
-    const { authRedirect } = await setEnv({ AUTH_ALLOWED_CALLBACK_ORIGINS: "  ,  ," })();
+    const { authRedirect } = await setEnv({
+      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "  ,  ,",
+    })();
     expect(authRedirect.allowedExternalOrigins).toEqual([]);
   });
 
   it("normalizes each entry to its origin and trims whitespace", async () => {
     const { authRedirect } = await setEnv({
-      AUTH_ALLOWED_CALLBACK_ORIGINS:
+      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS:
         "  https://notebook.knowhereto.ai/ , http://notebook.local.knowhereto.ai:3001 ",
     })();
     expect(authRedirect.allowedExternalOrigins).toEqual([
@@ -54,7 +58,7 @@ describe("parseAllowedExternalOrigins (via authRedirect.allowedExternalOrigins)"
 
   it("drops entries that do not parse as URLs", async () => {
     const { authRedirect } = await setEnv({
-      AUTH_ALLOWED_CALLBACK_ORIGINS: "not-a-url, https://good.example, 🙂",
+      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "not-a-url, https://good.example, 🙂",
     })();
     expect(authRedirect.allowedExternalOrigins).toEqual(["https://good.example"]);
   });
@@ -107,13 +111,15 @@ describe("getSafeCallbackURL — relative paths (legacy flavor)", () => {
 
 describe("getSafeCallbackURL — external origins (allowlist flavor)", () => {
   it("rejects external URLs when the allowlist is unset", async () => {
-    const { authRedirect } = await setEnv({ AUTH_ALLOWED_CALLBACK_ORIGINS: undefined })();
+    const { authRedirect } = await setEnv({
+      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: undefined,
+    })();
     expect(authRedirect.getSafeCallbackURL("https://notebook.knowhereto.ai")).toBeNull();
   });
 
   it("accepts an allowlisted external origin and echoes the URL", async () => {
     const { authRedirect } = await setEnv({
-      AUTH_ALLOWED_CALLBACK_ORIGINS: "https://notebook.knowhereto.ai",
+      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://notebook.knowhereto.ai",
     })();
     expect(authRedirect.getSafeCallbackURL("https://notebook.knowhereto.ai")).toBe(
       "https://notebook.knowhereto.ai/"
@@ -125,7 +131,7 @@ describe("getSafeCallbackURL — external origins (allowlist flavor)", () => {
 
   it("rejects an external URL whose origin is not allowlisted", async () => {
     const { authRedirect } = await setEnv({
-      AUTH_ALLOWED_CALLBACK_ORIGINS: "https://notebook.knowhereto.ai",
+      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://notebook.knowhereto.ai",
     })();
     expect(authRedirect.getSafeCallbackURL("https://evil.example")).toBeNull();
     expect(
@@ -140,7 +146,7 @@ describe("getSafeCallbackURL — external origins (allowlist flavor)", () => {
 
   it("rejects malformed absolute URLs", async () => {
     const { authRedirect } = await setEnv({
-      AUTH_ALLOWED_CALLBACK_ORIGINS: "https://notebook.knowhereto.ai",
+      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://notebook.knowhereto.ai",
     })();
     expect(authRedirect.getSafeCallbackURL("http://")).toBeNull();
     expect(authRedirect.getSafeCallbackURL("https:// space.example")).toBeNull();
@@ -148,7 +154,7 @@ describe("getSafeCallbackURL — external origins (allowlist flavor)", () => {
 
   it("rejects non-http(s) schemes even if they parse", async () => {
     const { authRedirect } = await setEnv({
-      AUTH_ALLOWED_CALLBACK_ORIGINS: "https://notebook.knowhereto.ai",
+      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://notebook.knowhereto.ai",
     })();
     expect(authRedirect.getSafeCallbackURL("javascript:alert(1)")).toBeNull();
     expect(authRedirect.getSafeCallbackURL("data:text/html,hi")).toBeNull();
@@ -157,7 +163,7 @@ describe("getSafeCallbackURL — external origins (allowlist flavor)", () => {
 
   it("rejects allowlisted origin when path is a Dashboard auth page", async () => {
     const { authRedirect } = await setEnv({
-      AUTH_ALLOWED_CALLBACK_ORIGINS: "https://notebook.knowhereto.ai",
+      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://notebook.knowhereto.ai",
     })();
     expect(authRedirect.getSafeCallbackURL("https://notebook.knowhereto.ai/login")).toBeNull();
     expect(authRedirect.getSafeCallbackURL("https://notebook.knowhereto.ai/callback/x")).toBeNull();
@@ -175,7 +181,7 @@ describe("resolveCallbackURL", () => {
 
   it("returns the safe path/URL when input is safe", async () => {
     const { authRedirect } = await setEnv({
-      AUTH_ALLOWED_CALLBACK_ORIGINS: "https://notebook.knowhereto.ai",
+      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://notebook.knowhereto.ai",
     })();
     expect(authRedirect.resolveCallbackURL("/usage")).toBe("/usage");
     expect(authRedirect.resolveCallbackURL("https://notebook.knowhereto.ai/inbox")).toBe(
@@ -201,7 +207,7 @@ describe("buildAuthPagePath", () => {
 
   it("includes an allowlisted external callbackURL", async () => {
     const { authRedirect } = await setEnv({
-      AUTH_ALLOWED_CALLBACK_ORIGINS: "https://notebook.knowhereto.ai",
+      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://notebook.knowhereto.ai",
     })();
     expect(
       authRedirect.buildAuthPagePath("/login", {
