@@ -18,6 +18,7 @@ type EmailLoginFormProps = {
   onMagicLinkSubmit: (email: string) => Promise<boolean>;
   onPasswordSubmit: (email: string, password: string) => Promise<boolean>;
   passwordLoginEnabled: boolean;
+  registerPath: string;
 };
 
 type LoginFormValues = {
@@ -33,6 +34,7 @@ export const EmailLoginForm = ({
   onMagicLinkSubmit,
   onPasswordSubmit,
   passwordLoginEnabled,
+  registerPath,
 }: EmailLoginFormProps) => {
   const t = useTranslations("Auth");
   const [isPasswordLoginEnabled, setIsPasswordLoginEnabled] = useState(false);
@@ -164,7 +166,7 @@ export const EmailLoginForm = ({
             {t("noAccount")}{" "}
             <Link
               className="font-medium text-[#7f22fe] transition-opacity hover:opacity-80"
-              href="/register"
+              href={registerPath}
             >
               {t("signUpWithPassword")}
             </Link>
