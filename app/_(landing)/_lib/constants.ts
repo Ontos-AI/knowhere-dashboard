@@ -48,7 +48,7 @@ export const SCROLL_THRESHOLDS = {
 
 // Social links
 export const SOCIAL_LINKS = {
-  github: "https://github.com/Ontos-AI/knowhere-api",
+  github: "https://github.com/Ontos-AI/knowhere-dashboard",
   discord: "#",
   twitter: "#",
   linkedin: "#",
