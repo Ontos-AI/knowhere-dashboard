@@ -19,15 +19,21 @@ type BuildAuthPagePathOptions = {
 };
 
 /**
- * Parse `AUTH_ALLOWED_CALLBACK_ORIGINS` into a normalized allowlist of
- * origins.
+ * Parse `NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS` into a normalized
+ * allowlist of origins.
+ *
+ * The allowlist is exposed as a `NEXT_PUBLIC_` variable so both server
+ * code (Better Auth's `trustedOrigins`) and client code (the login
+ * action's `router.push(callbackURL)`) read the exact same list. The
+ * values are not secrets — they declare which Notebook / relying-app
+ * hostnames Dashboard trusts as post-login targets.
  *
  * Each entry is `new URL(value).origin`, so `https://notebook.knowhereto.ai/`,
  * `https://notebook.knowhereto.ai`, and `https://NOTEBOOK.KNOWHERETO.AI` all
  * normalize to the same allowlisted origin. Invalid entries are dropped.
  */
 function parseAllowedExternalOrigins(): readonly string[] {
-  const raw = env.AUTH_ALLOWED_CALLBACK_ORIGINS;
+  const raw = env.NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS;
   if (!raw) return [];
   return raw
     .split(",")
@@ -44,8 +50,8 @@ function parseAllowedExternalOrigins(): readonly string[] {
 }
 
 /**
- * Cached once per module load. If the env changes (e.g. a new Vercel
- * deploy) the serverless function is a new process anyway.
+ * Cached once per module load. If the env changes the serverless
+ * function / browser session is a new process anyway.
  */
 const ALLOWED_EXTERNAL_ORIGINS = parseAllowedExternalOrigins();
 
@@ -64,9 +70,9 @@ export function isAllowedExternalOrigin(origin: string): boolean {
  *      like `//evil.com` and `/callback/...` are still rejected.
  *
  *   2. Allowlisted external origins. Full URLs whose `origin` appears in
- *      `AUTH_ALLOWED_CALLBACK_ORIGINS` (typically the Notebook public URL).
- *      Arbitrary external URLs are still rejected, so this is not an
- *      open redirect.
+ *      `NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS` (typically the
+ *      Notebook public URL). Arbitrary external URLs are still
+ *      rejected, so this is not an open redirect.
  *
  * The returned value is the sanitized string the caller should hand to
  * Better Auth / `router.push`: a relative path for flavor 1, a full URL
@@ -79,11 +85,7 @@ function getSafeCallbackURL(callbackURL: string | null | undefined): string | nu
   if (callbackURL.startsWith("/") && !callbackURL.startsWith("//")) {
     const url = new URL(callbackURL, "http://localhost");
     const pathname = url.pathname || "/";
-    const isAuthPage = AUTH_PAGE_PATHS.some((authPath) => pathname === authPath);
-    const isAuthCallbackPath =
-      pathname === AUTH_CALLBACK_PATH_PREFIX ||
-      pathname.startsWith(`${AUTH_CALLBACK_PATH_PREFIX}/`);
-    if (isAuthPage || isAuthCallbackPath) return null;
+    if (isDashboardAuthPath(pathname)) return null;
     return `${pathname}${url.search}`;
   }
 
@@ -101,12 +103,15 @@ function getSafeCallbackURL(callbackURL: string | null | undefined): string | nu
   // Do not allow the external callback to aim back at a Dashboard auth
   // page (defense-in-depth; in practice the origin check already rejects
   // Dashboard itself unless someone misconfigures the env).
-  const pathname = parsed.pathname || "/";
-  const isAuthPage = AUTH_PAGE_PATHS.some((authPath) => pathname === authPath);
-  const isAuthCallbackPath =
-    pathname === AUTH_CALLBACK_PATH_PREFIX || pathname.startsWith(`${AUTH_CALLBACK_PATH_PREFIX}/`);
-  if (isAuthPage || isAuthCallbackPath) return null;
+  if (isDashboardAuthPath(parsed.pathname || "/")) return null;
   return parsed.toString();
+}
+
+function isDashboardAuthPath(pathname: string): boolean {
+  if (AUTH_PAGE_PATHS.some((authPath) => pathname === authPath)) return true;
+  return (
+    pathname === AUTH_CALLBACK_PATH_PREFIX || pathname.startsWith(`${AUTH_CALLBACK_PATH_PREFIX}/`)
+  );
 }
 
 function buildAuthPagePath(pathname: AuthPagePath, options?: BuildAuthPagePathOptions): string {
