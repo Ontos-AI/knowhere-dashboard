@@ -203,7 +203,7 @@ const pythonCode = `import requests
 
 url = "https://api.knowhereto.ai/v1/jobs"
 headers = {
-    "Authorization": "Bearer ***REMOVED***",
+    "Authorization": f"Bearer {KNOWHERE_API_KEY}",
     "Content-Type": "application/json"
 }
 payload = {
@@ -219,7 +219,7 @@ response = requests.post(url, headers=headers, json=payload)
 print(response.json())`;
 
 const curlCode = `curl -X POST https://api.knowhereto.ai/v1/jobs \\
-  -H "Authorization: Bearer ***REMOVED***" \\
+  --oauth2-bearer "$KNOWHERE_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
     "source_type": "url",

@@ -6,10 +6,10 @@
   "packageManager": "pnpm@10.30.3",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Ontos-AI/knowhere-api-dashboard.git"
+    "url": "https://github.com/Ontos-AI/knowhere-dashboard.git"
   },
   "bugs": {
-    "url": "https://github.com/Ontos-AI/knowhere-api-dashboard/issues"
+    "url": "https://github.com/Ontos-AI/knowhere-dashboard/issues"
   },
   "homepage": "https://knowhereto.ai/",
   "scripts": {

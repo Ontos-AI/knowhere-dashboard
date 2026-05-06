@@ -104,13 +104,13 @@ pnpm build
 Build the image:
 
 ```bash
-docker build -t knowhere-api-dashboard .
+docker build -t knowhere-dashboard .
 ```
 
 Run the dashboard:
 
 ```bash
-docker run --rm -p 3000:3000 --env-file .env.local knowhere-api-dashboard
+docker run --rm -p 3000:3000 --env-file .env.local knowhere-dashboard
 ```
 
 The container runs `pnpm db:generate` and `pnpm db:migrate` before starting the Next.js server. If either command fails, the app server is not started.

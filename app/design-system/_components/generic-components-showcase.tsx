@@ -41,7 +41,7 @@ const codeTabs = [
 
 url = "https://api.knowhereto.ai/v1/jobs"
 headers = {
-    "Authorization": "Bearer ***REMOVED***",
+    "Authorization": f"Bearer {KNOWHERE_API_KEY}",
     "Content-Type": "application/json",
 }
 
@@ -51,7 +51,7 @@ response = requests.post(url, headers=headers, json={"source_type": "url"})`,
   },
   {
     code: `curl -X POST https://api.knowhereto.ai/v1/jobs \\
-  -H "Authorization: Bearer ***REMOVED***" \\
+  --oauth2-bearer "$KNOWHERE_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{"source_type":"url"}'`,
     label: "CURL",

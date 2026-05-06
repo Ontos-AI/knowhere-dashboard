@@ -65,7 +65,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p release-assets
-          git archive --format=zip --output="release-assets/knowhere-api-dashboard-${RELEASE_TAG}-source.zip" "${DEPLOYED_SHA}"
+          git archive --format=zip --output="release-assets/knowhere-dashboard-${RELEASE_TAG}-source.zip" "${DEPLOYED_SHA}"
 
           cat > release-assets/build-info.json <<EOF
           {
@@ -86,7 +86,7 @@ jobs:
         run: |
           set -euo pipefail
           gh release create "${RELEASE_TAG}" \
-            release-assets/knowhere-api-dashboard-${RELEASE_TAG}-source.zip \
+            release-assets/knowhere-dashboard-${RELEASE_TAG}-source.zip \
             release-assets/build-info.json \
             --repo "${GITHUB_REPOSITORY}" \
             --target "${DEPLOYED_SHA}" \

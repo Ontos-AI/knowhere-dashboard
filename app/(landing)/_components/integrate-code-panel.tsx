@@ -12,7 +12,7 @@ const pythonCode = `import requests
 
 url = "https://api.knowhereto.ai/v1/jobs"
 headers = {
-  "Authorization": "Bearer ***REMOVED***",
+  "Authorization": f"Bearer {KNOWHERE_API_KEY}",
   "Content-Type": "application/json"
 }
 payload = {
@@ -28,7 +28,7 @@ response = requests.post(url, headers=headers, json=payload)
 print(response.json())`;
 
 const curlCode = `curl -X POST https://api.knowhereto.ai/v1/jobs \\
-  -H "Authorization: Bearer ***REMOVED***" \\
+  --oauth2-bearer "$KNOWHERE_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
     "source_type": "url",
@@ -54,7 +54,7 @@ const codeMarkupByTab = {
       {"\n"}
       {"  "}
       <span className="text-[#ff6467]">"Authorization"</span>:{" "}
-      <span className="text-[#ff6467]">"Bearer ***REMOVED***"</span>,{"\n"}
+      <span className="text-[#ff6467]">f"Bearer {"{"}KNOWHERE_API_KEY{"}"}"</span>,{"\n"}
       {"  "}
       <span className="text-[#ff6467]">"Content-Type"</span>:{" "}
       <span className="text-[#ff6467]">"application/json"</span>
@@ -97,8 +97,8 @@ const codeMarkupByTab = {
       <span className="text-[#ff6467]">https://api.knowhereto.ai/v1/jobs</span> {"\\"}
       {"\n"}
       {"  "}
-      <span className="text-[#d08700]">-H</span>{" "}
-      <span className="text-[#ff6467]">"Authorization: Bearer ***REMOVED***"</span> {"\\"}
+      <span className="text-[#d08700]">--oauth2-bearer</span>{" "}
+      <span className="text-[#ff6467]">"$KNOWHERE_API_KEY"</span> {"\\"}
       {"\n"}
       {"  "}
       <span className="text-[#d08700]">-H</span>{" "}
