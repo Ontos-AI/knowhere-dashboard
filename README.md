@@ -123,8 +123,6 @@ The public workflow runs lint, type-check, tests, and build on pull requests and
 
 This repository does not publish standalone public dashboard images. Public self-hosted image publishing is handled by the combined self-hosted release workflow.
 
-The public boundary for this repository is documented in [docs/publication-scope.md](docs/publication-scope.md).
-
 ## Deployment
 
 Merging a pull request into `staging` or `main` triggers `.github/workflows/deploy.yml` through the branch push created by the merge. The workflow builds the dashboard image, pushes it to the configured AWS image registry, and updates the configured Kubernetes deployment with `kubectl set image`.

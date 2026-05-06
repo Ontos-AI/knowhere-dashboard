@@ -82,7 +82,7 @@ export function CommunitySection() {
                   />
                   <div>
                     <h3 className="text-[12px] font-pixel leading-relaxed text-[var(--pixel-text-muted)]">
-                      knowhere-dashboard
+                      knowhere-api/knowhere
                     </h3>
                     <p className="text-sm text-pixel-muted font-sans">
                       Open source document parsing
