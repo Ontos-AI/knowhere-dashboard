@@ -421,7 +421,7 @@ export const LandingHome = () => {
     <div className="min-h-dvh bg-[#fafafa] text-[#09090b]">
       <LandingHeader />
 
-      <main className={cn(landingCanvasWidthClassName, "max-[375px]:min-w-[320px]")}>
+      <main className={cn(landingCanvasWidthClassName, "min-w-[375px]")}>
         <section className={sectionFrameClassName}>
           <div className="relative border-b border-[#ede9fe] bg-[#f5f3ff] pb-14 pt-12 max-[639px]:pb-11 max-[639px]:pt-4 min-[769px]:pb-[56px] min-[769px]:pt-[48px]">
             <div

@@ -11,6 +11,7 @@ import {
   ClawStripedOverlay,
 } from "@app/(landing)/claw/_components/claw-primitives";
 import { cn } from "@lib/utils";
+import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
 
 type ResourceLinkProps = {
   resource: IntegrationResource;
@@ -81,13 +82,22 @@ const IntegrationStepRow = ({ step }: IntegrationStepRowProps) => {
           ) : null}
         </div>
         <div className="relative h-[72px] w-full max-w-full overflow-hidden border border-[#09090b] bg-[#27272a] min-[640px]:max-[767px]:h-[52px] min-[768px]:max-[768px]:h-[52px] min-[769px]:h-[52px]">
-          <div className="h-full overflow-x-auto">
-            <div className="flex h-full min-w-max items-center pl-5 pr-[88px] min-[640px]:pl-8 min-[640px]:pr-24 min-[640px]:max-[767px]:px-6 min-[640px]:max-[767px]:pr-24 min-[768px]:max-[768px]:px-6 min-[768px]:max-[768px]:pr-24 min-[769px]:px-6 min-[769px]:pr-24">
-              <code className="whitespace-nowrap font-mono-display text-base leading-6 tracking-normal min-[640px]:max-[767px]:text-sm min-[640px]:max-[767px]:leading-5 min-[768px]:max-[768px]:text-sm min-[768px]:max-[768px]:leading-5 min-[769px]:text-sm min-[769px]:leading-5">
-                {renderSegments(step.segments)}
-              </code>
-            </div>
-          </div>
+          <ScrollAreaPrimitive.Root type="auto" className="relative h-full w-full overflow-hidden">
+            <ScrollAreaPrimitive.Viewport className="h-full w-full [&>div]:h-full">
+              <div className="flex h-full min-w-max items-center pl-5 pr-[88px] min-[640px]:pl-8 min-[640px]:pr-24 min-[640px]:max-[767px]:px-6 min-[640px]:max-[767px]:pr-24 min-[768px]:max-[768px]:px-6 min-[768px]:max-[768px]:pr-24 min-[769px]:px-6 min-[769px]:pr-24">
+                <code className="whitespace-nowrap font-mono-display text-base leading-6 tracking-normal min-[640px]:max-[767px]:text-sm min-[640px]:max-[767px]:leading-5 min-[768px]:max-[768px]:text-sm min-[768px]:max-[768px]:leading-5 min-[769px]:text-sm min-[769px]:leading-5">
+                  {renderSegments(step.segments)}
+                </code>
+              </div>
+            </ScrollAreaPrimitive.Viewport>
+            <ScrollAreaPrimitive.ScrollAreaScrollbar
+              orientation="horizontal"
+              className="absolute bottom-0 left-0 right-0 z-30 flex h-2 flex-col touch-none select-none border-t border-[#3f3f46] bg-[#27272a]"
+            >
+              <ScrollAreaPrimitive.ScrollAreaThumb className="flex-1 rounded-none bg-[#52525b] transition-colors hover:bg-[#71717a] active:bg-[rgb(113_113_122_/_60%)]" />
+            </ScrollAreaPrimitive.ScrollAreaScrollbar>
+            <ScrollAreaPrimitive.Corner className="bg-[#27272a]" />
+          </ScrollAreaPrimitive.Root>
           <div className="absolute right-[9px] top-1/2 -translate-y-1/2">
             <ClawCopyButton value={step.command} />
           </div>
@@ -99,7 +109,10 @@ const IntegrationStepRow = ({ step }: IntegrationStepRowProps) => {
 
 export const ClawIntegrationSection = () => {
   return (
-    <section className="border border-[#e4e4e7] bg-[#fafafa] scroll-mt-20" id="integration">
+    <section
+      className="bg-[#fafafa] scroll-mt-20 shadow-[inset_0_0_0_1px_#e4e4e7]"
+      id="integration"
+    >
       <div className="flex flex-col gap-8 pt-10 min-[640px]:gap-12 min-[640px]:pt-20 min-[640px]:max-[767px]:gap-9 min-[640px]:max-[767px]:pt-14 min-[768px]:max-[768px]:gap-9 min-[768px]:max-[768px]:pt-14 min-[769px]:gap-9 min-[769px]:pt-14">
         <ClawSectionHeading
           className="!space-y-0 min-[640px]:!space-y-0 min-[769px]:!space-y-0"
