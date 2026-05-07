@@ -25,11 +25,11 @@ export const env = createEnv({
      * is shared across subdomains.
      *
      * Examples:
-     *   - prod:  `knowhereto.ai`
-     *   - local: `local.knowhereto.ai`
+     *   - prod:  `example.com`
+     *   - local: `local.example.com`
      *   - test/CI: unset — keeps host-only cookies
      *
-     * Leave unset to preserve the pre-PR-3 host-only cookie behavior.
+     * Leave unset to preserve the host-only cookie behavior.
      */
     AUTH_COOKIE_DOMAIN: z.string().optional(),
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
@@ -47,13 +47,13 @@ export const env = createEnv({
      * Comma-separated list of external origins (scheme + host + optional
      * port, no trailing slash) that Dashboard is allowed to redirect to
      * post-login. The allowlist is not a secret — it simply declares
-     * which Notebook / relying-app hostnames Dashboard trusts as
-     * post-login targets. Same value is read from client code (for the
-     * login action's `router.push`) and server code (for Better Auth's
-     * trustedOrigins), so it's a NEXT_PUBLIC variable.
+     * which sibling-app hostnames Dashboard trusts as post-login targets.
+     * Same value is read from client code (for the login action's
+     * `router.push`) and server code (for Better Auth's trustedOrigins),
+     * so it's a NEXT_PUBLIC variable.
      *
      * Example:
-     *   `https://notebook.knowhereto.ai,http://notebook.local.knowhereto.ai:3001`
+     *   `https://app1.example.com,http://app1.local.example.com:3001`
      *
      * Arbitrary external callback URLs are rejected. Leave unset to
      * disable all external callbacks.
