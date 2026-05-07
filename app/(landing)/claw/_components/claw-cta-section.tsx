@@ -67,7 +67,7 @@ export const ClawCtaSection = () => {
         </p>
 
         <div className="border-t border-[#f4f4f5]">
-          <div className="border-y border-[#ffe2e2] bg-[#fef2f2] px-5 py-[14px] text-center min-[640px]:px-16 min-[640px]:py-6 min-[640px]:max-[767px]:px-12 min-[640px]:max-[767px]:py-4 min-[768px]:max-[768px]:px-12 min-[768px]:max-[768px]:py-4 min-[769px]:px-12 min-[769px]:py-4">
+          <div className="border-y border-x border-y-[#ffe2e2] border-x-[#e4e4e7] bg-[#fef2f2] px-5 py-[14px] text-center min-[640px]:px-16 min-[640px]:py-6 min-[640px]:max-[767px]:px-12 min-[640px]:max-[767px]:py-4 min-[768px]:max-[768px]:px-12 min-[768px]:max-[768px]:py-4 min-[769px]:px-12 min-[769px]:py-4">
             <h2 className="text-lg font-bold leading-7 text-[#e7000b] min-[640px]:text-2xl min-[640px]:leading-8 min-[640px]:max-[767px]:text-lg min-[640px]:max-[767px]:leading-7 min-[768px]:max-[768px]:text-lg min-[768px]:max-[768px]:leading-7 min-[769px]:text-lg min-[769px]:leading-7">
               What changes inside OpenClaw
             </h2>

@@ -210,6 +210,65 @@
 }
 
 @layer utilities {
+  .hero-scrollbar-dark {
+    scrollbar-width: auto;
+    scrollbar-color: #52525b var(--hero-scrollbar-track, #18181b);
+  }
+
+  .hero-scrollbar-dark::-webkit-scrollbar-track {
+    background: var(--hero-scrollbar-track, #18181b);
+    border-radius: 0;
+  }
+
+  .hero-scrollbar-dark::-webkit-scrollbar-corner {
+    background: var(--hero-scrollbar-track, #18181b);
+  }
+
+  .hero-scrollbar-dark::-webkit-scrollbar-thumb {
+    background: #52525b !important;
+    border: none;
+    border-radius: 0;
+    transition: background-color 160ms ease;
+  }
+
+  .hero-scrollbar-dark::-webkit-scrollbar-thumb:hover,
+  .hero-scrollbar-dark::-webkit-scrollbar-thumb:vertical:hover,
+  .hero-scrollbar-dark::-webkit-scrollbar-thumb:horizontal:hover,
+  .hero-scrollbar-dark:hover::-webkit-scrollbar-thumb {
+    background: #71717a !important;
+  }
+
+  .hero-scrollbar-dark::-webkit-scrollbar-thumb:active,
+  .hero-scrollbar-dark::-webkit-scrollbar-thumb:vertical:active,
+  .hero-scrollbar-dark::-webkit-scrollbar-thumb:horizontal:active,
+  .hero-scrollbar-dark:active::-webkit-scrollbar-thumb {
+    background: rgb(113 113 122 / 60%) !important;
+  }
+
+  .hero-scrollbar-dark:hover::-webkit-scrollbar-thumb:active {
+    background: rgb(113 113 122 / 60%) !important;
+  }
+
+  .hero-scrollbar-dark::-webkit-scrollbar-thumb:window-inactive {
+    background: #52525b !important;
+  }
+
+  .hero-scrollbar-dark::-webkit-scrollbar-track:vertical {
+    border-left: 1px solid #3f3f46;
+  }
+
+  .hero-scrollbar-dark::-webkit-scrollbar-track:horizontal {
+    border-top: 1px solid #3f3f46;
+  }
+
+  .hero-scrollbar-track-soft {
+    --hero-scrollbar-track: #27272a;
+  }
+
+  .hero-scrollbar-track-deep {
+    --hero-scrollbar-track: #18181b;
+  }
+
   .font-geist-sans-var {
     font-family:
       "Geist", "Inter", "Segoe UI", "Helvetica Neue", Arial, system-ui, -apple-system,

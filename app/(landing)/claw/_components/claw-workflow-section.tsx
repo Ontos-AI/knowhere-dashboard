@@ -4,6 +4,7 @@ import {
   OpenClawMark,
 } from "@app/(landing)/claw/_components/claw-primitives";
 import { KnowhereIcon } from "@components/ui/knowhere-icon";
+import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
 import Image from "next/image";
 import { useId } from "react";
 
@@ -294,28 +295,47 @@ export const ClawWorkflowSection = () => {
               </div>
             </div>
 
-            <div className="overflow-x-auto overscroll-x-contain min-[640px]:max-[767px]:overflow-visible min-[768px]:max-[768px]:overflow-visible min-[769px]:overflow-visible">
-              <div className="min-w-[339px] space-y-6 px-2.5 pb-[14px] pt-[14px] min-[640px]:min-w-0 min-[640px]:px-5 min-[640px]:pb-10 min-[640px]:pt-6 min-[640px]:max-[767px]:space-y-4 min-[640px]:max-[767px]:px-[14px] min-[640px]:max-[767px]:pb-8 min-[640px]:max-[767px]:pt-4 min-[768px]:max-[768px]:space-y-4 min-[768px]:max-[768px]:px-[14px] min-[768px]:max-[768px]:pb-8 min-[768px]:max-[768px]:pt-4 min-[769px]:space-y-4 min-[769px]:px-[14px] min-[769px]:pb-8 min-[769px]:pt-4">
-                <UserBubble
-                  count="1"
-                  text="Did Tesla's free cash flow go negative in any quarter? Show the supporting chunk."
-                />
-                <AssistantBubble
-                  emphasis="−$2,535M"
-                  tags={["manifest.json", "chunks.json", "page-33 / table-14"]}
-                  text="Yes. Q1 2024 is the only negative quarter. Operating cash fell to $242M while CapEx stayed at $2,777M."
-                />
-                <UserBubble
-                  count="3"
-                  text="What should I inspect if I want the raw source instead of the answer?"
-                />
-                <AssistantBubble
-                  emphasis="preview → grep → read_result_file"
-                  tags={["knowhere_preview_document", "knowhere_grep", "knowhere_read_result_file"]}
-                  text="Open the preview first, grep for the metric, then read the exact result file behind that chunk. The plugin keeps the path surface intact."
-                />
-              </div>
-            </div>
+            <ScrollAreaPrimitive.Root type="auto" className="relative overflow-hidden">
+              <ScrollAreaPrimitive.Viewport className="h-full w-full">
+                <div className="min-w-[339px] space-y-6 px-2.5 pb-[14px] pt-[14px] min-[640px]:min-w-0 min-[640px]:px-5 min-[640px]:pb-10 min-[640px]:pt-6 min-[640px]:max-[767px]:space-y-4 min-[640px]:max-[767px]:px-[14px] min-[640px]:max-[767px]:pb-8 min-[640px]:max-[767px]:pt-4 min-[768px]:max-[768px]:space-y-4 min-[768px]:max-[768px]:px-[14px] min-[768px]:max-[768px]:pb-8 min-[768px]:max-[768px]:pt-4 min-[769px]:space-y-4 min-[769px]:px-[14px] min-[769px]:pb-8 min-[769px]:pt-4">
+                  <UserBubble
+                    count="1"
+                    text="Did Tesla's free cash flow go negative in any quarter? Show the supporting chunk."
+                  />
+                  <AssistantBubble
+                    emphasis="−$2,535M"
+                    tags={["manifest.json", "chunks.json", "page-33 / table-14"]}
+                    text="Yes. Q1 2024 is the only negative quarter. Operating cash fell to $242M while CapEx stayed at $2,777M."
+                  />
+                  <UserBubble
+                    count="3"
+                    text="What should I inspect if I want the raw source instead of the answer?"
+                  />
+                  <AssistantBubble
+                    emphasis="preview → grep → read_result_file"
+                    tags={[
+                      "knowhere_preview_document",
+                      "knowhere_grep",
+                      "knowhere_read_result_file",
+                    ]}
+                    text="Open the preview first, grep for the metric, then read the exact result file behind that chunk. The plugin keeps the path surface intact."
+                  />
+                </div>
+              </ScrollAreaPrimitive.Viewport>
+              <ScrollAreaPrimitive.ScrollAreaScrollbar
+                orientation="vertical"
+                className="z-30 flex w-2 touch-none select-none border-l border-[#3f3f46] bg-[#27272a]"
+              >
+                <ScrollAreaPrimitive.ScrollAreaThumb className="flex-1 rounded-none bg-[#52525b] transition-colors hover:bg-[#71717a] active:bg-[rgb(113_113_122_/_60%)]" />
+              </ScrollAreaPrimitive.ScrollAreaScrollbar>
+              <ScrollAreaPrimitive.ScrollAreaScrollbar
+                orientation="horizontal"
+                className="z-30 flex h-2 flex-col touch-none select-none border-t border-[#3f3f46] bg-[#27272a]"
+              >
+                <ScrollAreaPrimitive.ScrollAreaThumb className="flex-1 rounded-none bg-[#52525b] transition-colors hover:bg-[#71717a] active:bg-[rgb(113_113_122_/_60%)]" />
+              </ScrollAreaPrimitive.ScrollAreaScrollbar>
+              <ScrollAreaPrimitive.Corner className="bg-[#27272a]" />
+            </ScrollAreaPrimitive.Root>
           </div>
         </div>
       </div>

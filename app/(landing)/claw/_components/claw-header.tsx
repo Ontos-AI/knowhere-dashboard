@@ -6,15 +6,17 @@ import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { useActiveSection } from "@hooks/use-active-section";
 import { cn } from "@lib/utils";
 import Link from "next/link";
+import { useState } from "react";
 
 export const ClawHeader = () => {
   const activeSection = useActiveSection({
     ids: clawNavItems.map((item) => item.href.replace(/^#/, "")),
   });
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-[#e4e4e7] bg-[#fafafa]">
-      <div className="mx-auto grid h-12 w-full grid-cols-[128px_minmax(0,1fr)_48px] min-[640px]:grid-cols-[128px_minmax(0,1fr)_128px] min-[640px]:max-[767px]:h-16 min-[640px]:max-[767px]:grid-cols-[148px_minmax(0,1fr)_152px] min-[768px]:max-[768px]:h-16 min-[768px]:max-[768px]:grid-cols-[148px_minmax(0,1fr)_152px] min-[769px]:h-16 min-[769px]:max-w-[1280px] min-[769px]:grid-cols-[152px_minmax(0,1fr)_152px]">
+      <div className="relative mx-auto grid h-12 w-full grid-cols-[128px_minmax(0,1fr)_48px] min-[640px]:grid-cols-[128px_minmax(0,1fr)_128px] min-[640px]:max-[767px]:h-16 min-[640px]:max-[767px]:grid-cols-[148px_minmax(0,1fr)_152px] min-[768px]:max-[768px]:h-16 min-[768px]:max-[768px]:grid-cols-[148px_minmax(0,1fr)_152px] min-[769px]:h-16 min-[769px]:max-w-[1280px] min-[769px]:grid-cols-[152px_minmax(0,1fr)_152px]">
         <div className="flex h-full items-center border-r border-[#e4e4e7] px-4 min-[640px]:max-[767px]:px-[14px] min-[768px]:max-[768px]:px-[14px] min-[769px]:border-l min-[769px]:px-4">
           <Link href="/" className="flex items-center">
             <LandingBrand size="nav" />
@@ -75,8 +77,11 @@ export const ClawHeader = () => {
         </div>
         <div className="flex h-full items-center justify-center border-l border-[#e4e4e7]">
           <button
+            aria-expanded={mobileMenuOpen}
+            aria-haspopup="menu"
             aria-label="Open site menu"
             className="inline-flex h-full w-full items-center justify-center text-[#09090b] transition-colors hover:text-[#52525c] min-[640px]:hidden min-[640px]:max-[767px]:hidden"
+            onClick={() => setMobileMenuOpen((open) => !open)}
             type="button"
           >
             <KnowhereIcon className="h-[14px] w-[14px] text-current" name="menu" />
@@ -88,6 +93,32 @@ export const ClawHeader = () => {
             GET API KEY
           </Link>
         </div>
+
+        {mobileMenuOpen ? (
+          <nav className="absolute top-full right-0 left-0 z-40 flex w-full flex-col border-b border-[#e4e4e7] bg-[#fafafa] min-[640px]:hidden">
+            {clawNavItems.map((item) => {
+              const targetSection = item.href.replace(/^#/, "");
+              const isActive = targetSection === activeSection;
+
+              return (
+                <Link
+                  key={`mobile-${item.label}`}
+                  aria-current={isActive ? "location" : undefined}
+                  className={cn(
+                    "flex h-12 w-full items-center border-t border-[#e4e4e7] px-4 text-sm text-[#09090b] transition-colors hover:bg-zinc-100/70",
+                    isActive ? "font-semibold" : "font-normal"
+                  )}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  rel={item.isExternal ? "noreferrer" : undefined}
+                  target={item.isExternal ? "_blank" : undefined}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+        ) : null}
       </div>
     </header>
   );
