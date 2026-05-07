@@ -116,8 +116,9 @@ if (env.NODE_ENV === "development" || env.HTTPS_PROXY) {
 export const auth = betterAuth({
   baseURL: env.BETTER_AUTH_URL,
   // Explicitly specify trustedOrigins to prevent host validation failures in reverse proxy or Docker environments.
-  // Allowlisted Notebook callback origins are folded in so Better Auth accepts
-  // them as post-login redirect targets in cross-subdomain deployments.
+  // Allowlisted external callback origins (see NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS)
+  // are folded in so Better Auth accepts them as post-login redirect
+  // targets in cross-subdomain deployments.
   trustedOrigins: [
     env.NEXT_PUBLIC_APP_URL,
     env.BETTER_AUTH_URL,
@@ -131,8 +132,8 @@ export const auth = betterAuth({
   }),
 
   // When `AUTH_COOKIE_DOMAIN` is set, enable cross-subdomain session cookies
-  // so the Better Auth session token is sent to sibling apps (e.g. Notebook
-  // at `notebook.${AUTH_COOKIE_DOMAIN}`). Unset → current host-only behavior.
+  // so the Better Auth session token is sent to sibling apps hosted under
+  // the same parent domain. Unset → current host-only behavior.
   ...(env.AUTH_COOKIE_DOMAIN
     ? {
         advanced: {

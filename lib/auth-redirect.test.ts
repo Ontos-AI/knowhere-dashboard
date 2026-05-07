@@ -48,11 +48,11 @@ describe("parseAllowedExternalOrigins (via authRedirect.allowedExternalOrigins)"
   it("normalizes each entry to its origin and trims whitespace", async () => {
     const { authRedirect } = await setEnv({
       NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS:
-        "  https://notebook.knowhereto.ai/ , http://notebook.local.knowhereto.ai:3001 ",
+        "  https://app1.example.com/ , http://app1.local.example.com:3001 ",
     })();
     expect(authRedirect.allowedExternalOrigins).toEqual([
-      "https://notebook.knowhereto.ai",
-      "http://notebook.local.knowhereto.ai:3001",
+      "https://app1.example.com",
+      "http://app1.local.example.com:3001",
     ]);
   });
 
@@ -114,39 +114,39 @@ describe("getSafeCallbackURL — external origins (allowlist flavor)", () => {
     const { authRedirect } = await setEnv({
       NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: undefined,
     })();
-    expect(authRedirect.getSafeCallbackURL("https://notebook.knowhereto.ai")).toBeNull();
+    expect(authRedirect.getSafeCallbackURL("https://app1.example.com")).toBeNull();
   });
 
   it("accepts an allowlisted external origin and echoes the URL", async () => {
     const { authRedirect } = await setEnv({
-      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://notebook.knowhereto.ai",
+      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://app1.example.com",
     })();
-    expect(authRedirect.getSafeCallbackURL("https://notebook.knowhereto.ai")).toBe(
-      "https://notebook.knowhereto.ai/"
+    expect(authRedirect.getSafeCallbackURL("https://app1.example.com")).toBe(
+      "https://app1.example.com/"
     );
-    expect(authRedirect.getSafeCallbackURL("https://notebook.knowhereto.ai/inbox")).toBe(
-      "https://notebook.knowhereto.ai/inbox"
+    expect(authRedirect.getSafeCallbackURL("https://app1.example.com/inbox")).toBe(
+      "https://app1.example.com/inbox"
     );
   });
 
   it("rejects an external URL whose origin is not allowlisted", async () => {
     const { authRedirect } = await setEnv({
-      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://notebook.knowhereto.ai",
+      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://app1.example.com",
     })();
     expect(authRedirect.getSafeCallbackURL("https://evil.example")).toBeNull();
     expect(
       // Near-miss: different scheme
-      authRedirect.getSafeCallbackURL("http://notebook.knowhereto.ai")
+      authRedirect.getSafeCallbackURL("http://app1.example.com")
     ).toBeNull();
     expect(
       // Near-miss: different port
-      authRedirect.getSafeCallbackURL("https://notebook.knowhereto.ai:8080")
+      authRedirect.getSafeCallbackURL("https://app1.example.com:8080")
     ).toBeNull();
   });
 
   it("rejects malformed absolute URLs", async () => {
     const { authRedirect } = await setEnv({
-      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://notebook.knowhereto.ai",
+      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://app1.example.com",
     })();
     expect(authRedirect.getSafeCallbackURL("http://")).toBeNull();
     expect(authRedirect.getSafeCallbackURL("https:// space.example")).toBeNull();
@@ -154,7 +154,7 @@ describe("getSafeCallbackURL — external origins (allowlist flavor)", () => {
 
   it("rejects non-http(s) schemes even if they parse", async () => {
     const { authRedirect } = await setEnv({
-      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://notebook.knowhereto.ai",
+      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://app1.example.com",
     })();
     expect(authRedirect.getSafeCallbackURL("javascript:alert(1)")).toBeNull();
     expect(authRedirect.getSafeCallbackURL("data:text/html,hi")).toBeNull();
@@ -163,10 +163,10 @@ describe("getSafeCallbackURL — external origins (allowlist flavor)", () => {
 
   it("rejects allowlisted origin when path is a Dashboard auth page", async () => {
     const { authRedirect } = await setEnv({
-      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://notebook.knowhereto.ai",
+      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://app1.example.com",
     })();
-    expect(authRedirect.getSafeCallbackURL("https://notebook.knowhereto.ai/login")).toBeNull();
-    expect(authRedirect.getSafeCallbackURL("https://notebook.knowhereto.ai/callback/x")).toBeNull();
+    expect(authRedirect.getSafeCallbackURL("https://app1.example.com/login")).toBeNull();
+    expect(authRedirect.getSafeCallbackURL("https://app1.example.com/callback/x")).toBeNull();
   });
 });
 
@@ -181,11 +181,11 @@ describe("resolveCallbackURL", () => {
 
   it("returns the safe path/URL when input is safe", async () => {
     const { authRedirect } = await setEnv({
-      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://notebook.knowhereto.ai",
+      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://app1.example.com",
     })();
     expect(authRedirect.resolveCallbackURL("/usage")).toBe("/usage");
-    expect(authRedirect.resolveCallbackURL("https://notebook.knowhereto.ai/inbox")).toBe(
-      "https://notebook.knowhereto.ai/inbox"
+    expect(authRedirect.resolveCallbackURL("https://app1.example.com/inbox")).toBe(
+      "https://app1.example.com/inbox"
     );
   });
 });
@@ -207,13 +207,13 @@ describe("buildAuthPagePath", () => {
 
   it("includes an allowlisted external callbackURL", async () => {
     const { authRedirect } = await setEnv({
-      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://notebook.knowhereto.ai",
+      NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://app1.example.com",
     })();
     expect(
       authRedirect.buildAuthPagePath("/login", {
-        callbackURL: "https://notebook.knowhereto.ai/inbox",
+        callbackURL: "https://app1.example.com/inbox",
       })
-    ).toBe("/login?callbackURL=https%3A%2F%2Fnotebook.knowhereto.ai%2Finbox");
+    ).toBe("/login?callbackURL=https%3A%2F%2Fapp1.example.com%2Finbox");
   });
 });
 

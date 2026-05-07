@@ -25,12 +25,12 @@ type BuildAuthPagePathOptions = {
  * The allowlist is exposed as a `NEXT_PUBLIC_` variable so both server
  * code (Better Auth's `trustedOrigins`) and client code (the login
  * action's `router.push(callbackURL)`) read the exact same list. The
- * values are not secrets — they declare which Notebook / relying-app
- * hostnames Dashboard trusts as post-login targets.
+ * values are not secrets — they declare which sibling-app hostnames
+ * Dashboard trusts as post-login targets.
  *
- * Each entry is `new URL(value).origin`, so `https://notebook.knowhereto.ai/`,
- * `https://notebook.knowhereto.ai`, and `https://NOTEBOOK.KNOWHERETO.AI` all
- * normalize to the same allowlisted origin. Invalid entries are dropped.
+ * Each entry is `new URL(value).origin`, so `https://app.example.com/`,
+ * `https://app.example.com`, and `https://APP.EXAMPLE.COM` all normalize
+ * to the same allowlisted origin. Invalid entries are dropped.
  */
 function parseAllowedExternalOrigins(): readonly string[] {
   const raw = env.NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS;
@@ -70,9 +70,9 @@ export function isAllowedExternalOrigin(origin: string): boolean {
  *      like `//evil.com` and `/callback/...` are still rejected.
  *
  *   2. Allowlisted external origins. Full URLs whose `origin` appears in
- *      `NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS` (typically the
- *      Notebook public URL). Arbitrary external URLs are still
- *      rejected, so this is not an open redirect.
+ *      `NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS` (typically a sibling
+ *      app's public URL). Arbitrary external URLs are still rejected,
+ *      so this is not an open redirect.
  *
  * The returned value is the sanitized string the caller should hand to
  * Better Auth / `router.push`: a relative path for flavor 1, a full URL
