@@ -82,7 +82,7 @@ const tslaChunksPreview = `{
   ]
 }`;
 
-type PlaygroundSampleId = "atlas" | "tsla";
+type PlaygroundSampleId = "atlas" | "epstein" | "tsla";
 type PlaygroundStage = "default" | "target" | "parsing" | "parsed";
 type PreviewLanguage = "json" | "markdown" | "markup" | "text";
 type ResultFileKind = "csv" | "directory" | "html" | "image" | "json" | "markdown" | "unknown";
