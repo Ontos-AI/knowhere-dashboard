@@ -32,9 +32,9 @@ export const useLoginActions = () => {
     callbackURL: rawCallbackURL,
   });
   // Preserve the sanitized callbackURL into the "Create account" link so
-  // first-time Notebook users are still sent back to Notebook after they
-  // finish registration. Without this, /register drops the callback and
-  // Dashboard falls back to its default post-auth path.
+  // first-time users from a relying app are still sent back to that app
+  // after they finish registration. Without this, /register drops the
+  // callback and Dashboard falls back to its default post-auth path.
   const registerPath = authRedirect.buildAuthPagePath("/register", {
     callbackURL: rawCallbackURL,
   });
