@@ -4,7 +4,7 @@ import { db } from "@lib/db";
 import { emailVerificationToken, user as userTable } from "@lib/db/auth-schema";
 import { env } from "@lib/env";
 import { ORPCError } from "@orpc/server";
-import { createApiKey } from "@server/external-api/api-keys";
+import { createApiKey, listApiKeys } from "@server/external-api/api-keys";
 import { protectedProcedure, publicProcedure } from "@server/orpc";
 import type { User } from "better-auth/types";
 import { and, eq, gt } from "drizzle-orm";
@@ -510,5 +510,60 @@ export const usersRouter = protectedProcedure.router({
     await db.delete(emailVerificationToken).where(eq(emailVerificationToken.id, tokenRecord.id));
 
     return { success: true, message: "Email verified successfully" };
+  }),
+
+  /**
+   * Provision a Knowhere API key for use by the Notebook app.
+   *
+   * Idempotent by name: if a key named "Knowhere Notebook" already
+   * exists for this user, it is returned directly. Otherwise a new
+   * key is created and returned.
+   *
+   * The returned key is a Knowhere credential (id + secret), NOT a
+   * Dashboard JWT. Notebook stores it in its local `api_keys` table
+   * and uses it for Knowhere SDK calls.
+   */
+  provisionNotebookApiKey: protectedProcedure.handler(async ({ context }) => {
+    // Unique name per provision: Knowhere rejects duplicate names and
+    // the list endpoint returns masked keys (sk_...••••), so reuse
+    // is not possible. Each call creates a fresh key; Notebook's
+    // api_keys table handles its own idempotency (unique workspace_id
+    // index + onConflictDoNothing).
+    const uniqueName = `Knowhere Notebook ${Date.now()}`;
+
+    const created = await createApiKey({
+      userId: context.user.id,
+      data: {
+        name: uniqueName,
+        enabled_modules: ["parse", "retrieval"],
+        expires_at: NEVER_EXPIRES_AT,
+      },
+    });
+
+    // `createApiKey` returns the full secret only at creation time.
+    if (!created.api_key) {
+      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+        message: "Created Notebook API key but secret was not returned.",
+      });
+    }
+
+    // create does not return a usable `id`; list to find the
+    // server-assigned id by matching the unique name. The plaintext
+    // secret from create is the only usable key value.
+    const allKeys = await listApiKeys({ userId: context.user.id });
+    const listed = allKeys.api_keys.find((k) => k.name === uniqueName);
+    if (!listed?.id) {
+      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+        message:
+          "Created Notebook API key but could not resolve its server id " +
+          "from the list response. The key exists but is untraceable.",
+      });
+    }
+
+    return {
+      id: listed.id,
+      key: created.api_key,
+      name: created.name,
+    };
   }),
 });
