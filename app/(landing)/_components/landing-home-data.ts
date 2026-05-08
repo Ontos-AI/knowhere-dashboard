@@ -190,10 +190,11 @@ export const comparisonRows: ComparisonRow[] = [
   },
   {
     category: "Downstream",
-    feature: "Vectorless RAG & hybrid RAG",
+    feature: "More reliable for vectorless & hybrid RAG",
     knowhere: "yes",
-    others: "no",
-    description: "Naturally enables vectorless RAG and hybrid RAG",
+    others: "bad",
+    description:
+      "Produces cleaner hierarchies, clearer boundaries, and better grounding for retrieval and citation",
     emphasize: true,
     knowhereStripe: true,
     othersStripe: true,
