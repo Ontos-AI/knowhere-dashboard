@@ -513,28 +513,17 @@ export const usersRouter = protectedProcedure.router({
   }),
 
   /**
-   * Provision a Knowhere API key for use by the Notebook app.
-   *
-   * Idempotent by name: if a key named "Knowhere Notebook" already
-   * exists for this user, it is returned directly. Otherwise a new
-   * key is created and returned.
-   *
-   * The returned key is a Knowhere credential (id + secret), NOT a
-   * Dashboard JWT. Notebook stores it in its local `api_keys` table
-   * and uses it for Knowhere SDK calls.
-   */
-  /**
    * Issue a short-lived Knowhere JWT for a sibling/relying app.
    *
    * The returned token is passed to the Knowhere Node SDK as `apiKey`
    * and validated by Knowhere's JWKS verification against this Dashboard.
    * No persistent Knowhere API key is created, stored, or returned.
+   *
+   * The Dashboard session cookie already authenticates the caller, so
+   * the JWT stays short-lived. If a relying app needs a fresh token
+   * later, it calls this endpoint again with the still-valid session.
    */
   issueServiceJwt: protectedProcedure.handler(async ({ context }) => {
-    // The Dashboard session cookie already authenticates the caller. Keep
-    // the service JWT short-lived — if Notebook needs a fresh one later it
-    // calls this endpoint again with the (still-valid) session cookie. A
-    // long-lived bearer token would be an API key in all but name.
     const SERVICE_JWT_EXPIRATION = "1h";
     const SERVICE_JWT_EXPIRY_SECONDS = 60 * 60;
 
