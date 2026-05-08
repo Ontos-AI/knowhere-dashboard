@@ -37,7 +37,7 @@ export type ComparisonRow = {
 export type ChallengeCard = {
   title: string;
   description: string;
-  icon: "agentic" | "formula" | "format" | "trace" | "deploy" | "api";
+  icon: "agentic" | "adaptive" | "format" | "trace" | "deploy" | "api";
   tone: FormatTone;
 };
 
@@ -88,15 +88,18 @@ export type FaqItem = {
 };
 
 export const supportedFormats: FormatChip[] = [
+  { label: ".doc", tone: { background: "#dbeafe", border: "#bedbff", text: "#1c398e" } },
   { label: ".docx", tone: { background: "#dbeafe", border: "#bedbff", text: "#1c398e" } },
   { label: ".pdf", tone: { background: "#ffe2e2", border: "#ffc9c9", text: "#9f0712" } },
   { label: ".jpg", tone: { background: "#fae8ff", border: "#f6cfff", text: "#8a0194" } },
+  { label: ".ppt", tone: { background: "#ffedd4", border: "#ffd6a8", text: "#9f2d00" } },
   { label: ".pptx", tone: { background: "#ffedd4", border: "#ffd6a8", text: "#9f2d00" } },
+  { label: ".xls", tone: { background: "#d0fae5", border: "#a4f4cf", text: "#006045" } },
   { label: ".xlsx", tone: { background: "#d0fae5", border: "#a4f4cf", text: "#006045" } },
   { label: ".csv", tone: { background: "#cffafe", border: "#a5f3fc", text: "#155e75" } },
   { label: ".png", tone: { background: "#ede9fe", border: "#ddd6ff", text: "#5b21b6" } },
   { label: ".md", tone: { background: "#ecfccb", border: "#d9f99d", text: "#4d7c0f" } },
-  { label: ".josn", tone: { background: "#fef3c6", border: "#fde68a", text: "#a16207" } },
+  { label: ".json", tone: { background: "#fef3c6", border: "#fde68a", text: "#a16207" } },
   { label: ".txt", tone: { background: "#e0e7ff", border: "#c7d2fe", text: "#3730a3" } },
 ];
 
@@ -187,32 +190,33 @@ export const comparisonRows: ComparisonRow[] = [
   },
   {
     category: "Downstream",
-    feature: "Vectorless RAG & hybrid RAG",
+    feature: "More reliable for vectorless & hybrid RAG",
     knowhere: "yes",
-    others: "no",
-    description: "Naturally enables vectorless RAG and hybrid RAG",
-    emphasize: true,
-    knowhereStripe: true,
-    othersStripe: true,
-  },
-  {
-    category: "Downstream",
-    feature: "Top-K boost ~10%+ in production",
-    knowhere: "yes",
-    others: "no",
+    others: "bad",
     description:
-      "Boost Top-K by ~10%+ in production data when applying RAG pipelines to parsed data",
-  },
-  {
-    category: "Downstream",
-    feature: "50%+ token savings on graphs",
-    knowhere: "yes",
-    others: "no",
-    description: "Save 50%+ tokens when developing graphs",
+      "Produces cleaner hierarchies, clearer boundaries, and better grounding for retrieval and citation",
     emphasize: true,
     knowhereStripe: true,
     othersStripe: true,
   },
+  // {
+  //   category: "Downstream",
+  //   feature: "Top-K boost ~10%+ in production",
+  //   knowhere: "yes",
+  //   others: "no",
+  //   description:
+  //     "Boost Top-K by ~10%+ in production data when applying RAG pipelines to parsed data",
+  // },
+  // {
+  //   category: 'Downstream',
+  //   feature: '50%+ token savings on graphs',
+  //   knowhere: 'yes',
+  //   others: 'no',
+  //   description: 'Save 50%+ tokens when developing graphs',
+  //   emphasize: true,
+  //   knowhereStripe: true,
+  //   othersStripe: true,
+  // },
 ];
 
 export const whyChooseProducts: WhyChooseProduct[] = [
@@ -271,10 +275,10 @@ export const challengeCards: ChallengeCard[] = [
     tone: { background: "#ffe2e2", border: "#ffc9c9", text: "#e7000b" },
   },
   {
-    title: "Formula & Chemical Recognition",
+    title: "Complexity-Aware Routing",
     description:
-      "Extract mathematical formulas (LaTeX/MathML) and chemical structures with ~95% accuracy for scientific documents",
-    icon: "formula",
+      "Automatically sense document complexity and route each file to the right parsing pipeline to minimize cost, improve efficiency, and preserve extraction quality",
+    icon: "adaptive",
     tone: { background: "#fef3c6", border: "#fde68a", text: "#d08700" },
   },
   {
@@ -317,7 +321,7 @@ export const transformSteps: TransformStep[] = [
   {
     number: "2",
     title: "OCR & Detection",
-    description: "Extract text, detect tables, formulas, images",
+    description: "Extract text, detect tables, layouts, images",
     tone: { background: "#eef2ff", border: "#c7d2fe", text: "#4338ca", numberBg: "#818cf8" },
   },
   {
@@ -342,8 +346,8 @@ export const transformMetrics: MetricCard[] = [
     stripe: true,
   },
   {
-    value: "~95%",
-    label: "Formula Accuracy",
+    value: "50%+",
+    label: "Token Savings",
     tone: { background: "#eff6ff", border: "#dbeafe", text: "#3b82f6" },
   },
   {
