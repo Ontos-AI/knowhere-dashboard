@@ -255,7 +255,7 @@ const HighlightRow = ({ text }: { text: string }) => {
 const ChallengeIcon = ({ card }: { card: ChallengeCard }) => {
   const iconPathByType: Record<ChallengeCard["icon"], string> = {
     agentic: "/icons/landing/challenges/1.svg",
-    formula: "/icons/landing/challenges/2.svg",
+    adaptive: "/icons/landing/challenges/2.svg",
     format: "/icons/landing/challenges/3.svg",
     trace: "/icons/landing/challenges/4.svg",
     deploy: "/icons/landing/challenges/5.svg",
@@ -496,7 +496,7 @@ export const LandingHome = () => {
                       "max-w-[640px] text-base font-normal leading-[1.5] tracking-[-0.5px] text-zinc-600 max-[639px]:max-w-[320px] max-[639px]:leading-[1.5] min-[769px]:max-w-[780px] min-[769px]:text-[18px] font-sans"
                     )}
                   >
-                    Extract tables, formulas, and layouts with pixel-perfect precision.
+                    Extract tables, layouts, and structured data with pixel-perfect precision.
                   </p>
                 </div>
               </div>

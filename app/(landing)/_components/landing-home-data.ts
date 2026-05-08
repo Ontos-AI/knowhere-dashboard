@@ -37,7 +37,7 @@ export type ComparisonRow = {
 export type ChallengeCard = {
   title: string;
   description: string;
-  icon: "agentic" | "formula" | "format" | "trace" | "deploy" | "api";
+  icon: "agentic" | "adaptive" | "format" | "trace" | "deploy" | "api";
   tone: FormatTone;
 };
 
@@ -275,10 +275,10 @@ export const challengeCards: ChallengeCard[] = [
     tone: { background: "#ffe2e2", border: "#ffc9c9", text: "#e7000b" },
   },
   {
-    title: "Formula & Chemical Recognition",
+    title: "Complexity-Aware Routing",
     description:
-      "Extract mathematical formulas (LaTeX/MathML) and chemical structures with ~95% accuracy for scientific documents",
-    icon: "formula",
+      "Automatically sense document complexity and route each file to the right parsing pipeline to minimize cost, improve efficiency, and preserve extraction quality",
+    icon: "adaptive",
     tone: { background: "#fef3c6", border: "#fde68a", text: "#d08700" },
   },
   {
@@ -321,7 +321,7 @@ export const transformSteps: TransformStep[] = [
   {
     number: "2",
     title: "OCR & Detection",
-    description: "Extract text, detect tables, formulas, images",
+    description: "Extract text, detect tables, layouts, images",
     tone: { background: "#eef2ff", border: "#c7d2fe", text: "#4338ca", numberBg: "#818cf8" },
   },
   {
@@ -346,8 +346,8 @@ export const transformMetrics: MetricCard[] = [
     stripe: true,
   },
   {
-    value: "~95%",
-    label: "Formula Accuracy",
+    value: "50%+",
+    label: "Token Savings",
     tone: { background: "#eff6ff", border: "#dbeafe", text: "#3b82f6" },
   },
   {
