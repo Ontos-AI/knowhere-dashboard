@@ -547,15 +547,21 @@ export const usersRouter = protectedProcedure.router({
       });
     }
 
-    // The create response may not include a usable `id`; list to find
-    // the server-assigned id by matching the unique name we just used.
-    // Use the listed id (not the listed/masked api_key) — the plaintext
+    // create does not return a usable `id`; list to find the
+    // server-assigned id by matching the unique name. The plaintext
     // secret from create is the only usable key value.
     const allKeys = await listApiKeys({ userId: context.user.id });
     const listed = allKeys.api_keys.find((k) => k.name === uniqueName);
+    if (!listed?.id) {
+      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+        message:
+          "Created Notebook API key but could not resolve its server id " +
+          "from the list response. The key exists but is untraceable.",
+      });
+    }
 
     return {
-      id: listed?.id ?? created.id ?? "",
+      id: listed.id,
       key: created.api_key,
       name: created.name,
     };
