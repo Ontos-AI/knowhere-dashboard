@@ -532,7 +532,12 @@ export const usersRouter = protectedProcedure.router({
    */
   issueServiceJwt: protectedProcedure.handler(async ({ context }) => {
     const { token } = await auth.api.signJWT({
-      body: { payload: { id: context.user.id } },
+      body: {
+        payload: { id: context.user.id },
+        // Match the Dashboard session cookie lifetime (30d) for service
+        // JWTs so sibling apps don't need to refresh mid-session.
+        overrideOptions: { jwt: { expirationTime: "30d" } },
+      },
     });
 
     if (!token || token.length === 0) {
@@ -543,7 +548,7 @@ export const usersRouter = protectedProcedure.router({
 
     return {
       token,
-      expiresInSeconds: 15 * 60, // matches JWT plugin expirationTime
+      expiresInSeconds: 30 * 24 * 60 * 60, // 30 days
     };
   }),
 });
