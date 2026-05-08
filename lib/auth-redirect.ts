@@ -100,10 +100,11 @@ function getSafeCallbackURL(callbackURL: string | null | undefined): string | nu
     return null;
   }
   if (!isAllowedExternalOrigin(parsed.origin)) return null;
-  // Do not allow the external callback to aim back at a Dashboard auth
-  // page (defense-in-depth; in practice the origin check already rejects
-  // Dashboard itself unless someone misconfigures the env).
-  if (isDashboardAuthPath(parsed.pathname || "/")) return null;
+  // External callbacks are fully trusted for whatever path the sibling
+  // app declares — the allowlist already gates which origins can reach
+  // this point. Dashboard auth-path rules (rejecting /login,
+  // /callback/*, etc.) only apply to Dashboard's own relative-path
+  // callbacks (flavor 1 above), not to external origins.
   return parsed.toString();
 }
 

@@ -4,7 +4,7 @@ import { db } from "@lib/db";
 import { emailVerificationToken, user as userTable } from "@lib/db/auth-schema";
 import { env } from "@lib/env";
 import { ORPCError } from "@orpc/server";
-import { createApiKey, listApiKeys } from "@server/external-api/api-keys";
+import { createApiKey } from "@server/external-api/api-keys";
 import { protectedProcedure, publicProcedure } from "@server/orpc";
 import type { User } from "better-auth/types";
 import { and, eq, gt } from "drizzle-orm";
@@ -524,26 +524,17 @@ export const usersRouter = protectedProcedure.router({
    * and uses it for Knowhere SDK calls.
    */
   provisionNotebookApiKey: protectedProcedure.handler(async ({ context }) => {
-    const NOTEBOOK_KEY_NAME = "Knowhere Notebook";
+    // Unique name per provision: Knowhere rejects duplicate names and
+    // the list endpoint returns masked keys (sk_...••••), so reuse
+    // is not possible. Each call creates a fresh key; Notebook's
+    // api_keys table handles its own idempotency (unique workspace_id
+    // index + onConflictDoNothing).
+    const uniqueName = `Knowhere Notebook ${Date.now()}`;
 
-    // Check for existing key by stable name (idempotent).
-    const existing = await listApiKeys({ userId: context.user.id });
-    const notebookKey = existing.api_keys.find((k) => k.name === NOTEBOOK_KEY_NAME && k.is_active);
-    if (notebookKey?.api_key) {
-      return {
-        id: notebookKey.id,
-        key: notebookKey.api_key,
-        name: notebookKey.name,
-      };
-    }
-
-    // Create a new key with the retrieval and source-management scopes
-    // Notebook needs (parse + retrieval). No expiration — the Notebook
-    // user is already authenticated via the Dashboard session.
     const created = await createApiKey({
       userId: context.user.id,
       data: {
-        name: NOTEBOOK_KEY_NAME,
+        name: uniqueName,
         enabled_modules: ["parse", "retrieval"],
         expires_at: NEVER_EXPIRES_AT,
       },

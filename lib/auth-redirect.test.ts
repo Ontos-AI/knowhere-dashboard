@@ -161,12 +161,18 @@ describe("getSafeCallbackURL — external origins (allowlist flavor)", () => {
     expect(authRedirect.getSafeCallbackURL("file:///etc/passwd")).toBeNull();
   });
 
-  it("rejects allowlisted origin when path is a Dashboard auth page", async () => {
+  it("accepts allowlisted origin paths that happen to match Dashboard auth routes", async () => {
     const { authRedirect } = await setEnv({
       NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: "https://app1.example.com",
     })();
-    expect(authRedirect.getSafeCallbackURL("https://app1.example.com/login")).toBeNull();
-    expect(authRedirect.getSafeCallbackURL("https://app1.example.com/callback/x")).toBeNull();
+    // External origins are fully trusted for whatever path they declare.
+    // Dashboard auth-path rules only gate Dashboard's own relative paths.
+    expect(authRedirect.getSafeCallbackURL("https://app1.example.com/login")).toBe(
+      "https://app1.example.com/login"
+    );
+    expect(authRedirect.getSafeCallbackURL("https://app1.example.com/callback/x")).toBe(
+      "https://app1.example.com/callback/x"
+    );
   });
 });
 
