@@ -213,7 +213,7 @@ export const IntegrateCodePanel = () => {
       >
         <pre
           className={cn(
-            "min-w-0 break-words whitespace-pre-wrap text-xs leading-5 text-zinc-50 xl:min-w-[580px] xl:whitespace-pre",
+            "min-w-0 break-words whitespace-pre-wrap text-xs leading-4 text-zinc-50 xl:min-w-[580px] xl:whitespace-pre",
             monoReadableClassName
           )}
         >
