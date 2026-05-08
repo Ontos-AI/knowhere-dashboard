@@ -191,8 +191,8 @@ const playgroundSamples: Record<PlaygroundSampleId, PlaygroundSample> = {
     resultRoot: "/playground-files/atlas/parse-result-EN_Atlas_Technical_Handbook_rev_Aug_2013",
     rootEntries: ["chunks.json", "hierarchy.json", "hierarchy_slim.json", "images", "tables"],
     style: {
-      left: "calc(50% - clamp(35px, 9vw, 50px))",
-      top: "calc(50% + clamp(24px, 5vh, 34px))",
+      left: "calc(50% - clamp(59px, 7vw, 71px))",
+      top: "calc(50% + clamp(26px, 3.5vh, 38px))",
     },
     tone: { background: "#fb2c36", text: "#fef2f2" },
   },
@@ -210,7 +210,10 @@ const playgroundSamples: Record<PlaygroundSampleId, PlaygroundSample> = {
     },
     resultRoot: "/playground-files/epstein/parse-result-Epstein_Flight_Logs",
     rootEntries: ["chunks.json", "doc_nav.json", "full.md", "manifest.json", "tables"],
-    style: { left: "calc(50% + 84px)", top: "calc(50% + 29px)" },
+    style: {
+      left: "calc(50% + clamp(59px, 7vw, 71px))",
+      top: "calc(50% + clamp(25px, 3.5vh, 37px))",
+    },
     tone: { background: "#fb2c36", text: "#fef2f2" },
   },
   tsla: {
@@ -237,8 +240,8 @@ const playgroundSamples: Record<PlaygroundSampleId, PlaygroundSample> = {
       "tables",
     ],
     style: {
-      left: "calc(50% + clamp(35px, 9vw, 50px))",
-      top: "calc(50% - clamp(18px, 4vh, 28px))",
+      left: "50%",
+      top: "calc(50% - clamp(36px, 4.5vh, 48px))",
     },
     tone: { background: "#fb2c36", text: "#fef2f2" },
   },
@@ -1232,7 +1235,7 @@ const TextPreview = ({ content, language }: { content: string; language: Preview
         <pre
           className={cn(
             className,
-            "min-w-max bg-transparent p-4 text-sm leading-5",
+            "min-w-max bg-transparent p-4 text-[12px] leading-4",
             monoDisplayClassName
           )}
         >
