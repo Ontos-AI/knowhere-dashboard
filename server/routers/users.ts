@@ -531,12 +531,17 @@ export const usersRouter = protectedProcedure.router({
    * No persistent Knowhere API key is created, stored, or returned.
    */
   issueServiceJwt: protectedProcedure.handler(async ({ context }) => {
+    // The Dashboard session cookie already authenticates the caller. Keep
+    // the service JWT short-lived — if Notebook needs a fresh one later it
+    // calls this endpoint again with the (still-valid) session cookie. A
+    // long-lived bearer token would be an API key in all but name.
+    const SERVICE_JWT_EXPIRATION = "1h";
+    const SERVICE_JWT_EXPIRY_SECONDS = 60 * 60;
+
     const { token } = await auth.api.signJWT({
       body: {
         payload: { id: context.user.id },
-        // Match the Dashboard session cookie lifetime (30d) for service
-        // JWTs so sibling apps don't need to refresh mid-session.
-        overrideOptions: { jwt: { expirationTime: "30d" } },
+        overrideOptions: { jwt: { expirationTime: SERVICE_JWT_EXPIRATION } },
       },
     });
 
@@ -548,7 +553,7 @@ export const usersRouter = protectedProcedure.router({
 
     return {
       token,
-      expiresInSeconds: 30 * 24 * 60 * 60, // 30 days
+      expiresInSeconds: SERVICE_JWT_EXPIRY_SECONDS,
     };
   }),
 });
