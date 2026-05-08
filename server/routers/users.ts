@@ -4,7 +4,7 @@ import { db } from "@lib/db";
 import { emailVerificationToken, user as userTable } from "@lib/db/auth-schema";
 import { env } from "@lib/env";
 import { ORPCError } from "@orpc/server";
-import { createApiKey } from "@server/external-api/api-keys";
+import { createApiKey, listApiKeys } from "@server/external-api/api-keys";
 import { protectedProcedure, publicProcedure } from "@server/orpc";
 import type { User } from "better-auth/types";
 import { and, eq, gt } from "drizzle-orm";
@@ -547,8 +547,15 @@ export const usersRouter = protectedProcedure.router({
       });
     }
 
+    // The create response may not include a usable `id`; list to find
+    // the server-assigned id by matching the unique name we just used.
+    // Use the listed id (not the listed/masked api_key) — the plaintext
+    // secret from create is the only usable key value.
+    const allKeys = await listApiKeys({ userId: context.user.id });
+    const listed = allKeys.api_keys.find((k) => k.name === uniqueName);
+
     return {
-      id: created.id,
+      id: listed?.id ?? created.id ?? "",
       key: created.api_key,
       name: created.name,
     };
