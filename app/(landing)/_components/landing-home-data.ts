@@ -198,24 +198,24 @@ export const comparisonRows: ComparisonRow[] = [
     knowhereStripe: true,
     othersStripe: true,
   },
-  {
-    category: "Downstream",
-    feature: "Top-K boost ~10%+ in production",
-    knowhere: "yes",
-    others: "no",
-    description:
-      "Boost Top-K by ~10%+ in production data when applying RAG pipelines to parsed data",
-  },
-  {
-    category: "Downstream",
-    feature: "50%+ token savings on graphs",
-    knowhere: "yes",
-    others: "no",
-    description: "Save 50%+ tokens when developing graphs",
-    emphasize: true,
-    knowhereStripe: true,
-    othersStripe: true,
-  },
+  // {
+  //   category: "Downstream",
+  //   feature: "Top-K boost ~10%+ in production",
+  //   knowhere: "yes",
+  //   others: "no",
+  //   description:
+  //     "Boost Top-K by ~10%+ in production data when applying RAG pipelines to parsed data",
+  // },
+  // {
+  //   category: 'Downstream',
+  //   feature: '50%+ token savings on graphs',
+  //   knowhere: 'yes',
+  //   others: 'no',
+  //   description: 'Save 50%+ tokens when developing graphs',
+  //   emphasize: true,
+  //   knowhereStripe: true,
+  //   othersStripe: true,
+  // },
 ];
 
 export const whyChooseProducts: WhyChooseProduct[] = [
