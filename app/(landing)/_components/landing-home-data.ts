@@ -88,15 +88,18 @@ export type FaqItem = {
 };
 
 export const supportedFormats: FormatChip[] = [
+  { label: ".doc", tone: { background: "#dbeafe", border: "#bedbff", text: "#1c398e" } },
   { label: ".docx", tone: { background: "#dbeafe", border: "#bedbff", text: "#1c398e" } },
   { label: ".pdf", tone: { background: "#ffe2e2", border: "#ffc9c9", text: "#9f0712" } },
   { label: ".jpg", tone: { background: "#fae8ff", border: "#f6cfff", text: "#8a0194" } },
+  { label: ".ppt", tone: { background: "#ffedd4", border: "#ffd6a8", text: "#9f2d00" } },
   { label: ".pptx", tone: { background: "#ffedd4", border: "#ffd6a8", text: "#9f2d00" } },
+  { label: ".xls", tone: { background: "#d0fae5", border: "#a4f4cf", text: "#006045" } },
   { label: ".xlsx", tone: { background: "#d0fae5", border: "#a4f4cf", text: "#006045" } },
   { label: ".csv", tone: { background: "#cffafe", border: "#a5f3fc", text: "#155e75" } },
   { label: ".png", tone: { background: "#ede9fe", border: "#ddd6ff", text: "#5b21b6" } },
   { label: ".md", tone: { background: "#ecfccb", border: "#d9f99d", text: "#4d7c0f" } },
-  { label: ".josn", tone: { background: "#fef3c6", border: "#fde68a", text: "#a16207" } },
+  { label: ".json", tone: { background: "#fef3c6", border: "#fde68a", text: "#a16207" } },
   { label: ".txt", tone: { background: "#e0e7ff", border: "#c7d2fe", text: "#3730a3" } },
 ];
 

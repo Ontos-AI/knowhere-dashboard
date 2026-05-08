@@ -602,7 +602,7 @@ export const LandingHome = () => {
           </div>
 
           <div className="flex flex-col gap-8 pt-1 max-[639px]:gap-6 max-[639px]:pt-0 min-[640px]:max-[767px]:pt-0">
-            <h3 className="text-base font-normal leading-6 text-zinc-950">Comming soon</h3>
+            <h3 className="text-base font-normal leading-6 text-zinc-950">Coming Soon</h3>
             <div className="flex flex-wrap gap-x-1.5 gap-y-1 min-[769px]:gap-1.5">
               {comingSoonFormats.map((chip) => (
                 <div
