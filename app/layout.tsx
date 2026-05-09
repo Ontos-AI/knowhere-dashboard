@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import Script from "next/script";
 import "./globals.css";
 import { ThemeProvider } from "@components/theme-provider";
+import { appMetadata } from "@lib/app-metadata";
 import { getDefaultConfig } from "@lib/config";
 import { ConfigProvider } from "@providers/config-provider";
 import PostHogProvider from "@providers/posthog-provider";
@@ -11,11 +12,7 @@ import { Providers } from "@providers/providers";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "Knowhere API - Transform Documents into Structured Data",
-  description:
-    "The most accurate document parsing API for AI agents. Extract tables, formulas, and structured data with unmatched precision.",
-};
+export const metadata: Metadata = appMetadata;
 
 const geistSans = localFont({
   src: "../public/fonts/Geist-VariableFont_wght.ttf",
