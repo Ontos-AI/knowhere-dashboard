@@ -2,8 +2,8 @@
 
 import { Dialog, DialogContent, DialogTitle } from "@components/ui/dialog";
 import { cn } from "@lib/utils";
+import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
 import {
-  Check,
   ChevronRight,
   FileCode2,
   FileImage,
@@ -20,14 +20,17 @@ import Link from "next/link";
 import { Highlight, themes } from "prism-react-renderer";
 import {
   type CSSProperties,
-  type DragEvent,
   Fragment,
+  type PointerEvent as ReactPointerEvent,
+  type RefObject,
   startTransition,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
+import { flushSync } from "react-dom";
 
 const monoDisplayClassName = "font-[family-name:var(--font-mono-display)]";
 const monoReadableClassName = "font-[family-name:var(--font-mono-readable)]";
@@ -80,7 +83,7 @@ const tslaChunksPreview = `{
 }`;
 
 type PlaygroundSampleId = "atlas" | "epstein" | "tsla";
-type PlaygroundStage = "idle" | "loading" | "success" | "result";
+type PlaygroundStage = "default" | "target" | "parsing" | "parsed";
 type PreviewLanguage = "json" | "markdown" | "markup" | "text";
 type ResultFileKind = "csv" | "directory" | "html" | "image" | "json" | "markdown" | "unknown";
 
@@ -187,7 +190,10 @@ const playgroundSamples: Record<PlaygroundSampleId, PlaygroundSample> = {
     pdfPath: "/playground-files/atlas/EN_Atlas_Technical_Handbook_rev_Aug_2013.pdf",
     resultRoot: "/playground-files/atlas/parse-result-EN_Atlas_Technical_Handbook_rev_Aug_2013",
     rootEntries: ["chunks.json", "hierarchy.json", "hierarchy_slim.json", "images", "tables"],
-    style: { left: "calc(50% - 67px)", top: "calc(50% + 31px)" },
+    style: {
+      left: "calc(50% - clamp(59px, 7vw, 71px))",
+      top: "calc(50% + clamp(26px, 3.5vh, 38px))",
+    },
     tone: { background: "#fb2c36", text: "#fef2f2" },
   },
   epstein: {
@@ -204,7 +210,10 @@ const playgroundSamples: Record<PlaygroundSampleId, PlaygroundSample> = {
     },
     resultRoot: "/playground-files/epstein/parse-result-Epstein_Flight_Logs",
     rootEntries: ["chunks.json", "doc_nav.json", "full.md", "manifest.json", "tables"],
-    style: { left: "calc(50% + 84px)", top: "calc(50% + 29px)" },
+    style: {
+      left: "calc(50% + clamp(59px, 7vw, 71px))",
+      top: "calc(50% + clamp(25px, 3.5vh, 37px))",
+    },
     tone: { background: "#fb2c36", text: "#fef2f2" },
   },
   tsla: {
@@ -230,7 +239,10 @@ const playgroundSamples: Record<PlaygroundSampleId, PlaygroundSample> = {
       "manifest.json",
       "tables",
     ],
-    style: { left: "calc(50% + 8.5px)", top: "calc(50% - 59px)" },
+    style: {
+      left: "50%",
+      top: "calc(50% - clamp(36px, 4.5vh, 48px))",
+    },
     tone: { background: "#fb2c36", text: "#fef2f2" },
   },
 };
@@ -668,7 +680,10 @@ const HeroFileCard = ({
   onActivate,
   onPreview,
   onSampleDragEnd,
+  onSampleDragMove,
   onSampleDragStart,
+  dragEndSignal,
+  sampleDragging,
   style,
   tone,
 }: {
@@ -678,44 +693,51 @@ const HeroFileCard = ({
   interactive: boolean;
   onActivate: () => void;
   onPreview: () => void;
-  onSampleDragEnd: () => void;
-  onSampleDragStart: (event: DragEvent<HTMLButtonElement>) => void;
+  onSampleDragEnd: (position: { x: number; y: number }) => void;
+  onSampleDragMove: (position: { x: number; y: number }) => void;
+  onSampleDragStart: (position: { x: number; y: number }) => void;
+  dragEndSignal: number;
+  sampleDragging: boolean;
   style: CSSProperties;
   tone: { background: string; text: string };
 }) => {
-  const clickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pointerStartRef = useRef<{ pointerId: number; x: number; y: number } | null>(null);
+  const pointerLastPositionRef = useRef<{ x: number; y: number } | null>(null);
+  const suppressClickRef = useRef(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
-    return () => {
-      if (clickTimeoutRef.current) {
-        clearTimeout(clickTimeoutRef.current);
-      }
-    };
-  }, []);
+    if (dragEndSignal === 0) {
+      return;
+    }
+    pointerStartRef.current = null;
+    pointerLastPositionRef.current = null;
+    setIsDragging(false);
+  }, [dragEndSignal]);
+
+  useEffect(() => {
+    if (sampleDragging || !isDragging) {
+      return;
+    }
+    pointerStartRef.current = null;
+    pointerLastPositionRef.current = null;
+    setIsDragging(false);
+  }, [isDragging, sampleDragging]);
 
   const triggerActivation = () => {
     if (!interactive) {
       return;
     }
-
-    if (clickTimeoutRef.current) {
-      clearTimeout(clickTimeoutRef.current);
+    if (suppressClickRef.current) {
+      suppressClickRef.current = false;
+      return;
     }
 
-    clickTimeoutRef.current = setTimeout(() => {
-      onActivate();
-      clickTimeoutRef.current = null;
-    }, 180);
+    onActivate();
   };
 
   const triggerPreview = () => {
-    if (clickTimeoutRef.current) {
-      clearTimeout(clickTimeoutRef.current);
-      clickTimeoutRef.current = null;
-    }
-
     onPreview();
   };
 
@@ -726,7 +748,14 @@ const HeroFileCard = ({
       : isHovering
         ? "hover"
         : "normal";
-  const showEmphasisIcon = cardState === "hover" || cardState === "selected";
+  const iconStrokeColor =
+    cardState === "selected"
+      ? "#f87171"
+      : cardState === "hover" || cardState === "dragging"
+        ? "#71717a"
+        : "#a1a1aa";
+  const iconStrokeWidth =
+    cardState === "selected" ? 2 : cardState === "hover" || cardState === "dragging" ? 1.5 : 1;
 
   return (
     <div className="absolute -translate-x-1/2 -translate-y-1/2" style={style}>
@@ -734,26 +763,81 @@ const HeroFileCard = ({
         <button
           aria-label={`${fileName}. Click to run the sample, drag it to the right, or double click to preview the PDF.`}
           className={cn(
-            "group relative flex flex-col items-center justify-center gap-1 border-none bg-transparent px-[10px] py-[8px] text-left transition-all duration-150",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/35",
-            isDragging &&
-              "cursor-grabbing opacity-80 shadow-[0_20px_25px_-5px_rgba(0,0,0,0.10),0_10px_10px_-5px_rgba(0,0,0,0.04)]",
+            "group relative flex flex-col items-center justify-center gap-1 border-none bg-transparent px-[10px] py-[8px] text-left transition-all duration-200 ease-out",
+            "focus-visible:outline-none",
+            isDragging && "cursor-grabbing opacity-60",
             !isDragging && "cursor-grab",
-            cardState === "selected" && "rounded-[12px] border-2 border-[#3690ff] bg-[#bcdfff]",
-            cardState === "hover" && "rounded-[10px] bg-[#f5f5f5]",
             cardState !== "dragging" && "hover:-translate-y-0.5"
           )}
-          draggable
           onBlur={() => setIsHovering(false)}
           onClick={triggerActivation}
           onDoubleClick={triggerPreview}
-          onDragEnd={() => {
-            setIsDragging(false);
-            onSampleDragEnd();
+          onPointerDown={(event) => {
+            if (!interactive || event.button !== 0) {
+              return;
+            }
+            event.currentTarget.setPointerCapture(event.pointerId);
+            pointerStartRef.current = {
+              pointerId: event.pointerId,
+              x: event.clientX,
+              y: event.clientY,
+            };
+            pointerLastPositionRef.current = {
+              x: event.clientX,
+              y: event.clientY,
+            };
           }}
-          onDragStart={(event) => {
-            setIsDragging(true);
-            onSampleDragStart(event);
+          onPointerMove={(event) => {
+            const pointerStart = pointerStartRef.current;
+            if (!pointerStart || pointerStart.pointerId !== event.pointerId) {
+              return;
+            }
+            pointerLastPositionRef.current = {
+              x: event.clientX,
+              y: event.clientY,
+            };
+
+            const dx = event.clientX - pointerStart.x;
+            const dy = event.clientY - pointerStart.y;
+            const travel = Math.hypot(dx, dy);
+
+            if (!isDragging && travel > 6) {
+              setIsDragging(true);
+              suppressClickRef.current = true;
+              onSampleDragStart({ x: event.clientX, y: event.clientY });
+            }
+
+            if (isDragging || travel > 6) {
+              onSampleDragMove({ x: event.clientX, y: event.clientY });
+            }
+          }}
+          onPointerUp={(event) => {
+            const pointerStart = pointerStartRef.current;
+            if (!pointerStart || pointerStart.pointerId !== event.pointerId) {
+              return;
+            }
+
+            if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+              event.currentTarget.releasePointerCapture(event.pointerId);
+            }
+            pointerStartRef.current = null;
+            pointerLastPositionRef.current = null;
+            if (isDragging) {
+              setIsDragging(false);
+              onSampleDragEnd({ x: event.clientX, y: event.clientY });
+            }
+          }}
+          onPointerCancel={() => {
+            const pointerLastPosition = pointerLastPositionRef.current;
+            pointerStartRef.current = null;
+            pointerLastPositionRef.current = null;
+            if (isDragging) {
+              setIsDragging(false);
+              onSampleDragEnd({
+                x: pointerLastPosition?.x ?? 0,
+                y: pointerLastPosition?.y ?? 0,
+              });
+            }
           }}
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
@@ -761,21 +845,34 @@ const HeroFileCard = ({
           type="button"
         >
           <div className="relative h-16 w-[65px]">
-            <Image
-              alt=""
+            <svg
               aria-hidden="true"
               className="absolute left-[7px] top-0 h-16 w-[50px]"
-              height={64}
-              src={
-                showEmphasisIcon
-                  ? "/images/knowhere/hero-demo-page-active.svg"
-                  : "/images/knowhere/hero-demo-page-default.svg"
-              }
-              width={50}
-            />
+              fill="none"
+              viewBox="0 0 51 66"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                clipRule="evenodd"
+                d="M1 65H49.8274V15.4H35.4531V1H1V65Z"
+                fill="#FAFAFA"
+                fillRule="evenodd"
+              />
+              <path
+                d="M49.8274 15.4L35.4531 1V15.4H49.8274Z"
+                fill={iconStrokeColor}
+                className="transition-colors duration-200 ease-out"
+              />
+              <path
+                d="M50.3271 65.5H0.5V0.5H35.6602L35.8066 0.646484L50.1816 15.0469L50.3271 15.1934V65.5Z"
+                stroke={iconStrokeColor}
+                strokeWidth={iconStrokeWidth}
+                className="transition-all duration-200 ease-out"
+              />
+            </svg>
             <span
               className={cn(
-                "absolute bottom-2 right-[5px] inline-flex items-center justify-center px-1 py-0.5 text-[18px] leading-6",
+                "absolute bottom-2 right-[5px] inline-flex h-5 w-10 items-center justify-center text-xs leading-4",
                 monoDisplayClassName
               )}
               style={{ backgroundColor: tone.background, color: tone.text }}
@@ -783,33 +880,39 @@ const HeroFileCard = ({
               {extension}
             </span>
           </div>
-          <span
-            className={cn(
-              "max-w-[96px] text-center text-xs leading-4 font-sans transition-colors",
-              cardState === "dragging" ? "text-zinc-500" : "text-zinc-900"
-            )}
-          >
+          <span className="max-w-[96px] text-center text-xs leading-4 font-sans text-zinc-500 transition-colors">
             {fileName}
           </span>
         </button>
       ) : (
         <div className="flex flex-col items-center gap-1 rounded-xl px-2 py-1">
           <div className="relative h-16 w-[65px]">
-            <Image
-              alt=""
+            <svg
               aria-hidden="true"
               className="absolute left-[7px] top-0 h-16 w-[50px]"
-              height={64}
-              src={
-                active
-                  ? "/images/knowhere/hero-demo-page-active.svg"
-                  : "/images/knowhere/hero-demo-page-default.svg"
-              }
-              width={50}
-            />
+              fill="none"
+              viewBox="0 0 51 66"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                clipRule="evenodd"
+                d="M1 65H49.8274V15.4H35.4531V1H1V65Z"
+                fill="#FAFAFA"
+                fillRule="evenodd"
+              />
+              <path
+                d="M49.8274 15.4L35.4531 1V15.4H49.8274Z"
+                fill={active ? "#f87171" : "#a1a1aa"}
+              />
+              <path
+                d="M50.3271 65.5H0.5V0.5H35.6602L35.8066 0.646484L50.1816 15.0469L50.3271 15.1934V65.5Z"
+                stroke={active ? "#f87171" : "#a1a1aa"}
+                strokeWidth={active ? 2 : 1}
+              />
+            </svg>
             <span
               className={cn(
-                "absolute bottom-2 right-[5px] inline-flex items-center justify-center px-1 py-0.5 text-[18px] leading-6",
+                "absolute bottom-2 right-[5px] inline-flex h-5 w-10 items-center justify-center text-xs leading-4",
                 monoDisplayClassName
               )}
               style={{ backgroundColor: tone.background, color: tone.text }}
@@ -830,17 +933,28 @@ const HeroFileCard = ({
 
 const DragFieldIllustration = () => {
   return (
-    <div className="relative flex h-[72px] w-[60px] items-end justify-center">
-      <Image
-        alt=""
+    <div className="relative h-[72px] w-[60px]">
+      <svg
         aria-hidden="true"
-        className="h-[72px] w-[56px] opacity-65"
-        height={72}
-        src="/images/knowhere/hero-demo-page-default.svg"
-        width={56}
-      />
-      <span className="absolute -bottom-1 left-[-13px] flex size-8 items-center justify-center rounded-full border border-zinc-600 bg-zinc-700 text-zinc-200 shadow-[0_8px_18px_-10px_rgba(0,0,0,0.65)]">
-        <Plus className="size-4" />
+        className="h-[72px] w-[56px]"
+        fill="none"
+        viewBox="0 0 51 66"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          clipRule="evenodd"
+          d="M1 65H49.8274V15.4H35.4531V1H1V65Z"
+          fill="#3f3f46"
+          fillRule="evenodd"
+        />
+        <path d="M49.8274 15.4L35.4531 1V15.4H49.8274Z" fill="#52525c" />
+        <path
+          d="M50.3271 65.5H0.5V0.5H35.6602L35.8066 0.646484L50.1816 15.0469L50.3271 15.1934V65.5Z"
+          stroke="#52525c"
+        />
+      </svg>
+      <span className="absolute bottom-0 left-[-8px] flex size-[28px] items-center justify-center rounded-full border border-[#52525c] bg-[#27272a] text-[#9f9fa9]">
+        <Plus className="size-[14px]" />
       </span>
     </div>
   );
@@ -850,17 +964,28 @@ const LoadingDocument = ({ fileName }: { fileName: string }) => {
   return (
     <div className="flex flex-col items-center gap-1">
       <div className="relative h-16 w-[65px]">
-        <Image
-          alt=""
+        <svg
           aria-hidden="true"
           className="absolute left-[7px] top-0 h-16 w-[50px]"
-          height={64}
-          src="/images/knowhere/hero-demo-page-default.svg"
-          width={50}
-        />
+          fill="none"
+          viewBox="0 0 51 66"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            clipRule="evenodd"
+            d="M1 65H49.8274V15.4H35.4531V1H1V65Z"
+            fill="#FAFAFA"
+            fillRule="evenodd"
+          />
+          <path d="M49.8274 15.4L35.4531 1V15.4H49.8274Z" fill="#a1a1aa" />
+          <path
+            d="M50.3271 65.5H0.5V0.5H35.6602L35.8066 0.646484L50.1816 15.0469L50.3271 15.1934V65.5Z"
+            stroke="#a1a1aa"
+          />
+        </svg>
         <span
           className={cn(
-            "absolute bottom-2 right-[5px] inline-flex items-center justify-center bg-[#fb2c36] px-1 py-0.5 text-[18px] leading-6 text-[#fef2f2]",
+            "absolute bottom-2 right-[5px] inline-flex h-5 w-10 items-center justify-center bg-[#fb2c36] text-xs leading-4 text-[#fef2f2]",
             monoDisplayClassName
           )}
         >
@@ -874,31 +999,77 @@ const LoadingDocument = ({ fileName }: { fileName: string }) => {
 
 const LoadingProgress = () => {
   return (
-    <div className="flex w-full max-w-[163px] flex-col items-center gap-[10px]">
-      <div className="h-2 w-full overflow-hidden border border-[#a684ff] bg-[#7008e7]">
+    <div className="flex w-full flex-col items-center gap-[10px] px-12">
+      <div className="h-2 w-full max-w-[360px] overflow-hidden border border-[#a684ff] bg-[#7008e7]">
         <div
-          className="h-full w-full animate-pulse"
+          className="h-full w-full"
           style={{
             backgroundImage:
-              "repeating-linear-gradient(-45deg, rgba(255,255,255,0.18) 0 3px, transparent 3px 9px)",
+              "repeating-linear-gradient(-45deg, #8e51ff 0 4px, transparent 4px 10px)",
+            backgroundSize: "28px 8px",
+            animation: "hero-progress-stripes 700ms linear infinite",
           }}
         />
       </div>
-      <p className={cn("text-center text-xs leading-4 text-zinc-200", monoDisplayClassName)}>
+      <p className={cn("w-full text-center text-xs leading-4 text-zinc-200", monoDisplayClassName)}>
         Parsing your document into structured chunks...
       </p>
     </div>
   );
 };
 
-const SuccessState = () => {
+const PlaygroundBottomCta = () => {
   return (
-    <div className="flex flex-col items-center gap-3">
-      <span className="flex size-12 items-center justify-center rounded-full bg-[#00d492] text-[#012a17] shadow-[0_18px_32px_-18px_rgba(0,212,146,0.85)]">
-        <Check className="size-7 stroke-[3]" />
-      </span>
-      <p className={cn("text-xs leading-4 text-zinc-200", monoDisplayClassName)}>
-        Parse completed!
+    <div className="border-t border-[#3f3f46] px-10 py-6 min-[768px]:px-12">
+      <div className="flex justify-center">
+        <Link
+          className={cn(
+            "group inline-flex h-12 items-center justify-center rounded-full border border-b-[6px] border-[#7f22fe] bg-[#8e51ff] px-6 text-sm font-medium text-[#f5f3ff] [--btn-bottom:6px] transition-[background-color,border-color,border-bottom-width] hover:border-[#7008e7] hover:bg-[#7f22fe] hover:border-b-[8px] hover:[--btn-bottom:8px] active:border-[#7008e7] active:bg-[#7008e7] active:border-b-[6px] active:[--btn-bottom:6px] font-sans"
+          )}
+          href="/login"
+        >
+          <span className="inline-flex h-full translate-y-1 items-center pb-[var(--btn-bottom)] transition-[padding-bottom,transform] duration-150 ease-out">
+            Get $5 free credits, no card
+          </span>
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+const DefaultDragContent = () => {
+  return (
+    <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 px-10 py-8 text-center min-[768px]:px-12">
+      <p className="w-full px-12 text-xs leading-4 text-zinc-200 font-sans overflow-hidden text-ellipsis whitespace-nowrap">
+        Drop a file here or pick a sample on the left
+      </p>
+      <div className="flex items-center gap-0">
+        {[
+          { label: "Document", sub: "input" },
+          { label: "Processing", sub: "API" },
+          { label: "Clean JOSN", sub: "output" },
+        ].map((item, index) => (
+          <Fragment key={item.label}>
+            <div className="min-w-[88px] overflow-hidden rounded-lg border border-[#52525c] bg-[#27272a] min-[768px]:min-w-[96px]">
+              <div className="whitespace-nowrap bg-[#3f3f46] px-2 py-2 text-[11px] leading-4 text-[#9f9fa9] min-[768px]:px-3 min-[768px]:text-xs">
+                {item.label}
+              </div>
+              <div className="px-3 py-1.5 text-xs leading-4 text-[#71717b]">{item.sub}</div>
+            </div>
+            {index < 2 ? <div className="-mx-[2px] h-px w-3 bg-[#52525c]" /> : null}
+          </Fragment>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const TargetDragContent = () => {
+  return (
+    <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 px-10 py-8 text-center min-[768px]:px-12">
+      <DragFieldIllustration />
+      <p className="w-full px-12 text-xs leading-4 text-zinc-200 font-sans overflow-hidden text-ellipsis whitespace-nowrap">
+        Drop a file here or pick a sample on the left
       </p>
     </div>
   );
@@ -953,7 +1124,7 @@ const ResultTree = ({
       <Fragment key={node.path}>
         <button
           className={cn(
-            "flex h-5 w-full items-center gap-1.5 overflow-hidden px-2 py-0.5 text-left transition-colors hover:bg-[#3f3f46]",
+            "flex h-9 w-full items-center gap-1.5 overflow-hidden px-2 py-0.5 text-left transition-colors hover:bg-[#3f3f46]",
             isSelected && "bg-[#52525c]"
           )}
           onClick={() => onNodeClick(node)}
@@ -1064,7 +1235,7 @@ const TextPreview = ({ content, language }: { content: string; language: Preview
         <pre
           className={cn(
             className,
-            "min-w-max bg-transparent p-4 text-sm leading-5",
+            "min-w-max bg-transparent p-4 text-[12px] leading-4",
             monoDisplayClassName
           )}
         >
@@ -1136,11 +1307,11 @@ const ResultPreview = ({
     const hasFileSize = typeof imageSizeBytes === "number";
 
     return (
-      <div className="min-w-max p-4">
-        <div className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950">
+      <div className="flex h-full w-full flex-col p-4">
+        <div className="flex min-h-0 flex-1 items-center justify-center overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950">
           <Image
             alt={preview.entry.name}
-            className="block h-auto max-w-none"
+            className="block h-auto max-h-full w-auto max-w-full"
             height={metadata?.height ?? 900}
             src={preview.src}
             unoptimized
@@ -1148,7 +1319,7 @@ const ResultPreview = ({
           />
         </div>
         {hasDimensions || hasFileSize ? (
-          <div className="mt-3 flex flex-wrap gap-3">
+          <div className="mt-auto flex flex-wrap gap-3 pt-4">
             {hasDimensions ? (
               <span className="rounded-full border border-zinc-700 bg-zinc-900 px-3 py-1 text-xs leading-5 text-zinc-300">
                 {imageWidth} x {imageHeight}
@@ -1185,35 +1356,174 @@ const ResultState = ({
   selectedPath: string;
   tree: ResultTreeNode[];
 }) => {
+  const treeViewportRef = useRef<HTMLDivElement | null>(null);
+  const [hasTreeScrollbar, setHasTreeScrollbar] = useState(false);
+
+  useEffect(() => {
+    const viewport = treeViewportRef.current;
+    if (!viewport) {
+      return;
+    }
+
+    const updateTreeScrollbarState = () => {
+      setHasTreeScrollbar(viewport.scrollHeight > viewport.clientHeight + 1);
+    };
+
+    updateTreeScrollbarState();
+
+    const resizeObserver = new ResizeObserver(updateTreeScrollbarState);
+    resizeObserver.observe(viewport);
+
+    const mutationObserver = new MutationObserver(updateTreeScrollbarState);
+    mutationObserver.observe(viewport, {
+      childList: true,
+      subtree: true,
+    });
+
+    window.addEventListener("resize", updateTreeScrollbarState);
+    return () => {
+      resizeObserver.disconnect();
+      mutationObserver.disconnect();
+      window.removeEventListener("resize", updateTreeScrollbarState);
+    };
+  }, []);
+
   return (
-    <div className="flex min-h-[260px] items-start overflow-hidden border border-zinc-200 bg-[#18181b]">
-      <aside className="h-[260px] w-[160px] shrink-0 overflow-y-auto border-r border-zinc-700 bg-[#27272a] pt-2">
-        <ResultTree
-          expandedPaths={expandedPaths}
-          onNodeClick={handleNodeClick}
-          selectedPath={selectedPath}
-          tree={tree}
-        />
+    <div className="flex h-full min-h-0 items-stretch overflow-hidden bg-[#18181b]">
+      <aside className="h-full min-h-0 self-stretch w-[160px] shrink-0 border-r border-[#3f3f46] bg-[#27272a]">
+        <ScrollAreaPrimitive.Root type="auto" className="relative h-full w-full overflow-hidden">
+          <ScrollAreaPrimitive.Viewport
+            className={cn("h-full w-full", hasTreeScrollbar && "pr-2")}
+            ref={treeViewportRef}
+          >
+            <ResultTree
+              expandedPaths={expandedPaths}
+              onNodeClick={handleNodeClick}
+              selectedPath={selectedPath}
+              tree={tree}
+            />
+          </ScrollAreaPrimitive.Viewport>
+          <ScrollAreaPrimitive.ScrollAreaScrollbar
+            orientation="vertical"
+            className="z-30 flex w-2 touch-none select-none border-l border-[#3f3f46] bg-[#27272a]"
+          >
+            <ScrollAreaPrimitive.ScrollAreaThumb className="flex-1 rounded-none bg-[#52525b] transition-colors hover:bg-[#71717a] active:bg-[rgb(113_113_122_/_60%)]" />
+          </ScrollAreaPrimitive.ScrollAreaScrollbar>
+          <ScrollAreaPrimitive.Corner className="bg-[#27272a]" />
+        </ScrollAreaPrimitive.Root>
       </aside>
-      <div className="h-[260px] min-w-0 flex-1 overflow-auto bg-[#18181b]">
-        <ResultPreview
-          directoryCounts={directoryCounts}
-          imageMetadataByPath={imageMetadataByPath}
-          preview={preview}
-        />
+      <div className="h-full min-h-0 min-w-0 flex-1 bg-[#18181b]">
+        <ScrollAreaPrimitive.Root type="auto" className="relative h-full w-full overflow-hidden">
+          <ScrollAreaPrimitive.Viewport className="h-full w-full">
+            <ResultPreview
+              directoryCounts={directoryCounts}
+              imageMetadataByPath={imageMetadataByPath}
+              preview={preview}
+            />
+          </ScrollAreaPrimitive.Viewport>
+          <ScrollAreaPrimitive.ScrollAreaScrollbar
+            orientation="vertical"
+            className="z-30 flex w-2 touch-none select-none border-l border-[#3f3f46] bg-[#18181b]"
+          >
+            <ScrollAreaPrimitive.ScrollAreaThumb className="flex-1 rounded-none bg-[#52525b] transition-colors hover:bg-[#71717a] active:bg-[rgb(113_113_122_/_60%)]" />
+          </ScrollAreaPrimitive.ScrollAreaScrollbar>
+          <ScrollAreaPrimitive.ScrollAreaScrollbar
+            orientation="horizontal"
+            className="z-30 flex h-2 touch-none select-none border-t border-[#3f3f46] bg-[#18181b]"
+          >
+            <ScrollAreaPrimitive.ScrollAreaThumb className="flex-1 rounded-none bg-[#52525b] transition-colors hover:bg-[#71717a] active:bg-[rgb(113_113_122_/_60%)]" />
+          </ScrollAreaPrimitive.ScrollAreaScrollbar>
+          <ScrollAreaPrimitive.Corner className="bg-[#18181b]" />
+        </ScrollAreaPrimitive.Root>
+      </div>
+    </div>
+  );
+};
+
+const DragGhost = ({
+  extension,
+  fileName,
+  ghostRef,
+  isDropTarget,
+  tone,
+}: {
+  extension: string;
+  fileName: string;
+  ghostRef: RefObject<HTMLDivElement | null>;
+  isDropTarget: boolean;
+  tone: { background: string; text: string };
+}) => {
+  return (
+    <div
+      ref={ghostRef}
+      className="pointer-events-none fixed left-0 top-0 z-[120] -translate-x-1/2 -translate-y-1/2 opacity-80"
+      style={{ transform: "translate(-9999px, -9999px) translate(-50%, -50%)" }}
+    >
+      <div
+        className={cn(
+          "flex flex-col items-center gap-1 transition-transform duration-150 ease-out",
+          isDropTarget ? "rotate-[-15deg]" : "rotate-0"
+        )}
+      >
+        <div className="relative h-16 w-[65px] [filter:drop-shadow(0_20px_25px_rgba(0,0,0,0.18))_drop-shadow(0_10px_10px_rgba(0,0,0,0.1))]">
+          <svg
+            aria-hidden="true"
+            className="absolute left-[7px] top-0 h-16 w-[50px]"
+            fill="none"
+            viewBox="0 0 51 66"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clipRule="evenodd"
+              d="M1 65H49.8274V15.4H35.4531V1H1V65Z"
+              fill="#FAFAFA"
+              fillRule="evenodd"
+            />
+            <path d="M49.8274 15.4L35.4531 1V15.4H49.8274Z" fill="#71717a" />
+            <path
+              d="M50.3271 65.5H0.5V0.5H35.6602L35.8066 0.646484L50.1816 15.0469L50.3271 15.1934V65.5Z"
+              stroke="#71717a"
+              strokeWidth="1.5"
+            />
+          </svg>
+          <span
+            className={cn(
+              "absolute bottom-2 right-[5px] inline-flex h-5 w-10 items-center justify-center text-xs leading-4",
+              monoDisplayClassName
+            )}
+            style={{ backgroundColor: tone.background, color: tone.text }}
+          >
+            {extension}
+          </span>
+        </div>
+        <span
+          className={cn(
+            "max-w-[96px] text-center text-xs leading-4 font-sans transition-colors",
+            isDropTarget ? "text-zinc-500" : "text-zinc-900"
+          )}
+        >
+          {fileName}
+        </span>
       </div>
     </div>
   );
 };
 
 export const HeroPlayground = () => {
-  const [activeSampleId, setActiveSampleId] = useState<PlaygroundSampleId>("tsla");
+  const [activeSampleId, setActiveSampleId] = useState<PlaygroundSampleId | null>(null);
+  const [parsedSampleId, setParsedSampleId] = useState<PlaygroundSampleId>("tsla");
   const [isDropTarget, setIsDropTarget] = useState(false);
-  const [panelStage, setPanelStage] = useState<PlaygroundStage>("idle");
+  const [isSampleDragging, setIsSampleDragging] = useState(false);
+  const [dragPreviewSampleId, setDragPreviewSampleId] = useState<PlaygroundSampleId | null>(null);
+  const [panelStage, setPanelStage] = useState<PlaygroundStage>("default");
   const [previewSampleId, setPreviewSampleId] = useState<PlaygroundSampleId | null>(null);
-  const dragDepthRef = useRef(0);
+  const [dragEndSignal, setDragEndSignal] = useState(0);
+  const dropZoneRef = useRef<HTMLElement | null>(null);
+  const dragGhostRef = useRef<HTMLDivElement | null>(null);
+  const dragEndHandledRef = useRef(false);
+  const stageBeforeTargetRef = useRef<PlaygroundStage>("default");
   const stageTimeoutsRef = useRef<Array<ReturnType<typeof setTimeout>>>([]);
-  const currentSample = playgroundSamples[activeSampleId];
+  const currentSample = playgroundSamples[parsedSampleId];
   const previewSample = previewSampleId ? playgroundSamples[previewSampleId] : null;
   const {
     directoryCounts,
@@ -1231,80 +1541,197 @@ export const HeroPlayground = () => {
     };
   }, []);
 
-  const resetStageTimers = () => {
+  const resetStageTimers = useCallback(() => {
     stageTimeoutsRef.current.forEach(clearTimeout);
     stageTimeoutsRef.current = [];
-  };
+  }, []);
 
-  const runSample = (sampleId: PlaygroundSampleId) => {
-    setActiveSampleId(sampleId);
-    dragDepthRef.current = 0;
+  const restoreStageBeforeTarget = useCallback(() => {
     setIsDropTarget(false);
-    resetStageTimers();
-    setPanelStage("loading");
+    setPanelStage((previous) => (previous === "target" ? stageBeforeTargetRef.current : previous));
+  }, []);
 
-    stageTimeoutsRef.current.push(
-      setTimeout(() => {
-        setPanelStage("success");
-        stageTimeoutsRef.current.push(
-          setTimeout(() => {
-            setPanelStage("result");
-          }, 700)
-        );
-      }, 2000)
-    );
-  };
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") {
+        return;
+      }
+
+      restoreStageBeforeTarget();
+
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [restoreStageBeforeTarget]);
+
+  const parseSampleFromDrop = useCallback(
+    (sampleId: PlaygroundSampleId) => {
+      setActiveSampleId(sampleId);
+      setParsedSampleId(sampleId);
+      setIsDropTarget(false);
+      setDragPreviewSampleId(null);
+      resetStageTimers();
+      setPanelStage("parsing");
+
+      stageTimeoutsRef.current.push(
+        setTimeout(() => {
+          setPanelStage("parsed");
+        }, 1800)
+      );
+    },
+    [resetStageTimers]
+  );
+
+  const applyGhostPosition = useCallback((x: number, y: number) => {
+    if (dragGhostRef.current) {
+      dragGhostRef.current.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+    }
+  }, []);
+
+  const hideGhostImmediately = useCallback(() => {
+    if (dragGhostRef.current) {
+      dragGhostRef.current.style.transform = "translate(-9999px, -9999px) translate(-50%, -50%)";
+    }
+    flushSync(() => {
+      setDragPreviewSampleId(null);
+    });
+  }, []);
+
+  const isInsideDropZone = useCallback((x: number, y: number) => {
+    const zone = dropZoneRef.current;
+    if (!zone) {
+      return false;
+    }
+    const rect = zone.getBoundingClientRect();
+    return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+  }, []);
 
   const handleSampleDragStart = (
-    event: DragEvent<HTMLButtonElement>,
+    position: { x: number; y: number },
     sampleId: PlaygroundSampleId
   ) => {
-    event.dataTransfer.setData("text/plain", sampleId);
-    event.dataTransfer.effectAllowed = "copy";
+    dragEndHandledRef.current = false;
+    setIsSampleDragging(true);
+    setDragPreviewSampleId(sampleId);
+    applyGhostPosition(position.x, position.y);
   };
 
-  const handleDragEnter = (event: DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    dragDepthRef.current += 1;
-    setIsDropTarget(true);
-  };
+  const handleSampleDragMove = useCallback(
+    (position: { x: number; y: number }) => {
+      if (!isSampleDragging) {
+        return;
+      }
+      applyGhostPosition(position.x, position.y);
+      const isInside = isInsideDropZone(position.x, position.y);
+      if (isInside) {
+        setIsDropTarget(true);
+        setPanelStage((previous) => {
+          if (previous !== "target") {
+            stageBeforeTargetRef.current = previous;
+            return "target";
+          }
+          return previous;
+        });
+      } else {
+        restoreStageBeforeTarget();
+      }
+    },
+    [applyGhostPosition, isInsideDropZone, isSampleDragging, restoreStageBeforeTarget]
+  );
 
-  const handleDragLeave = (event: DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    dragDepthRef.current = Math.max(0, dragDepthRef.current - 1);
+  const handleSampleDragEnd = useCallback(
+    (position: { x: number; y: number }) => {
+      if (dragEndHandledRef.current) {
+        return;
+      }
+      dragEndHandledRef.current = true;
+      setDragEndSignal((signal) => signal + 1);
+      const droppedSampleId = dragPreviewSampleId;
+      setIsSampleDragging(false);
+      hideGhostImmediately();
 
-    if (dragDepthRef.current === 0) {
-      setIsDropTarget(false);
-    }
-  };
+      if (droppedSampleId && isInsideDropZone(position.x, position.y)) {
+        parseSampleFromDrop(droppedSampleId);
+        return;
+      }
 
-  const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = "copy";
-  };
+      restoreStageBeforeTarget();
+    },
+    [
+      dragPreviewSampleId,
+      hideGhostImmediately,
+      isInsideDropZone,
+      parseSampleFromDrop,
+      restoreStageBeforeTarget,
+    ]
+  );
 
-  const handleDrop = (event: DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-
-    const draggedSampleId = event.dataTransfer.getData("text/plain");
-    dragDepthRef.current = 0;
-    setIsDropTarget(false);
-
-    if (!isPlaygroundSampleId(draggedSampleId)) {
+  useEffect(() => {
+    if (!dragPreviewSampleId) {
       return;
     }
 
-    runSample(draggedSampleId);
-  };
+    const handleWindowPointerMove = (event: PointerEvent) => {
+      handleSampleDragMove({ x: event.clientX, y: event.clientY });
+    };
+
+    window.addEventListener("pointermove", handleWindowPointerMove, { passive: true });
+    return () => {
+      window.removeEventListener("pointermove", handleWindowPointerMove);
+    };
+  }, [dragPreviewSampleId, handleSampleDragMove]);
+
+  useEffect(() => {
+    if (!isSampleDragging) {
+      return;
+    }
+
+    const handleEscapeCancel = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") {
+        return;
+      }
+      setIsSampleDragging(false);
+      hideGhostImmediately();
+      restoreStageBeforeTarget();
+    };
+
+    window.addEventListener("keydown", handleEscapeCancel);
+    return () => {
+      window.removeEventListener("keydown", handleEscapeCancel);
+    };
+  }, [hideGhostImmediately, isSampleDragging, restoreStageBeforeTarget]);
+
+  useEffect(() => {
+    if (!isSampleDragging) {
+      return;
+    }
+
+    const handleWindowPointerEnd = (event: PointerEvent) => {
+      handleSampleDragEnd({ x: event.clientX, y: event.clientY });
+    };
+
+    window.addEventListener("pointerup", handleWindowPointerEnd);
+    window.addEventListener("pointercancel", handleWindowPointerEnd);
+    return () => {
+      window.removeEventListener("pointerup", handleWindowPointerEnd);
+      window.removeEventListener("pointercancel", handleWindowPointerEnd);
+    };
+  }, [handleSampleDragEnd, isSampleDragging]);
 
   return (
     <>
-      <div className="grid grid-cols-2 max-[639px]:grid-cols-1 min-[640px]:max-[767px]:grid-cols-1">
+      <div className="grid grid-cols-2 max-[767px]:grid-cols-1">
         <div
-          className="relative min-h-[260px] border-r border-t border-zinc-200 bg-white max-[639px]:border-b max-[639px]:border-r-0 min-[640px]:max-[767px]:border-b min-[640px]:max-[767px]:border-r-0"
+          className="relative h-[320px] border-r border-t border-zinc-200 bg-white min-[768px]:h-[400px] max-[767px]:border-b max-[767px]:border-r-0"
           style={heroFieldPatternStyle}
         >
-          <div className="relative min-h-[260px]">
+          <div className="relative h-full">
             {heroDemoFiles.map((file) => (
               <HeroFileCard
                 key={file.fileId}
@@ -1314,7 +1741,10 @@ export const HeroPlayground = () => {
                 interactive={file.interactive}
                 onActivate={() => {
                   if (file.sampleId) {
-                    runSample(file.sampleId);
+                    setActiveSampleId(file.sampleId);
+                    if (panelStage !== "parsed") {
+                      setParsedSampleId(file.sampleId);
+                    }
                   }
                 }}
                 onPreview={() => {
@@ -1322,12 +1752,19 @@ export const HeroPlayground = () => {
                     setPreviewSampleId(file.sampleId);
                   }
                 }}
-                onSampleDragEnd={() => setIsDropTarget(false)}
-                onSampleDragStart={(event) => {
+                onSampleDragEnd={(position) => {
+                  handleSampleDragEnd(position);
+                }}
+                onSampleDragMove={(position) => {
+                  handleSampleDragMove(position);
+                }}
+                onSampleDragStart={(position) => {
                   if (file.sampleId) {
-                    handleSampleDragStart(event, file.sampleId);
+                    handleSampleDragStart(position, file.sampleId);
                   }
                 }}
+                dragEndSignal={dragEndSignal}
+                sampleDragging={isSampleDragging}
                 style={file.style}
                 tone={file.tone}
               />
@@ -1338,71 +1775,53 @@ export const HeroPlayground = () => {
         <section
           aria-label="Interactive document playground"
           className={cn(
-            "relative min-h-[260px] border-t bg-[#27272a] max-[639px]:border-t-0 min-[640px]:max-[767px]:border-t-0",
-            panelStage === "idle" ? "border-4 border-[#a684ff]" : "border border-zinc-200"
+            "relative h-[320px] border-t border-zinc-200 bg-[#27272a] min-[768px]:h-[400px] min-[768px]:border-l-0 max-[767px]:border-t-0 transition-colors duration-500"
           )}
-          onDragEnter={handleDragEnter}
-          onDragLeave={handleDragLeave}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
+          ref={dropZoneRef}
         >
-          {panelStage === "idle" ? (
+          <div className="relative flex h-full flex-col">
             <div
               className={cn(
-                "flex min-h-[260px] flex-col items-center justify-center gap-6 px-12 py-8 text-center",
-                isDropTarget && "bg-[#2d213e]"
+                "relative min-h-0 flex-1 transition-[box-shadow,background-color] duration-400",
+                panelStage === "target" && "shadow-[inset_0_0_0_1px_rgba(166,132,255,0.35)]",
+                panelStage === "parsing" && "bg-[#202227]"
               )}
               style={dragFieldStripeStyle}
             >
-              <DragFieldIllustration />
-              <p className="text-xs leading-4 text-zinc-200 font-sans">
-                Drop a file here or pick a sample on the left
-              </p>
-              <Link
-                className={cn(
-                  "group inline-flex h-12 items-center justify-center rounded-full border border-b-[6px] border-[#7f22fe] bg-[#8e51ff] px-6 text-sm font-medium text-[#f5f3ff] [--btn-bottom:6px] transition-[background-color,border-color,border-bottom-width] hover:border-[#7008e7] hover:bg-[#7f22fe] hover:border-b-[8px] hover:[--btn-bottom:8px] active:border-[#7008e7] active:bg-[#7008e7] active:border-b-[6px] active:[--btn-bottom:6px] font-sans"
-                )}
-                href="/login"
-              >
-                <span className="inline-flex h-full translate-y-1 items-center pb-[var(--btn-bottom)] transition-[padding-bottom,transform] duration-150 ease-out">
-                  Get $5 free credits, no card
-                </span>
-              </Link>
+              {panelStage === "default" ? (
+                <div className="absolute inset-0 animate-[hero-stage-fade_300ms_cubic-bezier(0.22,1,0.36,1)]">
+                  <DefaultDragContent />
+                </div>
+              ) : null}
+              {panelStage === "target" ? (
+                <div className="absolute inset-0 animate-[hero-stage-fade_240ms_cubic-bezier(0.22,1,0.36,1)]">
+                  <TargetDragContent />
+                </div>
+              ) : null}
+              {panelStage === "parsing" ? (
+                <div className="absolute inset-0 flex animate-[hero-stage-fade_320ms_cubic-bezier(0.22,1,0.36,1)] flex-col items-center justify-center gap-6 px-10 py-8 min-[768px]:px-12">
+                  <LoadingDocument fileName={currentSample.cardLabel} />
+                  <LoadingProgress />
+                </div>
+              ) : null}
+              {panelStage === "parsed" ? (
+                <div className="absolute inset-0 animate-[hero-stage-fade_360ms_cubic-bezier(0.22,1,0.36,1)]">
+                  <ResultState
+                    directoryCounts={directoryCounts}
+                    expandedPaths={expandedPaths}
+                    handleNodeClick={handleNodeClick}
+                    imageMetadataByPath={imageMetadataByPath}
+                    preview={preview}
+                    selectedPath={selectedPath}
+                    tree={tree}
+                  />
+                </div>
+              ) : null}
             </div>
-          ) : null}
+            <PlaygroundBottomCta />
+          </div>
 
-          {panelStage === "loading" ? (
-            <div
-              className="flex min-h-[260px] flex-col items-center justify-center gap-6 px-12 py-8"
-              style={dragFieldStripeStyle}
-            >
-              <LoadingDocument fileName={currentSample.cardLabel} />
-              <LoadingProgress />
-            </div>
-          ) : null}
-
-          {panelStage === "success" ? (
-            <div
-              className="flex min-h-[260px] flex-col items-center justify-center px-12 py-8"
-              style={dragFieldStripeStyle}
-            >
-              <SuccessState />
-            </div>
-          ) : null}
-
-          {panelStage === "result" ? (
-            <ResultState
-              directoryCounts={directoryCounts}
-              expandedPaths={expandedPaths}
-              handleNodeClick={handleNodeClick}
-              imageMetadataByPath={imageMetadataByPath}
-              preview={preview}
-              selectedPath={selectedPath}
-              tree={tree}
-            />
-          ) : null}
-
-          {panelStage === "result" && isDropTarget ? (
+          {panelStage === "parsed" && isDropTarget ? (
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center border-4 border-[#a684ff] bg-[#18181b]/82">
               <div className="rounded-full border border-[#a684ff] bg-[#27272a] px-4 py-2">
                 <span className={cn("text-xs leading-4 text-[#f5f3ff]", monoDisplayClassName)}>
@@ -1411,8 +1830,66 @@ export const HeroPlayground = () => {
               </div>
             </div>
           ) : null}
+
+          <div
+            className={cn(
+              "pointer-events-none absolute inset-0 border-4 border-[#a684ff] transition-opacity duration-300",
+              panelStage === "target"
+                ? "animate-[hero-target-glow_1600ms_ease-in-out_infinite] opacity-100"
+                : "opacity-0"
+            )}
+          />
         </section>
       </div>
+      {dragPreviewSampleId ? (
+        <DragGhost
+          extension={playgroundSamples[dragPreviewSampleId].extension}
+          fileName={playgroundSamples[dragPreviewSampleId].cardLabel}
+          ghostRef={dragGhostRef}
+          isDropTarget={isDropTarget}
+          tone={playgroundSamples[dragPreviewSampleId].tone}
+        />
+      ) : null}
+
+      <style jsx>{`
+        @keyframes hero-stage-fade {
+          from {
+            opacity: 0;
+            transform: translateY(4px) scale(0.996);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        @keyframes hero-target-glow {
+          0%,
+          100% {
+            box-shadow: inset 0 0 0 0 rgba(166, 132, 255, 0.15);
+          }
+          50% {
+            box-shadow: inset 0 0 0 8px rgba(166, 132, 255, 0.06);
+          }
+        }
+
+        @keyframes hero-progress-stripes {
+          from {
+            background-position-x: 0;
+          }
+          to {
+            background-position-x: 28px;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          * {
+            animation: none !important;
+            transition-duration: 0.01ms !important;
+          }
+        }
+
+      `}</style>
 
       <Dialog
         open={previewSample !== null}

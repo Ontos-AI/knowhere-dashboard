@@ -10,6 +10,7 @@ import {
 import { StatefulTab } from "@app/(landing)/_components/stateful-tab";
 import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { cn } from "@lib/utils";
+import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
@@ -75,7 +76,7 @@ export const ComparisonShowcase = () => {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="overflow-x-auto">
+      <div className="hide-scrollbar overflow-x-auto">
         <div className="flex w-max flex-nowrap gap-px">
           {comparisonTabs.map((tab) => (
             <StatefulTab
@@ -92,91 +93,110 @@ export const ComparisonShowcase = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto border border-[#fde68a]">
-        <div className={cn(comparisonTableGridClassName, "bg-[#fef3c6]")}>
-          <div
-            className={cn(
-              "flex items-center justify-center border-r border-[#fde68a] px-6 py-4 text-sm leading-[18px] text-[#f97316] min-[769px]:text-xl min-[769px]:leading-8",
-              monoDisplayClassName
-            )}
-          >
-            Feature
-          </div>
-          <div className="relative flex items-center justify-center gap-3 overflow-hidden border-r border-[#fde68a] px-6 py-4">
-            <div className="absolute inset-0 opacity-40" style={stripePattern("#fde68a", 1, 9)} />
-            <div className="relative flex items-center gap-3">
-              <LandingBrand compact />
+      <ScrollAreaPrimitive.Root
+        type="auto"
+        className="relative overflow-hidden border border-[#fde68a]"
+      >
+        <ScrollAreaPrimitive.Viewport className="h-full w-full bg-[#fef3c6]">
+          <div className={cn(comparisonTableGridClassName, "bg-[#fef3c6]")}>
+            <div
+              className={cn(
+                "flex items-center justify-center border-r border-[#fde68a] px-6 py-4 text-sm leading-[18px] text-[#f97316] min-[769px]:text-xl min-[769px]:leading-8",
+                monoDisplayClassName
+              )}
+            >
+              Feature
+            </div>
+            <div className="relative flex items-center justify-center gap-3 overflow-hidden border-r border-[#fde68a] px-6 py-4">
+              <div className="absolute inset-0 opacity-40" style={stripePattern("#fde68a", 1, 9)} />
+              <div className="relative flex items-center gap-3">
+                <LandingBrand compact />
+              </div>
+            </div>
+            <div
+              className={cn(
+                "flex items-center justify-center px-6 py-4 text-sm leading-[18px] text-[#f97316] min-[769px]:text-xl min-[769px]:leading-8",
+                monoDisplayClassName
+              )}
+            >
+              Others
             </div>
           </div>
-          <div
-            className={cn(
-              "flex items-center justify-center px-6 py-4 text-sm leading-[18px] text-[#f97316] min-[769px]:text-xl min-[769px]:leading-8",
-              monoDisplayClassName
-            )}
-          >
-            Others
-          </div>
-        </div>
 
-        {filteredRows.map((row) => (
-          <div
-            key={row.feature}
-            className={cn(comparisonTableGridClassName, "border-t border-[#fde68a] bg-white")}
-          >
-            <div className="relative border-r border-[#fde68a] px-6 py-6">
-              {row.emphasize ? (
-                <div
-                  className="absolute inset-0 opacity-30"
-                  style={stripePattern("#fde68a", 1, 8)}
-                />
-              ) : null}
-              <div className="relative flex flex-col gap-2">
-                <div className="flex items-center justify-between gap-4">
-                  <span
-                    className={cn(
-                      "text-base leading-6 text-[#92400e] min-[769px]:text-[18px] min-[769px]:leading-8 font-sans"
-                    )}
-                  >
-                    {row.feature}
-                  </span>
-                  {row.callout ? (
-                    <span className="text-[#f59e0b]">
-                      <Plus className="size-4" />
+          {filteredRows.map((row) => (
+            <div
+              key={row.feature}
+              className={cn(comparisonTableGridClassName, "border-t border-[#fde68a] bg-white")}
+            >
+              <div className="relative border-r border-[#fde68a] px-6 py-6">
+                {row.emphasize ? (
+                  <div
+                    className="absolute inset-0 opacity-30"
+                    style={stripePattern("#fde68a", 1, 8)}
+                  />
+                ) : null}
+                <div className="relative flex flex-col gap-2">
+                  <div className="flex items-center justify-between gap-4">
+                    <span
+                      className={cn(
+                        "text-base leading-6 text-[#92400e] min-[769px]:text-[18px] min-[769px]:leading-8 font-sans"
+                      )}
+                    >
+                      {row.feature}
                     </span>
+                    {row.callout ? (
+                      <span className="text-[#f59e0b]">
+                        <Plus className="size-4" />
+                      </span>
+                    ) : null}
+                  </div>
+                  {row.description ? (
+                    <p className="max-w-[500px] text-sm leading-5 text-[#b45309]">
+                      {row.description}
+                    </p>
                   ) : null}
                 </div>
-                {row.description ? (
-                  <p className="max-w-[500px] text-sm leading-5 text-[#b45309]">
-                    {row.description}
-                  </p>
+              </div>
+              <div className="relative flex items-center justify-center border-r border-[#fde68a] bg-[#fffbeb] px-6 py-6">
+                {row.knowhereStripe ? (
+                  <div
+                    className="absolute inset-0 opacity-25"
+                    style={stripePattern("#fde68a", 1, 8)}
+                  />
                 ) : null}
+                <div className="relative">
+                  <ComparisonIndicator status={row.knowhere} />
+                </div>
+              </div>
+              <div className="relative flex items-center justify-center px-6 py-6">
+                {row.othersStripe ? (
+                  <div
+                    className="absolute inset-0 opacity-25"
+                    style={stripePattern("#fde68a", 1, 8)}
+                  />
+                ) : null}
+                <div className="relative">
+                  <ComparisonIndicator status={row.others} />
+                </div>
               </div>
             </div>
-            <div className="relative flex items-center justify-center border-r border-[#fde68a] bg-[#fffbeb] px-6 py-6">
-              {row.knowhereStripe ? (
-                <div
-                  className="absolute inset-0 opacity-25"
-                  style={stripePattern("#fde68a", 1, 8)}
-                />
-              ) : null}
-              <div className="relative">
-                <ComparisonIndicator status={row.knowhere} />
-              </div>
-            </div>
-            <div className="relative flex items-center justify-center px-6 py-6">
-              {row.othersStripe ? (
-                <div
-                  className="absolute inset-0 opacity-25"
-                  style={stripePattern("#fde68a", 1, 8)}
-                />
-              ) : null}
-              <div className="relative">
-                <ComparisonIndicator status={row.others} />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </ScrollAreaPrimitive.Viewport>
+
+        <ScrollAreaPrimitive.ScrollAreaScrollbar
+          orientation="vertical"
+          className="z-30 flex h-full w-2 flex-col touch-none select-none border-l border-[#fef08a] bg-[#fef3c7]"
+        >
+          <ScrollAreaPrimitive.ScrollAreaThumb className="flex-1 rounded-none bg-[#fcd34d] transition-colors hover:bg-[#eab308] active:bg-[rgb(234_179_8_/_60%)]" />
+        </ScrollAreaPrimitive.ScrollAreaScrollbar>
+        <ScrollAreaPrimitive.ScrollAreaScrollbar
+          orientation="horizontal"
+          className="z-30 flex h-2 flex-col touch-none select-none border-t border-[#fef08a] bg-[#fef3c7]"
+        >
+          <ScrollAreaPrimitive.ScrollAreaThumb className="flex-1 rounded-none bg-[#fcd34d] transition-colors hover:bg-[#eab308] active:bg-[rgb(234_179_8_/_60%)]" />
+        </ScrollAreaPrimitive.ScrollAreaScrollbar>
+        <ScrollAreaPrimitive.Corner className="bg-[#fef3c7]" />
+      </ScrollAreaPrimitive.Root>
     </div>
   );
 };

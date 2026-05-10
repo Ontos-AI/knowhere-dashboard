@@ -20,9 +20,9 @@ const capabilities: Capability[] = [
   },
   {
     icon: "sparkles",
-    title: "Formula & Chemical Recognition",
+    title: "Complexity-Aware Routing",
     description:
-      "Extract mathematical formulas (LaTeX/MathML) and chemical structures with ~95% accuracy for scientific documents",
+      "Automatically sense document complexity and route each file to the right parsing pipeline to minimize cost, improve efficiency, and preserve extraction quality",
     color: "yellow",
   },
   {

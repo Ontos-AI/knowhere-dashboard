@@ -207,19 +207,71 @@ export const IntegrateCodePanel = () => {
       </div>
       <div
         aria-labelledby={`${panelId}-${activeTab}-tab`}
-        className="overflow-x-auto px-[14px] py-[14px]"
+        className="integrate-scrollbar-dark max-h-[520px] overflow-x-auto overflow-y-auto px-[14px] py-[14px]"
         id={`${panelId}-${activeTab}-panel`}
         role="tabpanel"
       >
         <pre
           className={cn(
-            "min-w-0 break-words whitespace-pre-wrap text-xs leading-5 text-zinc-50 xl:min-w-[580px] xl:whitespace-pre",
+            "min-w-0 break-words whitespace-pre-wrap text-xs leading-4 text-zinc-50 xl:min-w-[580px] xl:whitespace-pre",
             monoReadableClassName
           )}
         >
           <code>{codeMarkupByTab[activeTab]}</code>
         </pre>
       </div>
+      <style jsx>{`
+        .integrate-scrollbar-dark {
+          scrollbar-color: #52525b #27272a;
+          scrollbar-width: thin;
+        }
+
+        .integrate-scrollbar-dark::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+        }
+
+        .integrate-scrollbar-dark::-webkit-scrollbar-track {
+          background: #27272a;
+          border-radius: 0;
+        }
+
+        .integrate-scrollbar-dark::-webkit-scrollbar-corner {
+          background: #27272a;
+        }
+
+        .integrate-scrollbar-dark::-webkit-scrollbar-thumb {
+          background: #52525b;
+          border: none;
+          border-radius: 0;
+          opacity: 1;
+          min-height: 28px;
+          min-width: 28px;
+          transition: background-color 160ms ease, opacity 160ms ease;
+        }
+
+        .integrate-scrollbar-dark::-webkit-scrollbar-thumb:hover {
+          background: #71717a;
+        }
+
+        .integrate-scrollbar-dark::-webkit-scrollbar-thumb:active {
+          background: #71717a;
+          opacity: 0.6;
+        }
+
+        .integrate-scrollbar-dark:hover::-webkit-scrollbar-thumb:active {
+          background: #71717a;
+          opacity: 0.6;
+        }
+
+        .integrate-scrollbar-dark::-webkit-scrollbar-track:vertical {
+          border-left: 1px solid #3f3f46;
+        }
+
+        .integrate-scrollbar-dark::-webkit-scrollbar-track:horizontal {
+          border-top: 1px solid #3f3f46;
+        }
+      `}</style>
     </div>
   );
 };

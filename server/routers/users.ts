@@ -511,4 +511,38 @@ export const usersRouter = protectedProcedure.router({
 
     return { success: true, message: "Email verified successfully" };
   }),
+
+  /**
+   * Issue a short-lived Knowhere JWT for a sibling/relying app.
+   *
+   * The returned token is passed to the Knowhere Node SDK as `apiKey`
+   * and validated by Knowhere's JWKS verification against this Dashboard.
+   * No persistent Knowhere API key is created, stored, or returned.
+   *
+   * The Dashboard session cookie already authenticates the caller, so
+   * the JWT stays short-lived. If a relying app needs a fresh token
+   * later, it calls this endpoint again with the still-valid session.
+   */
+  issueServiceJwt: protectedProcedure.handler(async ({ context }) => {
+    const SERVICE_JWT_EXPIRATION = "1h";
+    const SERVICE_JWT_EXPIRY_SECONDS = 60 * 60;
+
+    const { token } = await auth.api.signJWT({
+      body: {
+        payload: { id: context.user.id },
+        overrideOptions: { jwt: { expirationTime: SERVICE_JWT_EXPIRATION } },
+      },
+    });
+
+    if (!token || token.length === 0) {
+      throw new ORPCError("INTERNAL_SERVER_ERROR", {
+        message: "JWT signing returned an empty token.",
+      });
+    }
+
+    return {
+      token,
+      expiresInSeconds: SERVICE_JWT_EXPIRY_SECONDS,
+    };
+  }),
 });

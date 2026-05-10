@@ -255,7 +255,7 @@ const HighlightRow = ({ text }: { text: string }) => {
 const ChallengeIcon = ({ card }: { card: ChallengeCard }) => {
   const iconPathByType: Record<ChallengeCard["icon"], string> = {
     agentic: "/icons/landing/challenges/1.svg",
-    formula: "/icons/landing/challenges/2.svg",
+    adaptive: "/icons/landing/challenges/2.svg",
     format: "/icons/landing/challenges/3.svg",
     trace: "/icons/landing/challenges/4.svg",
     deploy: "/icons/landing/challenges/5.svg",
@@ -421,7 +421,7 @@ export const LandingHome = () => {
     <div className="min-h-dvh bg-[#fafafa] text-[#09090b]">
       <LandingHeader />
 
-      <main className={cn(landingCanvasWidthClassName, "max-[375px]:min-w-[320px]")}>
+      <main className={cn(landingCanvasWidthClassName, "min-w-[375px]")}>
         <section className={sectionFrameClassName}>
           <div className="relative border-b border-[#ede9fe] bg-[#f5f3ff] pb-14 pt-12 max-[639px]:pb-11 max-[639px]:pt-4 min-[769px]:pb-[56px] min-[769px]:pt-[48px]">
             <div
@@ -496,7 +496,7 @@ export const LandingHome = () => {
                       "max-w-[640px] text-base font-normal leading-[1.5] tracking-[-0.5px] text-zinc-600 max-[639px]:max-w-[320px] max-[639px]:leading-[1.5] min-[769px]:max-w-[780px] min-[769px]:text-[18px] font-sans"
                     )}
                   >
-                    Extract tables, formulas, and layouts with pixel-perfect precision.
+                    Extract tables, layouts, and structured data with pixel-perfect precision.
                   </p>
                 </div>
               </div>
@@ -602,7 +602,7 @@ export const LandingHome = () => {
           </div>
 
           <div className="flex flex-col gap-8 pt-1 max-[639px]:gap-6 max-[639px]:pt-0 min-[640px]:max-[767px]:pt-0">
-            <h3 className="text-base font-normal leading-6 text-zinc-950">Comming soon</h3>
+            <h3 className="text-base font-normal leading-6 text-zinc-950">Coming Soon</h3>
             <div className="flex flex-wrap gap-x-1.5 gap-y-1 min-[769px]:gap-1.5">
               {comingSoonFormats.map((chip) => (
                 <div

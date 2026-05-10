@@ -19,6 +19,19 @@ export const env = createEnv({
     RESEND_FROM: z.string().default("onboarding@resend.dev"),
     BILLING_ENABLED: z.string().default("false"),
     PASSWORD_LOGIN_ENABLED: z.string().default("false"),
+    /**
+     * Parent domain for the Better Auth session cookie. When set, Dashboard
+     * enables `advanced.crossSubDomainCookies` with this value so the cookie
+     * is shared across subdomains.
+     *
+     * Examples:
+     *   - prod:  `example.com`
+     *   - local: `local.example.com`
+     *   - test/CI: unset — keeps host-only cookies
+     *
+     * Leave unset to preserve the host-only cookie behavior.
+     */
+    AUTH_COOKIE_DOMAIN: z.string().optional(),
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     DEV_EXTERNAL_API_AUTHORIZATION: z.string().optional(),
     HTTPS_PROXY: z.string().optional(),
@@ -30,6 +43,22 @@ export const env = createEnv({
     NEXT_PUBLIC_APP_URL: z.url(),
     NEXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
     NEXT_PUBLIC_POSTHOG_HOST: z.url().default("https://app.posthog.com"),
+    /**
+     * Comma-separated list of external origins (scheme + host + optional
+     * port, no trailing slash) that Dashboard is allowed to redirect to
+     * post-login. The allowlist is not a secret — it simply declares
+     * which sibling-app hostnames Dashboard trusts as post-login targets.
+     * Same value is read from client code (for the login action's
+     * `router.push`) and server code (for Better Auth's trustedOrigins),
+     * so it's a NEXT_PUBLIC variable.
+     *
+     * Example:
+     *   `https://app1.example.com,http://app1.local.example.com:3001`
+     *
+     * Arbitrary external callback URLs are rejected. Leave unset to
+     * disable all external callbacks.
+     */
+    NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS: z.string().optional(),
   },
   runtimeEnv: {
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
@@ -45,6 +74,7 @@ export const env = createEnv({
     RESEND_FROM: process.env.RESEND_FROM,
     BILLING_ENABLED: process.env.BILLING_ENABLED,
     PASSWORD_LOGIN_ENABLED: process.env.PASSWORD_LOGIN_ENABLED,
+    AUTH_COOKIE_DOMAIN: process.env.AUTH_COOKIE_DOMAIN,
     NODE_ENV: process.env.NODE_ENV,
     DEV_EXTERNAL_API_AUTHORIZATION: process.env.DEV_EXTERNAL_API_AUTHORIZATION,
     HTTPS_PROXY: process.env.HTTPS_PROXY,
@@ -54,6 +84,8 @@ export const env = createEnv({
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+    NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS:
+      process.env.NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 });
