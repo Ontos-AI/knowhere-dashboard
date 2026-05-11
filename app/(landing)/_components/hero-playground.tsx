@@ -1728,7 +1728,7 @@ export const HeroPlayground = () => {
     <>
       <div className="grid grid-cols-2 max-[767px]:grid-cols-1">
         <div
-          className="relative h-[320px] border-r border-t border-zinc-200 bg-white min-[768px]:h-[400px] max-[767px]:border-b max-[767px]:border-r-0"
+          className="relative h-[320px] border-r border-t border-zinc-200 bg-white min-[768px]:h-[420px] max-[767px]:border-b max-[767px]:border-r-0"
           style={heroFieldPatternStyle}
         >
           <div className="relative h-full">
@@ -1775,7 +1775,7 @@ export const HeroPlayground = () => {
         <section
           aria-label="Interactive document playground"
           className={cn(
-            "relative h-[320px] border-t border-zinc-200 bg-[#27272a] min-[768px]:h-[400px] min-[768px]:border-l-0 max-[767px]:border-t-0 transition-colors duration-500"
+            "relative h-[320px] border-t border-zinc-200 bg-[#27272a] min-[768px]:h-[420px] min-[768px]:border-l-0 max-[767px]:border-t-0 transition-colors duration-500"
           )}
           ref={dropZoneRef}
         >
