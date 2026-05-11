@@ -385,7 +385,7 @@ export default function UsagePage() {
           />
         </section>
 
-        <section className="space-y-3">
+        <section className="space-y-6 sm:space-y-3">
           <div className="flex flex-wrap items-start gap-[6px] sm:gap-x-2 sm:gap-y-[6px] lg:gap-2">
             <DatePickerWithRange
               className="w-full max-w-[222px] sm:max-w-[224px] lg:max-w-[238px]"

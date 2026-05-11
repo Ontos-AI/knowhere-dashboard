@@ -446,7 +446,7 @@ export function Sidebar({ user, open, onOpenChange }: SidebarProps) {
         )}
       >
         <div className="flex h-full w-full lg:hidden">
-          <MobileSidebarContent user={user} onLogout={handleLogout} />
+          <DashboardSidebarContent user={user} onLogout={handleLogout} />
         </div>
         <div className="hidden h-full w-full lg:flex">
           <DashboardSidebarContent user={user} onLogout={handleLogout} />

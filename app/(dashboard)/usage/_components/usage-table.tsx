@@ -72,6 +72,7 @@ const tableMinWidth = tableHeaders.reduce(
   (total, header) => total + Number.parseInt(header.width, 10),
   0
 );
+const tableScrollThumbWidth: number = 151;
 
 const fileTypeColorMap = {
   pdf: {
@@ -246,7 +247,7 @@ export function UsageTable({
         return;
       }
 
-      const nextThumbWidth = Math.max((clientWidth / scrollWidth) * clientWidth, 48);
+      const nextThumbWidth = Math.min(tableScrollThumbWidth, clientWidth);
       const maxThumbOffset = clientWidth - nextThumbWidth;
       const maxScrollLeft = scrollWidth - clientWidth;
       const nextThumbOffset = maxScrollLeft > 0 ? (scrollLeft / maxScrollLeft) * maxThumbOffset : 0;
@@ -280,7 +281,7 @@ export function UsageTable({
       return;
     }
 
-    const nextThumbWidth = Math.max((clientWidth / scrollWidth) * clientWidth, 48);
+    const nextThumbWidth = Math.min(tableScrollThumbWidth, clientWidth);
     const maxThumbOffset = clientWidth - nextThumbWidth;
     const maxScrollLeft = scrollWidth - clientWidth;
     const nextThumbOffset = maxScrollLeft > 0 ? (scrollLeft / maxScrollLeft) * maxThumbOffset : 0;
@@ -322,7 +323,7 @@ export function UsageTable({
                 return (
                   <div
                     key={row.id}
-                    className={cn("relative grid pr-12", isLoading && "opacity-70")}
+                    className={cn("relative grid", isLoading && "opacity-70")}
                     style={{ gridTemplateColumns: tableGridTemplate }}
                   >
                     <TableCell className="font-mono-display text-[#3f3f46]">
@@ -382,7 +383,7 @@ export function UsageTable({
 
                     <button
                       type="button"
-                      className="absolute right-0 top-1/2 flex h-10 w-12 -translate-y-1/2 items-center justify-center border-l border-[#f4f4f5] bg-[#fafafa] text-[#ff8904] transition-colors hover:bg-[#fff7ed] disabled:cursor-not-allowed disabled:text-[#d4d4d8]"
+                      className="sticky right-0 z-10 col-[1/-1] row-start-1 flex h-10 w-12 items-center justify-center self-center justify-self-end border-l border-[#f4f4f5] bg-[#fafafa] text-[#ff8904] transition-colors hover:bg-[#fff7ed] disabled:cursor-not-allowed disabled:text-[#d4d4d8]"
                       onClick={() => onDownloadResult?.(row.jobId, row.resultUrl)}
                       disabled={!row.resultUrl}
                       aria-label={row.resultUrl ? t("download") : row.status}
