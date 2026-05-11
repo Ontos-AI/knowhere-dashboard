@@ -12,7 +12,7 @@ import { KnowhereBrand } from "@components/brand/knowhere-brand";
 import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { cn } from "@lib/utils";
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
-import { type CSSProperties, type JSX, useState } from "react";
+import { type CSSProperties, type JSX, useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -67,6 +67,8 @@ type BenchmarkMetric = {
 
 type BenchmarkSeriesId = BenchmarkSeries["id"];
 
+type BenchmarkChartLayout = "compact" | "medium" | "wide";
+
 type BenchmarkDatum = {
   compactLabel: string;
   knowhere: number;
@@ -87,6 +89,7 @@ type BenchmarkLabelProps = {
 };
 
 type BenchmarkAxisTickProps = {
+  layout: BenchmarkChartLayout;
   payload?: {
     value?: unknown;
   };
@@ -416,15 +419,7 @@ const renderBenchmarkValueLabel =
     );
   };
 
-const getBenchmarkTickLines = (label: string): readonly string[] => {
-  if (label === "acc with user feedback") {
-    return ["acc with user", "feedback"];
-  }
-
-  return [label];
-};
-
-const BenchmarkXAxisTick = ({ payload, x, y }: BenchmarkAxisTickProps) => {
+const BenchmarkXAxisTick = ({ layout, payload, x, y }: BenchmarkAxisTickProps) => {
   const xValue = getNumber(x);
   const yValue = getNumber(y);
   const label = typeof payload?.value === "string" ? payload.value : "";
@@ -435,11 +430,11 @@ const BenchmarkXAxisTick = ({ payload, x, y }: BenchmarkAxisTickProps) => {
 
   return (
     <g transform={`translate(${xValue},${yValue + 12})`}>
-      {getBenchmarkTickLines(label).map((line, index) => (
+      {getBenchmarkTickLines(label, layout).map((line, index) => (
         <text
           fill="#3f3f46"
           fontFamily="var(--font-mono-display)"
-          fontSize={11}
+          fontSize={getBenchmarkTickFontSize(layout)}
           key={line}
           textAnchor="middle"
           x={0}
@@ -459,8 +454,86 @@ const formatTokenScaleTick = (value: number): string => `${Math.round(value * 18
 const formatTimeScaleTick = (value: number): string => `${Math.round(value / 4)}`;
 const formatLoopScaleTick = (value: number): string => `${Math.round(value / 20)}`;
 
+const getBenchmarkChartLayout = (): BenchmarkChartLayout => {
+  if (typeof window === "undefined") {
+    return "wide";
+  }
+
+  if (window.matchMedia("(min-width: 769px)").matches) {
+    return "wide";
+  }
+
+  if (window.matchMedia("(min-width: 768px)").matches) {
+    return "medium";
+  }
+
+  return "compact";
+};
+
+const useBenchmarkChartLayout = (): BenchmarkChartLayout => {
+  const [chartLayout, setChartLayout] = useState<BenchmarkChartLayout>("wide");
+
+  useEffect(() => {
+    const handleResize = (): void => {
+      setChartLayout(getBenchmarkChartLayout());
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  return chartLayout;
+};
+
+const getBenchmarkTickLines = (
+  label: string,
+  chartLayout: BenchmarkChartLayout
+): readonly string[] => {
+  if (chartLayout === "compact") {
+    switch (label) {
+      case "token used":
+        return ["token", "used"];
+      case "time used":
+        return ["time", "used"];
+      case "agent loops":
+        return ["agent", "loops"];
+      case "first-time acc":
+        return ["first-time", "acc"];
+      case "acc with user feedback":
+        return ["acc with", "user", "feedback"];
+      default:
+        return [label];
+    }
+  }
+
+  if (chartLayout === "medium") {
+    switch (label) {
+      case "first-time acc":
+        return ["first-time", "acc"];
+      case "acc with user feedback":
+        return ["acc with", "user", "feedback"];
+      default:
+        return [label];
+    }
+  }
+
+  if (label === "acc with user feedback") {
+    return ["acc with user", "feedback"];
+  }
+
+  return [label];
+};
+
+const getBenchmarkTickFontSize = (chartLayout: BenchmarkChartLayout): number =>
+  chartLayout === "compact" ? 10 : 11;
+
 const BenchmarkChart = () => {
   const [hiddenSeriesIds, setHiddenSeriesIds] = useState<readonly BenchmarkSeriesId[]>([]);
+  const chartLayout = useBenchmarkChartLayout();
 
   const handleToggleSeries = (seriesId: BenchmarkSeriesId): void => {
     setHiddenSeriesIds((currentSeriesIds) => {
@@ -479,154 +552,158 @@ const BenchmarkChart = () => {
   };
 
   return (
-    <div className="flex h-[430px] flex-col gap-6 bg-white min-[769px]:h-[482px] min-[769px]:px-8 min-[769px]:py-6">
-      <div className="flex min-w-0 flex-wrap items-center justify-center gap-x-6 gap-y-3 px-4 text-xs leading-4 text-zinc-950 min-[769px]:min-w-[580px]">
-        {benchmarkSeries.map((series) => {
-          const isHidden = hiddenSeriesIds.includes(series.id);
-
-          return (
-            <button
-              aria-pressed={!isHidden}
-              className={cn(
-                "flex items-center gap-2 border border-transparent px-1 py-0.5 transition-opacity hover:border-zinc-300",
-                isHidden && "opacity-40"
-              )}
-              key={series.id}
-              onClick={() => handleToggleSeries(series.id)}
-              type="button"
-            >
-              <BenchmarkSeriesSwatch className="h-4 w-8" series={series} />
-              <BenchmarkSeriesLabel series={series} />
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="min-h-0 flex-1">
-        <ResponsiveContainer
-          height="100%"
-          initialDimension={{ height: 410, width: 912 }}
-          width="100%"
-        >
-          <BarChart
-            barCategoryGap="20%"
-            barGap={0}
-            data={[...benchmarkData]}
-            margin={{ bottom: 42, left: 10, right: 34, top: 40 }}
-          >
-            <CartesianGrid stroke="#e4e4e7" strokeDasharray="0" vertical={false} />
-            <XAxis
-              axisLine={{ stroke: "#a1a1aa", strokeWidth: 1 }}
-              dataKey="compactLabel"
-              interval={0}
-              minTickGap={0}
-              tick={<BenchmarkXAxisTick />}
-              tickLine={false}
-            />
-            <YAxis
-              axisLine={{ stroke: "#a1a1aa", strokeWidth: 1 }}
-              domain={[0, 100]}
-              label={{
-                angle: -90,
-                dx: -1,
-                fill: "#71717a",
-                fontSize: 11,
-                offset: 4,
-                position: "insideLeft",
-                value: "token used",
-              }}
-              tick={{ fill: "#3f3f46", fontSize: 11, fontFamily: "var(--font-mono-display)" }}
-              tickFormatter={formatTokenScaleTick}
-              tickLine={false}
-              tickMargin={AXIS_NUMBER_GAP}
-              ticks={[...leftAxisTicks]}
-              width={52}
-              yAxisId="value"
-            />
-            <YAxis
-              axisLine={{ stroke: "#a1a1aa", strokeWidth: 1 }}
-              domain={[0, 100]}
-              label={{
-                angle: -90,
-                fill: "#71717a",
-                fontSize: 11,
-                offset: 16,
-                position: "insideRight",
-                value: "time used (s)",
-              }}
-              orientation="right"
-              tick={{ fill: "#3f3f46", fontSize: 11, fontFamily: "var(--font-mono-display)" }}
-              tickFormatter={formatTimeScaleTick}
-              tickLine={false}
-              tickMargin={AXIS_NUMBER_GAP}
-              ticks={[...percentAxisTicks]}
-              width={54}
-              yAxisId="time"
-            />
-            <YAxis
-              axisLine={{ stroke: "#a1a1aa", strokeWidth: 1 }}
-              domain={[0, 100]}
-              label={{
-                angle: -90,
-                fill: "#71717a",
-                fontSize: 11,
-                offset: 16,
-                position: "insideRight",
-                value: "agent loops",
-              }}
-              orientation="right"
-              tick={{ fill: "#3f3f46", fontSize: 11, fontFamily: "var(--font-mono-display)" }}
-              tickFormatter={formatLoopScaleTick}
-              tickLine={false}
-              tickMargin={AXIS_NUMBER_GAP}
-              ticks={[...percentAxisTicks]}
-              width={54}
-              yAxisId="loops"
-            />
-            <Tooltip
-              content={<BenchmarkTooltip />}
-              cursor={{ fill: "rgba(161, 161, 170, 0.12)" }}
-              isAnimationActive={false}
-            />
-            <ReferenceLine
-              position="start"
-              stroke="#d4d4d8"
-              strokeDasharray="5 5"
-              x="first-time acc"
-              yAxisId="value"
-            />
+    <div className="-mx-[18px] h-[482px] bg-white py-6 min-[640px]:max-[767px]:-mx-[46px] min-[768px]:-mx-[48px]">
+      <div className="h-full w-full min-w-0 max-w-full overflow-x-auto overflow-y-hidden">
+        <div className="ml-[30px] flex h-full w-[580px] flex-col gap-[22px] min-[768px]:ml-8 min-[768px]:w-[704px] min-[768px]:gap-6 min-[769px]:w-[912px]">
+          <div className="flex shrink-0 flex-nowrap items-center justify-center gap-x-[22px] text-xs leading-4 text-zinc-950 min-[768px]:gap-x-6">
             {benchmarkSeries.map((series) => {
               const isHidden = hiddenSeriesIds.includes(series.id);
 
               return (
-                <Bar
-                  activeBar={{ fillOpacity: 1, stroke: "#27272a", strokeWidth: 1 }}
-                  dataKey={series.id}
-                  fill={series.color}
-                  hide={isHidden}
-                  isAnimationActive={false}
+                <button
+                  aria-pressed={!isHidden}
+                  className={cn(
+                    "flex items-center gap-2 whitespace-nowrap border border-transparent px-1 py-0.5 transition-opacity hover:border-zinc-300",
+                    isHidden && "opacity-40"
+                  )}
                   key={series.id}
-                  label={renderBenchmarkValueLabel(series.id)}
-                  maxBarSize={24}
-                  name={series.label}
-                  radius={[1, 1, 0, 0]}
-                  shape={series.pattern ? <BenchmarkRawBarShape /> : undefined}
-                  yAxisId="value"
+                  onClick={() => handleToggleSeries(series.id)}
+                  type="button"
                 >
-                  {benchmarkData.map((datum) => (
-                    <Cell
-                      fill={series.color}
-                      fillOpacity={1}
-                      key={`${series.id}-${datum.label}`}
-                      stroke="none"
-                      strokeWidth={0}
-                    />
-                  ))}
-                </Bar>
+                  <BenchmarkSeriesSwatch className="h-4 w-8 shrink-0" series={series} />
+                  <BenchmarkSeriesLabel series={series} />
+                </button>
               );
             })}
-          </BarChart>
-        </ResponsiveContainer>
+          </div>
+
+          <div className="min-h-0 flex-1">
+            <ResponsiveContainer
+              height="100%"
+              initialDimension={{ height: 410, width: 912 }}
+              width="100%"
+            >
+              <BarChart
+                barCategoryGap="20%"
+                barGap={0}
+                data={[...benchmarkData]}
+                margin={{ bottom: 42, left: 0, right: 34, top: 40 }}
+              >
+                <CartesianGrid stroke="#e4e4e7" strokeDasharray="0" vertical={false} />
+                <XAxis
+                  axisLine={{ stroke: "#a1a1aa", strokeWidth: 1 }}
+                  dataKey="compactLabel"
+                  interval={0}
+                  minTickGap={0}
+                  tick={<BenchmarkXAxisTick layout={chartLayout} />}
+                  tickLine={false}
+                />
+                <YAxis
+                  axisLine={{ stroke: "#a1a1aa", strokeWidth: 1 }}
+                  domain={[0, 100]}
+                  label={{
+                    angle: -90,
+                    dx: -1,
+                    fill: "#71717a",
+                    fontSize: 11,
+                    offset: 4,
+                    position: "insideLeft",
+                    value: "token used",
+                  }}
+                  tick={{ fill: "#3f3f46", fontSize: 11, fontFamily: "var(--font-mono-display)" }}
+                  tickFormatter={formatTokenScaleTick}
+                  tickLine={false}
+                  tickMargin={AXIS_NUMBER_GAP}
+                  ticks={[...leftAxisTicks]}
+                  width={50}
+                  yAxisId="value"
+                />
+                <YAxis
+                  axisLine={{ stroke: "#a1a1aa", strokeWidth: 1 }}
+                  domain={[0, 100]}
+                  label={{
+                    angle: -90,
+                    fill: "#71717a",
+                    fontSize: 11,
+                    offset: 16,
+                    position: "insideRight",
+                    value: "time used (s)",
+                  }}
+                  orientation="right"
+                  tick={{ fill: "#3f3f46", fontSize: 11, fontFamily: "var(--font-mono-display)" }}
+                  tickFormatter={formatTimeScaleTick}
+                  tickLine={false}
+                  tickMargin={AXIS_NUMBER_GAP}
+                  ticks={[...percentAxisTicks]}
+                  width={54}
+                  yAxisId="time"
+                />
+                <YAxis
+                  axisLine={{ stroke: "#a1a1aa", strokeWidth: 1 }}
+                  domain={[0, 100]}
+                  label={{
+                    angle: -90,
+                    fill: "#71717a",
+                    fontSize: 11,
+                    offset: 16,
+                    position: "insideRight",
+                    value: "agent loops",
+                  }}
+                  orientation="right"
+                  tick={{ fill: "#3f3f46", fontSize: 11, fontFamily: "var(--font-mono-display)" }}
+                  tickFormatter={formatLoopScaleTick}
+                  tickLine={false}
+                  tickMargin={AXIS_NUMBER_GAP}
+                  ticks={[...percentAxisTicks]}
+                  width={54}
+                  yAxisId="loops"
+                />
+                <Tooltip
+                  content={<BenchmarkTooltip />}
+                  cursor={{ fill: "rgba(161, 161, 170, 0.12)" }}
+                  isAnimationActive={false}
+                />
+                <ReferenceLine
+                  position="start"
+                  stroke="#d4d4d8"
+                  strokeDasharray="5 5"
+                  x="first-time acc"
+                  yAxisId="value"
+                />
+                {benchmarkSeries.map((series) => {
+                  const isHidden = hiddenSeriesIds.includes(series.id);
+
+                  return (
+                    <Bar
+                      activeBar={{ fillOpacity: 1, stroke: "#27272a", strokeWidth: 1 }}
+                      dataKey={series.id}
+                      fill={series.color}
+                      hide={isHidden}
+                      isAnimationActive={false}
+                      key={series.id}
+                      label={renderBenchmarkValueLabel(series.id)}
+                      maxBarSize={24}
+                      name={series.label}
+                      radius={[1, 1, 0, 0]}
+                      shape={series.pattern ? <BenchmarkRawBarShape /> : undefined}
+                      yAxisId="value"
+                    >
+                      {benchmarkData.map((datum) => (
+                        <Cell
+                          fill={series.color}
+                          fillOpacity={1}
+                          key={`${series.id}-${datum.label}`}
+                          stroke="none"
+                          strokeWidth={0}
+                        />
+                      ))}
+                    </Bar>
+                  );
+                })}
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </div>
     </div>
   );
