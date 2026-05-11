@@ -21,7 +21,6 @@ import { Highlight, themes } from "prism-react-renderer";
 import {
   type CSSProperties,
   Fragment,
-  type PointerEvent as ReactPointerEvent,
   type RefObject,
   startTransition,
   useCallback,
@@ -183,7 +182,7 @@ type HeroDemoFile = {
 
 const playgroundSamples: Record<PlaygroundSampleId, PlaygroundSample> = {
   atlas: {
-    cardLabel: "Atlas Handbook.pdf",
+    cardLabel: "Invoice.pdf",
     extension: ".pdf",
     id: "atlas",
     modalLabel: "EN Atlas Technical Handbook Rev Aug 2013.pdf",
@@ -197,8 +196,8 @@ const playgroundSamples: Record<PlaygroundSampleId, PlaygroundSample> = {
     tone: { background: "#fb2c36", text: "#fef2f2" },
   },
   epstein: {
-    cardLabel: "Epstein Flight Logs.pdf",
-    extension: ".pdf",
+    cardLabel: "Database.csv",
+    extension: ".csv",
     id: "epstein",
     modalLabel: "Epstein Flight Logs.pdf",
     pdfPath: "/playground-files/epstein/Epstein_Flight_Logs.pdf",
@@ -214,10 +213,10 @@ const playgroundSamples: Record<PlaygroundSampleId, PlaygroundSample> = {
       left: "calc(50% + clamp(59px, 7vw, 71px))",
       top: "calc(50% + clamp(25px, 3.5vh, 37px))",
     },
-    tone: { background: "#fb2c36", text: "#fef2f2" },
+    tone: { background: "#00b8db", text: "#ecfeff" },
   },
   tsla: {
-    cardLabel: "Tesla Q4 2025.pdf",
+    cardLabel: "Report.pdf",
     extension: ".pdf",
     id: "tsla",
     modalLabel: "Tesla Q4 2025 Update.pdf",
@@ -286,9 +285,6 @@ const heroDemoFiles: readonly HeroDemoFile[] = [
     tone: playgroundSamples.tsla.tone,
   },
 ] as const;
-
-const isPlaygroundSampleId = (value: string): value is PlaygroundSampleId =>
-  value === "atlas" || value === "epstein" || value === "tsla";
 
 const formatBytes = (value: number) => {
   if (value < 1024) {
