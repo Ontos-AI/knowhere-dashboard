@@ -1,5 +1,6 @@
 "use client";
 
+import { KnowhereBrand } from "@components/brand/knowhere-brand";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -43,73 +44,12 @@ type NavigationItem = {
   label: string;
 };
 
-const SIDEBAR_BRAND_LAYERS = [
-  {
-    src: "/images/sidebar/logo-mark-primary.svg",
-    left: 1.63,
-    top: 1.62,
-    width: 22.75,
-    height: 30.42,
-    rotation: 0,
-  },
-  {
-    src: "/images/sidebar/logo-mark-secondary.svg",
-    left: 17.15,
-    top: 8.96,
-    width: 22.75,
-    height: 30.42,
-    rotation: 180,
-  },
-] as const;
-
-const SIDEBAR_WORDMARK_STYLE = {
-  left: 49.67,
-  top: 12.25,
-  width: 92.71,
-  height: 16.5,
-} as const;
-
 const SIDEBAR_SHEET_WIDTH_CLASS = "w-[160px] min-w-[160px] max-w-[160px]";
 const SIDEBAR_STATIC_WIDTH_CLASS =
   "sm:w-[160px] sm:min-w-[160px] sm:max-w-[160px] lg:w-[200px] lg:min-w-[200px] lg:max-w-[200px]";
 
-const MOBILE_SIDEBAR_MARK_LAYERS = [
-  {
-    src: "/images/sidebar/logo-mark-primary.svg",
-    left: 0,
-    top: 0,
-    width: 11.98,
-    height: 15.82,
-    rotation: 0,
-  },
-  {
-    src: "/images/sidebar/logo-mark-secondary.svg",
-    left: 10.42,
-    top: 4.54,
-    width: 11.98,
-    height: 15.82,
-    rotation: 180,
-  },
-] as const;
-
-const TABLET_SIDEBAR_MARK_LAYERS = [
-  {
-    src: "/images/sidebar/logo-mark-primary.svg",
-    left: 0,
-    top: 0,
-    width: 14.97,
-    height: 19.78,
-    rotation: 0,
-  },
-  {
-    src: "/images/sidebar/logo-mark-secondary.svg",
-    left: 13.03,
-    top: 5.68,
-    width: 14.97,
-    height: 19.78,
-    rotation: 180,
-  },
-] as const;
+const SIDEBAR_DESKTOP_BRAND_WIDTH = "144px";
+const SIDEBAR_COMPACT_BRAND_WIDTH = "118px";
 
 const localeLabels = {
   en: "English",
@@ -172,99 +112,21 @@ const getNavigation = (labels: {
 
 const SidebarBrand = ({ onNavigate }: { onNavigate?: () => void }) => {
   return (
-    <Link href="/" aria-label="Knowhere" className="block" onClick={onNavigate}>
-      <div className="relative hidden h-[41px] w-[144px] lg:block">
-        {SIDEBAR_BRAND_LAYERS.map((layer) => (
-          <Image
-            key={layer.src}
-            src={layer.src}
-            alt=""
-            aria-hidden
-            width={layer.width}
-            height={layer.height}
-            className="absolute block"
-            style={{
-              left: `${layer.left}px`,
-              top: `${layer.top}px`,
-              width: `${layer.width}px`,
-              height: `${layer.height}px`,
-              transform: layer.rotation ? `rotate(${layer.rotation}deg)` : undefined,
-            }}
-          />
-        ))}
-        <Image
-          src="/images/sidebar/logo-wordmark.svg"
-          alt=""
-          aria-hidden
-          width={SIDEBAR_WORDMARK_STYLE.width}
-          height={SIDEBAR_WORDMARK_STYLE.height}
-          className="absolute block"
-          style={{
-            left: `${SIDEBAR_WORDMARK_STYLE.left}px`,
-            top: `${SIDEBAR_WORDMARK_STYLE.top}px`,
-            width: `${SIDEBAR_WORDMARK_STYLE.width}px`,
-            height: `${SIDEBAR_WORDMARK_STYLE.height}px`,
-          }}
-        />
-      </div>
-
-      <div className="flex items-center gap-3 lg:hidden">
-        <div className="relative h-[25.46px] w-7 shrink-0 opacity-80">
-          {TABLET_SIDEBAR_MARK_LAYERS.map((layer) => (
-            <Image
-              key={layer.src}
-              src={layer.src}
-              alt=""
-              aria-hidden
-              width={layer.width}
-              height={layer.height}
-              className="absolute block"
-              style={{
-                left: `${layer.left}px`,
-                top: `${layer.top}px`,
-                width: `${layer.width}px`,
-                height: `${layer.height}px`,
-                transform: layer.rotation ? `rotate(${layer.rotation}deg)` : undefined,
-              }}
-            />
-          ))}
-        </div>
-        <span className="font-brand text-[16px] font-medium leading-none text-[#09090b]">
-          Knowhere
-        </span>
-      </div>
+    <Link href="/" aria-label="Knowhere" className="inline-flex items-center" onClick={onNavigate}>
+      <KnowhereBrand
+        className="hidden w-[144px] lg:inline-flex"
+        priority
+        sizes={SIDEBAR_DESKTOP_BRAND_WIDTH}
+      />
+      <KnowhereBrand className="w-[118px] lg:hidden" priority sizes={SIDEBAR_COMPACT_BRAND_WIDTH} />
     </Link>
   );
 };
 
 const MobileSidebarBrand = ({ onNavigate }: { onNavigate?: () => void }) => {
   return (
-    <Link href="/" aria-label="Knowhere" className="block" onClick={onNavigate}>
-      <div className="flex items-center gap-3">
-        <div className="relative h-[20.36px] w-[22.4px] shrink-0 opacity-80">
-          {MOBILE_SIDEBAR_MARK_LAYERS.map((layer) => (
-            <Image
-              key={layer.src}
-              src={layer.src}
-              alt=""
-              aria-hidden
-              width={layer.width}
-              height={layer.height}
-              className="absolute block"
-              style={{
-                left: `${layer.left}px`,
-                top: `${layer.top}px`,
-                width: `${layer.width}px`,
-                height: `${layer.height}px`,
-                transform: layer.rotation ? `rotate(${layer.rotation}deg)` : undefined,
-              }}
-            />
-          ))}
-        </div>
-        <span className="font-brand text-[16px] font-medium leading-none text-[#09090b]">
-          Knowhere
-        </span>
-      </div>
+    <Link href="/" aria-label="Knowhere" className="inline-flex items-center" onClick={onNavigate}>
+      <KnowhereBrand className="w-[118px]" priority sizes={SIDEBAR_COMPACT_BRAND_WIDTH} />
     </Link>
   );
 };

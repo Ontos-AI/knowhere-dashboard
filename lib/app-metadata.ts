@@ -5,6 +5,7 @@ export const appMetadata: Metadata = {
   description:
     "The most accurate document parsing API for AI agents. Extract tables, formulas, and structured data with unmatched precision.",
   icons: {
-    icon: [{ url: "/images/knowhere/logo-icon.png", type: "image/png", sizes: "92x84" }],
+    apple: [{ url: "/images/knowhere/app-icon.png", type: "image/png", sizes: "1024x1024" }],
+    icon: [{ url: "/images/knowhere/app-icon.png", type: "image/png", sizes: "1024x1024" }],
   },
 };
