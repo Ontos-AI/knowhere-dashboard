@@ -1,22 +1,54 @@
 "use client";
 
 import { LandingBrand } from "@app/(landing)/_components/landing-brand";
-import { clawNavItems } from "@app/(landing)/claw/_components/claw-content";
+import { LandingThemeToggle } from "@app/(landing)/_components/landing-theme-toggle";
+import { type ClawNavItem, clawNavItems } from "@app/(landing)/claw/_components/claw-content";
+import { LanguageSwitcher } from "@components/language-switcher";
 import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { useActiveSection } from "@hooks/use-active-section";
 import { cn } from "@lib/utils";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import { useState } from "react";
 
-export const ClawHeader = () => {
+type ClawHeaderProps = {
+  navItems?: ClawNavItem[];
+  showUtilityControls?: boolean;
+};
+
+const getNavItemSectionId = (item: ClawNavItem) => {
+  return item.href.startsWith("#") ? item.href.slice(1) : null;
+};
+
+const localeLabels = {
+  en: "English",
+  zh: "中文",
+} as const;
+
+export const ClawHeader = ({
+  navItems = clawNavItems,
+  showUtilityControls = false,
+}: ClawHeaderProps) => {
   const activeSection = useActiveSection({
-    ids: clawNavItems.map((item) => item.href.replace(/^#/, "")),
+    ids: navItems
+      .map((item) => getNavItemSectionId(item))
+      .filter((sectionId): sectionId is string => sectionId !== null),
   });
+  const locale = useLocale();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const currentLocaleLabel = localeLabels[locale as keyof typeof localeLabels] ?? "English";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[#e4e4e7] bg-[#fafafa]">
-      <div className="relative mx-auto grid h-12 w-full grid-cols-[128px_minmax(0,1fr)_48px] min-[640px]:grid-cols-[128px_minmax(0,1fr)_128px] min-[640px]:max-[767px]:h-16 min-[640px]:max-[767px]:grid-cols-[148px_minmax(0,1fr)_152px] min-[768px]:max-[768px]:h-16 min-[768px]:max-[768px]:grid-cols-[148px_minmax(0,1fr)_152px] min-[769px]:h-16 min-[769px]:max-w-[1280px] min-[769px]:grid-cols-[152px_minmax(0,1fr)_152px]">
+    <header className="sticky top-0 z-50 w-full border-b border-[#e4e4e7] bg-white">
+      <div
+        className={cn(
+          "relative mx-auto grid h-12 w-full",
+          showUtilityControls
+            ? "grid-cols-[148px_minmax(0,1fr)_88px] min-[640px]:grid-cols-[148px_minmax(0,1fr)_220px] min-[768px]:max-[768px]:grid-cols-[152px_minmax(0,1fr)_224px] min-[769px]:grid-cols-[152px_minmax(0,1fr)_224px]"
+            : "grid-cols-[128px_minmax(0,1fr)_48px] min-[640px]:grid-cols-[128px_minmax(0,1fr)_128px] min-[640px]:max-[767px]:grid-cols-[148px_minmax(0,1fr)_152px] min-[768px]:max-[768px]:grid-cols-[148px_minmax(0,1fr)_152px] min-[769px]:grid-cols-[152px_minmax(0,1fr)_152px]",
+          "min-[640px]:max-[767px]:h-16 min-[768px]:max-[768px]:h-16 min-[769px]:h-16 min-[769px]:max-w-[1280px]"
+        )}
+      >
         <div className="flex h-full items-center border-r border-[#e4e4e7] px-4 min-[640px]:max-[767px]:px-[14px] min-[768px]:max-[768px]:px-[14px] min-[769px]:border-l min-[769px]:px-4">
           <Link href="/" className="flex items-center">
             <LandingBrand size="nav" />
@@ -27,8 +59,8 @@ export const ClawHeader = () => {
             aria-label="Main navigation"
             className="hidden h-full min-w-0 items-center overflow-x-auto min-[640px]:flex"
           >
-            {clawNavItems.map((item) => {
-              const targetSection = item.href.replace(/^#/, "");
+            {navItems.map((item) => {
+              const targetSection = getNavItemSectionId(item);
               const isActive = targetSection === activeSection;
 
               return (
@@ -74,20 +106,43 @@ export const ClawHeader = () => {
               );
             })}
           </nav>
+          {showUtilityControls ? (
+            <LanguageSwitcher align="end" contentClassName="mt-0" sideOffset={0}>
+              <button
+                type="button"
+                className="hidden h-full items-center gap-1 pl-4 pr-3 text-xs leading-4 text-[#09090b] transition-colors hover:text-[#52525c] min-[768px]:flex"
+              >
+                <span>{currentLocaleLabel}</span>
+                <KnowhereIcon className="size-5 text-current" name="chevron-down" />
+              </button>
+            </LanguageSwitcher>
+          ) : null}
         </div>
         <div className="flex h-full items-center justify-center border-l border-[#e4e4e7]">
           <button
             aria-expanded={mobileMenuOpen}
             aria-haspopup="menu"
             aria-label="Open site menu"
-            className="inline-flex h-full w-full items-center justify-center text-[#09090b] transition-colors hover:text-[#52525c] min-[640px]:hidden min-[640px]:max-[767px]:hidden"
+            className={cn(
+              "inline-flex h-full items-center justify-center text-[#09090b] transition-colors hover:text-[#52525c] min-[640px]:hidden min-[640px]:max-[767px]:hidden",
+              showUtilityControls ? "w-11" : "w-full"
+            )}
             onClick={() => setMobileMenuOpen((open) => !open)}
             type="button"
           >
             <KnowhereIcon className="h-[14px] w-[14px] text-current" name="menu" />
           </button>
+          {showUtilityControls ? (
+            <LandingThemeToggle
+              className="h-full w-11 text-[#09090b] hover:text-[#52525c] min-[640px]:w-[68px] min-[768px]:w-[72px]"
+              iconClassName="size-4"
+            />
+          ) : null}
           <Link
-            className="hidden h-full w-full items-center justify-center border-b-[6px] border-b-[#c10007] bg-[#e7000b] pt-[4px] pb-[4px] px-6 font-mono-readable text-sm font-semibold leading-5 text-[#fef2f2] transition-all hover:border-b-[8px] hover:border-b-[#9f0712] hover:bg-[#c10007] hover:pb-[6px] active:border-b-0 active:bg-[#9f0712] active:pb-[6px] min-[640px]:inline-flex"
+            className={cn(
+              "hidden h-full items-center justify-center border-b-[6px] border-b-[#c10007] bg-[#e7000b] pt-[4px] pb-[4px] px-6 font-mono-readable text-sm font-semibold leading-5 text-[#fef2f2] transition-all hover:border-b-[8px] hover:border-b-[#9f0712] hover:bg-[#c10007] hover:pb-[6px] active:border-b-0 active:bg-[#9f0712] active:pb-[6px] min-[640px]:inline-flex",
+              showUtilityControls ? "w-[152px]" : "w-full"
+            )}
             href="/login"
           >
             GET API KEY
@@ -95,9 +150,9 @@ export const ClawHeader = () => {
         </div>
 
         {mobileMenuOpen ? (
-          <nav className="absolute top-full right-0 left-0 z-40 flex w-full flex-col border-b border-[#e4e4e7] bg-[#fafafa] min-[640px]:hidden">
-            {clawNavItems.map((item) => {
-              const targetSection = item.href.replace(/^#/, "");
+          <nav className="absolute top-full right-0 left-0 z-40 flex w-full flex-col border-b border-[#e4e4e7] bg-white min-[640px]:hidden">
+            {navItems.map((item) => {
+              const targetSection = getNavItemSectionId(item);
               const isActive = targetSection === activeSection;
 
               return (

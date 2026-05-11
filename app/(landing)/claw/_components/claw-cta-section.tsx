@@ -10,7 +10,7 @@ import Image from "next/image";
 
 export const ClawCtaSection = () => {
   return (
-    <section className="bg-[#fafafa] scroll-mt-20 shadow-[inset_0_0_0_1px_#e4e4e7]" id="docs">
+    <section className="bg-white scroll-mt-20 shadow-[inset_0_0_0_1px_#e4e4e7]" id="docs">
       <div className="flex flex-col gap-8 pt-10 min-[640px]:gap-12 min-[640px]:pt-20 min-[640px]:max-[767px]:gap-9 min-[640px]:max-[767px]:pt-20 min-[768px]:max-[768px]:gap-9 min-[768px]:max-[768px]:pt-20 min-[769px]:gap-9 min-[769px]:pt-20">
         <div className="space-y-4 px-5 text-center min-[640px]:space-y-6 min-[640px]:px-16 min-[640px]:max-[767px]:space-y-4 min-[640px]:max-[767px]:px-12 min-[768px]:max-[768px]:space-y-4 min-[768px]:max-[768px]:px-12 min-[769px]:space-y-4 min-[769px]:px-12">
           <div className="space-y-2 min-[640px]:hidden">

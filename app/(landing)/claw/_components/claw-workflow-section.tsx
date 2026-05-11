@@ -213,7 +213,7 @@ const AssistantBubble = ({ emphasis, tags, text }: AssistantBubbleProps) => {
 
 export const ClawWorkflowSection = () => {
   return (
-    <section className="bg-[#fafafa] scroll-mt-20 shadow-[inset_0_0_0_1px_#e4e4e7]" id="workflow">
+    <section className="bg-white scroll-mt-20 shadow-[inset_0_0_0_1px_#e4e4e7]" id="workflow">
       <div className="flex flex-col gap-8 py-10 min-[640px]:gap-12 min-[640px]:py-20 min-[640px]:max-[767px]:gap-9 min-[640px]:max-[767px]:py-14 min-[768px]:max-[768px]:gap-9 min-[768px]:max-[768px]:py-14 min-[769px]:gap-9 min-[769px]:py-14">
         <ClawSectionHeading
           description="This is the interaction model the plugin is built for: Knowhere extracts structure, OpenClaw stores the package, and the agent answers only after it has previewed or reopened the right evidence."
