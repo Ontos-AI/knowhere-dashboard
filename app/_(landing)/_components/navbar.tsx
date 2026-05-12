@@ -1,7 +1,7 @@
 "use client";
 
 import { NAV_LINKS } from "@app/_(landing)/_lib/constants";
-import Image from "next/image";
+import { KnowhereBrand } from "@components/brand/knowhere-brand";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -50,21 +50,8 @@ export const Navbar = ({ customLinks }: NavbarProps = {}) => {
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="flex items-center">
-              {/*  Brand logo icon */}
-              <Image
-                src={"/images/brand/brand-logo.png"}
-                alt="brand logo"
-                width={24}
-                height={24}
-                className="rounded-[5px]"
-              />
-              <span className="ml-2 font-pixel text-pixel-sm text-pixel-fg tracking-wider">
-                KNOWHERE
-              </span>
-            </div>
+          <Link href="/" className="inline-flex items-center group" aria-label="Knowhere">
+            <KnowhereBrand className="w-[116px]" priority sizes="116px" />
           </Link>
 
           {/* Desktop Navigation */}

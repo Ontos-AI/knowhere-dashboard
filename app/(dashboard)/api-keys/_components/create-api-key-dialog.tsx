@@ -1,7 +1,7 @@
 "use client";
 
+import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
 import {
-  DashboardDesktopActionButton,
   DashboardDesktopDialogCloseButton,
   dashboardDesktopFieldLabelClassName,
   dashboardDesktopModalContentClassName,
@@ -54,15 +54,15 @@ export const CreateApiKeyDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className={dashboardDesktopModalContentClassName}>
         <form
-          className="flex flex-col gap-8 px-6 pb-10 pt-6 sm:gap-[38px] sm:px-[46px] sm:pb-[54px] sm:pt-[38px] lg:gap-10 lg:px-12 lg:pb-14 lg:pt-10"
+          className="flex flex-col gap-[30px] px-[22px] pb-[38px] pt-[22px] sm:gap-[38px] sm:px-[46px] sm:pb-[54px] sm:pt-[38px] lg:gap-10 lg:px-12 lg:pb-14 lg:pt-10"
           onSubmit={handleSubmit}
         >
           <div className="flex items-start gap-6 sm:gap-8">
             <div className="min-w-0 flex-1">
-              <h2 className="text-[20px] font-bold leading-7 text-[#09090b] sm:leading-[26px] lg:leading-7">
+              <h2 className="text-[20px] font-bold leading-[26px] text-[#09090b] lg:leading-7">
                 {t("createDialogTitle")}
               </h2>
-              <p className="mt-1 text-sm leading-5 text-[#71717b] sm:leading-[18px] lg:leading-5">
+              <p className="mt-0.5 text-sm leading-[18px] text-[#71717b] lg:mt-1 lg:leading-5">
                 {t("createDialogDesc")}
               </p>
             </div>
@@ -71,15 +71,8 @@ export const CreateApiKeyDialog = ({
           </div>
 
           <div className="flex flex-col gap-6">
-            <label htmlFor="api-key-name" className="flex flex-col gap-2">
-              <span
-                className={cn(
-                  dashboardDesktopFieldLabelClassName,
-                  "sm:leading-[18px] lg:leading-5"
-                )}
-              >
-                {t("name")}
-              </span>
+            <label htmlFor="api-key-name" className="flex flex-col gap-[6px] lg:gap-2">
+              <span className={dashboardDesktopFieldLabelClassName}>{t("name")}</span>
               <input
                 id="api-key-name"
                 value={name}
@@ -91,14 +84,7 @@ export const CreateApiKeyDialog = ({
             </label>
 
             <label htmlFor="api-key-expiration" className="flex flex-col gap-[10px]">
-              <span
-                className={cn(
-                  dashboardDesktopFieldLabelClassName,
-                  "sm:leading-[18px] lg:leading-5"
-                )}
-              >
-                {t("expiration")}
-              </span>
+              <span className={dashboardDesktopFieldLabelClassName}>{t("expiration")}</span>
               <Select value={expirationDuration} onValueChange={onExpirationChange}>
                 <SelectTrigger
                   id="api-key-expiration"
@@ -112,11 +98,7 @@ export const CreateApiKeyDialog = ({
                 </SelectTrigger>
                 <SelectContent className="w-[var(--radix-select-trigger-width)] rounded-none border-[#e4e4e7]">
                   {expirationOptions.map((option) => (
-                    <SelectItem
-                      key={option.value}
-                      value={option.value}
-                      className="px-3 py-2 text-xs leading-4 text-[#27272a]"
-                    >
+                    <SelectItem key={option.value} value={option.value}>
                       {option.label}
                     </SelectItem>
                   ))}
@@ -125,24 +107,26 @@ export const CreateApiKeyDialog = ({
             </label>
           </div>
 
-          <div className="flex justify-end gap-2 sm:gap-[6px] lg:gap-2">
-            <DashboardDesktopActionButton
+          <div className="flex justify-end gap-[6px] lg:gap-2">
+            <DashboardActionButton
               variant="secondary"
+              size="dialog"
               onClick={() => onOpenChange(false)}
               disabled={isPending}
-              className="flex-1 sm:min-w-[67px] sm:flex-none lg:min-w-[71px]"
+              className="flex-1 justify-center sm:min-w-[67px] sm:flex-none sm:justify-start lg:min-w-[71px]"
             >
               {t("cancel")}
-            </DashboardDesktopActionButton>
-            <DashboardDesktopActionButton
+            </DashboardActionButton>
+            <DashboardActionButton
               variant="primary"
+              size="dialog"
               type="submit"
               disabled={isPending || name.trim().length === 0}
-              className="flex-1 sm:min-w-[60px] sm:flex-none lg:min-w-[64px]"
+              className="flex-1 justify-center sm:min-w-[60px] sm:flex-none sm:justify-start lg:min-w-[64px]"
             >
               {isPending ? <LoadingSpinner className="size-4" /> : null}
               <span>{isPending ? t("creating") : t("create")}</span>
-            </DashboardDesktopActionButton>
+            </DashboardActionButton>
           </div>
         </form>
       </DialogContent>

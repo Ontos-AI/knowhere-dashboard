@@ -1,14 +1,17 @@
 "use client";
 
 import { LandingBrand } from "@app/(landing)/_components/landing-brand";
+import { LandingThemeToggle } from "@app/(landing)/_components/landing-theme-toggle";
+import { LanguageSwitcher } from "@components/language-switcher";
 import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { useActiveSection } from "@hooks/use-active-section";
 import { cn } from "@lib/utils";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import { type ReactNode, useState } from "react";
 
 const landingHeaderCanvasWidthClassName =
-  "mx-auto grid h-12 w-full grid-cols-[128px_minmax(0,1fr)_48px] min-[640px]:grid-cols-[148px_minmax(0,1fr)_152px] min-[640px]:h-16 min-[768px]:max-w-[768px] min-[769px]:max-w-[1280px] min-[769px]:grid-cols-[152px_minmax(0,1fr)_152px]";
+  "mx-auto grid h-12 w-full grid-cols-[148px_minmax(0,1fr)_88px] min-[640px]:grid-cols-[148px_minmax(0,1fr)_224px] min-[640px]:h-16 min-[768px]:max-w-[768px] min-[769px]:max-w-[1280px] min-[769px]:grid-cols-[152px_minmax(0,1fr)_224px]";
 const monoDisplayClassName = "font-[family-name:var(--font-mono-display)]";
 
 type LandingNavItem = {
@@ -19,9 +22,16 @@ type LandingNavItem = {
 
 const landingNavItems: LandingNavItem[] = [
   { href: "#comparison", label: "Comparison" },
+  { href: "https://notebook.knowhereto.ai", label: "Playground", external: true },
   { href: "#pricing", label: "Pricing" },
   { href: "https://docs.knowhereto.ai/", label: "Docs", external: true },
+  { href: "https://github.com/Ontos-AI/knowhere", label: "GitHub", external: true },
 ];
+
+const localeLabels = {
+  en: "English",
+  zh: "中文",
+} as const;
 
 const LandingHeaderLink = ({
   href,
@@ -39,7 +49,7 @@ const LandingHeaderLink = ({
   <Link
     aria-current={active ? "location" : undefined}
     className={cn(
-      "group relative flex h-16 items-center justify-center px-4 text-[14px] leading-5 text-zinc-950 max-[639px]:h-12",
+      "group relative flex h-16 shrink-0 items-center justify-center px-4 text-[14px] leading-5 text-zinc-950 max-[639px]:h-12",
       active
         ? "font-semibold opacity-100"
         : "font-normal opacity-100 transition-opacity duration-150 ease-out hover:opacity-60 active:opacity-100 active:font-medium"
@@ -77,18 +87,20 @@ export const LandingHeader = () => {
   const activeSection = useActiveSection({
     ids: ["comparison", "pricing"],
   });
+  const locale = useLocale();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const currentLocaleLabel = localeLabels[locale as keyof typeof localeLabels] ?? "English";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-zinc-200 bg-[#fafafa]">
+    <header className="sticky top-0 z-50 w-full border-b border-zinc-200 bg-white">
       <div className={cn(landingHeaderCanvasWidthClassName, "relative")}>
-        <div className="flex h-full items-center border-r border-zinc-200 px-4 min-[640px]:px-[14px] min-[769px]:border-r-0 min-[769px]:px-4">
+        <div className="flex h-full items-center border-r border-zinc-200 px-4 min-[640px]:px-[14px] min-[769px]:border-l min-[769px]:px-4">
           <Link href="/" className="flex items-center">
             <LandingBrand size="nav" />
           </Link>
         </div>
 
-        <div className="flex min-w-0 items-center min-[769px]:border-x min-[769px]:border-zinc-200">
+        <div className="flex min-w-0 items-center justify-between pl-2 min-[769px]:border-x min-[769px]:border-zinc-200">
           <nav className="hidden h-full min-w-0 items-center overflow-x-auto min-[640px]:flex">
             {landingNavItems.map((item) => {
               const targetSection = item.href.startsWith("#") ? item.href.slice(1) : null;
@@ -106,14 +118,24 @@ export const LandingHeader = () => {
               );
             })}
           </nav>
+          <LanguageSwitcher align="end" contentClassName="mt-0" sideOffset={0}>
+            <button
+              type="button"
+              className="hidden h-full items-center gap-1 pl-4 pr-3 text-xs leading-4 text-zinc-950 transition-colors hover:text-zinc-600 min-[768px]:flex"
+            >
+              <span>{currentLocaleLabel}</span>
+              <KnowhereIcon className="size-5 text-current" name="chevron-down" />
+            </button>
+          </LanguageSwitcher>
         </div>
 
         <div className="flex h-full items-center justify-center border-l border-zinc-200 min-[769px]:border-l-0">
+          <LandingThemeToggle className="h-full w-11 text-zinc-950 hover:text-zinc-600 min-[640px]:w-[72px]" />
           <button
             aria-expanded={mobileMenuOpen}
             aria-haspopup="menu"
             aria-label="Open navigation menu"
-            className="hidden h-12 w-11 items-center justify-center text-zinc-950 transition-colors hover:bg-zinc-100/70 hover:text-zinc-600 max-[639px]:flex"
+            className="flex h-full w-11 items-center justify-center text-zinc-950 transition-colors hover:bg-zinc-100/70 hover:text-zinc-600 min-[640px]:hidden"
             onClick={() => setMobileMenuOpen((open) => !open)}
             type="button"
           >
@@ -123,7 +145,7 @@ export const LandingHeader = () => {
             className={cn(
               "inline-flex items-center justify-center border-b-[6px] border-b-[#7f22fe] bg-[#8e51ff] pt-[4px] pb-[4px] px-6 text-[#f5f3ff] transition-all hover:border-b-[8px] hover:border-b-[#7008e7] hover:bg-[#7f22fe] hover:pb-[6px] active:border-b-0 active:bg-[#7008e7] active:pb-[6px]",
               monoDisplayClassName,
-              "hidden h-full w-full rounded-none text-sm font-semibold min-[640px]:inline-flex"
+              "hidden h-full w-[152px] rounded-none text-sm font-semibold min-[640px]:inline-flex"
             )}
             href="/login"
           >
@@ -132,7 +154,16 @@ export const LandingHeader = () => {
         </div>
 
         {mobileMenuOpen ? (
-          <nav className="absolute top-full right-0 left-0 z-40 flex w-full flex-col border-b border-zinc-200 bg-[#fafafa] min-[640px]:hidden">
+          <nav className="absolute top-full right-0 left-0 z-40 flex w-full flex-col border-b border-zinc-200 bg-white min-[640px]:hidden">
+            <LanguageSwitcher align="end" contentClassName="mt-0" sideOffset={0}>
+              <button
+                type="button"
+                className="flex h-12 w-full items-center justify-between border-t border-zinc-200 px-4 text-sm text-zinc-950 transition-colors hover:bg-zinc-100/70"
+              >
+                <span>{currentLocaleLabel}</span>
+                <KnowhereIcon className="size-5 text-current" name="chevron-down" />
+              </button>
+            </LanguageSwitcher>
             {landingNavItems.map((item) => {
               const targetSection = item.href.startsWith("#") ? item.href.slice(1) : null;
 

@@ -477,7 +477,7 @@
     "secretsList": "Webhook 密钥",
     "secretsListDescription": "管理您的 webhook 端点密钥",
     "maskedSecret": "密钥",
-    "endpointUrl": "端点 URL",
+    "endpointUrl": "密钥端点 URL",
     "status": "状态",
     "createdAt": "创建时间",
     "actions": "操作",
