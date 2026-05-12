@@ -1,6 +1,7 @@
 "use client";
 
 import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
+import { dashboardDialogDesign } from "@app/(dashboard)/_components/dashboard-dialog-design";
 import {
   useBuyCreditsPackage,
   usePriceConfigs,
@@ -103,7 +104,6 @@ export function BuyCreditsModal() {
 
   const handleCustomSelect = () => {
     setIsCustom(true);
-    setSelectedAmount(null);
     setCustomAmountStr("");
     void setAmountParam(null);
   };
@@ -125,7 +125,12 @@ export function BuyCreditsModal() {
 
   const currentAmount = isCustom ? Number.parseFloat(customAmountStr) : (selectedAmount ?? 0);
   const safeAmount = Number.isNaN(currentAmount) ? 0 : currentAmount;
-  const displayAmount = isCustom ? customAmountStr || "0" : String(selectedAmount ?? 0);
+  const displayAmount: string = dashboardDialogDesign.formatBuyCreditsDisplayAmount({
+    customAmount: customAmountStr,
+    fallbackAmount: PRESET_AMOUNTS[0],
+    isCustom,
+    selectedAmount,
+  });
   const quantity = Math.floor(safeAmount);
   const isValidSelection = isCustom
     ? !Number.isNaN(safeAmount) && safeAmount >= MIN_CREDITS_PURCHASE
@@ -204,7 +209,7 @@ export function BuyCreditsModal() {
           <div className="mx-auto flex w-[331px] max-w-[calc(100vw-44px)] flex-col gap-[22px] sm:w-[464px] sm:max-w-none sm:gap-10">
             <div className="flex items-center justify-center">
               <p className="text-center text-[42px] font-bold leading-[42px] tracking-normal text-black sm:text-[48px] sm:leading-[48px]">
-                ${Number(displayAmount).toFixed(2)}
+                {displayAmount}
               </p>
             </div>
 

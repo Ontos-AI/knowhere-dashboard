@@ -1,6 +1,7 @@
 "use client";
 
 import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
+import { dashboardDialogDesign } from "@app/(dashboard)/_components/dashboard-dialog-design";
 import { useUsageWelcome } from "@app/(dashboard)/usage/_hooks/use-usage-welcome";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@components/ui/dialog";
 import { useToast } from "@hooks/use-toast";
@@ -190,7 +191,7 @@ export const UsageWelcomeModal = () => {
     >
       <DialogContent className="w-screen max-w-none gap-0 rounded-none border-[#e4e4e7] bg-[#fafafa] p-0 shadow-none [&>button]:hidden sm:w-[560px] sm:max-w-[560px] lg:max-w-[724px]">
         <div className="max-h-[100dvh] overflow-y-auto">
-          <div className="border-b border-[#e6defe] px-4 pb-8 pt-5 min-[375px]:px-[46px] min-[375px]:pb-[38px] min-[375px]:pt-[38px] sm:border-[#e4e4e7] sm:px-12 sm:pb-10 sm:pt-10 lg:px-12 lg:py-10">
+          <div className="px-4 pb-8 pt-5 min-[375px]:px-[46px] min-[375px]:pb-[38px] min-[375px]:pt-[38px] sm:px-12 sm:pb-10 sm:pt-10 lg:px-12 lg:py-10">
             <div className="flex items-start justify-between gap-6 sm:gap-[30px]">
               <div className="min-w-0 flex-1 sm:max-w-[408px] lg:max-w-none">
                 <DialogTitle className="text-[18px] font-bold leading-[26px] text-[#09090b] sm:text-[18px] sm:leading-[26px] sm:tracking-normal lg:text-[20px] lg:leading-7">
@@ -270,20 +271,18 @@ export const UsageWelcomeModal = () => {
             </div>
           </div>
 
-          <div className="border-b border-[#e6defe] bg-[#f5f3ff]">
-            <div className="relative px-0 pb-4 pl-16 pr-4 pt-[14px] min-[375px]:pl-[78px] min-[375px]:pr-[46px] sm:border-b-0 sm:px-0 sm:pb-4 sm:pl-20 sm:pr-12 sm:pt-4 lg:border-b lg:px-12 lg:py-[18px]">
-              <div className="absolute left-0 top-0 flex size-10 items-center justify-center border border-[#ddd6fe] border-l-[4px] bg-[#ede9fe] min-[375px]:size-10 sm:inset-y-auto sm:top-0 sm:size-12 sm:border sm:border-[#ddd6fe] sm:border-l-[4px] sm:bg-[#ede9fe] lg:inset-y-0 lg:top-auto lg:h-auto lg:w-12 lg:border-b-0 lg:border-l-0 lg:border-r lg:border-t-0">
+          <div className="border-y border-[#e6defe] bg-[#f5f3ff]">
+            <div className={dashboardDialogDesign.usageWelcome.codeTitleFrame}>
+              <div className={dashboardDialogDesign.usageWelcome.codeIconTag}>
                 <TerminalSquare
                   className="h-3 w-3 text-[#7f22fe] sm:h-5 sm:w-5 lg:h-4 lg:w-4"
                   strokeWidth={1.8}
                 />
               </div>
-              <p className="text-[14px] font-medium leading-[22px] text-[#09090b] sm:pl-0 sm:text-[14px] sm:leading-[22px] lg:pl-10 lg:text-[16px] lg:leading-6">
-                {t("codeTitle")}
-              </p>
+              <p className={dashboardDialogDesign.usageWelcome.codeTitleText}>{t("codeTitle")}</p>
             </div>
 
-            <div className="px-4 pb-[38px] pt-0 min-[375px]:pb-[38px] min-[375px]:pl-[78px] min-[375px]:pr-[46px] sm:pb-10 sm:pl-20 sm:pr-12 sm:pt-0 lg:px-12 lg:py-8">
+            <div className={dashboardDialogDesign.usageWelcome.codePanelFrame}>
               <div className="overflow-hidden bg-[#27272a]">
                 <div className="relative flex items-start gap-[10px] border-b border-[#3f3f46] px-[14px] py-[14px] sm:flex-wrap sm:items-center sm:gap-3 sm:px-4 sm:py-4 lg:gap-2">
                   <div

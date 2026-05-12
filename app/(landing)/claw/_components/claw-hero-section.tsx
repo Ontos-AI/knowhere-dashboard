@@ -5,6 +5,7 @@ import {
   heroCapabilityTags,
   heroFileBadges,
 } from "@app/(landing)/claw/_components/claw-content";
+import { clawHeroDesign } from "@app/(landing)/claw/_components/claw-hero-design";
 import {
   ClawStripedOverlay,
   FileFormatBadge,
@@ -12,6 +13,7 @@ import {
 } from "@app/(landing)/claw/_components/claw-primitives";
 import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { cn } from "@lib/utils";
+import Image from "next/image";
 
 const monoHeadlineClassName =
   "font-mono-readable text-[22px] font-bold leading-[1.2] tracking-[-1px] text-[#09090b] min-[640px]:text-[42px] min-[640px]:leading-[42px] min-[640px]:max-[767px]:text-[32px] min-[640px]:max-[767px]:leading-[1.2] min-[768px]:max-[768px]:text-[36px] min-[768px]:max-[768px]:leading-[1.2] min-[769px]:text-[36px] min-[769px]:leading-[1.2]";
@@ -86,7 +88,14 @@ export const ClawHeroSection = () => {
                     "flex items-center gap-1.5 min-[640px]:max-[767px]:basis-full min-[640px]:max-[767px]:justify-center min-[768px]:max-[768px]:basis-full min-[768px]:max-[768px]:justify-center"
                   )}
                 >
-                  <span aria-hidden="true">📝</span>
+                  <Image
+                    alt=""
+                    aria-hidden="true"
+                    className={clawHeroDesign.contextMarker.iconClassName}
+                    height={36}
+                    src={clawHeroDesign.contextMarker.iconSrc}
+                    width={36}
+                  />
                   <span className="text-[#c800de]">context</span>
                 </span>
               </div>

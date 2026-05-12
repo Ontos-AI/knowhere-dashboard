@@ -3,6 +3,7 @@
 import { LandingBrand } from "@app/(landing)/_components/landing-brand";
 import { LandingThemeToggle } from "@app/(landing)/_components/landing-theme-toggle";
 import { type ClawNavItem, clawNavItems } from "@app/(landing)/claw/_components/claw-content";
+import { clawHeaderDesign } from "@app/(landing)/claw/_components/claw-header-design";
 import { LanguageSwitcher } from "@components/language-switcher";
 import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { useActiveSection } from "@hooks/use-active-section";
@@ -140,7 +141,7 @@ export const ClawHeader = ({
           ) : null}
           <Link
             className={cn(
-              "hidden h-full items-center justify-center border-b-[6px] border-b-[#c10007] bg-[#e7000b] pt-[4px] pb-[4px] px-6 font-mono-readable text-sm font-semibold leading-5 text-[#fef2f2] transition-all hover:border-b-[8px] hover:border-b-[#9f0712] hover:bg-[#c10007] hover:pb-[6px] active:border-b-0 active:bg-[#9f0712] active:pb-[6px] min-[640px]:inline-flex",
+              clawHeaderDesign.desktopCtaButton,
               showUtilityControls ? "w-[152px]" : "w-full"
             )}
             href="/login"
@@ -150,7 +151,7 @@ export const ClawHeader = ({
         </div>
 
         {mobileMenuOpen ? (
-          <nav className="absolute top-full right-0 left-0 z-40 flex w-full flex-col border-b border-[#e4e4e7] bg-white min-[640px]:hidden">
+          <nav className={clawHeaderDesign.mobileMenu}>
             {navItems.map((item) => {
               const targetSection = getNavItemSectionId(item);
               const isActive = targetSection === activeSection;
@@ -160,8 +161,8 @@ export const ClawHeader = ({
                   key={`mobile-${item.label}`}
                   aria-current={isActive ? "location" : undefined}
                   className={cn(
-                    "flex h-12 w-full items-center border-t border-[#e4e4e7] px-4 text-sm text-[#09090b] transition-colors hover:bg-zinc-100/70",
-                    isActive ? "font-semibold" : "font-normal"
+                    clawHeaderDesign.mobileMenuItem,
+                    isActive ? clawHeaderDesign.mobileMenuItemActive : "font-normal"
                   )}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}

@@ -1,5 +1,6 @@
 "use client";
 
+import { dashboardDialogDesign } from "@app/(dashboard)/_components/dashboard-dialog-design";
 import { cn } from "@lib/utils";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
@@ -12,8 +13,7 @@ const dashboardActionButtonVariants = cva(
       size: {
         compact:
           "h-9 justify-center gap-0.5 border-b-[3px] px-2.5 pb-px leading-5 transition-[transform,border-width,background-color] hover:border-b-[5px] active:translate-y-[2px] active:border-b-[3px] lg:gap-1 lg:border-b-4 lg:px-3 lg:pb-0.5 lg:hover:border-b-[6px] lg:active:border-b-4",
-        dialog:
-          "h-12 justify-start gap-1 border-b-4 border-l border-r border-t px-3 pb-0.5 pt-0 leading-5 transition-colors sm:h-9 sm:gap-0.5 sm:!border-l-[0.5px] sm:!border-r-[0.5px] sm:!border-t-[0.5px] sm:border-b-[3px] sm:px-2.5 sm:pb-px sm:leading-[18px] lg:gap-1 lg:!border-l lg:!border-r lg:!border-t lg:border-b-4 lg:px-3 lg:pb-0.5 lg:leading-5",
+        dialog: dashboardDialogDesign.actionButton.dialogSize,
         page: "h-9 justify-center gap-1 border-b-4 px-3 pb-0.5 leading-5 transition-[transform,border-width,background-color] hover:border-b-[6px] active:translate-y-[2px] active:border-b-4",
         small:
           "h-8 justify-center gap-1 border-b-4 px-3 pb-0.5 leading-4 transition-[transform,border-width,background-color] hover:border-b-[6px] active:translate-y-[2px] active:border-b-4",

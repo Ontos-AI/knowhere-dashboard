@@ -21,7 +21,7 @@ const tagVariants = cva(
         text: "border border-b border-l-4 border-r border-t border-zinc-200 bg-zinc-100 px-6 py-3 text-zinc-950",
         step: "border border-b border-l border-r-4 border-t-0 border-violet-100 bg-violet-50 px-5 py-2.5 text-violet-400",
         block:
-          "gap-2.5 border border-b border-l border-r-4 border-t-0 border-orange-200 bg-orange-100 px-8 py-2.5 text-orange-600",
+          "gap-2 border border-b border-l border-r border-t-0 border-orange-200 bg-orange-100 px-5 py-2 text-orange-600",
         "pixel-icon":
           "size-12 border border-b border-l-4 border-r border-t border-violet-100 bg-violet-50 text-violet-500",
       },
@@ -41,7 +41,7 @@ const textVariants: Record<TagVariant, string> = {
   format: "font-mono text-2xl font-normal leading-8",
   text: "font-mono text-base font-bold leading-6",
   step: "font-mono text-lg font-bold leading-7",
-  block: "font-mono text-lg font-bold leading-7",
+  block: "font-mono text-base font-bold leading-6",
   "pixel-icon": "",
 };
 
@@ -78,7 +78,13 @@ export const Tag = ({ children, className, icon, value, variant = "text", ...pro
   ) : (
     (icon ?? (
       <KnowhereIcon
-        className={cn(resolvedVariant === "status" ? "size-8" : "size-6")}
+        className={cn(
+          resolvedVariant === "status"
+            ? "size-8"
+            : resolvedVariant === "block"
+              ? "size-4"
+              : "size-6"
+        )}
         name={fallbackIcon}
       />
     ))
