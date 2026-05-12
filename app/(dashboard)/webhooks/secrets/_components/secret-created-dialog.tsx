@@ -99,14 +99,14 @@ export const SecretCreatedDialog = ({ open, onOpenChange, secret }: SecretCreate
             <DashboardDesktopActionButton
               variant="secondary"
               onClick={handleClose}
-              className="flex-1 sm:min-w-[67px] sm:flex-none lg:min-w-[71px]"
+              className="flex-1 justify-center sm:min-w-[67px] sm:flex-none sm:justify-start lg:min-w-[71px]"
             >
               {t("cancel")}
             </DashboardDesktopActionButton>
             <DashboardDesktopActionButton
               variant="primary"
               onClick={handleClose}
-              className="flex-1 sm:min-w-[60px] sm:flex-none lg:min-w-[64px]"
+              className="flex-1 justify-center sm:min-w-[60px] sm:flex-none sm:justify-start lg:min-w-[64px]"
             >
               {t("create")}
             </DashboardDesktopActionButton>

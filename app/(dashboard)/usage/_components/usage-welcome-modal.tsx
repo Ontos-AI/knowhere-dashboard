@@ -38,10 +38,10 @@ const codeTabConfig: Array<{
 ];
 
 const actionButtonBaseClassName =
-  "inline-flex items-center justify-center gap-2 border border-[#7008e7] border-b-[4px] bg-[#7f22fe] px-4 pb-[2px] pt-0 font-mono-display text-[12px] font-medium leading-5 text-[#f5f3ff] transition-[background-color,border-width,transform] hover:border-b-[6px] hover:bg-[#7008e7] active:translate-y-[2px] active:border-b-[4px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25";
+  "inline-flex items-center justify-center gap-1 border border-[#7008e7] border-b-[4px] bg-[#7f22fe] px-3 pb-[2px] pt-0 font-mono-display text-[12px] font-medium leading-5 text-[#f5f3ff] transition-colors hover:bg-[#7008e7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25";
 
 const secondaryButtonClassName =
-  "inline-flex items-center justify-center gap-2 border border-[#f4f4f5] border-b-[4px] bg-white px-3 pb-[2px] pt-0 font-mono-display text-[12px] font-medium leading-5 text-[#27272a] transition-[background-color,border-width,transform] hover:border-b-[6px] hover:bg-[#fafafa] active:translate-y-[2px] active:border-b-[4px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25 disabled:cursor-not-allowed disabled:border-[#e4e4e7] disabled:bg-[#f4f4f5] disabled:text-[#a1a1aa]";
+  "inline-flex items-center justify-start gap-1 border border-[#f4f4f5] border-b-[4px] bg-white px-3 pb-[2px] pt-0 font-mono-display text-[12px] font-medium leading-5 text-[#27272a] transition-colors hover:bg-[#fafafa] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25 disabled:cursor-not-allowed disabled:border-[#e4e4e7] disabled:bg-[#f4f4f5] disabled:text-[#a1a1aa]";
 
 const buildCodeByTab = ({
   apiBaseUrl,
@@ -253,7 +253,10 @@ export const UsageWelcomeModal = () => {
                 <div className="flex flex-wrap items-center gap-3">
                   <button
                     type="button"
-                    className={cn(secondaryButtonClassName, "h-9 min-w-[105px] sm:min-w-[129px]")}
+                    className={cn(
+                      secondaryButtonClassName,
+                      "h-9 min-w-[105px] sm:min-w-[129px] lg:min-w-[111px]"
+                    )}
                     onClick={() => {
                       void handleCopyApiKey();
                     }}
@@ -320,17 +323,13 @@ export const UsageWelcomeModal = () => {
 
                   <button
                     type="button"
-                    className="absolute right-[14px] top-1/2 inline-flex -translate-y-1/2 items-center gap-2 rounded-full bg-[#27272a] px-[14px] py-[6px] font-mono-display text-[12px] leading-4 text-[#a684ff] transition-colors hover:bg-[#3f3f46] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a684ff] sm:static sm:ml-auto sm:h-9 sm:translate-y-0 sm:px-4 sm:py-2 sm:text-[14px] sm:leading-5 lg:h-auto lg:rounded-none lg:px-3 lg:py-2 lg:text-[12px] lg:leading-4"
+                    className="absolute right-[14px] top-1/2 inline-flex -translate-y-1/2 items-center rounded-full bg-[#27272a] px-[14px] py-[6px] font-mono-display text-[12px] leading-4 text-[#a684ff] transition-colors hover:bg-[#3f3f46] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a684ff] sm:static sm:ml-auto sm:h-9 sm:translate-y-0 sm:px-4 sm:py-2 sm:text-[14px] sm:leading-5 lg:h-auto lg:px-4 lg:py-2 lg:text-[12px] lg:leading-4"
                     onClick={() => {
                       void handleCopyCode();
                     }}
                     disabled={!currentCode}
                   >
-                    {isProvisioning ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Copy className="h-4 w-4" strokeWidth={1.8} />
-                    )}
+                    {isProvisioning ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                     <span>{t("copyCode")}</span>
                   </button>
                 </div>
@@ -390,7 +389,7 @@ export const UsageWelcomeModal = () => {
               rel="noreferrer"
               className={cn(
                 actionButtonBaseClassName,
-                "h-12 w-full text-[14px] leading-[18px] min-[375px]:w-full sm:mx-auto sm:h-12 sm:w-[320px] sm:max-w-none sm:text-[14px] sm:leading-5 lg:max-w-[320px]",
+                "h-12 w-full min-[375px]:w-full sm:mx-auto sm:h-12 sm:w-[320px] sm:max-w-none lg:max-w-[320px]",
                 (!canDismiss || isDismissing) && "pointer-events-none opacity-60"
               )}
               onClick={() => {
@@ -400,7 +399,7 @@ export const UsageWelcomeModal = () => {
               }}
             >
               <span>{t("viewDocumentation")}</span>
-              <ExternalLink className="h-4 w-4 sm:h-5 sm:w-5 lg:h-4 lg:w-4" strokeWidth={2} />
+              <ExternalLink className="h-5 w-5" strokeWidth={2} />
             </Link>
 
             <button

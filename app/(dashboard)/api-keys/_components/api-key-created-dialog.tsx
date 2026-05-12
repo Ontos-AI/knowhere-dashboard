@@ -88,7 +88,7 @@ export const ApiKeyCreatedDialog = ({ apiKey, onOpenChange }: ApiKeyCreatedDialo
           <DashboardDesktopActionButton
             variant="primary"
             onClick={() => onOpenChange(false)}
-            className="w-full sm:min-w-[138px] sm:w-auto lg:min-w-[142px]"
+            className="w-full justify-center sm:min-w-[138px] sm:w-auto sm:justify-start lg:min-w-[142px]"
           >
             {t("iHaveSaved")}
           </DashboardDesktopActionButton>

@@ -46,7 +46,7 @@ export const DeleteApiKeyDialog = ({
               <DashboardDesktopActionButton
                 variant="secondary"
                 disabled={isPending}
-                className="flex-1 sm:min-w-[67px] sm:flex-none lg:min-w-[71px]"
+                className="flex-1 justify-center sm:min-w-[67px] sm:flex-none sm:justify-start lg:min-w-[71px]"
               >
                 {t("cancel")}
               </DashboardDesktopActionButton>
@@ -55,7 +55,7 @@ export const DeleteApiKeyDialog = ({
               <DashboardDesktopActionButton
                 variant="primary"
                 disabled={isPending}
-                className="flex-1 sm:min-w-[67px] sm:flex-none lg:min-w-[71px]"
+                className="flex-1 justify-center sm:min-w-[67px] sm:flex-none sm:justify-start lg:min-w-[71px]"
                 onClick={(event) => {
                   event.preventDefault();
                   onConfirm();

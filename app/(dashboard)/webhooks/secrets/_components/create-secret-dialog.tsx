@@ -68,7 +68,7 @@ export const CreateSecretDialog = ({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className={dashboardDesktopModalContentClassName}>
         <form
-          className="flex flex-col gap-[30px] px-[22px] pb-10 pt-[22px] sm:gap-[38px] sm:px-[46px] sm:pb-[54px] sm:pt-[38px] lg:gap-10 lg:px-12 lg:pb-14 lg:pt-10"
+          className="flex flex-col gap-[30px] px-[22px] pb-[38px] pt-[22px] sm:gap-[38px] sm:px-[46px] sm:pb-[54px] sm:pt-[38px] lg:gap-10 lg:px-12 lg:pb-14 lg:pt-10"
           onSubmit={handleSubmit}
         >
           <div className="flex items-start gap-6 sm:gap-8">
@@ -114,7 +114,7 @@ export const CreateSecretDialog = ({
               variant="secondary"
               onClick={handleClose}
               disabled={isPending}
-              className="flex-1 sm:min-w-[67px] sm:flex-none lg:min-w-[71px]"
+              className="flex-1 justify-center sm:min-w-[67px] sm:flex-none sm:justify-start lg:min-w-[71px]"
             >
               {t("cancel")}
             </DashboardDesktopActionButton>
@@ -122,7 +122,7 @@ export const CreateSecretDialog = ({
               variant="primary"
               type="submit"
               disabled={isPending}
-              className="flex-1 sm:min-w-[60px] sm:flex-none lg:min-w-[64px]"
+              className="flex-1 justify-center sm:min-w-[60px] sm:flex-none sm:justify-start lg:min-w-[64px]"
             >
               {isPending ? t("creating") : t("create")}
             </DashboardDesktopActionButton>

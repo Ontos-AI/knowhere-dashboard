@@ -41,7 +41,7 @@ const amountOptionBaseClassName =
   "flex h-9 w-[72px] items-center justify-center border px-6 text-[12px] leading-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25";
 
 const actionButtonBaseClassName =
-  "flex h-12 w-full items-center justify-center gap-1 border-b-[4px] border-l border-r border-t px-3 pb-[2px] pt-0 font-mono-display text-[12px] font-medium leading-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25 disabled:cursor-not-allowed disabled:border-[#e4e4e7] disabled:bg-[#f4f4f5] disabled:text-[#a1a1aa] sm:h-9 sm:w-auto";
+  "flex h-12 w-full items-center justify-center gap-1 border-b-[4px] border-l border-r border-t px-3 pb-[2px] pt-0 font-mono-display text-[12px] font-medium leading-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25 disabled:cursor-not-allowed disabled:border-[#e4e4e7] disabled:bg-[#f4f4f5] disabled:text-[#a1a1aa] sm:h-9 sm:w-auto sm:justify-start";
 
 const AmountOptionButton = ({ isSelected, label, onClick }: AmountOptionButtonProps) => {
   return (
@@ -75,8 +75,8 @@ const ActionButton = ({
       className={cn(
         actionButtonBaseClassName,
         variant === "primary"
-          ? "border-[#7008e7] bg-[#7f22fe] text-[#f5f3ff] hover:bg-[#7008e7] sm:min-w-[173px]"
-          : "border-[#f4f4f5] bg-white text-[#27272a] hover:bg-[#fafafa] sm:min-w-[71px]"
+          ? "border-[#7008e7] bg-[#7f22fe] text-[#f5f3ff] hover:bg-[#7008e7] sm:min-w-[169px] lg:min-w-[173px]"
+          : "border-[#f4f4f5] bg-white text-[#27272a] hover:bg-[#fafafa] sm:min-w-[67px] lg:min-w-[71px]"
       )}
     >
       {children}
@@ -242,7 +242,7 @@ export function BuyCreditsModal() {
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5 sm:gap-2">
+            <div className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1.5 lg:gap-x-2">
               {PRESET_AMOUNTS.map((amount) => (
                 <AmountOptionButton
                   key={amount}
@@ -279,7 +279,7 @@ export function BuyCreditsModal() {
             ) : null}
           </div>
 
-          <div className="mx-auto flex w-[331px] max-w-[calc(100vw-44px)] flex-col gap-1.5 sm:w-[464px] sm:max-w-none sm:flex-row sm:justify-end sm:gap-2">
+          <div className="mx-auto flex w-[331px] max-w-[calc(100vw-44px)] flex-col gap-1.5 sm:w-[464px] sm:max-w-none sm:flex-row sm:justify-end sm:gap-[6px] lg:gap-2">
             <ActionButton
               variant="secondary"
               disabled={buyMutation.isPending}
