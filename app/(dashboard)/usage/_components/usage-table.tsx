@@ -200,7 +200,7 @@ const TableCell = ({ children, className }: { children: React.ReactNode; classNa
   return (
     <div
       className={cn(
-        "flex h-10 items-center overflow-hidden border-r border-[#f4f4f5] px-3 py-2 text-[12px] leading-4 sm:h-[22px] sm:px-[10px] sm:py-1 lg:h-8",
+        "flex h-10 items-center overflow-hidden border-r border-[#f4f4f5] px-3 py-2 text-[12px] leading-4 dark:border-[#3f3f46] sm:h-[22px] sm:px-[10px] sm:py-1 lg:h-8",
         className
       )}
     >
@@ -294,17 +294,17 @@ export function UsageTable({
 
   return (
     <div className="w-full space-y-[18px] sm:space-y-3">
-      <div className="overflow-hidden border border-[#e4e4e7] bg-white">
+      <div className="overflow-hidden border border-[#e4e4e7] bg-white dark:border-[#3f3f46] dark:bg-[#18181b]">
         <div ref={scrollContainerRef} className="overflow-x-auto overflow-y-hidden">
           <div className="min-w-[1160px]" style={{ minWidth: tableMinWidth }}>
             <div
-              className="grid h-[30px] bg-[#f4f4f5] sm:h-[26px] lg:h-8"
+              className="grid h-[30px] bg-[#f4f4f5] dark:bg-[#27272a] sm:h-[26px] lg:h-8"
               style={{ gridTemplateColumns: tableGridTemplate }}
             >
               {tableHeaders.map((header) => (
                 <div
                   key={header.key}
-                  className="flex h-full items-center gap-1.5 border-r border-[#e4e4e7] px-3 py-[7px] text-[12px] font-semibold leading-4 text-[#3f3f46] sm:py-[5px] lg:py-2"
+                  className="flex h-full items-center gap-1.5 border-r border-[#e4e4e7] px-3 py-[7px] text-[12px] font-semibold leading-4 text-[#3f3f46] dark:border-[#3f3f46] dark:text-[#e4e4e7] sm:py-[5px] lg:py-2"
                 >
                   <span>{t(header.labelKey)}</span>
                   {header.key === "date" ? <ArrowUp className="h-3 w-3 text-[#9f9fa9]" /> : null}
@@ -326,10 +326,12 @@ export function UsageTable({
                     className={cn("relative grid", isLoading && "opacity-70")}
                     style={{ gridTemplateColumns: tableGridTemplate }}
                   >
-                    <TableCell className="font-mono-display text-[#3f3f46]">
+                    <TableCell className="font-mono-display leading-4 text-[#3f3f46] dark:text-[#e4e4e7]">
                       {formatDateLabel(row.date)}
                     </TableCell>
-                    <TableCell className="text-[#71717b]">{row.jobId}</TableCell>
+                    <TableCell className="text-[#71717b] dark:text-[#a1a1aa]">
+                      {row.jobId}
+                    </TableCell>
                     <TableCell className="gap-1.5">
                       <Image
                         src="/icons/usage/file.svg"
@@ -339,7 +341,10 @@ export function UsageTable({
                         height={19}
                         className="h-[14px] w-[11px] shrink-0"
                       />
-                      <span className="truncate font-medium text-[#09090b]" title={row.fileName}>
+                      <span
+                        className="truncate font-medium text-[#09090b] dark:text-[#fafafa]"
+                        title={row.fileName}
+                      >
                         {row.fileName}
                       </span>
                     </TableCell>
@@ -355,8 +360,12 @@ export function UsageTable({
                         {formatFileTypeLabel(row.fileType)}
                       </span>
                     </TableCell>
-                    <TableCell className="text-[#3f3f46]">{row.model}</TableCell>
-                    <TableCell className="font-mono-display text-[#3f3f46]">{row.pages}</TableCell>
+                    <TableCell className="text-[#3f3f46] dark:text-[#e4e4e7]">
+                      {row.model}
+                    </TableCell>
+                    <TableCell className="font-mono-display leading-4 text-[#3f3f46] dark:text-[#e4e4e7]">
+                      {row.pages}
+                    </TableCell>
                     <TableCell className={row.ocr ? "text-[#00a63e]" : "text-[#e7000b]"}>
                       {row.ocr ? t("yes") : t("no")}
                     </TableCell>
@@ -374,16 +383,16 @@ export function UsageTable({
                         {statusLabel}
                       </span>
                     </TableCell>
-                    <TableCell className="font-mono-display text-[#71717b]">
+                    <TableCell className="font-mono-display leading-4 text-[#71717b] dark:text-[#a1a1aa]">
                       {row.duration}
                     </TableCell>
-                    <TableCell className="font-mono-display text-[#3f3f46]">
+                    <TableCell className="font-mono-display leading-4 text-[#3f3f46] dark:text-[#e4e4e7]">
                       {formatCostLabel(row.cost)}
                     </TableCell>
 
                     <button
                       type="button"
-                      className="sticky right-0 z-10 col-[1/-1] row-start-1 flex h-10 w-12 items-center justify-center self-center justify-self-end border-l border-[#f4f4f5] bg-[#fafafa] text-[#ff8904] transition-colors hover:bg-[#fff7ed] disabled:cursor-not-allowed disabled:text-[#d4d4d8]"
+                      className="sticky right-0 z-10 col-[1/-1] row-start-1 flex h-10 w-12 items-center justify-center self-center justify-self-end border-l border-[#f4f4f5] bg-[#fafafa] text-[#ff8904] transition-colors hover:bg-[#fff7ed] disabled:cursor-not-allowed disabled:text-[#d4d4d8] dark:border-[#3f3f46] dark:bg-[#27272a] dark:hover:bg-[#3f3f46]"
                       onClick={() => onDownloadResult?.(row.jobId, row.resultUrl)}
                       disabled={!row.resultUrl}
                       aria-label={row.resultUrl ? t("download") : row.status}
@@ -401,24 +410,24 @@ export function UsageTable({
                 );
               })
             ) : (
-              <div className="flex h-24 items-center justify-center text-sm text-[#9f9fa9]">
+              <div className="flex h-24 items-center justify-center bg-white text-sm text-[#9f9fa9] dark:bg-[#18181b] dark:text-[#71717b]">
                 {t("noResults")}
               </div>
             )}
           </div>
         </div>
 
-        <div className="border-t border-[#e4e4e7]">
-          <div className="relative h-2 border-b border-[#e4e4e7] bg-[#f4f4f5]">
+        <div className="border-t border-[#e4e4e7] dark:border-[#3f3f46]">
+          <div className="relative h-2 border-b border-[#e4e4e7] bg-[#f4f4f5] dark:border-[#3f3f46] dark:bg-[#27272a]">
             <div
-              className="absolute inset-y-0 left-0 bg-[#e4e4e7]"
+              className="absolute inset-y-0 left-0 bg-[#e4e4e7] dark:bg-[#52525c]"
               style={{
                 transform: `translateX(${scrollThumbOffset}px)`,
                 width: `${scrollThumbWidth}px`,
               }}
             />
           </div>
-          <div className="px-3 py-2 text-sm leading-[18px] text-[#9f9fa9] sm:py-1.5 sm:leading-5 lg:py-2">
+          <div className="px-3 py-2 text-[12px] leading-[18px] text-[#9f9fa9] sm:py-1.5 lg:py-2">
             {t("totalRows", { total })}
           </div>
         </div>
@@ -426,14 +435,16 @@ export function UsageTable({
 
       <div className="flex flex-col items-center gap-[6px] sm:grid sm:grid-cols-[161px_244px] sm:justify-center sm:gap-x-4 sm:gap-y-2 lg:flex lg:flex-row lg:items-center lg:gap-4">
         <div className="flex items-center justify-center gap-1.5">
-          <span className="text-[12px] leading-4 text-[#9f9fa9]">{t("rowsPerPage")}</span>
+          <span className="text-[12px] leading-[14px] text-[#9f9fa9] sm:leading-4">
+            {t("rowsPerPage")}
+          </span>
           <Select
             value={String(pageSize)}
             onValueChange={(value) => {
               onPageSizeChange(Number(value));
             }}
           >
-            <SelectTrigger className="h-8 w-[72px] rounded-none border-[#e4e4e7] px-[10px] text-[12px] text-[#27272a] focus:ring-0">
+            <SelectTrigger className="h-8 w-[72px] rounded-none border-[#e4e4e7] px-[10px] text-[12px] leading-[14px] text-[#27272a] focus:ring-0 dark:border-[#3f3f46] dark:bg-[#18181b] dark:text-[#fafafa]">
               <SelectValue />
             </SelectTrigger>
             <SelectContent sideOffset={4} className="w-[200px]">
@@ -449,7 +460,7 @@ export function UsageTable({
         <div className="flex items-center justify-center sm:justify-self-center">
           <button
             type="button"
-            className="flex h-8 w-[26px] items-center justify-center border border-[#e4e4e7] bg-white px-1 text-[#71717b] transition-colors hover:bg-[#f4f4f5] disabled:cursor-not-allowed disabled:text-[#d4d4d8] lg:w-7"
+            className="flex h-8 w-[26px] items-center justify-center border border-[#e4e4e7] bg-white px-1 text-[#71717b] transition-colors hover:bg-[#f4f4f5] disabled:cursor-not-allowed disabled:text-[#d4d4d8] dark:border-[#3f3f46] dark:bg-[#18181b] dark:text-[#a1a1aa] dark:hover:bg-[#27272a] lg:w-7"
             onClick={() => onPageChange(page - 1)}
             disabled={page <= 1}
             aria-label={t("previous")}
@@ -461,7 +472,7 @@ export function UsageTable({
               return (
                 <span
                   key={`ellipsis-${String(paginationItems[index - 1])}-${String(paginationItems[index + 1])}`}
-                  className="flex h-8 w-8 items-center justify-center border border-[#e4e4e7] bg-white text-[12px] text-[#3f3f46]"
+                  className="flex h-8 w-8 items-center justify-center border border-[#e4e4e7] bg-white text-[12px] leading-[14px] text-[#3f3f46] dark:border-[#3f3f46] dark:bg-[#18181b] dark:text-[#e4e4e7]"
                 >
                   ...
                 </span>
@@ -475,7 +486,7 @@ export function UsageTable({
                 key={item}
                 type="button"
                 className={cn(
-                  "flex h-8 w-8 items-center justify-center border border-[#e4e4e7] bg-white text-[12px] leading-4 text-[#3f3f46] transition-colors hover:bg-[#f4f4f5]",
+                  "flex h-8 w-8 items-center justify-center border border-[#e4e4e7] bg-white text-[12px] leading-[14px] text-[#3f3f46] transition-colors hover:bg-[#f4f4f5] dark:border-[#3f3f46] dark:bg-[#18181b] dark:text-[#e4e4e7] dark:hover:bg-[#27272a]",
                   isActive &&
                     "font-bold text-[#7f22fe] underline decoration-solid underline-offset-4"
                 )}
@@ -487,7 +498,7 @@ export function UsageTable({
           })}
           <button
             type="button"
-            className="flex h-8 w-[26px] items-center justify-center border border-[#e4e4e7] bg-white px-1 text-[#71717b] transition-colors hover:bg-[#f4f4f5] disabled:cursor-not-allowed disabled:text-[#d4d4d8] lg:w-7"
+            className="flex h-8 w-[26px] items-center justify-center border border-[#e4e4e7] bg-white px-1 text-[#71717b] transition-colors hover:bg-[#f4f4f5] disabled:cursor-not-allowed disabled:text-[#d4d4d8] dark:border-[#3f3f46] dark:bg-[#18181b] dark:text-[#a1a1aa] dark:hover:bg-[#27272a] lg:w-7"
             onClick={() => onPageChange(page + 1)}
             disabled={page >= pageCount}
             aria-label={t("next")}
@@ -518,12 +529,12 @@ export function UsageTable({
             max={Math.max(pageCount, 1)}
             value={goToPageValue}
             onChange={(event) => setGoToPageValue(event.target.value)}
-            className="h-8 w-[77px] border border-[#e4e4e7] px-3 text-[12px] leading-4 text-[#27272a] placeholder:text-[#9f9fa9] focus:outline-none"
+            className="h-8 w-[77px] border border-[#e4e4e7] px-3 text-[12px] leading-[14px] text-[#27272a] placeholder:text-[#9f9fa9] focus:outline-none dark:border-[#3f3f46] dark:bg-[#18181b] dark:text-[#fafafa]"
             placeholder="Number"
           />
           <button
             type="submit"
-            className="flex h-8 w-10 items-center justify-center border border-[#e4e4e7] bg-[#f4f4f5] text-[12px] font-medium leading-4 text-[#7f22fe] transition-colors hover:bg-[#ede9fe]"
+            className="flex h-8 w-10 items-center justify-center border border-[#e4e4e7] bg-[#f4f4f5] text-[12px] font-medium leading-[14px] text-[#7f22fe] transition-colors hover:bg-[#ede9fe] dark:border-[#3f3f46] dark:bg-[#27272a] dark:text-[#c4b5fd] dark:hover:bg-[#3f3f46]"
           >
             Go
           </button>

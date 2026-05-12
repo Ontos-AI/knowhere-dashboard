@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
+import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import type { AuthUser } from "@hooks/use-auth";
 import { useCredits } from "@hooks/use-credits";
 import { setCookie } from "@utils/cookies";
@@ -56,18 +57,11 @@ const ThemeButton = () => {
   return (
     <button
       type="button"
-      className="flex h-12 w-12 items-center justify-center text-[#09090b] transition-colors hover:bg-[#f4f4f5]"
+      className="flex h-12 w-12 items-center justify-center text-[#09090b] transition-colors hover:bg-[#f4f4f5] dark:text-[#fafafa] dark:hover:bg-[#27272a]"
       onClick={() => setTheme(isDark ? "light" : "dark")}
       aria-label="Toggle theme"
     >
-      <Image
-        src={isDark ? "/icons/knowhere/theme-light.svg" : "/icons/knowhere/theme-dark.svg"}
-        alt=""
-        aria-hidden
-        width={19.03}
-        height={18.99}
-        className="h-[18px] w-[18px]"
-      />
+      <KnowhereIcon name={isDark ? "theme-light" : "theme-dark"} className="h-[18px] w-[18px]" />
     </button>
   );
 };
@@ -85,7 +79,7 @@ const TabletActionsMenu = () => {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="flex h-full w-11 items-center justify-center text-[#09090b] transition-colors hover:bg-[#f4f4f5]"
+          className="flex h-full w-11 items-center justify-center text-[#09090b] transition-colors hover:bg-[#f4f4f5] dark:text-[#fafafa] dark:hover:bg-[#27272a]"
           aria-label="Open actions"
         >
           <Menu className="h-4 w-4" />
@@ -137,7 +131,7 @@ const CreditsButton = ({
     <Link
       href={buyCreditsHref}
       className={[
-        "flex h-10 min-w-[119px] items-center justify-center bg-white text-[12px] font-semibold text-[#292524] shadow-none transition-transform hover:-translate-y-px",
+        "flex h-10 min-w-[119px] items-center justify-center bg-white text-[12px] font-semibold text-[#292524] shadow-none transition-transform hover:-translate-y-px dark:border-[#3f3f46] dark:bg-[#18181b] dark:text-[#fafafa]",
         compactTabletHeader
           ? "gap-[10px] rounded-lg border-x-2 border-t-2 border-b-[6px] border-[#e7e5e4] px-[14px] pb-1 leading-[14px] sm:min-w-[115px] sm:gap-1 sm:rounded-md sm:border-x sm:border-t sm:border-b-[4px] sm:px-3 sm:pb-[3px] sm:leading-[18px] lg:h-12 lg:min-w-[136px] lg:gap-[6px] lg:rounded-lg lg:border-x-2 lg:border-t-2 lg:border-b-[6px] lg:px-[14px] lg:pb-1 lg:text-[14px] lg:leading-5"
           : "gap-[10px] rounded-lg border-x-2 border-t-2 border-b-[6px] border-[#e7e5e4] px-[14px] pb-1 leading-[14px] sm:min-w-[115px] sm:gap-1.5 sm:px-3 sm:leading-[18px] lg:h-12 lg:min-w-[136px] lg:gap-[6px] lg:px-[14px] lg:text-[14px] lg:leading-5",
@@ -162,7 +156,7 @@ const NotificationButton = () => {
   return (
     <button
       type="button"
-      className="flex h-full w-11 items-center justify-center text-[#09090b] transition-colors hover:bg-[#f4f4f5] lg:h-12 lg:w-12"
+      className="flex h-full w-11 items-center justify-center text-[#09090b] transition-colors hover:bg-[#f4f4f5] dark:text-[#fafafa] dark:hover:bg-[#27272a] lg:h-12 lg:w-12"
       aria-label="Notifications"
     >
       <Bell className="h-4 w-4" strokeWidth={1.75} />
@@ -183,7 +177,7 @@ export const DashboardShell = ({
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#fafafa] text-[#09090b]">
+    <div className="min-h-screen bg-[#fafafa] text-[#09090b] dark:bg-[#18181b] dark:text-[#fafafa]">
       <Sidebar user={user} open={mobileSidebarOpen} onOpenChange={setMobileSidebarOpen} />
 
       <div className="min-w-0 sm:pl-[160px] lg:pl-[200px]">
@@ -191,12 +185,13 @@ export const DashboardShell = ({
           <header
             className={[
               "flex items-center gap-3 border-b border-[#d4d4d8] bg-[#fafafa] px-4 sm:px-[30px] lg:px-12",
+              "dark:border-[#3f3f46] dark:bg-[#18181b]",
               compactTabletHeader ? "h-16 sm:h-12 lg:h-16" : "h-16",
             ].join(" ")}
           >
             <button
               type="button"
-              className="flex h-full w-11 items-center justify-center text-[#09090b] transition-colors hover:bg-[#f4f4f5] sm:hidden"
+              className="flex h-full w-11 items-center justify-center text-[#09090b] transition-colors hover:bg-[#f4f4f5] dark:text-[#fafafa] dark:hover:bg-[#27272a] sm:hidden"
               onClick={() => setMobileSidebarOpen(true)}
               aria-label="Open menu"
             >
@@ -205,6 +200,7 @@ export const DashboardShell = ({
             <h1
               className={[
                 "hidden min-w-0 flex-1 truncate font-bold text-black sm:block",
+                "dark:text-[#fafafa]",
                 compactTabletHeader
                   ? "sm:text-[16px] sm:leading-[26px] lg:text-[18px] lg:leading-7"
                   : "text-[18px] leading-7",
@@ -223,7 +219,7 @@ export const DashboardShell = ({
               <LanguageSwitcher>
                 <button
                   type="button"
-                  className="flex h-12 items-center gap-1 px-4 text-[12px] leading-4 text-[#09090b] transition-colors hover:bg-[#f4f4f5]"
+                  className="flex h-12 items-center gap-1 px-4 text-[12px] leading-4 text-[#09090b] transition-colors hover:bg-[#f4f4f5] dark:text-[#fafafa] dark:hover:bg-[#27272a]"
                 >
                   <span>{localeLabels[locale as keyof typeof localeLabels] || "English"}</span>
                   <Image
@@ -232,7 +228,7 @@ export const DashboardShell = ({
                     aria-hidden
                     width={20}
                     height={20}
-                    className="h-5 w-5"
+                    className="h-5 w-5 dark:invert"
                   />
                 </button>
               </LanguageSwitcher>

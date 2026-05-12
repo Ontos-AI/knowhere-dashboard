@@ -148,7 +148,7 @@ const SidebarNavIcon = ({
         height={icon.height}
         className={cn(
           "absolute block transition-[filter]",
-          isActive ? "brightness-0 invert" : "brightness-0"
+          isActive ? "brightness-0 invert" : "brightness-0 dark:invert"
         )}
         style={{
           left: `${icon.x}px`,
@@ -181,8 +181,8 @@ const DashboardSidebarContent = ({
   });
 
   return (
-    <div className="flex h-full min-w-0 w-full flex-col bg-[#f4f4f5] text-[#09090b]">
-      <div className="flex h-16 items-center border-b border-[#d4d4d8] px-5 lg:px-4">
+    <div className="flex h-full min-w-0 w-full flex-col bg-[#f4f4f5] text-[#09090b] dark:bg-[#27272a] dark:text-[#fafafa]">
+      <div className="flex h-16 items-center border-b border-[#d4d4d8] px-5 dark:border-[#3f3f46] lg:px-4">
         <SidebarBrand onNavigate={onNavigate} />
       </div>
 
@@ -200,7 +200,7 @@ const DashboardSidebarContent = ({
                 "relative flex h-12 items-center gap-1.5 overflow-hidden border-b px-4 text-[12px] font-normal leading-4 tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25 focus-visible:ring-inset sm:h-8 lg:h-9",
                 isActive
                   ? "border-[#7f22fe] bg-[#8e51ff] text-[#f5f3ff] shadow-[inset_-8px_0_0_#7f22fe]"
-                  : "border-[#e5e7eb] text-[#09090b]"
+                  : "border-[#e5e7eb] text-[#09090b] dark:border-[#3f3f46] dark:text-[#fafafa]"
               )}
             >
               <SidebarNavIcon icon={item.icon} isActive={isActive} />
@@ -214,7 +214,7 @@ const DashboardSidebarContent = ({
         <DropdownMenuTrigger asChild>
           <button
             type="button"
-            className="group flex h-[63px] w-full items-center gap-3 border-t border-[#e4e4e7] px-5 text-left transition-colors hover:bg-[#f4f4f5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25 focus-visible:ring-inset lg:px-4"
+            className="group flex h-[63px] w-full items-center gap-3 border-t border-[#e4e4e7] px-5 text-left transition-colors hover:bg-[#f4f4f5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25 focus-visible:ring-inset dark:border-[#3f3f46] dark:hover:bg-[#3f3f46] lg:px-4"
           >
             <div
               className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#f59e0b]/15 bg-cover bg-center text-sm font-semibold text-[#a65f00]"
@@ -224,11 +224,11 @@ const DashboardSidebarContent = ({
             >
               {!user.image ? user.name?.charAt(0).toUpperCase() || "U" : null}
             </div>
-            <div className="flex min-w-0 flex-1 flex-col justify-center text-[#09090b] lg:max-w-[80px]">
+            <div className="flex min-w-0 flex-1 flex-col justify-center text-[#09090b] dark:text-[#fafafa] lg:max-w-[80px]">
               <div className="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium leading-5">
                 {user.name}
               </div>
-              <div className="overflow-hidden text-ellipsis whitespace-nowrap text-[12px] leading-4 text-[#09090b]">
+              <div className="overflow-hidden text-ellipsis whitespace-nowrap text-[12px] leading-4 text-[#09090b] dark:text-[#d4d4d8]">
                 {user.email}
               </div>
             </div>
@@ -317,8 +317,8 @@ const MobileSidebarContent = ({
   };
 
   return (
-    <div className="flex h-full min-w-0 w-full flex-col bg-[#f4f4f5] text-[#09090b]">
-      <div className="flex h-12 items-center border-b border-[#d4d4d8] px-3">
+    <div className="flex h-full min-w-0 w-full flex-col bg-[#f4f4f5] text-[#09090b] dark:bg-[#27272a] dark:text-[#fafafa]">
+      <div className="flex h-12 items-center border-b border-[#d4d4d8] px-3 dark:border-[#3f3f46]">
         <MobileSidebarBrand onNavigate={onNavigate} />
       </div>
 
@@ -336,7 +336,7 @@ const MobileSidebarContent = ({
                 "relative flex h-12 items-center gap-[10px] overflow-hidden border-b p-3 text-[14px] font-normal leading-5 tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25 focus-visible:ring-inset",
                 isActive
                   ? "border-[#7f22fe] bg-[#8e51ff] text-[#f5f3ff] shadow-[inset_-8px_0_0_#7f22fe]"
-                  : "border-[#e5e7eb] text-[#09090b]"
+                  : "border-[#e5e7eb] text-[#09090b] dark:border-[#3f3f46] dark:text-[#fafafa]"
               )}
             >
               <SidebarNavIcon icon={item.icon} isActive={isActive} />
@@ -346,15 +346,15 @@ const MobileSidebarContent = ({
         })}
       </nav>
 
-      <div className="w-full border-y border-[#e4e4e7] bg-white pb-20">
+      <div className="w-full border-y border-[#e4e4e7] bg-white pb-20 dark:border-[#3f3f46] dark:bg-[#18181b]">
         {mobileLocaleOrder.map((localeKey) => (
           <button
             key={localeKey}
             type="button"
-            className="flex h-12 w-full items-center justify-between border-b border-[#f4f4f5] px-3 text-left"
+            className="flex h-12 w-full items-center justify-between border-b border-[#f4f4f5] px-3 text-left dark:border-[#3f3f46]"
             onClick={() => void handleLocaleChange(localeKey)}
           >
-            <span className="text-[14px] font-medium leading-5 text-black">
+            <span className="text-[14px] font-medium leading-5 text-black dark:text-[#fafafa]">
               {localeLabels[localeKey]}
             </span>
             <KnowhereIcon
@@ -367,18 +367,20 @@ const MobileSidebarContent = ({
           </button>
         ))}
 
-        <div className="flex h-12 items-center justify-between border-b border-[#e4e4e7] px-3">
-          <span className="flex-1 text-[14px] font-medium leading-5 text-black">Theme</span>
+        <div className="flex h-12 items-center justify-between border-b border-[#e4e4e7] px-3 dark:border-[#3f3f46]">
+          <span className="flex-1 text-[14px] font-medium leading-5 text-black dark:text-[#fafafa]">
+            Theme
+          </span>
           <ThemeSwitch
-            checked={resolvedTheme === "light"}
-            onCheckedChange={(checked) => setTheme(checked ? "light" : "dark")}
+            checked={resolvedTheme === "dark"}
+            onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
             aria-label="Toggle theme"
             className="bg-[#7f22fe] shadow-none data-[state=checked]:bg-[#7f22fe] data-[state=unchecked]:bg-[#7f22fe] focus-visible:ring-0"
           />
         </div>
       </div>
 
-      <div className="flex h-[63px] items-center gap-3 border-t border-[#e4e4e7] px-3">
+      <div className="flex h-[63px] items-center gap-3 border-t border-[#e4e4e7] px-3 dark:border-[#3f3f46]">
         <div
           className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#f59e0b]/15 bg-cover bg-center text-sm font-semibold text-[#a65f00]"
           style={{
@@ -388,10 +390,10 @@ const MobileSidebarContent = ({
           {!user.image ? user.name?.charAt(0).toUpperCase() || "U" : null}
         </div>
         <div className="flex min-w-0 flex-1 flex-col justify-center">
-          <div className="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium leading-5 text-[#09090b]">
+          <div className="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium leading-5 text-[#09090b] dark:text-[#fafafa]">
             {user.name}
           </div>
-          <div className="overflow-hidden text-ellipsis whitespace-nowrap text-[12px] leading-4 text-[#09090b]">
+          <div className="overflow-hidden text-ellipsis whitespace-nowrap text-[12px] leading-4 text-[#09090b] dark:text-[#d4d4d8]">
             {user.email}
           </div>
         </div>
@@ -399,7 +401,7 @@ const MobileSidebarContent = ({
 
       <button
         type="button"
-        className="flex h-10 w-full items-center justify-center gap-2 border-t border-[#e4e4e7] px-3 text-[#71717b] transition-colors hover:bg-white"
+        className="flex h-10 w-full items-center justify-center gap-2 border-t border-[#e4e4e7] px-3 text-[#71717b] transition-colors hover:bg-white dark:border-[#3f3f46] dark:text-[#d4d4d8] dark:hover:bg-[#18181b]"
         onClick={async () => {
           await onLogout();
         }}
@@ -428,7 +430,7 @@ export function Sidebar({ user, open, onOpenChange }: SidebarProps) {
           side="left"
           className={cn(
             SIDEBAR_SHEET_WIDTH_CLASS,
-            "border-r border-[#d4d4d8] bg-[#f4f4f5] p-0 text-[#09090b] [&>button]:hidden"
+            "border-r border-[#d4d4d8] bg-[#f4f4f5] p-0 text-[#09090b] dark:border-[#3f3f46] dark:bg-[#27272a] dark:text-[#fafafa] [&>button]:hidden"
           )}
         >
           <SheetHeader className="sr-only">
@@ -442,7 +444,7 @@ export function Sidebar({ user, open, onOpenChange }: SidebarProps) {
       <aside
         className={cn(
           SIDEBAR_STATIC_WIDTH_CLASS,
-          "fixed inset-y-0 left-0 z-40 hidden border-r border-[#d4d4d8] bg-[#f4f4f5] sm:flex"
+          "fixed inset-y-0 left-0 z-40 hidden border-r border-[#d4d4d8] bg-[#f4f4f5] dark:border-[#3f3f46] dark:bg-[#27272a] sm:flex"
         )}
       >
         <div className="flex h-full w-full lg:hidden">
