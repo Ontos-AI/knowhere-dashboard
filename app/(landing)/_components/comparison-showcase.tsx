@@ -52,6 +52,7 @@ const AXIS_NUMBER_GAP = 2;
 const VALUE_LABEL_COLOR = "#52525b";
 const VALUE_LABEL_GAP = 3;
 const VALUE_LABEL_X_OFFSET = -3;
+const BENCHMARK_HOVER_CURSOR_FILL = "rgba(63, 63, 70, 0.22)";
 
 type BenchmarkSeries = {
   color: string;
@@ -660,7 +661,7 @@ const BenchmarkChart = () => {
                 />
                 <Tooltip
                   content={<BenchmarkTooltip />}
-                  cursor={{ fill: "rgba(161, 161, 170, 0.12)" }}
+                  cursor={{ fill: BENCHMARK_HOVER_CURSOR_FILL }}
                   isAnimationActive={false}
                 />
                 <ReferenceLine
