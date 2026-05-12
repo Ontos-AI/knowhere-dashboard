@@ -39,17 +39,17 @@ const getSecretSearchValue = (secret: WebhookSecret) =>
 
 const WebhookSecretsPageSkeleton = () => {
   return (
-    <div className="flex w-full flex-col gap-5" aria-busy="true">
-      <div className="h-6 w-[420px] animate-pulse bg-[#f4f4f5]" />
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <div className="h-8 w-full animate-pulse bg-[#f4f4f5] sm:w-[260px]" />
+    <div className="flex w-full flex-col gap-[18px] lg:gap-5" aria-busy="true">
+      <div className="h-[42px] w-full animate-pulse bg-[#f4f4f5] sm:h-[22px] sm:w-[420px] lg:h-6" />
+      <div className="flex items-start justify-between">
+        <div className="flex gap-1.5">
+          <div className="h-9 w-[190px] animate-pulse bg-[#f4f4f5] sm:h-8 sm:w-[260px]" />
           <div className="h-8 w-[72px] animate-pulse bg-[#f4f4f5]" />
         </div>
-        <div className="h-9 w-full animate-pulse bg-[#f4f4f5] lg:w-[150px]" />
+        <div className="h-9 w-10 animate-pulse bg-[#f4f4f5] sm:h-8 lg:h-9 lg:w-[150px]" />
       </div>
-      <div className="h-[294px] animate-pulse border border-[#e4e4e7] bg-white" />
-      <div className="h-[148px] animate-pulse border border-[#e4e4e7] bg-white" />
+      <div className="h-[272px] animate-pulse border border-[#e4e4e7] bg-white sm:h-[280px] lg:h-[294px]" />
+      <div className="h-[142px] animate-pulse border border-[#e4e4e7] bg-white sm:h-[142px] lg:h-[148px]" />
       <span className="sr-only">Loading webhook secrets</span>
     </div>
   );
@@ -163,12 +163,21 @@ export const WebhookSecretsPage = () => {
 
   return (
     <>
-      <div className="flex w-full flex-col gap-5">
-        <p className="text-base leading-6 text-[#09090b]">{t("subtitle")}</p>
+      <div className="flex w-full flex-col gap-[18px] lg:gap-5">
+        <div className="flex flex-col gap-0.5 sm:hidden">
+          <h2 className="truncate text-sm font-bold leading-[22px] text-black dark:text-[#fafafa]">
+            {t("title")}
+          </h2>
+          <p className="text-xs leading-[18px] text-black dark:text-[#d4d4d8]">{t("subtitle")}</p>
+        </div>
 
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <label className="flex h-8 w-full items-center gap-[6px] border border-[#e4e4e7] bg-white py-1.5 pl-2 pr-[14px] focus-within:ring-2 focus-within:ring-[#7f22fe]/20 sm:w-[260px]">
+        <p className="hidden text-[14px] leading-[22px] text-[#09090b] dark:text-[#fafafa] sm:block lg:text-base lg:leading-6">
+          {t("subtitle")}
+        </p>
+
+        <div className="flex items-start justify-between">
+          <div className="flex gap-1.5">
+            <label className="flex h-9 w-[190px] shrink-0 items-center gap-1 border border-[#e4e4e7] bg-white py-1.5 pl-[6px] pr-3 focus-within:ring-2 focus-within:ring-[#7f22fe]/20 dark:border-[#3f3f46] dark:bg-[#18181b] sm:h-8 sm:w-[260px] lg:gap-[6px] lg:pl-2 lg:pr-[14px]">
               <span className="sr-only">{t("searchPlaceholder")}</span>
               <Image
                 src="/icons/api-keys/search-box.svg"
@@ -176,13 +185,13 @@ export const WebhookSecretsPage = () => {
                 aria-hidden
                 width={16}
                 height={16}
-                className="h-4 w-4 shrink-0"
+                className="h-4 w-3 shrink-0 sm:w-3.5 lg:w-4"
               />
               <input
                 value={searchTerm}
                 onChange={(event) => handleSearchChange(event.target.value)}
                 placeholder={t("searchPlaceholder")}
-                className="min-w-0 flex-1 bg-transparent text-xs leading-4 text-[#09090b] outline-none placeholder:text-[#9f9fa9]"
+                className="min-w-0 flex-1 bg-transparent text-xs leading-[14px] text-[#09090b] outline-none placeholder:text-[#9f9fa9] focus-visible:ring-0 dark:text-[#fafafa]"
               />
             </label>
 
@@ -190,10 +199,10 @@ export const WebhookSecretsPage = () => {
               value={statusFilter}
               onValueChange={(value) => setStatusFilter(value as SecretStatusFilter)}
             >
-              <SelectTrigger className="h-8 w-[72px] rounded-none border-[#e4e4e7] bg-white px-[10px] pr-2 text-xs leading-4 text-[#27272a] shadow-none ring-offset-white focus:ring-0 focus:ring-offset-0 focus-visible:ring-2 focus-visible:ring-[#7f22fe]/20 [&>svg]:h-4 [&>svg]:w-4">
+              <SelectTrigger className="h-9 w-[72px] rounded-none border-[#e4e4e7] bg-white pl-2 pr-[6px] text-xs leading-[14px] text-[#27272a] shadow-none ring-offset-white focus:ring-0 focus:ring-offset-0 focus-visible:ring-2 focus-visible:ring-[#7f22fe]/20 dark:border-[#3f3f46] dark:bg-[#18181b] dark:text-[#fafafa] sm:h-8 [&>svg]:h-4 [&>svg]:w-4">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="rounded-none border-[#e4e4e7]">
+              <SelectContent className="rounded-none border-[#e4e4e7] dark:border-[#3f3f46]">
                 <SelectItem value="all">{t("filterAll")}</SelectItem>
                 <SelectItem value="active">{t("filterActive")}</SelectItem>
                 <SelectItem value="revoked">{t("filterRevoked")}</SelectItem>
@@ -203,11 +212,14 @@ export const WebhookSecretsPage = () => {
 
           <button
             type="button"
-            className={cn(primaryButtonClassName, "w-full lg:w-[150px]")}
+            className={cn(
+              primaryButtonClassName,
+              "h-9 w-10 border-b-[3px] px-0 pb-px hover:border-b-[5px] sm:h-8 sm:w-10 sm:border-b-[3px] sm:px-0 sm:pb-px sm:hover:border-b-[5px] lg:h-9 lg:w-[150px] lg:border-b-4 lg:px-3 lg:pb-0.5 lg:hover:border-b-[6px]"
+            )}
             onClick={() => setIsCreateDialogOpen(true)}
           >
             <Plus className="h-5 w-5 stroke-[2.5]" />
-            <span>{t("createSecret")}</span>
+            <span className="hidden lg:inline">{t("createSecret")}</span>
           </button>
         </div>
 

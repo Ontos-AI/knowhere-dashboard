@@ -25,9 +25,11 @@ type DashboardTitleNamespace = "ApiKeys" | "Settings" | "Usage" | "Webhooks";
 
 type DashboardShellProps = {
   children: React.ReactNode;
+  compactMobileHeader?: boolean;
   compactTabletHeader?: boolean;
   creditsIconSrc: string;
   isBuyCreditsOpen: boolean;
+  mainClassName?: string;
   titleNamespace: DashboardTitleNamespace;
   user: AuthUser;
 };
@@ -166,15 +168,20 @@ const NotificationButton = () => {
 
 export const DashboardShell = ({
   children,
+  compactMobileHeader = false,
   compactTabletHeader = false,
   creditsIconSrc,
   isBuyCreditsOpen,
+  mainClassName,
   titleNamespace,
   user,
 }: DashboardShellProps) => {
   const t = useTranslations(titleNamespace);
   const locale = useLocale();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const mainClassNameValue: string =
+    mainClassName ??
+    "px-[14px] pb-[22px] pt-[22px] sm:px-[30px] sm:pb-6 sm:pt-[22px] lg:px-12 lg:pt-6";
 
   return (
     <div className="min-h-screen bg-[#fafafa] text-[#09090b] dark:bg-[#18181b] dark:text-[#fafafa]">
@@ -186,7 +193,11 @@ export const DashboardShell = ({
             className={[
               "flex items-center gap-3 border-b border-[#d4d4d8] bg-[#fafafa] px-4 sm:px-[30px] lg:px-12",
               "dark:border-[#3f3f46] dark:bg-[#18181b]",
-              compactTabletHeader ? "h-16 sm:h-12 lg:h-16" : "h-16",
+              compactTabletHeader
+                ? compactMobileHeader
+                  ? "h-12 sm:h-12 lg:h-16"
+                  : "h-16 sm:h-12 lg:h-16"
+                : "h-16",
             ].join(" ")}
           >
             <button
@@ -240,9 +251,7 @@ export const DashboardShell = ({
             </div>
           </header>
 
-          <main className="px-[14px] pb-[22px] pt-[22px] sm:px-[30px] flex justify-center sm:pb-6 sm:pt-[22px] lg:px-12 lg:pt-6">
-            {children}
-          </main>
+          <main className={["flex justify-center", mainClassNameValue].join(" ")}>{children}</main>
         </div>
       </div>
 

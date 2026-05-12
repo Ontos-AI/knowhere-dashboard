@@ -287,13 +287,22 @@ export const ApiKeysPage = () => {
 
   return (
     <>
-      <div className="flex w-full flex-col gap-5 sm:gap-[18px] lg:gap-5">
-        <p className="text-base leading-6 text-[#09090b] sm:text-[14px] sm:leading-[22px] lg:text-base lg:leading-6">
+      <div className="flex w-full flex-col gap-3.5 sm:gap-[18px] lg:gap-5">
+        <div className="flex flex-col gap-0.5 sm:hidden">
+          <h2 className="truncate text-sm font-bold leading-[22px] text-black dark:text-[#fafafa]">
+            {t("title")}
+          </h2>
+          <p className="text-xs leading-[18px] text-[#52525c] dark:text-[#d4d4d8]">
+            {t("subtitle")}
+          </p>
+        </div>
+
+        <p className="hidden text-base leading-6 text-[#09090b] dark:text-[#fafafa] sm:block sm:text-[14px] sm:leading-[22px] lg:text-base lg:leading-6">
           {t("subtitle")}
         </p>
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <label className="flex h-9 w-full items-center gap-[6px] border border-[#e4e4e7] bg-white py-1.5 pl-2 pr-[14px] focus-within:ring-2 focus-within:ring-[#7f22fe]/20 sm:max-w-[240px]">
+        <div className="flex items-start justify-between">
+          <label className="flex h-9 w-[240px] shrink-0 items-center gap-1 border border-[#e4e4e7] bg-white py-1.5 pl-[6px] pr-3 focus-within:ring-2 focus-within:ring-[#7f22fe]/20 dark:border-[#3f3f46] dark:bg-[#18181b] sm:gap-1 sm:pl-[6px] sm:pr-3 lg:gap-[6px] lg:pl-2 lg:pr-[14px]">
             <span className="sr-only">{t("searchPlaceholder")}</span>
             <Image
               src="/icons/api-keys/search-box.svg"
@@ -301,13 +310,13 @@ export const ApiKeysPage = () => {
               aria-hidden
               width={16}
               height={16}
-              className="h-4 w-4 shrink-0"
+              className="h-4 w-3.5 shrink-0 lg:w-4"
             />
             <input
               value={searchTerm}
               onChange={(event) => handleSearchChange(event.target.value)}
               placeholder={t("searchPlaceholder")}
-              className="min-w-0 flex-1 bg-transparent text-xs leading-4 text-[#09090b] outline-none placeholder:text-[#9f9fa9] focus-visible:ring-0 sm:leading-[14px] lg:leading-4"
+              className="min-w-0 flex-1 bg-transparent text-xs leading-[14px] text-[#09090b] outline-none placeholder:text-[#9f9fa9] focus-visible:ring-0 dark:text-[#fafafa] sm:leading-[14px] lg:leading-4"
             />
           </label>
 
@@ -316,12 +325,12 @@ export const ApiKeysPage = () => {
             aria-label={t("createKey")}
             className={cn(
               primaryButtonClassName,
-              "w-full sm:h-9 sm:w-10 sm:border-b-[3px] sm:px-0 sm:pb-px sm:hover:border-b-[5px] lg:h-9 lg:w-[150px] lg:border-b-4 lg:px-3 lg:pb-0.5 lg:hover:border-b-[6px]"
+              "h-9 w-10 border-b-[3px] px-0 pb-px hover:border-b-[5px] sm:h-9 sm:w-10 sm:border-b-[3px] sm:px-0 sm:pb-px sm:hover:border-b-[5px] lg:h-9 lg:w-[150px] lg:border-b-4 lg:px-3 lg:pb-0.5 lg:hover:border-b-[6px]"
             )}
             onClick={() => setIsCreateDialogOpen(true)}
           >
-            <Plus className="h-4 w-4 stroke-[2.5]" />
-            <span className="sm:hidden lg:inline">{t("createKey")}</span>
+            <Plus className="h-5 w-5 stroke-[2.5]" />
+            <span className="hidden lg:inline">{t("createKey")}</span>
           </button>
         </div>
 

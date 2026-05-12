@@ -8,12 +8,12 @@ type LoginBrandProps = {
 };
 
 const LOGIN_BRAND_WIDTH_CLASS_BY_VARIANT = {
-  card: "w-[164px]",
+  card: "w-[145px]",
   header: "w-[118px]",
 } as const satisfies Record<LoginBrandProps["variant"], string>;
 
 const LOGIN_BRAND_SIZES_BY_VARIANT = {
-  card: "164px",
+  card: "145px",
   header: "118px",
 } as const satisfies Record<LoginBrandProps["variant"], string>;
 

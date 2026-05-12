@@ -64,16 +64,18 @@ const SECTION_ELEMENT_IDS = {
 type SettingsSectionId = keyof typeof SECTION_ELEMENT_IDS;
 
 const primaryButtonClassName =
-  "inline-flex h-9 items-center justify-center gap-1 border border-[#7008e7] border-b-4 bg-[#7f22fe] px-3 pb-0.5 font-mono-display text-xs font-medium leading-5 text-[#f5f3ff] transition-[transform,border-width,background-color] hover:border-b-[6px] hover:bg-[#7008e7] active:translate-y-[2px] active:border-b-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/25 disabled:cursor-not-allowed disabled:border-[#d6d3d1] disabled:bg-[#d6d3d1] disabled:text-[#a8a29e]";
+  "inline-flex h-9 items-center justify-center gap-0.5 border border-[#7008e7] border-b-[3px] bg-[#7f22fe] px-[10px] pb-px font-mono-display text-xs font-medium leading-5 text-[#f5f3ff] transition-[transform,border-width,background-color] hover:border-b-[5px] hover:bg-[#7008e7] active:translate-y-[2px] active:border-b-[3px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/25 disabled:cursor-not-allowed disabled:border-[#d6d3d1] disabled:bg-[#d6d3d1] disabled:text-[#a8a29e] lg:gap-1 lg:border-b-4 lg:px-3 lg:pb-0.5 lg:hover:border-b-[6px] lg:active:border-b-4";
 
 const secondaryButtonClassName =
   "inline-flex h-8 items-center justify-center gap-1 border border-[#f4f4f5] border-b-4 bg-white px-3 pb-0.5 font-mono-display text-xs font-medium leading-4 text-[#27272a] transition-[transform,border-width,background-color] hover:border-b-[6px] hover:bg-[#fafafa] active:translate-y-[2px] active:border-b-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/25 disabled:cursor-not-allowed disabled:border-[#e7e5e4] disabled:bg-[#f4f4f5] disabled:text-[#a1a1a1]";
 
 const formInputClassName =
-  "h-10 w-full border bg-white px-3 text-xs leading-4 text-[#09090b] outline-none transition-colors placeholder:text-[#9f9fa9] focus-visible:border-[#7f22fe] focus-visible:ring-2 focus-visible:ring-[#7f22fe]/15";
+  "h-10 w-full border bg-white px-[10px] text-xs leading-[14px] text-[#09090b] outline-none transition-colors placeholder:text-[#9f9fa9] focus-visible:border-[#7f22fe] focus-visible:ring-2 focus-visible:ring-[#7f22fe]/15 dark:bg-[#18181b] dark:text-[#fafafa] lg:px-3 lg:leading-4";
 
-const fieldLabelClassName = "text-sm leading-5 text-[#9f9fa9]";
-const fieldValueClassName = "text-base leading-6 text-[#18181b]";
+const formFieldLabelClassName = "text-xs leading-[18px] text-[#9f9fa9] lg:text-sm lg:leading-5";
+const infoFieldLabelClassName = "text-xs leading-[14px] text-[#9f9fa9] lg:leading-4";
+const fieldValueClassName =
+  "text-xs leading-[18px] text-[#18181b] dark:text-[#e4e4e7] lg:text-sm lg:leading-5";
 
 const createProfileSchema = (messages: { emailInvalid: string; usernameMinLength: string }) =>
   z.object({
@@ -140,11 +142,11 @@ async function setPasswordWithCurrentSession(newPassword: string): Promise<void>
 
 const SettingsPageSkeleton = () => {
   return (
-    <div className="w-full space-y-5" aria-busy="true">
-      <div className="h-6 w-[360px] animate-pulse bg-[#f4f4f5]" />
-      <div className="h-8 w-[205px] animate-pulse bg-[#e4e4e7]" />
-      <div className="h-[648px] animate-pulse border border-[#e4e4e7] bg-[#fafafa]" />
-      <div className="h-[230px] animate-pulse border border-[#e4e4e7] bg-[#fafafa]" />
+    <div className="flex w-full flex-col gap-[22px] lg:gap-5" aria-busy="true">
+      <div className="h-[42px] w-full animate-pulse bg-[#f4f4f5] sm:h-[22px] sm:w-[420px] lg:h-6 lg:w-[360px]" />
+      <div className="h-9 w-[198px] animate-pulse bg-[#e4e4e7] lg:h-8 lg:w-[205px]" />
+      <div className="h-[622px] animate-pulse border border-[#e4e4e7] bg-[#fafafa] sm:h-[670px] lg:h-[624px]" />
+      <div className="h-[270px] animate-pulse border border-[#e4e4e7] bg-[#fafafa] lg:h-[230px]" />
       <span className="sr-only">Loading settings</span>
     </div>
   );
@@ -417,8 +419,17 @@ export const SettingsPage = () => {
   }
 
   return (
-    <div className="w-full space-y-5 text-[#09090b]">
-      <p className="text-base leading-6 text-[#09090b]">{t("subtitle")}</p>
+    <div className="flex w-full flex-col gap-[22px] text-[#09090b] dark:text-[#fafafa] lg:gap-5">
+      <div className="flex flex-col gap-0.5 sm:hidden">
+        <h2 className="truncate text-sm font-bold leading-[22px] text-black dark:text-[#fafafa]">
+          {t("title")}
+        </h2>
+        <p className="text-xs leading-[18px] text-black dark:text-[#d4d4d8]">{t("subtitle")}</p>
+      </div>
+
+      <p className="hidden text-[14px] leading-[22px] text-[#09090b] dark:text-[#fafafa] sm:block lg:text-base lg:leading-6">
+        {t("subtitle")}
+      </p>
 
       <SettingsSectionTabs
         activeSection={activeSection}
@@ -526,10 +537,10 @@ const SettingsSectionTabs = ({
       <button
         type="button"
         className={cn(
-          "flex h-8 min-w-[87px] items-end justify-center px-4 pb-2 pt-2 font-mono-display text-xs leading-4 transition-colors",
+          "flex h-9 min-w-[83px] items-end justify-center px-[14px] pb-3 pt-[6px] font-mono-display text-xs leading-4 transition-colors lg:h-8 lg:min-w-[87px] lg:px-4 lg:pb-2 lg:pt-2",
           activeSection === "profile"
-            ? "border-b-4 border-[#52525c] bg-[#71717b] font-bold text-white"
-            : "bg-[#e4e4e7] font-light text-[#09090b]"
+            ? "border-b-[3px] border-[#52525c] bg-[#71717b] font-bold text-white lg:border-b-4"
+            : "bg-[#e4e4e7] font-light text-[#09090b] dark:bg-[#3f3f46] dark:text-[#fafafa]"
         )}
         aria-current={activeSection === "profile" ? "page" : undefined}
         onClick={() => onSectionSelect("profile")}
@@ -540,10 +551,10 @@ const SettingsSectionTabs = ({
         <button
           type="button"
           className={cn(
-            "flex h-8 min-w-[87px] items-end justify-center px-4 pb-2 pt-2 font-mono-display text-xs leading-4 transition-colors",
+            "flex h-9 min-w-[83px] items-end justify-center px-[14px] pb-3 pt-[6px] font-mono-display text-xs leading-4 transition-colors lg:h-8 lg:min-w-[87px] lg:px-4 lg:pb-2 lg:pt-2",
             activeSection === "security"
-              ? "border-b-4 border-[#52525c] bg-[#71717b] font-bold text-white"
-              : "bg-[#e4e4e7] font-light text-[#09090b]"
+              ? "border-b-[3px] border-[#52525c] bg-[#71717b] font-bold text-white lg:border-b-4"
+              : "bg-[#e4e4e7] font-light text-[#09090b] dark:bg-[#3f3f46] dark:text-[#fafafa]"
           )}
           aria-current={activeSection === "security" ? "page" : undefined}
           onClick={() => onSectionSelect("security")}
@@ -554,10 +565,10 @@ const SettingsSectionTabs = ({
       <button
         type="button"
         className={cn(
-          "flex h-8 min-w-[118px] items-end justify-center px-4 pb-2 pt-2 font-mono-display text-xs leading-4 transition-colors",
+          "flex h-9 min-w-[114px] items-end justify-center px-[14px] pb-[10px] pt-[6px] font-mono-display text-xs leading-4 transition-colors lg:h-8 lg:min-w-[118px] lg:px-4 lg:pb-2 lg:pt-2",
           activeSection === "preferences"
-            ? "border-b-4 border-[#52525c] bg-[#71717b] font-bold text-white"
-            : "bg-[#e4e4e7] font-light text-[#09090b]"
+            ? "border-b-[3px] border-[#52525c] bg-[#71717b] font-bold text-white lg:border-b-4"
+            : "bg-[#e4e4e7] font-light text-[#09090b] dark:bg-[#3f3f46] dark:text-[#fafafa]"
         )}
         aria-current={activeSection === "preferences" ? "page" : undefined}
         onClick={() => onSectionSelect("preferences")}
@@ -630,20 +641,20 @@ const SettingsProfileSection = ({
   return (
     <section
       id={id}
-      className="scroll-mt-6 border border-[#e4e4e7] bg-[#fafafa] px-6 py-8 sm:px-10 sm:py-8"
+      className="scroll-mt-6 border border-[#e4e4e7] bg-[#fafafa] px-[38px] pb-[38px] pt-[30px] dark:border-[#3f3f46] dark:bg-[#18181b] sm:px-[26px] sm:pb-[26px] sm:pt-[22px] lg:px-10 lg:pb-10 lg:pt-8"
     >
-      <div className="flex flex-col gap-16">
+      <div className="flex flex-col gap-[46px] sm:gap-[62px] lg:gap-16">
         <form
-          className="flex w-full flex-col gap-6 lg:w-[300px]"
+          className="flex w-full flex-col gap-[14px] sm:gap-[22px] lg:w-[300px] lg:gap-6"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <div className="space-y-2">
-            <label className={fieldLabelClassName} htmlFor="settings-username">
+          <div className="flex flex-col gap-[6px] lg:gap-2">
+            <label className={formFieldLabelClassName} htmlFor="settings-username">
               {usernameLabel}
             </label>
             <input
               id="settings-username"
-              className={cn(formInputClassName, "border-[#e4e4e7]")}
+              className={cn(formInputClassName, "border-[#e4e4e7] dark:border-[#3f3f46]")}
               disabled={isSaving}
               {...form.register("username")}
             />
@@ -654,8 +665,8 @@ const SettingsProfileSection = ({
             ) : null}
           </div>
 
-          <div className="space-y-2">
-            <label className={fieldLabelClassName} htmlFor="settings-email">
+          <div className="flex flex-col gap-[6px] pb-[14px] lg:gap-2 lg:pb-4">
+            <label className={formFieldLabelClassName} htmlFor="settings-email">
               {emailLabel}
             </label>
             <input
@@ -663,15 +674,15 @@ const SettingsProfileSection = ({
               className={cn(
                 formInputClassName,
                 hasOAuthAccount
-                  ? "border-[#f4f4f5] text-[#9f9fa9]"
-                  : "border-[#e4e4e7] text-[#09090b]"
+                  ? "border-[#f4f4f5] text-[#9f9fa9] dark:border-[#27272a]"
+                  : "border-[#e4e4e7] text-[#09090b] dark:border-[#3f3f46] dark:text-[#fafafa]"
               )}
               readOnly={hasOAuthAccount}
               disabled={isSaving && !hasOAuthAccount}
               {...form.register("email")}
             />
             {emailManagedByProviderLabel ? (
-              <p className="flex items-center gap-1 text-xs leading-4 text-[#52525c]">
+              <p className="flex items-center gap-0.5 text-xs leading-[14px] text-[#52525c] dark:text-[#d4d4d8] lg:gap-1 lg:leading-4">
                 <Lock className="size-3.5 shrink-0" />
                 <span>{emailManagedByProviderLabel}</span>
               </p>
@@ -683,7 +694,7 @@ const SettingsProfileSection = ({
           </div>
 
           <button
-            className={cn(primaryButtonClassName, "w-fit min-w-[118px]")}
+            className={cn(primaryButtonClassName, "w-fit min-w-[114px] lg:min-w-[118px]")}
             disabled={isSaving}
             type="submit"
           >
@@ -692,19 +703,21 @@ const SettingsProfileSection = ({
           </button>
         </form>
 
-        <div className="flex flex-col gap-10">
-          <h2 className="text-sm font-bold leading-5 text-[#09090b]">{accountInformationLabel}</h2>
+        <div className="flex flex-col gap-[22px] sm:gap-[38px] lg:gap-10">
+          <h2 className="text-xs font-bold leading-[18px] text-[#09090b] dark:text-[#fafafa] lg:text-sm lg:leading-5">
+            {accountInformationLabel}
+          </h2>
 
-          <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
+          <div className="grid gap-y-[18px] sm:gap-y-[22px] lg:grid-cols-2 lg:gap-x-8 lg:gap-y-6">
             <SettingsInfoField label={userIdLabel} value={user.id} />
             <SettingsInfoField label={accountTypeLabel} value={standardLabel} />
 
-            <div className="space-y-1">
-              <p className={fieldLabelClassName}>{emailStatusLabel}</p>
+            <div className="space-y-0.5 lg:space-y-1">
+              <p className={infoFieldLabelClassName}>{emailStatusLabel}</p>
               <div className="flex flex-wrap items-center gap-[10px]">
                 <p className={cn(fieldValueClassName, "break-all")}>{user.email}</p>
                 {user.emailVerified ? (
-                  <span className="inline-flex items-center gap-0.5 border border-[#a4f4cf] bg-[#d0fae5] px-1 py-0.5 text-xs font-medium leading-4 text-[#009966]">
+                  <span className="inline-flex items-center gap-px border border-[#a4f4cf] bg-[#d0fae5] px-0.5 py-px text-xs font-medium leading-[14px] text-[#009966] lg:gap-0.5 lg:px-1 lg:py-0.5 lg:leading-4">
                     <Check className="size-3.5" strokeWidth={2.25} />
                     <span>{verifiedLabel}</span>
                   </span>
@@ -899,7 +912,7 @@ const SettingsPasswordField = ({
 }) => {
   return (
     <div className="space-y-2">
-      <label className={fieldLabelClassName} htmlFor={id}>
+      <label className={formFieldLabelClassName} htmlFor={id}>
         {label}
       </label>
       <input
@@ -945,18 +958,21 @@ const SettingsPreferencesSection = ({
   zhLabel: string;
 }) => {
   const triggerClassName =
-    "h-10 w-full rounded-none border-[#e4e4e7] bg-white px-[10px] pr-2 text-xs leading-4 text-[#27272a] shadow-none hover:border-[#d4d4d8] focus:border-[#7f22fe] focus:ring-2 focus:ring-[#7f22fe]/15 lg:w-[340px]";
+    "h-10 w-full rounded-none border-[#e4e4e7] bg-white pl-2 pr-[6px] text-xs leading-[14px] text-[#27272a] shadow-none hover:border-[#d4d4d8] focus:border-[#7f22fe] focus:ring-2 focus:ring-[#7f22fe]/15 dark:border-[#3f3f46] dark:bg-[#18181b] dark:text-[#fafafa] lg:w-[340px] lg:pl-[10px] lg:pr-2 lg:leading-4 [&>svg]:h-4 [&>svg]:w-4";
 
-  const contentClassName = "rounded-none border-[#e4e4e7] shadow-none";
-  const itemClassName = "px-3 py-2 text-xs leading-4 text-[#27272a]";
+  const contentClassName = "rounded-none border-[#e4e4e7] shadow-none dark:border-[#3f3f46]";
+  const itemClassName = "px-3 py-2 text-xs leading-4 text-[#27272a] dark:text-[#fafafa]";
 
   return (
-    <section id={id} className="scroll-mt-6 border border-[#e4e4e7] bg-[#fafafa]">
-      <SettingsPreferenceRow label={themeLabel}>
+    <section
+      id={id}
+      className="scroll-mt-6 border border-[#e4e4e7] bg-[#fafafa] dark:border-[#3f3f46] dark:bg-[#18181b]"
+    >
+      <SettingsPreferenceRow label={themeLabel} layout="inline">
         <SettingsThemeSwitch checked={darkModeEnabled} onCheckedChange={onThemeChange} />
       </SettingsPreferenceRow>
 
-      <SettingsPreferenceRow label={languageLabel}>
+      <SettingsPreferenceRow label={languageLabel} layout="stacked">
         <Select defaultValue={locale} onValueChange={onLocaleChange}>
           <SelectTrigger className={triggerClassName}>
             <SelectValue />
@@ -972,7 +988,7 @@ const SettingsPreferencesSection = ({
         </Select>
       </SettingsPreferenceRow>
 
-      <SettingsPreferenceRow label={timezoneLabel}>
+      <SettingsPreferenceRow label={timezoneLabel} layout="stacked">
         <Select value={timezone} onValueChange={onTimezoneChange}>
           <SelectTrigger className={triggerClassName}>
             <SelectValue />
@@ -993,14 +1009,25 @@ const SettingsPreferencesSection = ({
 const SettingsPreferenceRow = ({
   children,
   label,
+  layout,
 }: {
   children: React.ReactNode;
   label: string;
+  layout: "inline" | "stacked";
 }) => {
   return (
-    <div className="flex flex-col gap-3 border-t border-[#f4f4f5] px-6 py-5 first:border-t-0 sm:px-10 lg:flex-row lg:items-center lg:gap-8">
-      <p className="flex-1 text-base font-medium leading-6 text-[#09090b]">{label}</p>
-      <div className="w-full lg:w-auto">{children}</div>
+    <div
+      className={cn(
+        "border-t border-[#f4f4f5] px-[26px] py-[18px] first:border-t-0 dark:border-[#27272a] lg:px-10 lg:py-5",
+        layout === "inline"
+          ? "flex h-[66px] items-center gap-[30px] lg:h-[70px] lg:gap-8"
+          : "flex h-[102px] flex-col items-start justify-center gap-2 lg:h-20 lg:flex-row lg:items-center lg:gap-8"
+      )}
+    >
+      <p className="flex-1 text-xs font-medium leading-[18px] text-[#09090b] dark:text-[#fafafa] lg:text-sm lg:leading-5">
+        {label}
+      </p>
+      <div className={cn(layout === "inline" ? "shrink-0" : "w-full lg:w-auto")}>{children}</div>
     </div>
   );
 };
@@ -1015,7 +1042,7 @@ const SettingsThemeSwitch = ({
   return (
     <SwitchPrimitives.Root
       checked={checked}
-      className="inline-flex h-[30px] w-[46px] items-center rounded-full bg-[#d4d4d8] p-1 transition-colors data-[state=checked]:bg-[#7f22fe] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/25"
+      className="inline-flex h-[30px] w-[46px] items-center rounded-full bg-[#d4d4d8] p-0.5 transition-colors data-[state=checked]:bg-[#7f22fe] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/25 lg:p-1"
       onCheckedChange={onCheckedChange}
     >
       <SwitchPrimitives.Thumb className="flex h-[22px] w-[22px] items-center justify-center rounded-full bg-white text-[#7f22fe] shadow-sm transition-transform data-[state=checked]:translate-x-0 data-[state=unchecked]:translate-x-4 data-[state=unchecked]:text-[#71717b]">
@@ -1035,8 +1062,8 @@ const SettingsInfoField = ({
   valueClassName?: string;
 }) => {
   return (
-    <div className="space-y-1">
-      <p className={fieldLabelClassName}>{label}</p>
+    <div className="space-y-0.5 lg:space-y-1">
+      <p className={infoFieldLabelClassName}>{label}</p>
       <p className={cn(fieldValueClassName, "break-words", valueClassName)}>{value}</p>
     </div>
   );
