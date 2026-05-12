@@ -1,8 +1,8 @@
 "use client";
 
+import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
 import {
   DashboardCopyIcon,
-  DashboardDesktopActionButton,
   DashboardDesktopDialogCloseButton,
   DashboardSuccessCircleIcon,
   DashboardWarningIcon,
@@ -65,8 +65,9 @@ export const ApiKeyCreatedDialog = ({ apiKey, onOpenChange }: ApiKeyCreatedDialo
             <div className={cn(dashboardDesktopSecretFieldClassName, "break-all")}>
               {apiKey ?? ""}
             </div>
-            <DashboardDesktopActionButton
+            <DashboardActionButton
               variant="secondary"
+              size="dialog"
               className="h-9 w-fit sm:min-w-[105px] lg:min-w-[111px]"
               onClick={() => {
                 void handleCopy();
@@ -75,7 +76,7 @@ export const ApiKeyCreatedDialog = ({ apiKey, onOpenChange }: ApiKeyCreatedDialo
             >
               <DashboardCopyIcon />
               <span>{t("copyKey")}</span>
-            </DashboardDesktopActionButton>
+            </DashboardActionButton>
           </div>
 
           <div className="flex w-full items-start gap-[6px] text-[#ff6900] lg:gap-2">
@@ -85,13 +86,14 @@ export const ApiKeyCreatedDialog = ({ apiKey, onOpenChange }: ApiKeyCreatedDialo
             </p>
           </div>
 
-          <DashboardDesktopActionButton
+          <DashboardActionButton
             variant="primary"
+            size="dialog"
             onClick={() => onOpenChange(false)}
             className="w-full justify-center sm:min-w-[138px] sm:w-auto sm:justify-start lg:min-w-[142px]"
           >
             {t("iHaveSaved")}
-          </DashboardDesktopActionButton>
+          </DashboardActionButton>
         </div>
       </DialogContent>
     </Dialog>

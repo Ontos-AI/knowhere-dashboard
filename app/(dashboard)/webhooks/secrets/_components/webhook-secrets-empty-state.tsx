@@ -1,3 +1,4 @@
+import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
 import Image from "next/image";
 
 type WebhookSecretsEmptyStateProps = {
@@ -6,9 +7,6 @@ type WebhookSecretsEmptyStateProps = {
   onAction?: () => void;
   title: string;
 };
-
-const secondaryButtonClassName =
-  "inline-flex h-9 w-[122px] items-center justify-center gap-0.5 border border-[#f4f4f5] border-b-[3px] bg-white px-2.5 pb-px font-mono-display text-xs font-medium leading-5 text-[#27272a] transition-[transform,border-width,background-color] hover:border-b-[5px] hover:bg-[#fafafa] active:translate-y-[2px] active:border-b-[3px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/25 disabled:cursor-not-allowed disabled:border-[#e4e4e7] disabled:bg-[#f4f4f5] disabled:text-[#a1a1a1] dark:border-[#3f3f46] dark:bg-[#18181b] dark:text-[#fafafa] dark:hover:bg-[#27272a] sm:w-[122px] lg:w-[126px] lg:gap-1 lg:border-b-4 lg:px-3 lg:pb-0.5 lg:hover:border-b-[6px]";
 
 export const WebhookSecretsEmptyState = ({
   actionLabel,
@@ -37,9 +35,15 @@ export const WebhookSecretsEmptyState = ({
       </div>
 
       {actionLabel && onAction ? (
-        <button type="button" className={secondaryButtonClassName} onClick={onAction}>
+        <DashboardActionButton
+          type="button"
+          variant="secondary"
+          size="compact"
+          className="w-[122px] lg:w-[126px]"
+          onClick={onAction}
+        >
           {actionLabel}
-        </button>
+        </DashboardActionButton>
       ) : null}
     </section>
   );

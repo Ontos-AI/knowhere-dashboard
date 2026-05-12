@@ -1,8 +1,8 @@
 "use client";
 
+import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
 import {
   DashboardCopyIcon,
-  DashboardDesktopActionButton,
   DashboardDesktopDialogCloseButton,
   DashboardSuccessCircleIcon,
   DashboardWarningIcon,
@@ -70,8 +70,9 @@ export const SecretCreatedDialog = ({ open, onOpenChange, secret }: SecretCreate
             <div className={cn(dashboardDesktopSecretFieldClassName, "break-all")}>
               {secret ?? ""}
             </div>
-            <DashboardDesktopActionButton
+            <DashboardActionButton
               variant="secondary"
+              size="dialog"
               className="h-9 w-fit sm:min-w-[105px] lg:min-w-[111px]"
               onClick={() => {
                 void handleCopy();
@@ -80,7 +81,7 @@ export const SecretCreatedDialog = ({ open, onOpenChange, secret }: SecretCreate
             >
               <DashboardCopyIcon />
               <span>{t("copyKey")}</span>
-            </DashboardDesktopActionButton>
+            </DashboardActionButton>
           </div>
 
           <div className="flex w-full flex-col gap-2 text-[#ff6900]">
@@ -96,20 +97,22 @@ export const SecretCreatedDialog = ({ open, onOpenChange, secret }: SecretCreate
           </div>
 
           <div className="flex w-full justify-end gap-[6px] lg:gap-2">
-            <DashboardDesktopActionButton
+            <DashboardActionButton
               variant="secondary"
+              size="dialog"
               onClick={handleClose}
               className="flex-1 justify-center sm:min-w-[67px] sm:flex-none sm:justify-start lg:min-w-[71px]"
             >
               {t("cancel")}
-            </DashboardDesktopActionButton>
-            <DashboardDesktopActionButton
+            </DashboardActionButton>
+            <DashboardActionButton
               variant="primary"
+              size="dialog"
               onClick={handleClose}
               className="flex-1 justify-center sm:min-w-[60px] sm:flex-none sm:justify-start lg:min-w-[64px]"
             >
               {t("create")}
-            </DashboardDesktopActionButton>
+            </DashboardActionButton>
           </div>
         </div>
       </DialogContent>

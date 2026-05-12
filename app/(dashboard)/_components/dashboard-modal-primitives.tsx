@@ -3,7 +3,7 @@
 import { DialogClose } from "@components/ui/dialog";
 import { cn } from "@lib/utils";
 import Image from "next/image";
-import type { ButtonHTMLAttributes, SVGProps } from "react";
+import type { SVGProps } from "react";
 
 export const dashboardDesktopModalContentClassName =
   "w-screen max-w-none gap-0 rounded-none border-[#e4e4e7] bg-[#fafafa] p-0 shadow-none sm:w-[calc(100vw-2rem)] sm:max-w-[560px] [&>button]:hidden";
@@ -16,43 +16,6 @@ export const dashboardDesktopTextFieldClassName =
 
 export const dashboardDesktopSecretFieldClassName =
   "min-h-[58px] w-full rounded-none border border-[#e4e4e7] bg-white px-3 py-2.5 text-xs leading-4 text-[#09090b] lg:min-h-[68px]";
-
-const actionButtonBaseClassName =
-  "inline-flex h-12 items-center justify-start gap-1 rounded-none border-b-4 border-l border-r border-t px-3 pb-0.5 font-mono-display text-xs font-medium leading-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/20 disabled:cursor-not-allowed sm:h-9";
-
-export const dashboardDesktopPrimaryButtonClassName = cn(
-  actionButtonBaseClassName,
-  "border-[#7008e7] bg-[#7f22fe] text-[#f5f3ff] hover:bg-[#7008e7] disabled:border-[#d4d4d8] disabled:bg-[#d4d4d8] disabled:text-[#a1a1aa]"
-);
-
-export const dashboardDesktopSecondaryButtonClassName = cn(
-  actionButtonBaseClassName,
-  "border-[#f4f4f5] bg-white text-[#27272a] hover:bg-[#fafafa] disabled:border-[#e4e4e7] disabled:bg-[#f4f4f5] disabled:text-[#a1a1aa]"
-);
-
-type DashboardDesktopActionButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant: "primary" | "secondary";
-};
-
-export const DashboardDesktopActionButton = ({
-  className,
-  type = "button",
-  variant,
-  ...props
-}: DashboardDesktopActionButtonProps) => {
-  return (
-    <button
-      type={type}
-      className={cn(
-        variant === "primary"
-          ? dashboardDesktopPrimaryButtonClassName
-          : dashboardDesktopSecondaryButtonClassName,
-        className
-      )}
-      {...props}
-    />
-  );
-};
 
 export const DashboardDesktopDialogCloseButton = () => {
   return (

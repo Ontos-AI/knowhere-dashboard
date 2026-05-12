@@ -1,5 +1,6 @@
 "use client";
 
+import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTimezone } from "@hooks/use-timezone";
 import { useToast } from "@hooks/use-toast";
@@ -62,12 +63,6 @@ const SECTION_ELEMENT_IDS = {
 } as const;
 
 type SettingsSectionId = keyof typeof SECTION_ELEMENT_IDS;
-
-const primaryButtonClassName =
-  "inline-flex h-9 items-center justify-center gap-0.5 border border-[#7008e7] border-b-[3px] bg-[#7f22fe] px-[10px] pb-px font-mono-display text-xs font-medium leading-5 text-[#f5f3ff] transition-[transform,border-width,background-color] hover:border-b-[5px] hover:bg-[#7008e7] active:translate-y-[2px] active:border-b-[3px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/25 disabled:cursor-not-allowed disabled:border-[#d6d3d1] disabled:bg-[#d6d3d1] disabled:text-[#a8a29e] lg:gap-1 lg:border-b-4 lg:px-3 lg:pb-0.5 lg:hover:border-b-[6px] lg:active:border-b-4";
-
-const secondaryButtonClassName =
-  "inline-flex h-8 items-center justify-center gap-1 border border-[#f4f4f5] border-b-4 bg-white px-3 pb-0.5 font-mono-display text-xs font-medium leading-4 text-[#27272a] transition-[transform,border-width,background-color] hover:border-b-[6px] hover:bg-[#fafafa] active:translate-y-[2px] active:border-b-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/25 disabled:cursor-not-allowed disabled:border-[#e7e5e4] disabled:bg-[#f4f4f5] disabled:text-[#a1a1a1]";
 
 const formInputClassName =
   "h-10 w-full border bg-white px-[10px] text-xs leading-[14px] text-[#09090b] outline-none transition-colors placeholder:text-[#9f9fa9] focus-visible:border-[#7f22fe] focus-visible:ring-2 focus-visible:ring-[#7f22fe]/15 dark:bg-[#18181b] dark:text-[#fafafa] lg:px-3 lg:leading-4";
@@ -693,14 +688,16 @@ const SettingsProfileSection = ({
             ) : null}
           </div>
 
-          <button
-            className={cn(primaryButtonClassName, "w-fit min-w-[114px] lg:min-w-[118px]")}
+          <DashboardActionButton
+            variant="primary"
+            size="compact"
+            className="w-fit min-w-[114px] lg:min-w-[118px]"
             disabled={isSaving}
             type="submit"
           >
             {isSaving ? <Loader2 className="size-4 animate-spin" /> : null}
             <span>{isSaving ? savingLabel : saveChangesLabel}</span>
-          </button>
+          </DashboardActionButton>
         </form>
 
         <div className="flex flex-col gap-[22px] sm:gap-[38px] lg:gap-10">
@@ -730,15 +727,16 @@ const SettingsProfileSection = ({
 
               {!user.emailVerified ? (
                 <div className="flex flex-wrap items-center gap-3 pt-3">
-                  <button
+                  <DashboardActionButton
                     type="button"
-                    className={secondaryButtonClassName}
+                    variant="secondary"
+                    size="small"
                     disabled={resendPending}
                     onClick={onResendVerification}
                   >
                     {resendPending ? <Loader2 className="size-3.5 animate-spin" /> : null}
                     <span>{resendPending ? sendingLabel : resendLabel}</span>
-                  </button>
+                  </DashboardActionButton>
                   <p className="text-xs leading-4 text-[#52525c]">{checkSpamFolderLabel}</p>
                 </div>
               ) : null}
@@ -846,14 +844,16 @@ const SettingsPasswordSection = ({
               registration={changePasswordForm.register("confirmPassword")}
             />
 
-            <button
-              className={cn(primaryButtonClassName, "w-fit min-w-[132px]")}
+            <DashboardActionButton
+              variant="primary"
+              size="compact"
+              className="w-fit min-w-[132px]"
               disabled={isSaving}
               type="submit"
             >
               {isSaving ? <Loader2 className="size-4 animate-spin" /> : null}
               <span>{isSaving ? updatingLabel : updatePasswordLabel}</span>
-            </button>
+            </DashboardActionButton>
           </form>
         ) : (
           <form
@@ -880,14 +880,16 @@ const SettingsPasswordSection = ({
               registration={setPasswordForm.register("confirmPassword")}
             />
 
-            <button
-              className={cn(primaryButtonClassName, "w-fit min-w-[118px]")}
+            <DashboardActionButton
+              variant="primary"
+              size="compact"
+              className="w-fit min-w-[118px]"
               disabled={isSaving}
               type="submit"
             >
               {isSaving ? <Loader2 className="size-4 animate-spin" /> : null}
               <span>{isSaving ? updatingLabel : setPasswordLabel}</span>
-            </button>
+            </DashboardActionButton>
           </form>
         )}
       </div>

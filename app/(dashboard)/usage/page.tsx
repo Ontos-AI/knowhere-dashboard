@@ -1,5 +1,6 @@
 "use client";
 
+import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
 import { DatePickerWithRange } from "@app/(dashboard)/usage/_components/date-range-picker";
 import { UsageTable } from "@app/(dashboard)/usage/_components/usage-table";
 import { UsageWelcomeModal } from "@app/(dashboard)/usage/_components/usage-welcome-modal";
@@ -427,9 +428,11 @@ export default function UsagePage() {
               })}
             </div>
 
-            <button
+            <DashboardActionButton
               type="button"
-              className="flex h-9 w-[121px] items-center justify-center gap-1 border-x border-t border-b-4 border-[#f4f4f5] bg-white px-3 pb-0.5 pt-0 font-mono-display text-[12px] font-medium leading-5 text-[#27272a] transition-colors hover:bg-[#fafafa] disabled:cursor-not-allowed disabled:opacity-60 dark:border-[#3f3f46] dark:bg-[#18181b] dark:text-[#fafafa] dark:hover:bg-[#27272a] sm:h-8 lg:ml-auto lg:w-[127px]"
+              variant="secondary"
+              size="small"
+              className="h-9 w-[121px] disabled:opacity-60 sm:h-8 lg:ml-auto lg:w-[127px]"
               onClick={() => void handleExportCsv()}
               disabled={isExporting || totalCount === 0}
             >
@@ -450,7 +453,7 @@ export default function UsagePage() {
                 </span>
               )}
               {t("exportCSV")}
-            </button>
+            </DashboardActionButton>
           </div>
 
           <UsageTable

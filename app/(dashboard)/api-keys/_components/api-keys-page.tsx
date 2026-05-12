@@ -1,5 +1,6 @@
 "use client";
 
+import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
 import { ApiKeyCreatedDialog } from "@app/(dashboard)/api-keys/_components/api-key-created-dialog";
 import { ApiKeysEmptyState } from "@app/(dashboard)/api-keys/_components/api-keys-empty-state";
 import { ApiKeysTable } from "@app/(dashboard)/api-keys/_components/api-keys-table";
@@ -14,8 +15,6 @@ import {
 import { LoadingSpinner } from "@components/common/loading-spinner";
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -24,7 +23,7 @@ import {
 } from "@components/ui/alert-dialog";
 import { useTimezone } from "@hooks/use-timezone";
 import { useToast } from "@hooks/use-toast";
-import { cn } from "@lib/utils";
+import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { Plus } from "lucide-react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
@@ -52,12 +51,6 @@ const EXPIRATION_OPTIONS: Array<{ labelKey: string; value: ExpirationDuration }>
   { labelKey: "exp365d", value: "365d" },
   { labelKey: "expNever", value: "never" },
 ];
-
-const primaryButtonClassName =
-  "inline-flex h-9 items-center justify-center gap-1 border border-[#7008e7] border-b-4 bg-[#7f22fe] px-3 pb-0.5 font-mono-display text-xs font-medium leading-5 text-[#f5f3ff] transition-[transform,border-width,background-color] hover:border-b-[6px] hover:bg-[#7008e7] active:translate-y-[2px] active:border-b-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/25 disabled:cursor-not-allowed disabled:border-[#d6d3d1] disabled:bg-[#d6d3d1] disabled:text-[#a8a29e]";
-
-const secondaryButtonClassName =
-  "inline-flex h-9 items-center justify-center gap-1 border border-[#f4f4f5] border-b-4 bg-white px-3 pb-0.5 font-mono-display text-xs font-medium leading-5 text-[#27272a] transition-[transform,border-width,background-color] hover:border-b-[6px] hover:bg-[#fafafa] active:translate-y-[2px] active:border-b-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/25 disabled:cursor-not-allowed disabled:border-[#e7e5e4] disabled:bg-[#f4f4f5] disabled:text-[#a1a1a1]";
 
 const isExpirationDuration = (value: string): value is ExpirationDuration =>
   EXPIRATION_OPTIONS.some((option) => option.value === value);
@@ -129,9 +122,9 @@ const ApiKeysErrorState = ({
       <div className="space-y-2">
         <h2 className="text-base font-semibold leading-6 text-[#09090b]">{title}</h2>
       </div>
-      <button type="button" className={secondaryButtonClassName} onClick={onRetry}>
+      <DashboardActionButton type="button" variant="secondary" size="page" onClick={onRetry}>
         {retryLabel}
-      </button>
+      </DashboardActionButton>
     </section>
   );
 };
@@ -320,18 +313,17 @@ export const ApiKeysPage = () => {
             />
           </label>
 
-          <button
+          <DashboardActionButton
             type="button"
             aria-label={t("createKey")}
-            className={cn(
-              primaryButtonClassName,
-              "h-9 w-10 border-b-[3px] px-0 pb-px hover:border-b-[5px] sm:h-9 sm:w-10 sm:border-b-[3px] sm:px-0 sm:pb-px sm:hover:border-b-[5px] lg:h-9 lg:w-[150px] lg:border-b-4 lg:px-3 lg:pb-0.5 lg:hover:border-b-[6px]"
-            )}
+            variant="primary"
+            size="page"
+            className="h-9 w-10 border-b-[3px] px-0 pb-px hover:border-b-[5px] sm:h-9 sm:w-10 sm:border-b-[3px] sm:px-0 sm:pb-px sm:hover:border-b-[5px] lg:h-9 lg:w-[150px] lg:border-b-4 lg:px-3 lg:pb-0.5 lg:hover:border-b-[6px]"
             onClick={() => setIsCreateDialogOpen(true)}
           >
             <Plus className="h-5 w-5 stroke-[2.5]" />
             <span className="hidden lg:inline">{t("createKey")}</span>
-          </button>
+          </DashboardActionButton>
         </div>
 
         {filteredApiKeys.length === 0 ? (
@@ -400,26 +392,36 @@ export const ApiKeysPage = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col gap-3 sm:flex-row sm:justify-end sm:space-x-0">
-            <AlertDialogCancel
-              className={cn(secondaryButtonClassName, "mt-0 w-full rounded-none sm:w-auto")}
-              disabled={toggleMutation.isPending}
+            <DashboardActionButton
+              asChild
+              variant="secondary"
+              size="page"
+              className="mt-0 w-full sm:w-auto"
             >
-              {t("cancel")}
-            </AlertDialogCancel>
-            <AlertDialogAction
-              className={cn(primaryButtonClassName, "w-full rounded-none sm:w-auto")}
-              onClick={(event) => {
-                event.preventDefault();
+              <AlertDialogPrimitive.Cancel disabled={toggleMutation.isPending}>
+                {t("cancel")}
+              </AlertDialogPrimitive.Cancel>
+            </DashboardActionButton>
+            <DashboardActionButton
+              asChild
+              variant="primary"
+              size="page"
+              className="w-full sm:w-auto"
+            >
+              <AlertDialogPrimitive.Action
+                onClick={(event) => {
+                  event.preventDefault();
 
-                if (keyToToggle) {
-                  performToggle(keyToToggle);
-                }
-              }}
-              disabled={toggleMutation.isPending}
-            >
-              {toggleMutation.isPending ? <LoadingSpinner className="h-4 w-4" /> : null}
-              <span>{t("confirmDisable")}</span>
-            </AlertDialogAction>
+                  if (keyToToggle) {
+                    performToggle(keyToToggle);
+                  }
+                }}
+                disabled={toggleMutation.isPending}
+              >
+                {toggleMutation.isPending ? <LoadingSpinner className="h-4 w-4" /> : null}
+                <span>{t("confirmDisable")}</span>
+              </AlertDialogPrimitive.Action>
+            </DashboardActionButton>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

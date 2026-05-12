@@ -1,5 +1,6 @@
 "use client";
 
+import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
 import { useUsageWelcome } from "@app/(dashboard)/usage/_hooks/use-usage-welcome";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@components/ui/dialog";
 import { useToast } from "@hooks/use-toast";
@@ -36,12 +37,6 @@ const codeTabConfig: Array<{
   { id: "node", label: "Node.js", language: "javascript" },
   { id: "go", label: "Go", language: "go" },
 ];
-
-const actionButtonBaseClassName =
-  "inline-flex items-center justify-center gap-1 border border-[#7008e7] border-b-[4px] bg-[#7f22fe] px-3 pb-[2px] pt-0 font-mono-display text-[12px] font-medium leading-5 text-[#f5f3ff] transition-colors hover:bg-[#7008e7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25";
-
-const secondaryButtonClassName =
-  "inline-flex items-center justify-start gap-1 border border-[#f4f4f5] border-b-[4px] bg-white px-3 pb-[2px] pt-0 font-mono-display text-[12px] font-medium leading-5 text-[#27272a] transition-colors hover:bg-[#fafafa] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25 disabled:cursor-not-allowed disabled:border-[#e4e4e7] disabled:bg-[#f4f4f5] disabled:text-[#a1a1aa]";
 
 const buildCodeByTab = ({
   apiBaseUrl,
@@ -251,12 +246,11 @@ export const UsageWelcomeModal = () => {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3">
-                  <button
+                  <DashboardActionButton
                     type="button"
-                    className={cn(
-                      secondaryButtonClassName,
-                      "h-9 min-w-[105px] sm:min-w-[129px] lg:min-w-[111px]"
-                    )}
+                    variant="secondary"
+                    size="dialog"
+                    className="h-9 min-w-[105px] sm:min-w-[129px] lg:min-w-[111px]"
                     onClick={() => {
                       void handleCopyApiKey();
                     }}
@@ -264,7 +258,7 @@ export const UsageWelcomeModal = () => {
                   >
                     <Copy className="h-4 w-4" strokeWidth={1.8} />
                     <span>{t("copyKey")}</span>
-                  </button>
+                  </DashboardActionButton>
 
                   {hasProvisionError ? (
                     <p className="text-[13px] leading-5 text-[#b91c1c] sm:text-[12px] sm:leading-[18px]">
@@ -383,24 +377,29 @@ export const UsageWelcomeModal = () => {
           </div>
 
           <div className="px-4 pb-0 pt-[38px] min-[375px]:px-[22px] min-[375px]:pb-0 min-[375px]:pt-[38px] sm:px-12 sm:pb-0 sm:pt-10 lg:px-12 lg:py-10">
-            <Link
-              href={DOCUMENTATION_URL}
-              target="_blank"
-              rel="noreferrer"
+            <DashboardActionButton
+              asChild
+              variant="primary"
+              size="dialog"
               className={cn(
-                actionButtonBaseClassName,
-                "h-12 w-full min-[375px]:w-full sm:mx-auto sm:h-12 sm:w-[320px] sm:max-w-none lg:max-w-[320px]",
+                "h-12 w-full justify-center min-[375px]:w-full sm:mx-auto sm:h-12 sm:w-[320px] sm:max-w-none sm:justify-center lg:max-w-[320px]",
                 (!canDismiss || isDismissing) && "pointer-events-none opacity-60"
               )}
-              onClick={() => {
-                if (canDismiss) {
-                  dismiss();
-                }
-              }}
             >
-              <span>{t("viewDocumentation")}</span>
-              <ExternalLink className="h-5 w-5" strokeWidth={2} />
-            </Link>
+              <Link
+                href={DOCUMENTATION_URL}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => {
+                  if (canDismiss) {
+                    dismiss();
+                  }
+                }}
+              >
+                <span>{t("viewDocumentation")}</span>
+                <ExternalLink className="h-5 w-5" strokeWidth={2} />
+              </Link>
+            </DashboardActionButton>
 
             <button
               type="button"

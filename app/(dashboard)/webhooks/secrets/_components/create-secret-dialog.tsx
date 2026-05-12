@@ -1,7 +1,7 @@
 "use client";
 
+import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
 import {
-  DashboardDesktopActionButton,
   DashboardDesktopDialogCloseButton,
   dashboardDesktopFieldLabelClassName,
   dashboardDesktopModalContentClassName,
@@ -110,22 +110,24 @@ export const CreateSecretDialog = ({
           </div>
 
           <div className="flex justify-end gap-[6px] lg:gap-2">
-            <DashboardDesktopActionButton
+            <DashboardActionButton
               variant="secondary"
+              size="dialog"
               onClick={handleClose}
               disabled={isPending}
               className="flex-1 justify-center sm:min-w-[67px] sm:flex-none sm:justify-start lg:min-w-[71px]"
             >
               {t("cancel")}
-            </DashboardDesktopActionButton>
-            <DashboardDesktopActionButton
+            </DashboardActionButton>
+            <DashboardActionButton
               variant="primary"
+              size="dialog"
               type="submit"
               disabled={isPending}
               className="flex-1 justify-center sm:min-w-[60px] sm:flex-none sm:justify-start lg:min-w-[64px]"
             >
               {isPending ? t("creating") : t("create")}
-            </DashboardDesktopActionButton>
+            </DashboardActionButton>
           </div>
         </form>
       </DialogContent>

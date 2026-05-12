@@ -1,5 +1,6 @@
 "use client";
 
+import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
 import { CreateSecretDialog } from "@app/(dashboard)/webhooks/secrets/_components/create-secret-dialog";
 import { RevokeSecretDialog } from "@app/(dashboard)/webhooks/secrets/_components/revoke-secret-dialog";
 import { SecretCreatedDialog } from "@app/(dashboard)/webhooks/secrets/_components/secret-created-dialog";
@@ -19,7 +20,6 @@ import {
 } from "@components/ui/select";
 import { useTimezone } from "@hooks/use-timezone";
 import { useToast } from "@hooks/use-toast";
-import { cn } from "@lib/utils";
 import type { WebhookSecret } from "@server/external-api/webhook-secrets";
 import { Plus } from "lucide-react";
 import Image from "next/image";
@@ -27,12 +27,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { startTransition, useDeferredValue, useState } from "react";
 
 type SecretStatusFilter = "all" | "active" | "revoked";
-
-const primaryButtonClassName =
-  "inline-flex h-9 items-center justify-center gap-1 border border-[#7008e7] border-b-4 bg-[#7f22fe] px-3 pb-0.5 font-mono-display text-xs font-medium leading-5 text-[#f5f3ff] transition-[transform,border-width,background-color] hover:border-b-[6px] hover:bg-[#7008e7] active:translate-y-[2px] active:border-b-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/25 disabled:cursor-not-allowed disabled:border-[#d6d3d1] disabled:bg-[#d6d3d1] disabled:text-[#a8a29e]";
-
-const secondaryButtonClassName =
-  "inline-flex h-9 items-center justify-center gap-1 border border-[#f4f4f5] border-b-4 bg-white px-3 pb-0.5 font-mono-display text-xs font-medium leading-5 text-[#27272a] transition-[transform,border-width,background-color] hover:border-b-[6px] hover:bg-[#fafafa] active:translate-y-[2px] active:border-b-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/25";
 
 const getSecretSearchValue = (secret: WebhookSecret) =>
   `${secret.secret_masked} ${secret.endpoint ?? ""}`.trim().toLowerCase();
@@ -67,9 +61,9 @@ const WebhookSecretsErrorState = ({
   return (
     <section className="flex min-h-[220px] w-full flex-col items-center justify-center gap-5 border border-[#e4e4e7] bg-white px-6 py-12 text-center">
       <h2 className="text-base font-semibold leading-6 text-[#09090b]">{title}</h2>
-      <button type="button" className={secondaryButtonClassName} onClick={onRetry}>
+      <DashboardActionButton type="button" variant="secondary" size="page" onClick={onRetry}>
         {retryLabel}
-      </button>
+      </DashboardActionButton>
     </section>
   );
 };
@@ -210,17 +204,16 @@ export const WebhookSecretsPage = () => {
             </Select>
           </div>
 
-          <button
+          <DashboardActionButton
             type="button"
-            className={cn(
-              primaryButtonClassName,
-              "h-9 w-10 border-b-[3px] px-0 pb-px hover:border-b-[5px] sm:h-8 sm:w-10 sm:border-b-[3px] sm:px-0 sm:pb-px sm:hover:border-b-[5px] lg:h-9 lg:w-[150px] lg:border-b-4 lg:px-3 lg:pb-0.5 lg:hover:border-b-[6px]"
-            )}
+            variant="primary"
+            size="page"
+            className="h-9 w-10 border-b-[3px] px-0 pb-px hover:border-b-[5px] sm:h-8 sm:w-10 sm:border-b-[3px] sm:px-0 sm:pb-px sm:hover:border-b-[5px] lg:h-9 lg:w-[150px] lg:border-b-4 lg:px-3 lg:pb-0.5 lg:hover:border-b-[6px]"
             onClick={() => setIsCreateDialogOpen(true)}
           >
             <Plus className="h-5 w-5 stroke-[2.5]" />
             <span className="hidden lg:inline">{t("createSecret")}</span>
-          </button>
+          </DashboardActionButton>
         </div>
 
         {filteredSecrets.length === 0 ? (

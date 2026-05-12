@@ -1,16 +1,10 @@
 "use client";
 
-import {
-  DashboardDesktopActionButton,
-  dashboardDesktopModalContentClassName,
-} from "@app/(dashboard)/_components/dashboard-modal-primitives";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-} from "@components/ui/alert-dialog";
+import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
+import { dashboardDesktopModalContentClassName } from "@app/(dashboard)/_components/dashboard-modal-primitives";
+import { AlertDialog, AlertDialogContent } from "@components/ui/alert-dialog";
 import { cn } from "@lib/utils";
+import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { useTranslations } from "next-intl";
 
 type DeleteApiKeyDialogProps = {
@@ -42,28 +36,32 @@ export const DeleteApiKeyDialog = ({
           </div>
 
           <div className="flex w-full justify-end gap-[6px] lg:gap-2">
-            <AlertDialogCancel asChild>
-              <DashboardDesktopActionButton
-                variant="secondary"
-                disabled={isPending}
-                className="flex-1 justify-center sm:min-w-[67px] sm:flex-none sm:justify-start lg:min-w-[71px]"
-              >
+            <DashboardActionButton
+              asChild
+              variant="secondary"
+              size="dialog"
+              className="flex-1 justify-center sm:min-w-[67px] sm:flex-none sm:justify-start lg:min-w-[71px]"
+            >
+              <AlertDialogPrimitive.Cancel disabled={isPending}>
                 {t("cancel")}
-              </DashboardDesktopActionButton>
-            </AlertDialogCancel>
-            <AlertDialogAction asChild>
-              <DashboardDesktopActionButton
-                variant="primary"
+              </AlertDialogPrimitive.Cancel>
+            </DashboardActionButton>
+            <DashboardActionButton
+              asChild
+              variant="primary"
+              size="dialog"
+              className="flex-1 justify-center sm:min-w-[67px] sm:flex-none sm:justify-start lg:min-w-[71px]"
+            >
+              <AlertDialogPrimitive.Action
                 disabled={isPending}
-                className="flex-1 justify-center sm:min-w-[67px] sm:flex-none sm:justify-start lg:min-w-[71px]"
                 onClick={(event) => {
                   event.preventDefault();
                   onConfirm();
                 }}
               >
                 {t("delete")}
-              </DashboardDesktopActionButton>
-            </AlertDialogAction>
+              </AlertDialogPrimitive.Action>
+            </DashboardActionButton>
           </div>
         </div>
       </AlertDialogContent>

@@ -1,7 +1,7 @@
 "use client";
 
+import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
 import {
-  DashboardDesktopActionButton,
   DashboardDesktopDialogCloseButton,
   dashboardDesktopFieldLabelClassName,
   dashboardDesktopModalContentClassName,
@@ -108,23 +108,25 @@ export const CreateApiKeyDialog = ({
           </div>
 
           <div className="flex justify-end gap-[6px] lg:gap-2">
-            <DashboardDesktopActionButton
+            <DashboardActionButton
               variant="secondary"
+              size="dialog"
               onClick={() => onOpenChange(false)}
               disabled={isPending}
               className="flex-1 justify-center sm:min-w-[67px] sm:flex-none sm:justify-start lg:min-w-[71px]"
             >
               {t("cancel")}
-            </DashboardDesktopActionButton>
-            <DashboardDesktopActionButton
+            </DashboardActionButton>
+            <DashboardActionButton
               variant="primary"
+              size="dialog"
               type="submit"
               disabled={isPending || name.trim().length === 0}
               className="flex-1 justify-center sm:min-w-[60px] sm:flex-none sm:justify-start lg:min-w-[64px]"
             >
               {isPending ? <LoadingSpinner className="size-4" /> : null}
               <span>{isPending ? t("creating") : t("create")}</span>
-            </DashboardDesktopActionButton>
+            </DashboardActionButton>
           </div>
         </form>
       </DialogContent>
