@@ -33,9 +33,9 @@ const codeTabConfig: Array<{
   label: string;
   language: "bash" | "go" | "javascript" | "python";
 }> = [
-  { id: "curl", label: "cURL", language: "bash" },
   { id: "python", label: "Python", language: "python" },
   { id: "node", label: "Node.js", language: "javascript" },
+  { id: "curl", label: "cURL", language: "bash" },
   { id: "go", label: "Go", language: "go" },
 ];
 
@@ -57,42 +57,40 @@ const buildCodeByTab = ({
       "ocr_enabled": true
     }
   }'`,
-  python: `import requests
+  python: `# pip install knowhere-python-sdk
+import knowhere
 
-url = "${apiBaseUrl}/v1/jobs"
-headers = {
-    "Authorization": "Bearer ${apiKey}",
-    "Content-Type": "application/json"
-}
-payload = {
-    "source_type": "url",
-    "source_url": "${SAMPLE_PDF_URL}",
-    "parsing_params": {
+client = knowhere.Knowhere(
+    api_key="${apiKey}",
+    base_url="${apiBaseUrl}",
+)
+
+result = client.parse(
+    url="${SAMPLE_PDF_URL}",
+    parsing_params={
         "model": "base",
-        "ocr_enabled": True
-    }
-}
-
-response = requests.post(url, headers=headers, json=payload)
-print(response.json())`,
-  node: `const response = await fetch("${apiBaseUrl}/v1/jobs", {
-  method: "POST",
-  headers: {
-    Authorization: "Bearer ${apiKey}",
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    source_type: "url",
-    source_url: "${SAMPLE_PDF_URL}",
-    parsing_params: {
-      model: "base",
-      ocr_enabled: true,
+        "ocr_enabled": True,
     },
-  }),
+)
+
+print(result.statistics.total_chunks)
+print(result.full_markdown[:200])`,
+  node: `// npm install @ontos-ai/knowhere-sdk
+import Knowhere from "@ontos-ai/knowhere-sdk";
+
+const client = new Knowhere({
+  apiKey: "${apiKey}",
+  baseURL: "${apiBaseUrl}",
 });
 
-const data = await response.json();
-console.log(data);`,
+const result = await client.parse({
+  url: "${SAMPLE_PDF_URL}",
+  model: "base",
+  ocr: true,
+});
+
+console.log("Text chunks:", result.textChunks.length);
+console.log(result.textChunks[0]?.content);`,
   go: `package main
 
 import (
@@ -139,7 +137,7 @@ export const UsageWelcomeModal = () => {
   const tabsId = useId();
   const { apiKey, dismiss, hasProvisionError, isDismissing, isOpen, isProvisioning } =
     useUsageWelcome();
-  const [activeTab, setActiveTab] = useState<WelcomeCodeTab>("curl");
+  const [activeTab, setActiveTab] = useState<WelcomeCodeTab>("python");
   const apiBaseUrl = env.NEXT_PUBLIC_API_URL.replace(/\/$/, "");
   const canDismiss = Boolean(apiKey) || hasProvisionError;
   const codeByTab = apiKey

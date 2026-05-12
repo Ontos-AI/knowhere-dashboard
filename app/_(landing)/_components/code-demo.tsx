@@ -199,24 +199,39 @@ function SyntaxHighlighter({ code, language }: { code: string; language: "python
   );
 }
 
-const pythonCode = `import requests
+type CodeTab = "python" | "node" | "curl";
 
-url = "https://api.knowhereto.ai/v1/jobs"
-headers = {
-    "Authorization": f"Bearer {KNOWHERE_API_KEY}",
-    "Content-Type": "application/json"
-}
-payload = {
-    "source_type": "url",
-    "source_url": "https://arxiv.org/pdf/1706.03762.pdf",
-    "parsing_params": {
+const pythonCode = `# pip install knowhere-python-sdk
+import knowhere
+
+client = knowhere.Knowhere(api_key="sk_...")
+
+result = client.parse(
+    url="https://arxiv.org/pdf/1706.03762.pdf",
+    parsing_params={
         "model": "base",
-        "ocr_enabled": True
-    }
-}
+        "ocr_enabled": True,
+    },
+)
 
-response = requests.post(url, headers=headers, json=payload)
-print(response.json())`;
+print(result.statistics.total_chunks)
+print(result.full_markdown[:200])`;
+
+const nodeCode = `// npm install @ontos-ai/knowhere-sdk
+import Knowhere from "@ontos-ai/knowhere-sdk";
+
+const client = new Knowhere({
+  apiKey: "sk_...",
+});
+
+const result = await client.parse({
+  url: "https://arxiv.org/pdf/1706.03762.pdf",
+  model: "base",
+  ocr: true,
+});
+
+console.log("Text chunks:", result.textChunks.length);
+console.log(result.textChunks[0]?.content);`;
 
 const curlCode = `curl -X POST https://api.knowhereto.ai/v1/jobs \\
   --oauth2-bearer "$KNOWHERE_API_KEY" \\
@@ -231,8 +246,18 @@ const curlCode = `curl -X POST https://api.knowhereto.ai/v1/jobs \\
   }'`;
 
 export function CodeDemo() {
-  const [activeTab, setActiveTab] = useState<"python" | "curl">("python");
+  const [activeTab, setActiveTab] = useState<CodeTab>("python");
   const [copied, setCopied] = useState(false);
+  const codeByTab: Record<CodeTab, string> = {
+    python: pythonCode,
+    node: nodeCode,
+    curl: curlCode,
+  };
+  const codeTabLabelMap: Record<CodeTab, string> = {
+    python: "PYTHON",
+    node: "NODE.JS",
+    curl: "CURL",
+  };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -240,7 +265,7 @@ export function CodeDemo() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const currentCode = activeTab === "python" ? pythonCode : curlCode;
+  const currentCode = codeByTab[activeTab];
 
   return (
     <section className="py-16 md:py-24 bg-pixel-bg">
@@ -314,28 +339,20 @@ export function CodeDemo() {
               {/* Tab Bar */}
               <div className="flex items-center justify-between px-2 py-2 bg-[#f8f6f0] border-b-2 border-pixel-border">
                 <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("python")}
-                    className={`font-pixel text-[9px] px-3 py-1.5 border-2 border-pixel-fg transition-colors ${
-                      activeTab === "python"
-                        ? "bg-pixel-green text-white shadow-[3px_3px_0_#000]"
-                        : "bg-white text-pixel-fg hover:bg-pixel-border"
-                    }`}
-                  >
-                    PYTHON
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("curl")}
-                    className={`font-pixel text-[9px] px-3 py-1.5 border-2 border-pixel-fg transition-colors ${
-                      activeTab === "curl"
-                        ? "bg-pixel-green text-white shadow-[3px_3px_0_#000]"
-                        : "bg-white text-pixel-fg hover:bg-pixel-border"
-                    }`}
-                  >
-                    CURL
-                  </button>
+                  {(["python", "node", "curl"] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      type="button"
+                      onClick={() => setActiveTab(tab)}
+                      className={`font-pixel text-[9px] px-3 py-1.5 border-2 border-pixel-fg transition-colors ${
+                        activeTab === tab
+                          ? "bg-pixel-green text-white shadow-[3px_3px_0_#000]"
+                          : "bg-white text-pixel-fg hover:bg-pixel-border"
+                      }`}
+                    >
+                      {codeTabLabelMap[tab]}
+                    </button>
+                  ))}
                 </div>
 
                 {/* Copy Button */}

@@ -37,17 +37,30 @@ import { Fragment } from "react";
 
 const codeTabs = [
   {
-    code: `import requests
+    code: `# pip install knowhere-python-sdk
+import knowhere
 
-url = "https://api.knowhereto.ai/v1/jobs"
-headers = {
-    "Authorization": f"Bearer {KNOWHERE_API_KEY}",
-    "Content-Type": "application/json",
-}
+client = knowhere.Knowhere(api_key="sk_...")
 
-response = requests.post(url, headers=headers, json={"source_type": "url"})`,
+result = client.parse(url="https://arxiv.org/pdf/1706.03762.pdf")
+print(result.statistics.total_chunks)
+print(result.full_markdown[:200])`,
     label: "Python",
     value: "python",
+  },
+  {
+    code: `// npm install @ontos-ai/knowhere-sdk
+import Knowhere from "@ontos-ai/knowhere-sdk";
+
+const client = new Knowhere({ apiKey: "sk_..." });
+const result = await client.parse({
+  url: "https://arxiv.org/pdf/1706.03762.pdf",
+});
+
+console.log(result.textChunks.length);
+console.log(result.textChunks[0]?.content);`,
+    label: "Node.js",
+    value: "node",
   },
   {
     code: `curl -X POST https://api.knowhereto.ai/v1/jobs \\
@@ -317,6 +330,9 @@ export const GenericComponentsShowcase = () => {
                 <TabsList variant="code">
                   <TabsTrigger value="python" variant="code">
                     Python
+                  </TabsTrigger>
+                  <TabsTrigger value="node" variant="code">
+                    Node.js
                   </TabsTrigger>
                   <TabsTrigger value="curl" variant="code">
                     CURL
