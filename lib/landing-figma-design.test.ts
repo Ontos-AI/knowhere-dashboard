@@ -18,6 +18,20 @@ describe("landing Figma design contracts", () => {
     expect(landingPageSource).not.toContain("ClawPage");
   });
 
+  it("keeps the landing header connected to the product playground and repository", () => {
+    const landingHeaderSource: string = readFileSync(
+      join(process.cwd(), "app/(landing)/_components/landing-header.tsx"),
+      "utf8"
+    );
+
+    expect(landingHeaderSource).toContain(
+      '{ href: "https://notebook.knowhereto.ai", label: "Playground", external: true }'
+    );
+    expect(landingHeaderSource).toContain(
+      '{ href: "https://github.com/Ontos-AI/knowhere", label: "GitHub", external: true }'
+    );
+  });
+
   it("keeps the block tag dimensions aligned with the Figma block tag unit", () => {
     const markup: string = renderToStaticMarkup(
       createElement(Tag, { value: "UNSTRUCTURED", variant: "block" })

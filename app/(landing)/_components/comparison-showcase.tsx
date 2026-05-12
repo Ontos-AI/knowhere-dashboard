@@ -52,7 +52,11 @@ const AXIS_NUMBER_GAP = 2;
 const VALUE_LABEL_COLOR = "#52525b";
 const VALUE_LABEL_GAP = 3;
 const VALUE_LABEL_X_OFFSET = -3;
-const BENCHMARK_HOVER_CURSOR_FILL = "rgba(63, 63, 70, 0.22)";
+const BENCHMARK_DEFAULT_ACTIVE_BAR_STYLE = {
+  fillOpacity: 1,
+  stroke: "#27272a",
+  strokeWidth: 1,
+} as const;
 
 type BenchmarkSeries = {
   color: string;
@@ -661,7 +665,7 @@ const BenchmarkChart = () => {
                 />
                 <Tooltip
                   content={<BenchmarkTooltip />}
-                  cursor={{ fill: BENCHMARK_HOVER_CURSOR_FILL }}
+                  cursor={{ fill: "rgba(161, 161, 170, 0.12)" }}
                   isAnimationActive={false}
                 />
                 <ReferenceLine
@@ -676,7 +680,13 @@ const BenchmarkChart = () => {
 
                   return (
                     <Bar
-                      activeBar={{ fillOpacity: 1, stroke: "#27272a", strokeWidth: 1 }}
+                      activeBar={
+                        series.pattern ? (
+                          <BenchmarkRawBarShape />
+                        ) : (
+                          BENCHMARK_DEFAULT_ACTIVE_BAR_STYLE
+                        )
+                      }
                       dataKey={series.id}
                       fill={series.color}
                       hide={isHidden}

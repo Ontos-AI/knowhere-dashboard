@@ -22,8 +22,10 @@ type LandingNavItem = {
 
 const landingNavItems: LandingNavItem[] = [
   { href: "#comparison", label: "Comparison" },
+  { href: "https://notebook.knowhereto.ai", label: "Playground", external: true },
   { href: "#pricing", label: "Pricing" },
   { href: "https://docs.knowhereto.ai/", label: "Docs", external: true },
+  { href: "https://github.com/Ontos-AI/knowhere", label: "GitHub", external: true },
 ];
 
 const localeLabels = {
@@ -47,7 +49,7 @@ const LandingHeaderLink = ({
   <Link
     aria-current={active ? "location" : undefined}
     className={cn(
-      "group relative flex h-16 items-center justify-center px-4 text-[14px] leading-5 text-zinc-950 max-[639px]:h-12",
+      "group relative flex h-16 shrink-0 items-center justify-center px-4 text-[14px] leading-5 text-zinc-950 max-[639px]:h-12",
       active
         ? "font-semibold opacity-100"
         : "font-normal opacity-100 transition-opacity duration-150 ease-out hover:opacity-60 active:opacity-100 active:font-medium"
