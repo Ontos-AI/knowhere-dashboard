@@ -25,7 +25,7 @@ export const LandingThemeToggle = ({ className, iconClassName }: LandingThemeTog
       type="button"
       aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
       className={cn(
-        "flex h-16 w-[52px] flex-none items-center justify-center text-zinc-950 transition-colors hover:text-zinc-600",
+        "flex h-16 w-[52px] flex-none items-center justify-center text-zinc-950 transition-colors hover:text-zinc-600 dark:text-[#fafafa] dark:hover:text-[#d4d4d8]",
         className
       )}
       onClick={() => {
