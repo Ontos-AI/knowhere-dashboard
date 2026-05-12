@@ -18,7 +18,6 @@ import {
 import { ThemeSwitch } from "@components/ui/theme-switch";
 import { cn } from "@lib/utils";
 import { setCookie } from "@utils/cookies";
-import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -48,8 +47,7 @@ const SIDEBAR_SHEET_WIDTH_CLASS = "w-[160px] min-w-[160px] max-w-[160px]";
 const SIDEBAR_STATIC_WIDTH_CLASS =
   "sm:w-[160px] sm:min-w-[160px] sm:max-w-[160px] lg:w-[200px] lg:min-w-[200px] lg:max-w-[200px]";
 
-const SIDEBAR_DESKTOP_BRAND_WIDTH = "144px";
-const SIDEBAR_COMPACT_BRAND_WIDTH = "118px";
+const SIDEBAR_BRAND_WIDTH = "120px";
 
 const localeLabels = {
   en: "English",
@@ -113,20 +111,31 @@ const getNavigation = (labels: {
 const SidebarBrand = ({ onNavigate }: { onNavigate?: () => void }) => {
   return (
     <Link href="/" aria-label="Knowhere" className="inline-flex items-center" onClick={onNavigate}>
-      <KnowhereBrand
-        className="hidden w-[144px] lg:inline-flex"
-        priority
-        sizes={SIDEBAR_DESKTOP_BRAND_WIDTH}
-      />
-      <KnowhereBrand className="w-[118px] lg:hidden" priority sizes={SIDEBAR_COMPACT_BRAND_WIDTH} />
+      <KnowhereBrand className="w-[120px]" priority sizes={SIDEBAR_BRAND_WIDTH} tone="auto" />
     </Link>
   );
 };
 
 const MobileSidebarBrand = ({ onNavigate }: { onNavigate?: () => void }) => {
   return (
-    <Link href="/" aria-label="Knowhere" className="inline-flex items-center" onClick={onNavigate}>
-      <KnowhereBrand className="w-[118px]" priority sizes={SIDEBAR_COMPACT_BRAND_WIDTH} />
+    <Link
+      href="/"
+      aria-label="Knowhere"
+      className="inline-flex items-center gap-3"
+      onClick={onNavigate}
+    >
+      <Image
+        src="/images/knowhere/logo-icon.png"
+        alt=""
+        aria-hidden
+        width={92}
+        height={84}
+        priority
+        className="h-[20.36px] w-[22.4px] shrink-0 object-contain opacity-80"
+      />
+      <span className="font-[family-name:var(--font-brand)] text-base font-medium leading-[21px] text-[#09090b] dark:text-[#fafafa]">
+        Knowhere
+      </span>
     </Link>
   );
 };
@@ -182,7 +191,7 @@ const DashboardSidebarContent = ({
 
   return (
     <div className="flex h-full min-w-0 w-full flex-col bg-[#f4f4f5] text-[#09090b] dark:bg-[#27272a] dark:text-[#fafafa]">
-      <div className="flex h-16 items-center border-b border-[#d4d4d8] px-5 dark:border-[#3f3f46] lg:px-4">
+      <div className="flex h-16 items-center border-b border-[#d4d4d8] px-[18px] dark:border-[#3f3f46] lg:border-b-0 lg:px-4">
         <SidebarBrand onNavigate={onNavigate} />
       </div>
 
@@ -197,10 +206,10 @@ const DashboardSidebarContent = ({
               onClick={onNavigate}
               aria-current={isActive ? "page" : undefined}
               className={cn(
-                "relative flex h-12 items-center gap-1.5 overflow-hidden border-b px-4 text-[12px] font-normal leading-4 tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25 focus-visible:ring-inset sm:h-8 lg:h-9",
+                "relative flex items-center gap-1.5 overflow-hidden border-b px-4 text-[12px] font-normal leading-4 tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25 focus-visible:ring-inset lg:h-9",
                 isActive
-                  ? "border-[#7f22fe] bg-[#8e51ff] text-[#f5f3ff] shadow-[inset_-8px_0_0_#7f22fe]"
-                  : "border-[#e5e7eb] text-[#09090b] dark:border-[#3f3f46] dark:text-[#fafafa]"
+                  ? "h-7 border-[#7f22fe] bg-[#8e51ff] text-[#f5f3ff] shadow-[inset_-8px_0_0_#7f22fe] lg:h-9"
+                  : "h-8 border-[#e5e7eb] text-[#09090b] dark:border-[#3f3f46] dark:text-[#fafafa] lg:h-9"
               )}
             >
               <SidebarNavIcon icon={item.icon} isActive={isActive} />
@@ -214,7 +223,7 @@ const DashboardSidebarContent = ({
         <DropdownMenuTrigger asChild>
           <button
             type="button"
-            className="group flex h-[63px] w-full items-center gap-3 border-t border-[#e4e4e7] px-5 text-left transition-colors hover:bg-[#f4f4f5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25 focus-visible:ring-inset dark:border-[#3f3f46] dark:hover:bg-[#3f3f46] lg:px-4"
+            className="group flex h-[63px] w-full items-center gap-3 border-t border-[#e4e4e7] px-[18px] text-left transition-colors hover:bg-[#f4f4f5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25 focus-visible:ring-inset dark:border-[#3f3f46] dark:hover:bg-[#3f3f46] lg:px-4"
           >
             <div
               className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#f59e0b]/15 bg-cover bg-center text-sm font-semibold text-[#a65f00]"
@@ -232,14 +241,14 @@ const DashboardSidebarContent = ({
                 {user.email}
               </div>
             </div>
-            <span className="ml-auto flex size-6 shrink-0 items-center justify-center rounded-full transition-colors group-hover:bg-white group-focus-visible:bg-white">
+            <span className="ml-auto flex size-6 shrink-0 items-center justify-center rounded-full transition-colors group-hover:bg-white group-focus-visible:bg-white dark:group-hover:bg-[#52525c] dark:group-focus-visible:bg-[#52525c]">
               <Image
                 src="/icons/sidebar/footer-expand-all.svg"
                 alt=""
                 aria-hidden
                 width={8}
                 height={13.33}
-                className="block h-[13.33px] w-2"
+                className="block h-[13.33px] w-2 dark:invert"
               />
             </span>
           </button>
@@ -248,11 +257,11 @@ const DashboardSidebarContent = ({
           align="end"
           side="top"
           sideOffset={8}
-          className="w-[236px] rounded-none border-[#e4e4e7] bg-white p-0 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)]"
+          className="w-[236px] rounded-none border-[#e4e4e7] bg-white p-0 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)] dark:border-[#3f3f46] dark:bg-[#18181b]"
         >
           <DropdownMenuItem
             asChild
-            className="flex h-[52px] items-center gap-4 rounded-none bg-[#fafafa] px-5 py-4 text-[14px] font-normal leading-5 text-[#09090b] outline-none data-[highlighted]:bg-[#fafafa] data-[highlighted]:text-[#09090b]"
+            className="flex h-[52px] items-center gap-4 rounded-none bg-[#fafafa] px-5 py-4 text-[14px] font-normal leading-5 text-[#09090b] outline-none data-[highlighted]:bg-[#fafafa] data-[highlighted]:text-[#09090b] dark:bg-[#27272a] dark:text-[#fafafa] dark:data-[highlighted]:bg-[#27272a] dark:data-[highlighted]:text-[#fafafa]"
           >
             <Link href="/settings" onClick={onNavigate} className="cursor-pointer">
               <Image
@@ -261,13 +270,13 @@ const DashboardSidebarContent = ({
                 aria-hidden
                 width={20}
                 height={20}
-                className="size-5 shrink-0"
+                className="size-5 shrink-0 dark:invert"
               />
               {t("settings")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem
-            className="flex h-[52px] items-center gap-4 rounded-none px-5 py-4 text-[14px] font-normal leading-5 text-[#09090b] outline-none data-[highlighted]:bg-[#fafafa] data-[highlighted]:text-[#09090b]"
+            className="flex h-[52px] items-center gap-4 rounded-none px-5 py-4 text-[14px] font-normal leading-5 text-[#09090b] outline-none data-[highlighted]:bg-[#fafafa] data-[highlighted]:text-[#09090b] dark:text-[#fafafa] dark:data-[highlighted]:bg-[#27272a] dark:data-[highlighted]:text-[#fafafa]"
             onClick={async () => {
               await onLogout();
             }}
@@ -278,7 +287,7 @@ const DashboardSidebarContent = ({
               aria-hidden
               width={20}
               height={20}
-              className="size-5 shrink-0"
+              className="size-5 shrink-0 dark:invert"
             />
             {t("logout")}
           </DropdownMenuItem>
@@ -406,7 +415,14 @@ const MobileSidebarContent = ({
           await onLogout();
         }}
       >
-        <LogOut className="h-4 w-4 text-[#9f9fa9]" />
+        <Image
+          src="/icons/sidebar/footer-sign-out.svg"
+          alt=""
+          aria-hidden
+          width={16}
+          height={16}
+          className="size-4 opacity-45 dark:invert"
+        />
         <span className="text-[12px] font-normal leading-4">{t("logout")}</span>
       </button>
     </div>
