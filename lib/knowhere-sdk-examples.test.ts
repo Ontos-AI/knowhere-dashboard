@@ -20,6 +20,12 @@ describe("Knowhere SDK code examples", () => {
     expect(source).toContain("import knowhere");
     expect(source).toContain('import Knowhere from "@ontos-ai/knowhere-sdk"');
     expect(source).toContain("client.parse");
+    expect(source).toContain("result = client.parse(url=");
+    expect(source).toContain("const result = await client.parse({");
+    expect(source).not.toMatch(/client\.parse\([\s\S]{0,260}parsing_params/);
+    expect(source).not.toMatch(/client\.parse\([\s\S]{0,260}ocr_enabled/);
+    expect(source).not.toMatch(/client\.parse\(\{[\s\S]{0,180}model:/);
+    expect(source).not.toMatch(/client\.parse\(\{[\s\S]{0,180}ocr:/);
     expect(source).not.toContain("import requests");
     expect(source).not.toContain("requests.post");
     expect(source).not.toContain("const response = await fetch");

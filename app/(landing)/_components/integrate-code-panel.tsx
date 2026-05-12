@@ -13,13 +13,7 @@ import knowhere
 
 client = knowhere.Knowhere(api_key="sk_...")
 
-result = client.parse(
-    url="https://arxiv.org/pdf/1706.03762.pdf",
-    parsing_params={
-        "model": "base",
-        "ocr_enabled": True,
-    },
-)
+result = client.parse(url="https://arxiv.org/pdf/1706.03762.pdf")
 
 print(result.statistics.total_chunks)
 print(result.full_markdown[:200])`;
@@ -33,8 +27,6 @@ const client = new Knowhere({
 
 const result = await client.parse({
   url: "https://arxiv.org/pdf/1706.03762.pdf",
-  model: "base",
-  ocr: true,
 });
 
 console.log("Text chunks:", result.textChunks.length);

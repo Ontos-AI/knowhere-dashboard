@@ -65,13 +65,7 @@ client = knowhere.Knowhere(
     base_url="${apiBaseUrl}",
 )
 
-result = client.parse(
-    url="${SAMPLE_PDF_URL}",
-    parsing_params={
-        "model": "base",
-        "ocr_enabled": True,
-    },
-)
+result = client.parse(url="${SAMPLE_PDF_URL}")
 
 print(result.statistics.total_chunks)
 print(result.full_markdown[:200])`,
@@ -85,8 +79,6 @@ const client = new Knowhere({
 
 const result = await client.parse({
   url: "${SAMPLE_PDF_URL}",
-  model: "base",
-  ocr: true,
 });
 
 console.log("Text chunks:", result.textChunks.length);
