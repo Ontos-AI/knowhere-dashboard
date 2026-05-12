@@ -1,11 +1,5 @@
-import { homePageDesign } from "@app/(landing)/_components/home-page-design";
-import { ClawPage } from "@app/(landing)/claw/_components/claw-page";
+import { LandingHome } from "@app/(landing)/_components/landing-home";
 
 export default function LandingPage() {
-  return (
-    <ClawPage
-      navItems={homePageDesign.navItems}
-      showUtilityControls={homePageDesign.showUtilityControls}
-    />
-  );
+  return <LandingHome />;
 }

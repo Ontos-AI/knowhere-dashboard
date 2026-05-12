@@ -4,18 +4,18 @@ import { Tag } from "@components/ui/tag";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { homePageDesign } from "@/app/(landing)/_components/home-page-design";
 import { clawHeaderDesign } from "@/app/(landing)/claw/_components/claw-header-design";
 import { clawHeroDesign } from "@/app/(landing)/claw/_components/claw-hero-design";
 
 describe("landing Figma design contracts", () => {
-  it("uses the OpenClaw home composition for the root landing route", () => {
-    expect(homePageDesign.showUtilityControls).toBe(true);
-    expect(homePageDesign.navItems.map((item) => item.label)).toEqual([
-      "Comparison",
-      "Pricing",
-      "Docs",
-    ]);
+  it("keeps the root landing route on the main landing page", () => {
+    const landingPageSource: string = readFileSync(
+      join(process.cwd(), "app/(landing)/page.tsx"),
+      "utf8"
+    );
+
+    expect(landingPageSource).toContain("LandingHome");
+    expect(landingPageSource).not.toContain("ClawPage");
   });
 
   it("keeps the block tag dimensions aligned with the Figma block tag unit", () => {
