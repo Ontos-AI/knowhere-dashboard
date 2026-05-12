@@ -49,7 +49,7 @@ const LandingHeaderLink = ({
   <Link
     aria-current={active ? "location" : undefined}
     className={cn(
-      "group relative flex h-16 shrink-0 items-center justify-center px-4 text-[14px] leading-5 text-zinc-950 max-[639px]:h-12",
+      "group relative flex h-16 shrink-0 items-center justify-center px-4 text-[14px] leading-5 text-zinc-950 max-[639px]:h-12 dark:text-[#fafafa]",
       active
         ? "font-semibold opacity-100"
         : "font-normal opacity-100 transition-opacity duration-150 ease-out hover:opacity-60 active:opacity-100 active:font-medium"
@@ -92,15 +92,15 @@ export const LandingHeader = () => {
   const currentLocaleLabel = localeLabels[locale as keyof typeof localeLabels] ?? "English";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-zinc-200 bg-white">
+    <header className="sticky top-0 z-50 w-full border-b border-zinc-200 bg-white dark:border-[#3f3f46] dark:bg-[#18181b]">
       <div className={cn(landingHeaderCanvasWidthClassName, "relative")}>
-        <div className="flex h-full items-center border-r border-zinc-200 px-4 min-[640px]:px-[14px] min-[769px]:border-l min-[769px]:px-4">
+        <div className="flex h-full items-center border-r border-zinc-200 px-4 dark:border-[#3f3f46] min-[640px]:px-[14px] min-[769px]:border-l min-[769px]:px-4">
           <Link href="/" className="flex items-center">
             <LandingBrand size="nav" />
           </Link>
         </div>
 
-        <div className="flex min-w-0 items-center justify-between pl-2 min-[769px]:border-x min-[769px]:border-zinc-200">
+        <div className="flex min-w-0 items-center justify-between pl-2 min-[769px]:border-x min-[769px]:border-zinc-200 min-[769px]:dark:border-[#3f3f46]">
           <nav className="hidden h-full min-w-0 items-center overflow-x-auto min-[640px]:flex">
             {landingNavItems.map((item) => {
               const targetSection = item.href.startsWith("#") ? item.href.slice(1) : null;
@@ -121,7 +121,7 @@ export const LandingHeader = () => {
           <LanguageSwitcher align="end" contentClassName="mt-0" sideOffset={0}>
             <button
               type="button"
-              className="hidden h-full items-center gap-1 pl-4 pr-3 text-xs leading-4 text-zinc-950 transition-colors hover:text-zinc-600 min-[768px]:flex"
+              className="hidden h-full items-center gap-1 pl-4 pr-3 text-xs leading-4 text-zinc-950 transition-colors hover:text-zinc-600 dark:text-[#fafafa] dark:hover:text-[#d4d4d8] min-[768px]:flex"
             >
               <span>{currentLocaleLabel}</span>
               <KnowhereIcon className="size-5 text-current" name="chevron-down" />
@@ -129,13 +129,13 @@ export const LandingHeader = () => {
           </LanguageSwitcher>
         </div>
 
-        <div className="flex h-full items-center justify-center border-l border-zinc-200 min-[769px]:border-l-0">
-          <LandingThemeToggle className="h-full w-11 text-zinc-950 hover:text-zinc-600 min-[640px]:w-[72px]" />
+        <div className="flex h-full items-center justify-center border-l border-zinc-200 dark:border-[#3f3f46] min-[769px]:border-l-0">
+          <LandingThemeToggle className="h-full w-11 text-zinc-950 hover:text-zinc-600 dark:text-[#fafafa] dark:hover:text-[#d4d4d8] min-[640px]:w-[72px]" />
           <button
             aria-expanded={mobileMenuOpen}
             aria-haspopup="menu"
             aria-label="Open navigation menu"
-            className="flex h-full w-11 items-center justify-center text-zinc-950 transition-colors hover:bg-zinc-100/70 hover:text-zinc-600 min-[640px]:hidden"
+            className="flex h-full w-11 items-center justify-center text-zinc-950 transition-colors hover:bg-zinc-100/70 hover:text-zinc-600 dark:text-[#fafafa] dark:hover:bg-[#27272a] dark:hover:text-[#d4d4d8] min-[640px]:hidden"
             onClick={() => setMobileMenuOpen((open) => !open)}
             type="button"
           >
@@ -154,11 +154,11 @@ export const LandingHeader = () => {
         </div>
 
         {mobileMenuOpen ? (
-          <nav className="absolute top-full right-0 left-0 z-40 flex w-full flex-col border-b border-zinc-200 bg-white min-[640px]:hidden">
+          <nav className="absolute top-full right-0 left-0 z-40 flex w-full flex-col border-b border-zinc-200 bg-white dark:border-[#3f3f46] dark:bg-[#18181b] min-[640px]:hidden">
             <LanguageSwitcher align="end" contentClassName="mt-0" sideOffset={0}>
               <button
                 type="button"
-                className="flex h-12 w-full items-center justify-between border-t border-zinc-200 px-4 text-sm text-zinc-950 transition-colors hover:bg-zinc-100/70"
+                className="flex h-12 w-full items-center justify-between border-t border-zinc-200 px-4 text-sm text-zinc-950 transition-colors hover:bg-zinc-100/70 dark:border-[#3f3f46] dark:text-[#fafafa] dark:hover:bg-[#27272a]"
               >
                 <span>{currentLocaleLabel}</span>
                 <KnowhereIcon className="size-5 text-current" name="chevron-down" />
@@ -172,7 +172,7 @@ export const LandingHeader = () => {
                   key={`mobile-${item.label}`}
                   aria-current={targetSection === activeSection ? "location" : undefined}
                   className={cn(
-                    "flex h-12 w-full items-center border-t border-zinc-200 px-4 text-sm text-zinc-950 transition-colors hover:bg-zinc-100/70",
+                    "flex h-12 w-full items-center border-t border-zinc-200 px-4 text-sm text-zinc-950 transition-colors hover:bg-zinc-100/70 dark:border-[#3f3f46] dark:text-[#fafafa] dark:hover:bg-[#27272a]",
                     targetSection === activeSection ? "font-semibold" : "font-normal"
                   )}
                   href={item.href}

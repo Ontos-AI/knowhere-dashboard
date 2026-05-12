@@ -36,6 +36,7 @@ export const LandingBrand = ({
       className={cn(BRAND_WIDTH_CLASS_BY_SIZE[resolvedSize], className)}
       priority={size === "header" || size === "nav"}
       sizes={BRAND_SIZES_BY_SIZE[resolvedSize]}
+      tone="auto"
     />
   );
 };

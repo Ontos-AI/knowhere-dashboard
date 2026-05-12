@@ -25,7 +25,8 @@ import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 
-const sectionFrameClassName = "overflow-hidden border-b border-l border-r border-zinc-200 bg-white";
+const sectionFrameClassName =
+  "overflow-hidden border-b border-l border-r border-zinc-200 bg-white dark:border-[#3f3f46] dark:bg-[#18181b]";
 const sectionPaddingClassName = "px-[48px] max-[639px]:px-[18px] min-[640px]:max-[767px]:px-[46px]";
 const heroSectionPaddingClassName = "px-16 max-[639px]:px-5";
 const landingCanvasWidthClassName =
@@ -69,7 +70,7 @@ const ActionLink = ({
   const variantClassName =
     variant === "primary"
       ? "border border-b-[6px] border-[#7f22fe] bg-[#8e51ff] text-[#f5f3ff] [--btn-bottom:6px] hover:border-[#7008e7] hover:bg-[#7f22fe] hover:border-b-[8px] hover:[--btn-bottom:8px] active:border-[#7008e7] active:bg-[#7008e7] active:border-b-[6px] active:[--btn-bottom:6px]"
-      : "border-x-2 border-t-2 border-b-[6px] border-zinc-200 bg-[#fafaf9] text-zinc-800 [--btn-bottom:6px] hover:border-zinc-200 hover:bg-[#f5f5f4] hover:border-b-[8px] hover:[--btn-bottom:8px] active:border-[#e7e5e4] active:bg-[#e7e5e4] active:border-b-[6px] active:[--btn-bottom:6px]";
+      : "border-x-2 border-t-2 border-b-[6px] border-zinc-200 bg-[#fafaf9] text-zinc-800 [--btn-bottom:6px] hover:border-zinc-200 hover:bg-[#f5f5f4] hover:border-b-[8px] hover:[--btn-bottom:8px] active:border-[#e7e5e4] active:bg-[#e7e5e4] active:border-b-[6px] active:[--btn-bottom:6px] dark:border-[#3f3f46] dark:bg-[#27272a] dark:text-[#fafafa] dark:hover:border-[#52525b] dark:hover:bg-[#3f3f46] dark:active:border-[#3f3f46] dark:active:bg-[#27272a]";
 
   return (
     <Link
@@ -108,11 +109,16 @@ const SectionTitle = ({
       className
     )}
   >
-    <h2 className="text-left text-[30px] font-bold leading-9 text-zinc-950 max-[639px]:text-[22px] max-[639px]:leading-8">
+    <h2 className="text-left text-[30px] font-bold leading-9 text-zinc-950 dark:text-[#fafafa] max-[639px]:text-[22px] max-[639px]:leading-8">
       {title}
     </h2>
     {description ? (
-      <p className={cn("max-w-[1080px] text-base leading-6 text-zinc-500", descriptionClassName)}>
+      <p
+        className={cn(
+          "max-w-[1080px] text-base leading-6 text-zinc-500 dark:text-[#a1a1a1]",
+          descriptionClassName
+        )}
+      >
         {description}
       </p>
     ) : null}
@@ -140,8 +146,10 @@ const StatsItem = ({
         monoDisplayClassName
       )}
     >
-      <span className={cn("font-medium text-zinc-800", leadingClassName)}>{leading}</span>
-      <span className="font-light text-zinc-700">{trailing}</span>
+      <span className={cn("font-medium text-zinc-800 dark:text-[#fafafa]", leadingClassName)}>
+        {leading}
+      </span>
+      <span className="font-light text-zinc-700 dark:text-[#d4d4d8]">{trailing}</span>
     </div>
   </div>
 );
@@ -244,7 +252,7 @@ const TransformStepCard = ({ step }: { step: TransformStep }) => (
         {step.number}
       </span>
     </div>
-    <div className="flex items-center gap-5 bg-white px-5 py-[14px] pl-[80px] max-[639px]:gap-4 max-[639px]:px-4 max-[639px]:pl-[48px]">
+    <div className="flex items-center gap-5 bg-white px-5 py-[14px] pl-[80px] dark:bg-[#18181b] max-[639px]:gap-4 max-[639px]:px-4 max-[639px]:pl-[48px]">
       <div className="flex flex-col gap-1">
         <span
           className="text-base font-bold leading-6 text-zinc-950 font-sans"
@@ -252,7 +260,9 @@ const TransformStepCard = ({ step }: { step: TransformStep }) => (
         >
           {step.title}
         </span>
-        <span className="text-sm leading-5 text-zinc-500 font-sans">{step.description}</span>
+        <span className="text-sm leading-5 text-zinc-500 dark:text-[#a1a1a1] font-sans">
+          {step.description}
+        </span>
       </div>
     </div>
     <div
@@ -327,20 +337,22 @@ const EnterpriseCheckItem = ({ label }: { label: string }) => (
         name="check-pix"
       />
     </div>
-    <span className="text-base font-semibold leading-6 text-zinc-950">{label}</span>
+    <span className="text-base font-semibold leading-6 text-zinc-950 dark:text-[#fafafa]">
+      {label}
+    </span>
   </div>
 );
 
 const FaqRow = ({ question, answer }: { question: string; answer: string }) => (
-  <div className="flex items-center gap-6 border-b border-zinc-100 px-12 py-5 first:border-t max-[639px]:items-start max-[639px]:gap-4 max-[639px]:px-4 max-[639px]:py-6">
+  <div className="flex items-center gap-6 border-b border-zinc-100 px-12 py-5 first:border-t dark:border-[#27272a] max-[639px]:items-start max-[639px]:gap-4 max-[639px]:px-4 max-[639px]:py-6">
     <div className="flex size-10 flex-none items-center justify-center border-b border-l border-r-4 border-t border-[#ddd6ff] bg-[#ede9fe] text-[#a684ff]">
       <span className={cn("text-[18px] font-black leading-7", monoDisplayClassName)}>?</span>
     </div>
     <div className="flex flex-col gap-1">
-      <h3 className="text-base font-semibold leading-6 text-zinc-950 min-[769px]:text-xl min-[769px]:leading-7">
+      <h3 className="text-base font-semibold leading-6 text-zinc-950 dark:text-[#fafafa] min-[769px]:text-xl min-[769px]:leading-7">
         {question}
       </h3>
-      <p className="text-xs leading-4 text-zinc-700 max-[639px]:text-sm max-[639px]:leading-6">
+      <p className="text-xs leading-4 text-zinc-700 dark:text-[#d4d4d8] max-[639px]:text-sm max-[639px]:leading-6">
         {answer}
       </p>
     </div>
@@ -350,7 +362,7 @@ const FaqRow = ({ question, answer }: { question: string; answer: string }) => (
 const FooterChip = ({ color, children }: { color: string; children: string }) => (
   <p
     className={cn(
-      "text-sm leading-6 text-zinc-950 min-[769px]:text-[18px] min-[769px]:leading-8",
+      "text-sm leading-6 text-zinc-950 dark:text-[#fafafa] min-[769px]:text-[18px] min-[769px]:leading-8",
       monoDisplayClassName
     )}
   >
@@ -362,12 +374,12 @@ const FooterChip = ({ color, children }: { color: string; children: string }) =>
 
 export const LandingHome = () => {
   return (
-    <div className="min-h-dvh bg-white text-[#09090b]">
+    <div className="min-h-dvh bg-white text-[#09090b] dark:bg-[#18181b] dark:text-[#fafafa]">
       <LandingHeader />
 
       <main className={cn(landingCanvasWidthClassName, "min-w-[375px]")}>
         <section className={sectionFrameClassName}>
-          <div className="relative border-b border-[#ede9fe] bg-[#f5f3ff] pb-14 pt-12 max-[639px]:pb-11 max-[639px]:pt-4 min-[769px]:pb-[56px] min-[769px]:pt-[48px]">
+          <div className="relative border-b border-[#ede9fe] bg-[#f5f3ff] pb-14 pt-12 dark:border-[#3f3f46] dark:bg-[#111113] max-[639px]:pb-11 max-[639px]:pt-4 min-[769px]:pb-[56px] min-[769px]:pt-[48px]">
             <div
               className="absolute inset-0 opacity-30"
               style={{
@@ -381,10 +393,10 @@ export const LandingHome = () => {
                 heroSectionPaddingClassName
               )}
             >
-              <div className="flex w-full max-w-[934px] flex-row items-stretch overflow-hidden rounded-lg border border-zinc-200 bg-white max-[639px]:flex-col max-[639px]:items-center max-[639px]:gap-2 max-[639px]:px-5 max-[639px]:py-3">
+              <div className="flex w-full max-w-[934px] flex-row items-stretch overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-[#3f3f46] dark:bg-[#18181b] max-[639px]:flex-col max-[639px]:items-center max-[639px]:gap-2 max-[639px]:px-5 max-[639px]:py-3">
                 <div className="flex flex-1 flex-wrap items-center gap-x-2 gap-y-1 px-7 py-5 text-left max-[639px]:justify-center max-[639px]:px-0 max-[639px]:py-0 max-[639px]:text-center">
                   <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 max-[639px]:max-w-[240px]">
-                    <span className="text-[14px] font-bold leading-[22px] tracking-[-1px] text-zinc-950 min-[769px]:text-base min-[769px]:leading-6">
+                    <span className="text-[14px] font-bold leading-[22px] tracking-[-1px] text-zinc-950 dark:text-[#fafafa] min-[769px]:text-base min-[769px]:leading-6">
                       Now live on
                     </span>
                     <span className="inline-flex h-[18px] w-5 shrink-0 items-center justify-center">
@@ -402,14 +414,14 @@ export const LandingHome = () => {
                     </span>
                     <span
                       className={cn(
-                        "text-[14px] font-normal leading-[22px] tracking-[-0.5px] text-zinc-600 min-[769px]:text-base min-[769px]:leading-6 font-sans"
+                        "text-[14px] font-normal leading-[22px] tracking-[-0.5px] text-zinc-600 dark:text-[#d4d4d8] min-[769px]:text-base min-[769px]:leading-6 font-sans"
                       )}
                     >
                       with an installable plugin and skill.
                     </span>
                   </div>
                 </div>
-                <div className="w-px shrink-0 bg-zinc-200 max-[639px]:hidden" />
+                <div className="w-px shrink-0 bg-zinc-200 dark:bg-[#3f3f46] max-[639px]:hidden" />
                 <Link
                   href="/claw"
                   className="flex min-w-[129px] items-center justify-center px-5 py-4 text-[#7008e7] transition-colors hover:bg-[#f5f3ff] min-[769px]:min-w-[168px] max-[639px]:min-w-0 max-[639px]:justify-center max-[639px]:rounded-full max-[639px]:px-4 max-[639px]:py-1.5"
@@ -427,7 +439,7 @@ export const LandingHome = () => {
                 <div className="flex flex-col items-center gap-4 pt-6 text-center max-[639px]:gap-5 max-[639px]:pt-0">
                   <h1
                     className={cn(
-                      "max-w-[640px] text-[32px] font-bold leading-[1.2] tracking-[-1px] text-zinc-950 max-[639px]:max-w-[335px] max-[639px]:text-[22px] max-[639px]:leading-[1.2] min-[769px]:max-w-[880px] min-[769px]:text-[36px]",
+                      "max-w-[640px] text-[32px] font-bold leading-[1.2] tracking-[-1px] text-zinc-950 dark:text-[#fafafa] max-[639px]:max-w-[335px] max-[639px]:text-[22px] max-[639px]:leading-[1.2] min-[769px]:max-w-[880px] min-[769px]:text-[36px]",
                       monoDisplayClassName
                     )}
                   >
@@ -437,7 +449,7 @@ export const LandingHome = () => {
                   </h1>
                   <p
                     className={cn(
-                      "max-w-[640px] text-base font-normal leading-[1.5] tracking-[-0.5px] text-zinc-600 max-[639px]:max-w-[320px] max-[639px]:leading-[1.5] min-[769px]:max-w-[780px] min-[769px]:text-[18px] font-sans"
+                      "max-w-[640px] text-base font-normal leading-[1.5] tracking-[-0.5px] text-zinc-600 dark:text-[#d4d4d8] max-[639px]:max-w-[320px] max-[639px]:leading-[1.5] min-[769px]:max-w-[780px] min-[769px]:text-[18px] font-sans"
                     )}
                   >
                     Extract tables, formulas, and layouts with pixel-perfect precision.
@@ -461,7 +473,7 @@ export const LandingHome = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 divide-x divide-zinc-200 max-[639px]:grid-cols-1 max-[639px]:divide-x-0 max-[639px]:divide-y">
+          <div className="grid grid-cols-3 divide-x divide-zinc-200 dark:divide-[#3f3f46] max-[639px]:grid-cols-1 max-[639px]:divide-x-0 max-[639px]:divide-y">
             <StatsItem
               icon={
                 <Image
@@ -509,7 +521,7 @@ export const LandingHome = () => {
             />
           </div>
 
-          <div className="flex flex-col gap-9 pt-14 max-[639px]:gap-[30px] max-[639px]:pt-[38px] min-[640px]:max-[767px]:gap-[34px] min-[640px]:max-[767px]:pt-[54px]">
+          <div className="flex flex-col gap-9 border-t border-zinc-200 pt-14 dark:border-[#3f3f46] max-[639px]:gap-[30px] max-[639px]:pt-[38px] min-[640px]:max-[767px]:gap-[34px] min-[640px]:max-[767px]:pt-[54px]">
             <SectionTitle
               description="Grab a file below and experience Knowhere turn messy documents into clean & structured JSON"
               title="Turn any document into RAG-ready chunks"
@@ -523,7 +535,7 @@ export const LandingHome = () => {
             sectionFrameClassName,
             "grid grid-cols-2 gap-x-[46px] gap-y-[18px] pb-[56px] pt-[56px] max-[639px]:grid-cols-1 max-[639px]:gap-6 max-[639px]:pb-[38px] max-[639px]:pt-[38px] min-[640px]:max-[767px]:grid-cols-1 min-[640px]:max-[767px]:gap-y-8 min-[640px]:max-[767px]:pb-[54px] min-[640px]:max-[767px]:pt-[54px] min-[769px]:gap-x-12 min-[769px]:gap-y-5",
             sectionPaddingClassName,
-            "border-y border-zinc-200"
+            "border-y border-zinc-200 dark:border-[#3f3f46]"
           )}
         >
           <div className="flex flex-col items-start gap-8 max-[639px]:gap-6">
@@ -552,7 +564,9 @@ export const LandingHome = () => {
           </div>
 
           <div className="flex flex-col gap-8 pt-1 max-[639px]:gap-6 max-[639px]:pt-0 min-[640px]:max-[767px]:pt-0">
-            <h3 className="text-base font-normal leading-6 text-zinc-950">Coming Soon</h3>
+            <h3 className="text-base font-normal leading-6 text-zinc-950 dark:text-[#fafafa]">
+              Coming Soon
+            </h3>
             <div className="flex flex-wrap gap-x-1.5 gap-y-1 min-[769px]:gap-1.5">
               {comingSoonFormats.map((chip) => (
                 <div
@@ -577,10 +591,12 @@ export const LandingHome = () => {
           </div>
         </section>
 
-        <section className={cn(sectionFrameClassName, "border-t border-zinc-200")}>
+        <section
+          className={cn(sectionFrameClassName, "border-t border-zinc-200 dark:border-[#3f3f46]")}
+        >
           <div
             className={cn(
-              "flex flex-col gap-9 pt-14 max-[639px]:gap-6 max-[639px]:pt-9 border-b border-zinc-200"
+              "flex flex-col gap-9 pt-14 max-[639px]:gap-6 max-[639px]:pt-9 border-b border-zinc-200 dark:border-[#3f3f46]"
             )}
           >
             <SectionTitle
@@ -588,14 +604,16 @@ export const LandingHome = () => {
               title="Integrate In Minutes"
             />
 
-            <div className="grid grid-cols-2 gap-0 border-t border-zinc-100 max-[639px]:grid-cols-1 max-[639px]:gap-4 max-[639px]:pl-[18px] max-[639px]:pr-[18px] min-[640px]:max-[767px]:grid-cols-1 min-[640px]:max-[767px]:gap-6 min-[640px]:max-[767px]:pl-[46px] min-[640px]:max-[767px]:pr-[46px] min-[769px]:pl-[48px] min-[769px]:pr-0">
+            <div className="grid grid-cols-2 gap-0 border-t border-zinc-100 dark:border-[#27272a] max-[639px]:grid-cols-1 max-[639px]:gap-4 max-[639px]:pl-[18px] max-[639px]:pr-[18px] min-[640px]:max-[767px]:grid-cols-1 min-[640px]:max-[767px]:gap-6 min-[640px]:max-[767px]:pl-[46px] min-[640px]:max-[767px]:pr-[46px] min-[769px]:pl-[48px] min-[769px]:pr-0">
               <div className="flex min-w-0 flex-col justify-center py-6 pr-12 max-[639px]:pr-0 min-[640px]:max-[767px]:pr-0">
                 {integrationSteps.map((step) => (
                   <div key={step.number} className="flex w-full min-w-0 items-start gap-5 py-4">
                     <NumberBadge number={step.number} />
                     <div className="flex min-w-0 flex-1 flex-col gap-1 pr-1">
-                      <h3 className="text-base font-bold leading-6 text-zinc-950">{step.title}</h3>
-                      <p className="w-full max-w-full text-sm leading-5 text-zinc-500">
+                      <h3 className="text-base font-bold leading-6 text-zinc-950 dark:text-[#fafafa]">
+                        {step.title}
+                      </h3>
+                      <p className="w-full max-w-full text-sm leading-5 text-zinc-500 dark:text-[#a1a1a1]">
                         {step.description}
                       </p>
                     </div>
@@ -608,7 +626,10 @@ export const LandingHome = () => {
           </div>
         </section>
 
-        <section className={cn(sectionFrameClassName, "scroll-mt-20 bg-white p-0")} id="comparison">
+        <section
+          className={cn(sectionFrameClassName, "scroll-mt-20 bg-white p-0 dark:bg-[#18181b]")}
+          id="comparison"
+        >
           <div className="flex flex-col gap-[36px] pb-[56px] pl-[48px] pr-[48px] pt-[56px] max-[639px]:gap-[30px] max-[639px]:pb-[38px] max-[639px]:pl-[18px] max-[639px]:pr-[18px] max-[639px]:pt-[38px] min-[640px]:max-[767px]:gap-[34px] min-[640px]:max-[767px]:pb-[54px] min-[640px]:max-[767px]:pl-[46px] min-[640px]:max-[767px]:pr-[46px] min-[640px]:max-[767px]:pt-[54px] min-[769px]:gap-[36px] min-[769px]:pl-[48px] min-[769px]:pr-[48px] min-[769px]:pt-[56px]">
             <SectionTitle
               description="On a benchmark of 50 retrieval tasks across 500+ curated documents, Knowhere achieved significantly higher first-pass accuracy and recall than raw document pipelines, while using fewer tokens, fewer agent loops, and lower latency."
@@ -621,7 +642,9 @@ export const LandingHome = () => {
           </div>
         </section>
 
-        <section className={cn(sectionFrameClassName, "border-y border-zinc-200")}>
+        <section
+          className={cn(sectionFrameClassName, "border-y border-zinc-200 dark:border-[#3f3f46]")}
+        >
           <div className="flex flex-col pt-[56px] gap-[36px] min-[640px]:max-[767px]:pt-[54px] min-[640px]:max-[767px]:gap-[34px] max-[639px]:pt-[38px] max-[639px]:gap-[30px]">
             <SectionTitle
               description="Enterprise-grade features designed to handle the most complex document parsing scenarios"
@@ -633,17 +656,17 @@ export const LandingHome = () => {
             />
           </div>
 
-          <div className="mt-9 grid grid-cols-2 border-y border-zinc-100 max-[639px]:mt-6 max-[639px]:grid-cols-1">
+          <div className="mt-9 grid grid-cols-2 border-y border-zinc-100 dark:border-[#27272a] max-[639px]:mt-6 max-[639px]:grid-cols-1">
             {challengeCards.map((card, index) => (
               <div
                 key={card.title}
                 className={cn(
-                  "relative border-b border-l border-zinc-100 px-12 py-8 min-[769px]:px-12 min-[769px]:py-10 max-[639px]:px-4",
-                  index % 2 === 1 && "border-r border-zinc-100"
+                  "relative border-b border-l border-zinc-100 px-12 py-8 dark:border-[#27272a] min-[769px]:px-12 min-[769px]:py-10 max-[639px]:px-4",
+                  index % 2 === 1 && "border-r border-zinc-100 dark:border-r-[#27272a]"
                 )}
               >
                 <div
-                  className="absolute inset-0 opacity-35"
+                  className="absolute inset-0 opacity-35 dark:opacity-[0.06]"
                   style={stripePattern("#f4f4f5", 1, 8)}
                 />
                 <div className="relative flex h-full flex-col gap-[20px] max-[639px]:gap-[12px] min-[640px]:max-[767px]:gap-[18px]">
@@ -657,8 +680,12 @@ export const LandingHome = () => {
                     <ChallengeIcon card={card} />
                   </div>
                   <div className="flex max-w-[360px] flex-col gap-[6px] max-[639px]:gap-[4px] min-[640px]:max-[767px]:gap-[4px]">
-                    <h3 className="text-base font-bold leading-6 text-zinc-950">{card.title}</h3>
-                    <p className="text-sm leading-5 text-zinc-500">{card.description}</p>
+                    <h3 className="text-base font-bold leading-6 text-zinc-950 dark:text-[#fafafa]">
+                      {card.title}
+                    </h3>
+                    <p className="text-sm leading-5 text-zinc-500 dark:text-[#a1a1a1]">
+                      {card.description}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -678,7 +705,7 @@ export const LandingHome = () => {
               }
             />
 
-            <div className="grid grid-cols-2 gap-12 border-y border-zinc-100 max-[639px]:grid-cols-1 max-[639px]:gap-8 max-[639px]:pl-[18px] max-[639px]:pr-[18px] min-[640px]:max-[767px]:grid-cols-1 min-[640px]:max-[767px]:gap-8 min-[640px]:max-[767px]:pl-[46px] min-[640px]:max-[767px]:pr-[46px] min-[769px]:gap-16 min-[769px]:pl-[48px] min-[769px]:pr-[48px]">
+            <div className="grid grid-cols-2 gap-12 border-y border-zinc-100 dark:border-[#27272a] max-[639px]:grid-cols-1 max-[639px]:gap-8 max-[639px]:pl-[18px] max-[639px]:pr-[18px] min-[640px]:max-[767px]:grid-cols-1 min-[640px]:max-[767px]:gap-8 min-[640px]:max-[767px]:pl-[46px] min-[640px]:max-[767px]:pr-[46px] min-[769px]:gap-16 min-[769px]:pl-[48px] min-[769px]:pr-[48px]">
               <div className="relative flex flex-col gap-[24px]">
                 {transformSteps.map((step, index) => (
                   <div key={step.number} className="relative">
@@ -702,21 +729,24 @@ export const LandingHome = () => {
         </section>
 
         <section
-          className={cn(sectionFrameClassName, "scroll-mt-20 bg-[#f5f3ff] m-0 p-0")}
+          className={cn(
+            sectionFrameClassName,
+            "scroll-mt-20 bg-[#f5f3ff] m-0 p-0 dark:bg-[#111113]"
+          )}
           id="pricing"
         >
-          <div className="flex flex-col gap-[36px] pb-0 pt-[56px] max-[639px]:gap-[30px] max-[639px]:pt-[38px] min-[640px]:max-[767px]:gap-[34px] min-[640px]:max-[767px]:pt-[54px] min-[769px]:gap-[36px] min-[769px]:pt-[56px] border-y border-zinc-200">
+          <div className="flex flex-col gap-[36px] pb-0 pt-[56px] max-[639px]:gap-[30px] max-[639px]:pt-[38px] min-[640px]:max-[767px]:gap-[34px] min-[640px]:max-[767px]:pt-[54px] min-[769px]:gap-[36px] min-[769px]:pt-[56px] border-y border-zinc-200 dark:border-[#3f3f46]">
             <div
               className={cn(
                 "flex flex-col items-center gap-3 text-center",
                 sectionPaddingClassName
               )}
             >
-              <h2 className="text-left text-[30px] font-bold leading-9 text-zinc-950 max-[639px]:text-[22px] max-[639px]:leading-8">
-                <span className="text-zinc-950">Simple, </span>
+              <h2 className="text-left text-[30px] font-bold leading-9 text-zinc-950 dark:text-[#fafafa] max-[639px]:text-[22px] max-[639px]:leading-8">
+                <span className="text-zinc-950 dark:text-[#fafafa]">Simple, </span>
                 <span className="text-[#7f22fe]">Transparent Pricing</span>
               </h2>
-              <p className="text-base leading-6 text-[#5d0ec0]">
+              <p className="text-base leading-6 text-[#5d0ec0] dark:text-[#c4b5fd]">
                 Pay only for what you use. No hidden fees, no complex tiers.
               </p>
             </div>
@@ -733,7 +763,7 @@ export const LandingHome = () => {
                 </div>
                 <div
                   className={cn(
-                    "text-left text-[26px] leading-[34px] text-[#5d0ec0] max-[639px]:max-w-[260px] max-[639px]:text-center max-[639px]:text-[18px] max-[639px]:leading-7 min-[769px]:text-left min-[769px]:text-[30px] min-[769px]:leading-9 font-sans"
+                    "text-left text-[26px] leading-[34px] text-[#5d0ec0] dark:text-[#c4b5fd] max-[639px]:max-w-[260px] max-[639px]:text-center max-[639px]:text-[18px] max-[639px]:leading-7 min-[769px]:text-left min-[769px]:text-[30px] min-[769px]:leading-9 font-sans"
                   )}
                 >
                   <p>That&apos;s it. No complex tiers, no hidden fees.</p>
@@ -744,19 +774,19 @@ export const LandingHome = () => {
               </div>
 
               <div className="flex flex-col">
-                <div className="grid grid-cols-3 border-y border-[#ddd6ff] max-[639px]:grid-cols-1 min-[769px]:grid-cols-[320px_1fr_1fr]">
+                <div className="grid grid-cols-3 border-y border-[#ddd6ff] dark:border-[#3f3f46] max-[639px]:grid-cols-1 min-[769px]:grid-cols-[320px_1fr_1fr]">
                   {pricingExamples.map((example, index) => (
                     <div
                       key={example.label}
                       className={cn(
-                        "relative min-h-[100px] border-[#ddd6ff] px-6 py-6 min-[769px]:px-12",
+                        "relative min-h-[100px] border-[#ddd6ff] px-6 py-6 dark:border-[#3f3f46] min-[769px]:px-12",
                         index < pricingExamples.length - 1
                           ? "min-[640px]:border-r max-[639px]:border-b"
                           : ""
                       )}
                     >
                       <div
-                        className="absolute inset-0 opacity-40"
+                        className="absolute inset-0 opacity-40 dark:opacity-[0.08]"
                         style={stripePattern("#ddd6ff", 1, 8)}
                       />
                       <div className="relative flex h-full flex-col items-start justify-center gap-1.5 text-left max-[639px]:items-center max-[639px]:text-center">
@@ -777,14 +807,17 @@ export const LandingHome = () => {
                   ))}
                 </div>
                 <div className="grid grid-cols-[256px_1fr] max-[639px]:grid-cols-1 min-[640px]:max-[767px]:grid-cols-1 min-[769px]:grid-cols-[320px_1fr]">
-                  <div className="border-r border-[#ddd6ff] px-6 py-8 max-[639px]:border-b max-[639px]:border-r-0 max-[639px]:px-4 max-[639px]:py-6 min-[640px]:max-[767px]:border-b min-[640px]:max-[767px]:border-r-0 min-[640px]:max-[767px]:px-12 min-[640px]:max-[767px]:py-6 min-[769px]:border-b-0 min-[769px]:border-r min-[769px]:px-12 min-[769px]:py-7">
+                  <div className="border-r border-[#ddd6ff] px-6 py-8 dark:border-[#3f3f46] max-[639px]:border-b max-[639px]:border-r-0 max-[639px]:px-4 max-[639px]:py-6 min-[640px]:max-[767px]:border-b min-[640px]:max-[767px]:border-r-0 min-[640px]:max-[767px]:px-12 min-[640px]:max-[767px]:py-6 min-[769px]:border-b-0 min-[769px]:border-r min-[769px]:px-12 min-[769px]:py-7">
                     <div className="flex flex-col gap-4 items-start max-[639px]:items-center min-[640px]:max-[767px]:items-center">
-                      <h3 className="text-[24px] font-bold leading-8 text-[#2e1065] max-[639px]:text-[22px] max-[639px]:leading-8 text-left min-[640px]:max-[767px]:text-left">
+                      <h3 className="text-[24px] font-bold leading-8 text-[#2e1065] dark:text-[#fafafa] max-[639px]:text-[22px] max-[639px]:leading-8 text-left min-[640px]:max-[767px]:text-left">
                         File Size Limits
                       </h3>
-                      <p className="max-w-[228px] text-sm leading-5 text-[#7f22fe] max-[639px]:max-w-[320px] max-[639px]:text-center min-[640px]:max-[767px]:max-w-none min-[640px]:max-[767px]:text-center">
+                      <p className="max-w-[228px] text-sm leading-5 text-[#7f22fe] dark:text-[#c4b5fd] max-[639px]:max-w-[320px] max-[639px]:text-center min-[640px]:max-[767px]:max-w-none min-[640px]:max-[767px]:text-center">
                         Need higher limits? Contact team{" "}
-                        <Link className="text-[#7f22fe]" href="mailto:team@knowhereto.ai">
+                        <Link
+                          className="text-[#7f22fe] dark:text-[#c4b5fd]"
+                          href="mailto:team@knowhereto.ai"
+                        >
                           @knowhereto.ai
                         </Link>{" "}
                         for enterprise pricing with custom limits.
@@ -797,7 +830,7 @@ export const LandingHome = () => {
                       <div
                         key={limit.format}
                         className={cn(
-                          "border-[#ddd6ff] px-6 py-10 text-center flex flex-col items-center justify-center min-[769px]:min-h-full min-[769px]:gap-[14px] min-[640px]:max-[767px]:h-[120px] min-[640px]:max-[767px]:gap-[12px] max-[639px]:h-[110px] max-[639px]:gap-[10px]",
+                          "border-[#ddd6ff] px-6 py-10 text-center flex flex-col items-center justify-center dark:border-[#3f3f46] min-[769px]:min-h-full min-[769px]:gap-[14px] min-[640px]:max-[767px]:h-[120px] min-[640px]:max-[767px]:gap-[12px] max-[639px]:h-[110px] max-[639px]:gap-[10px]",
                           index < fileLimits.length - 1 && "min-[640px]:border-r",
                           index % 2 === 0 && "max-[639px]:border-r",
                           index < 2 && "max-[639px]:border-b"
@@ -827,18 +860,18 @@ export const LandingHome = () => {
               <div className="flex flex-wrap items-center gap-4 max-[639px]:flex-col max-[639px]:justify-center max-[639px]:gap-3">
                 <div className="relative overflow-hidden rounded-[4px] border border-b-[6px] border-[#ddd6ff] bg-[#ede9fe] px-3 pb-2 pt-2">
                   <div
-                    className="absolute inset-0 opacity-40"
+                    className="absolute inset-0 opacity-40 dark:opacity-[0.08]"
                     style={stripePattern("#ddd6ff", 1, 8)}
                   />
                   <span className="relative text-[30px] font-bold leading-9 text-[#5d0ec0]">
                     ENTERPRISE
                   </span>
                 </div>
-                <h2 className="text-left text-[30px] font-bold leading-9 text-zinc-950 max-[639px]:text-[22px] max-[639px]:leading-8">
+                <h2 className="text-left text-[30px] font-bold leading-9 text-zinc-950 dark:text-[#fafafa] max-[639px]:text-[22px] max-[639px]:leading-8">
                   Need Custom <span className="text-[#7f22fe]">Solutions</span>?
                 </h2>
               </div>
-              <p className="text-base leading-6 text-zinc-600 max-[639px]:max-w-[330px]">
+              <p className="text-base leading-6 text-zinc-600 dark:text-[#d4d4d8] max-[639px]:max-w-[330px]">
                 Get custom limits, SLAs, and dedicated support for your enterprise needs.
               </p>
             </div>
@@ -853,7 +886,7 @@ export const LandingHome = () => {
             </div>
           </div>
 
-          <div className="mt-12 grid grid-cols-2 border-t border-zinc-100 px-12 py-7 max-[639px]:mt-5 max-[639px]:px-5 max-[639px]:py-2.5">
+          <div className="mt-12 grid grid-cols-2 border-t border-zinc-100 px-12 py-7 dark:border-[#27272a] max-[639px]:mt-5 max-[639px]:px-5 max-[639px]:py-2.5">
             {enterpriseItems.map((item) => (
               <EnterpriseCheckItem key={item} label={item} />
             ))}
@@ -861,7 +894,7 @@ export const LandingHome = () => {
         </section>
 
         <section className={sectionFrameClassName}>
-          <div className="flex flex-col gap-9 py-14 max-[639px]:gap-6 max-[639px]:py-9 border-y border-zinc-200">
+          <div className="flex flex-col gap-9 py-14 max-[639px]:gap-6 max-[639px]:py-9 border-y border-zinc-200 dark:border-[#3f3f46]">
             <SectionTitle
               title={
                 <>
@@ -869,7 +902,7 @@ export const LandingHome = () => {
                 </>
               }
             />
-            <div className="flex flex-col border-x border-zinc-100 max-[639px]:border-x-0">
+            <div className="flex flex-col border-x border-zinc-100 dark:border-[#27272a] max-[639px]:border-x-0">
               {faqItems.map((faq) => (
                 <FaqRow key={faq.question} answer={faq.answer} question={faq.question} />
               ))}
@@ -925,7 +958,7 @@ export const LandingHome = () => {
 
       <footer
         className={cn(
-          "mx-auto flex w-full flex-row items-center justify-between gap-3 border border-zinc-200 bg-white text-left max-[639px]:flex-col max-[639px]:text-center min-[768px]:max-w-[768px] min-[769px]:max-w-[976px]",
+          "mx-auto flex w-full flex-row items-center justify-between gap-3 border border-zinc-200 bg-white text-left dark:border-[#3f3f46] dark:bg-[#18181b] max-[639px]:flex-col max-[639px]:text-center min-[768px]:max-w-[768px] min-[769px]:max-w-[976px]",
           footerPaddingClassName
         )}
       >
