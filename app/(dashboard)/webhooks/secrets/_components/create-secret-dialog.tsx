@@ -68,15 +68,15 @@ export const CreateSecretDialog = ({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className={dashboardDesktopModalContentClassName}>
         <form
-          className="flex flex-col gap-8 px-6 pb-10 pt-6 sm:gap-[38px] sm:px-[46px] sm:pb-[54px] sm:pt-[38px] lg:gap-10 lg:px-12 lg:pb-14 lg:pt-10"
+          className="flex flex-col gap-[30px] px-[22px] pb-10 pt-[22px] sm:gap-[38px] sm:px-[46px] sm:pb-[54px] sm:pt-[38px] lg:gap-10 lg:px-12 lg:pb-14 lg:pt-10"
           onSubmit={handleSubmit}
         >
           <div className="flex items-start gap-6 sm:gap-8">
             <div className="min-w-0 flex-1">
-              <h2 className="text-[20px] font-bold leading-7 text-[#09090b] sm:leading-[26px] lg:leading-7">
+              <h2 className="text-[20px] font-bold leading-[26px] text-[#09090b] lg:leading-7">
                 {t("createSecret")}
               </h2>
-              <p className="mt-1 text-sm leading-5 text-[#71717b] sm:leading-[18px] lg:leading-5">
+              <p className="mt-0.5 text-sm leading-[18px] text-[#71717b] lg:mt-1 lg:leading-5">
                 {t("createSecretDescription")}
               </p>
             </div>
@@ -85,15 +85,8 @@ export const CreateSecretDialog = ({
           </div>
 
           <div className="flex flex-col gap-6">
-            <label htmlFor="webhook-endpoint-url" className="flex flex-col gap-2">
-              <span
-                className={cn(
-                  dashboardDesktopFieldLabelClassName,
-                  "sm:leading-[18px] lg:leading-5"
-                )}
-              >
-                {t("endpointUrl")}
-              </span>
+            <label htmlFor="webhook-endpoint-url" className="flex flex-col gap-[6px] lg:gap-2">
+              <span className={dashboardDesktopFieldLabelClassName}>{t("endpointUrl")}</span>
               <input
                 id="webhook-endpoint-url"
                 value={endpoint}
@@ -107,7 +100,7 @@ export const CreateSecretDialog = ({
             <div className="min-h-5">
               <p
                 className={cn(
-                  "text-sm leading-5 sm:leading-[18px] lg:leading-5",
+                  "text-sm leading-[18px] lg:leading-5",
                   validationError ? "text-destructive" : "text-[#71717b]"
                 )}
               >
@@ -116,7 +109,7 @@ export const CreateSecretDialog = ({
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 sm:gap-[6px] lg:gap-2">
+          <div className="flex justify-end gap-[6px] lg:gap-2">
             <DashboardDesktopActionButton
               variant="secondary"
               onClick={handleClose}

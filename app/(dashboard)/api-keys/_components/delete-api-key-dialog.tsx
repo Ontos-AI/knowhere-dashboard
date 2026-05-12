@@ -31,17 +31,17 @@ export const DeleteApiKeyDialog = ({
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className={cn(dashboardDesktopModalContentClassName, "p-0")}>
-        <div className="flex flex-col items-end gap-8 px-6 py-8 sm:gap-[38px] sm:pl-[50px] sm:pr-[46px] sm:py-[38px] lg:gap-10 lg:px-12 lg:py-10">
-          <div className="flex w-full flex-col gap-[14px]">
-            <h2 className="text-[20px] font-bold leading-7 text-[#09090b] sm:leading-[26px] lg:leading-7">
+        <div className="flex flex-col items-end gap-[38px] px-[22px] pb-[38px] pt-[22px] sm:px-[46px] sm:py-[38px] lg:gap-10 lg:px-12 lg:py-10">
+          <div className="flex w-full flex-col gap-3 lg:gap-[14px]">
+            <h2 className="text-[20px] font-bold leading-[26px] text-[#09090b] lg:leading-7">
               {t("deleteConfirmTitle")}
             </h2>
-            <p className="text-sm leading-5 text-[#71717b] sm:leading-[18px] lg:leading-5">
+            <p className="text-sm leading-[18px] text-[#71717b] lg:leading-5">
               {t("deleteConfirmDesc")}
             </p>
           </div>
 
-          <div className="flex justify-end gap-2 sm:gap-[6px] lg:gap-2">
+          <div className="flex w-full justify-end gap-[6px] lg:gap-2">
             <AlertDialogCancel asChild>
               <DashboardDesktopActionButton
                 variant="secondary"

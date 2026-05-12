@@ -6,18 +6,19 @@ import Image from "next/image";
 import type { ButtonHTMLAttributes, SVGProps } from "react";
 
 export const dashboardDesktopModalContentClassName =
-  "w-[calc(100vw-2rem)] max-w-[560px] gap-0 rounded-none border-[#e4e4e7] bg-[#fafafa] p-0 shadow-none [&>button]:hidden";
+  "w-screen max-w-none gap-0 rounded-none border-[#e4e4e7] bg-[#fafafa] p-0 shadow-none sm:w-[calc(100vw-2rem)] sm:max-w-[560px] [&>button]:hidden";
 
-export const dashboardDesktopFieldLabelClassName = "text-sm font-normal leading-5 text-[#09090b]";
+export const dashboardDesktopFieldLabelClassName =
+  "text-sm font-normal leading-[18px] text-[#09090b] lg:leading-5";
 
 export const dashboardDesktopTextFieldClassName =
   "h-10 w-full rounded-none border border-[#e4e4e7] bg-white px-3 text-xs leading-4 text-[#27272a] shadow-none outline-none placeholder:text-[#9f9fa9] focus-visible:ring-2 focus-visible:ring-[#7f22fe]/20";
 
 export const dashboardDesktopSecretFieldClassName =
-  "min-h-[68px] w-full rounded-none border border-[#e4e4e7] bg-white px-3 py-2.5 text-xs leading-4 text-[#09090b]";
+  "min-h-[58px] w-full rounded-none border border-[#e4e4e7] bg-white px-3 py-2.5 text-xs leading-4 text-[#09090b] lg:min-h-[68px]";
 
 const actionButtonBaseClassName =
-  "inline-flex h-9 items-center justify-center gap-1 rounded-none border-b-4 border-l border-r border-t px-3 pb-0.5 font-mono-display text-xs font-medium leading-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/20 disabled:cursor-not-allowed";
+  "inline-flex h-12 items-center justify-center gap-1 rounded-none border-b-4 border-l border-r border-t px-3 pb-0.5 font-mono-display text-xs font-medium leading-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/20 disabled:cursor-not-allowed sm:h-9";
 
 export const dashboardDesktopPrimaryButtonClassName = cn(
   actionButtonBaseClassName,
