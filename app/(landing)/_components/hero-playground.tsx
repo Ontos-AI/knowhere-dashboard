@@ -182,7 +182,7 @@ type HeroDemoFile = {
 
 const playgroundSamples: Record<PlaygroundSampleId, PlaygroundSample> = {
   atlas: {
-    cardLabel: "Invoice.pdf",
+    cardLabel: "EN Atlas Technical Handbook Rev Aug 2013.pdf",
     extension: ".pdf",
     id: "atlas",
     modalLabel: "EN Atlas Technical Handbook Rev Aug 2013.pdf",
@@ -196,8 +196,8 @@ const playgroundSamples: Record<PlaygroundSampleId, PlaygroundSample> = {
     tone: { background: "#fb2c36", text: "#fef2f2" },
   },
   epstein: {
-    cardLabel: "Database.csv",
-    extension: ".csv",
+    cardLabel: "Epstein Flight Logs.pdf",
+    extension: ".pdf",
     id: "epstein",
     modalLabel: "Epstein Flight Logs.pdf",
     pdfPath: "/playground-files/epstein/Epstein_Flight_Logs.pdf",
@@ -216,7 +216,7 @@ const playgroundSamples: Record<PlaygroundSampleId, PlaygroundSample> = {
     tone: { background: "#00b8db", text: "#ecfeff" },
   },
   tsla: {
-    cardLabel: "Report.pdf",
+    cardLabel: "Tesla Q4 2025 Update.pdf",
     extension: ".pdf",
     id: "tsla",
     modalLabel: "Tesla Q4 2025 Update.pdf",
