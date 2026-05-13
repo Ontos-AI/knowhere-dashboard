@@ -308,20 +308,6 @@ const sortFilePaths = (left: string, right: string) =>
 const encodeResultPath = (sample: PlaygroundSample, relativePath: string) =>
   `${sample.resultRoot}/${relativePath.split("/").map(encodeURIComponent).join("/")}`;
 
-const getDisplayName = (sample: PlaygroundSample, path: string, fallbackName: string) => {
-  if (sample.id === "tsla") {
-    if (path === "hierarchy_view.html") {
-      return "hierarc....html";
-    }
-
-    if (path.startsWith("images/")) {
-      return "imag....jpg";
-    }
-  }
-
-  return fallbackName;
-};
-
 const getFileKind = (name: string, kind: ResultTreeNode["kind"]): ResultFileKind => {
   if (kind === "directory") {
     return "directory";
@@ -366,6 +352,17 @@ const getPreviewLanguage = (fileKind: ResultFileKind): PreviewLanguage => {
   return "text";
 };
 
+const humanReadableLabels: Record<string, string> = {
+  "chunks.json": "Document Data",
+  "doc_nav.json": "Navigation",
+  "full.md": "Full Text",
+  "hierarchy.json": "Structure",
+  "hierarchy_slim.json": "Structure (Slim)",
+  "hierarchy_view.html": "Document Outline",
+  "kb.csv": "Knowledge Base",
+  "manifest.json": "Manifest",
+};
+
 const createNode = ({
   children = [],
   depth,
@@ -381,7 +378,7 @@ const createNode = ({
 }): ResultTreeNode => ({
   children,
   depth,
-  displayName: name,
+  displayName: humanReadableLabels[name] ?? name,
   fileKind: getFileKind(name, kind),
   kind,
   name,
@@ -417,7 +414,7 @@ const buildResultTree = (
         createNode({
           depth: 1,
           kind: "file",
-          name: getDisplayName(sample, filePath, filePath.split("/").pop() ?? filePath),
+          name: filePath.split("/").pop() ?? filePath,
           path: filePath,
         })
       );
@@ -434,7 +431,7 @@ const buildResultTree = (
     return createNode({
       depth: 0,
       kind: "file",
-      name: getDisplayName(sample, entry, entry),
+      name: entry,
       path: entry,
     });
   });
@@ -1124,18 +1121,25 @@ const ResultTree = ({
       <Fragment key={node.path}>
         <button
           className={cn(
-            "flex h-9 w-full items-center gap-1.5 overflow-hidden px-2 py-0.5 text-left transition-colors hover:bg-[#3f3f46]",
-            isSelected && "bg-[#52525c]"
+            "group flex h-9 w-full items-center gap-1.5 overflow-hidden rounded-r-md border-l-2 px-2 py-0.5 text-left transition-all duration-150 hover:bg-[#3f3f46]",
+            isSelected
+              ? "border-l-[#a78bfa] bg-[#3f3f46]/80 text-zinc-100"
+              : "border-l-transparent hover:border-l-zinc-600"
           )}
           onClick={() => onNodeClick(node)}
           type="button"
         >
           <div
-            className="flex min-w-0 flex-1 items-center gap-1"
+            className="flex min-w-0 flex-1 items-center gap-1 cursor-pointer select-none"
             style={{ paddingLeft: `${node.depth * 28}px` }}
           >
             <TreeNodeIcon fileKind={node.fileKind} open={isExpanded} />
-            <span className="min-w-0 truncate text-xs leading-4 text-zinc-300">
+            <span
+              className={cn(
+                "min-w-0 truncate text-xs leading-4 transition-colors duration-150",
+                isSelected ? "text-zinc-100" : "text-zinc-400 group-hover:text-zinc-200"
+              )}
+            >
               {node.displayName}
             </span>
           </div>
@@ -1346,6 +1350,7 @@ const ResultState = ({
   imageMetadataByPath,
   preview,
   selectedPath,
+  sourceLabel,
   tree,
 }: {
   directoryCounts: DirectoryCounts;
@@ -1354,6 +1359,7 @@ const ResultState = ({
   imageMetadataByPath: Map<string, PlaygroundImageMetadata>;
   preview: PreviewState | null;
   selectedPath: string;
+  sourceLabel: string;
   tree: ResultTreeNode[];
 }) => {
   const treeViewportRef = useRef<HTMLDivElement | null>(null);
@@ -1390,8 +1396,19 @@ const ResultState = ({
 
   return (
     <div className="flex h-full min-h-0 items-stretch overflow-hidden bg-[#18181b]">
-      <aside className="h-full min-h-0 self-stretch w-[160px] shrink-0 border-r border-[#3f3f46] bg-[#27272a]">
-        <ScrollAreaPrimitive.Root type="auto" className="relative h-full w-full overflow-hidden">
+      <aside className="flex h-full min-h-0 w-[160px] shrink-0 flex-col border-r border-[#3f3f46] bg-[#27272a]">
+        <div className="shrink-0 border-b border-[#3f3f46] px-2 py-1.5">
+          <span className="block truncate text-[10px] font-medium uppercase tracking-[0.12em] text-zinc-500">
+            Source
+          </span>
+          <span className="block truncate text-xs text-zinc-200" title={sourceLabel}>
+            {sourceLabel}
+          </span>
+        </div>
+        <ScrollAreaPrimitive.Root
+          type="auto"
+          className="relative min-h-0 flex-1 w-full overflow-hidden"
+        >
           <ScrollAreaPrimitive.Viewport
             className={cn("h-full w-full", hasTreeScrollbar && "pr-2")}
             ref={treeViewportRef}
@@ -1813,6 +1830,7 @@ export const HeroPlayground = () => {
                     imageMetadataByPath={imageMetadataByPath}
                     preview={preview}
                     selectedPath={selectedPath}
+                    sourceLabel={currentSample.cardLabel}
                     tree={tree}
                   />
                 </div>
