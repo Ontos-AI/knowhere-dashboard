@@ -80,17 +80,17 @@ export const EmailLoginForm = ({
   });
 
   return (
-    <form className="space-y-4 max-[639px]:space-y-[14px]" noValidate onSubmit={handleSubmit}>
-      <div className="space-y-2 max-[639px]:space-y-1.5">
+    <form className="space-y-[14px] lg:space-y-4" noValidate onSubmit={handleSubmit}>
+      <div className="space-y-1.5 lg:space-y-2">
         <Label
-          className="text-sm font-bold leading-5 text-[#09090b] max-[639px]:text-xs max-[639px]:leading-[18px]"
+          className="text-xs font-bold leading-[18px] text-[#09090b] lg:text-sm lg:leading-5"
           htmlFor="login-email"
         >
           {t("email")}
         </Label>
         <Input
           aria-invalid={form.formState.errors.email ? "true" : "false"}
-          className="h-10 border-[#e4e4e7] px-3 text-sm leading-5 text-[#09090b] placeholder:text-xs placeholder:leading-4 placeholder:text-[#9f9fa9] hover:border-[#d4d4d8] focus-visible:border-[#7f22fe] disabled:border-[#e4e4e7] disabled:bg-[#fafafa] max-[639px]:px-[10px] max-[639px]:text-xs max-[639px]:leading-[18px] max-[639px]:placeholder:leading-[14px] max-[374px]:px-3"
+          className="h-10 border-[#e4e4e7] px-[10px] text-xs leading-[14px] text-[#09090b] placeholder:text-xs placeholder:leading-[14px] placeholder:text-[#9f9fa9] hover:border-[#d4d4d8] focus-visible:border-[#7f22fe] disabled:border-[#e4e4e7] disabled:bg-[#fafafa] lg:px-3 lg:leading-4 lg:placeholder:leading-4"
           disabled={disabled || isSubmitting}
           id="login-email"
           placeholder={t("emailPlaceholder")}
@@ -105,10 +105,10 @@ export const EmailLoginForm = ({
       </div>
 
       {passwordLoginEnabled && isPasswordLoginEnabled ? (
-        <div className="space-y-2 max-[639px]:space-y-1.5">
+        <div className="space-y-1.5 lg:space-y-2">
           <div className="flex items-center justify-between gap-3">
             <Label
-              className="text-sm font-bold leading-5 text-[#09090b] max-[639px]:text-xs max-[639px]:leading-[18px]"
+              className="text-xs font-bold leading-[18px] text-[#09090b] lg:text-sm lg:leading-5"
               htmlFor="login-password"
             >
               {t("password")}
@@ -123,7 +123,7 @@ export const EmailLoginForm = ({
           <Input
             aria-invalid={form.formState.errors.password ? "true" : "false"}
             autoComplete="current-password"
-            className="h-10 border-[#e4e4e7] px-3 text-sm leading-5 text-[#09090b] placeholder:text-xs placeholder:leading-4 placeholder:text-[#9f9fa9] hover:border-[#d4d4d8] focus-visible:border-[#7f22fe] disabled:border-[#e4e4e7] disabled:bg-[#fafafa] max-[639px]:px-[10px] max-[639px]:text-xs max-[639px]:leading-[18px] max-[639px]:placeholder:leading-[14px] max-[374px]:px-3"
+            className="h-10 border-[#e4e4e7] px-[10px] text-xs leading-[14px] text-[#09090b] placeholder:text-xs placeholder:leading-[14px] placeholder:text-[#9f9fa9] hover:border-[#d4d4d8] focus-visible:border-[#7f22fe] disabled:border-[#e4e4e7] disabled:bg-[#fafafa] lg:px-3 lg:leading-4 lg:placeholder:leading-4"
             disabled={disabled || isSubmitting}
             id="login-password"
             placeholder={t("passwordPlaceholder")}
@@ -162,7 +162,7 @@ export const EmailLoginForm = ({
             {isPasswordLoginEnabled ? t("useEmailLinkInstead") : t("loginWithPassword")}
           </LoginButton>
 
-          <p className="text-center text-sm leading-5 text-[#71717a] max-[639px]:text-xs max-[639px]:leading-[18px]">
+          <p className="text-center text-xs leading-[18px] text-[#71717a] lg:text-sm lg:leading-5">
             {t("noAccount")}{" "}
             <Link
               className="font-medium text-[#7f22fe] transition-opacity hover:opacity-80"

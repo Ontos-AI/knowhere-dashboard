@@ -49,7 +49,7 @@ export const SocialLoginButtons = ({
   const t = useTranslations("Auth");
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5 lg:space-y-2">
       <LoginButton
         aria-busy={activeProvider === "google"}
         disabled={disabled || activeProvider !== null}

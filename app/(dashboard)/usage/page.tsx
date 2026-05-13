@@ -1,5 +1,6 @@
 "use client";
 
+import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
 import { DatePickerWithRange } from "@app/(dashboard)/usage/_components/date-range-picker";
 import { UsageTable } from "@app/(dashboard)/usage/_components/usage-table";
 import { UsageWelcomeModal } from "@app/(dashboard)/usage/_components/usage-welcome-modal";
@@ -77,9 +78,9 @@ const UsageSummaryCard = ({
   icon,
 }: UsageSummaryCardProps) => {
   return (
-    <article className="flex h-[98px] flex-col gap-2 overflow-hidden border border-[#f4f4f5] px-[14px] pb-[14px] pt-3 sm:h-[120px] sm:px-[18px] sm:pb-5 sm:pt-4 lg:h-[132px] lg:px-5">
+    <article className="flex h-[98px] flex-col gap-2 overflow-hidden border border-[#f4f4f5] px-[14px] pb-[14px] pt-3 dark:border-[#3f3f46] dark:bg-[#18181b] sm:h-[120px] sm:px-[18px] sm:pb-5 sm:pt-4 lg:h-[132px] lg:px-5">
       <div className="flex min-h-6 items-start justify-between gap-6 sm:min-h-[40px]">
-        <h2 className="text-[14px] font-medium leading-5 text-[#27272a] sm:text-base sm:leading-6">
+        <h2 className="text-[14px] font-medium leading-5 text-[#27272a] dark:text-[#fafafa] sm:text-base sm:leading-6">
           {title}
         </h2>
         {icon}
@@ -93,7 +94,7 @@ const UsageSummaryCard = ({
         >
           {value}
         </span>
-        <span className="font-accent text-[12px] font-medium leading-none text-[#27272a] sm:text-[14px] lg:text-base">
+        <span className="font-accent text-[12px] font-medium leading-none text-[#27272a] dark:text-[#fafafa] sm:text-[14px] lg:text-base">
           {unit}
         </span>
       </div>
@@ -105,25 +106,25 @@ const UsageSummaryCard = ({
 const UsagePageSkeleton = () => {
   return (
     <div className="w-full space-y-[18px] sm:space-y-[22px] lg:space-y-5">
-      <div className="h-6 w-[340px] animate-pulse bg-[#f4f4f5]" />
-      <div className="grid grid-cols-1 gap-0 border border-[#e4e4e7] lg:grid-cols-3">
+      <div className="h-6 w-[340px] animate-pulse bg-[#f4f4f5] dark:bg-[#27272a]" />
+      <div className="grid grid-cols-1 gap-0 border border-[#e4e4e7] dark:border-[#3f3f46] lg:grid-cols-3">
         {["summary-1", "summary-2", "summary-3"].map((cardKey) => (
           <div
             key={cardKey}
-            className="flex h-[98px] flex-col gap-3 border border-[#f4f4f5] px-[14px] pb-[14px] pt-3 sm:h-[120px] sm:px-[18px] sm:pb-5 sm:pt-4 lg:h-[132px] lg:px-5"
+            className="flex h-[98px] flex-col gap-3 border border-[#f4f4f5] px-[14px] pb-[14px] pt-3 dark:border-[#3f3f46] dark:bg-[#18181b] sm:h-[120px] sm:px-[18px] sm:pb-5 sm:pt-4 lg:h-[132px] lg:px-5"
           >
-            <div className="h-6 w-32 animate-pulse bg-[#f4f4f5]" />
-            <div className="h-8 w-24 animate-pulse bg-[#f4f4f5]" />
-            <div className="h-4 w-40 animate-pulse bg-[#f4f4f5]" />
+            <div className="h-6 w-32 animate-pulse bg-[#f4f4f5] dark:bg-[#3f3f46]" />
+            <div className="h-8 w-24 animate-pulse bg-[#f4f4f5] dark:bg-[#3f3f46]" />
+            <div className="h-4 w-40 animate-pulse bg-[#f4f4f5] dark:bg-[#3f3f46]" />
           </div>
         ))}
       </div>
       <div className="flex flex-wrap gap-2">
-        <div className="h-8 w-[288px] animate-pulse bg-[#f4f4f5]" />
-        <div className="h-8 w-[220px] animate-pulse bg-[#f4f4f5]" />
-        <div className="ml-auto h-8 w-[128px] animate-pulse bg-[#f4f4f5]" />
+        <div className="h-8 w-[288px] animate-pulse bg-[#f4f4f5] dark:bg-[#27272a]" />
+        <div className="h-8 w-[220px] animate-pulse bg-[#f4f4f5] dark:bg-[#27272a]" />
+        <div className="ml-auto h-8 w-[128px] animate-pulse bg-[#f4f4f5] dark:bg-[#27272a]" />
       </div>
-      <div className="h-[560px] animate-pulse border border-[#e4e4e7] bg-[#fafafa]" />
+      <div className="h-[560px] animate-pulse border border-[#e4e4e7] bg-[#fafafa] dark:border-[#3f3f46] dark:bg-[#18181b]" />
     </div>
   );
 };
@@ -312,20 +313,21 @@ export default function UsagePage() {
       <UsageWelcomeModal />
       <div className="w-full space-y-[18px] sm:space-y-[22px] lg:space-y-5">
         <section className="space-y-1 sm:hidden">
-          <h1 className="text-base font-bold leading-6 text-black">
+          <h1 className="text-base font-bold leading-6 text-black dark:text-[#fafafa]">
             {billingEnabled ? t("title") : t("selfHostedTitle")}
           </h1>
-          <p className="text-[14px] leading-5 text-[#52525c]">
+          <p className="text-[14px] leading-5 text-[#52525c] dark:text-[#d4d4d8]">
             {billingEnabled ? t("description") : ""}
           </p>
         </section>
-        <p className="hidden text-base leading-[22px] text-[#52525c] sm:block lg:leading-6">
+        <p className="hidden text-base leading-6 text-[#52525c] dark:text-[#d4d4d8] sm:block">
           {billingEnabled ? t("description") : ""}
         </p>
 
         <section
           className={cn(
             "grid grid-cols-1 gap-0 border border-[#e4e4e7]",
+            "dark:border-[#3f3f46]",
             billingEnabled ? "lg:grid-cols-3" : "lg:grid-cols-2"
           )}
         >
@@ -360,7 +362,7 @@ export default function UsagePage() {
             valueClassName="text-[#00a63e]"
             icon={<SummaryIcon src="/icons/usage/summary-used.svg" width={19} height={19} />}
             helper={
-              <span className="text-[#27272a]">
+              <span className="text-[#27272a] dark:text-[#d4d4d8]">
                 {billingEnabled ? t("estCost", { cost: `$${estimatedCostLabel}` }) : ""}
               </span>
             }
@@ -378,14 +380,14 @@ export default function UsagePage() {
               />
             }
             helper={
-              <span className="text-[#27272a]">
+              <span className="text-[#27272a] dark:text-[#d4d4d8]">
                 {t("avgProcessingTime", { time: `${averageDuration}s` })}
               </span>
             }
           />
         </section>
 
-        <section className="space-y-3">
+        <section className="space-y-6 sm:space-y-3">
           <div className="flex flex-wrap items-start gap-[6px] sm:gap-x-2 sm:gap-y-[6px] lg:gap-2">
             <DatePickerWithRange
               className="w-full max-w-[222px] sm:max-w-[224px] lg:max-w-[238px]"
@@ -408,9 +410,9 @@ export default function UsagePage() {
                     key={`range-${range}`}
                     type="button"
                     className={cn(
-                      "flex h-9 w-[68px] items-center justify-center overflow-hidden bg-[#e4e4e7] px-4 pb-[10px] pt-2 font-mono-display text-[12px] font-light leading-4 tracking-normal text-[#09090b] sm:h-8 sm:pb-[10px] whitespace-nowrap",
+                      "flex h-9 w-[68px] items-center justify-center overflow-hidden bg-[#e4e4e7] px-4 pb-[10px] pt-2 font-mono-display text-[12px] font-light leading-4 tracking-normal whitespace-nowrap text-[#09090b] dark:bg-[#3f3f46] dark:text-[#fafafa] sm:h-8 sm:pb-[10px]",
                       isActive &&
-                        "border-b-4 border-[#52525c] bg-[#71717b] pb-3 font-bold text-white"
+                        "border-b-4 border-[#52525c] bg-[#71717b] font-bold text-white max-[639px]:pb-3 dark:border-[#a78bfa] dark:bg-[#7f22fe]"
                     )}
                     onClick={() => {
                       setActiveRange(range as TimeRangePreset);
@@ -426,26 +428,32 @@ export default function UsagePage() {
               })}
             </div>
 
-            <button
+            <DashboardActionButton
               type="button"
-              className="flex h-9 w-[121px] items-center justify-center gap-1 border-x border-t border-b-4 border-[#f4f4f5] bg-white px-3 pb-0.5 font-mono-display text-[12px] font-medium leading-5 text-[#27272a] transition-colors hover:bg-[#fafafa] disabled:cursor-not-allowed disabled:opacity-60 sm:h-8 lg:ml-auto lg:w-[127px]"
+              variant="secondary"
+              size="small"
+              className="h-9 w-[121px] disabled:opacity-60 sm:h-8 lg:ml-auto lg:w-[127px]"
               onClick={() => void handleExportCsv()}
               disabled={isExporting || totalCount === 0}
             >
               {isExporting ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <span className="flex size-5 shrink-0 items-center justify-center">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                </span>
               ) : (
-                <Image
-                  src="/icons/usage/export.svg"
-                  alt=""
-                  aria-hidden
-                  width={13.33}
-                  height={13.33}
-                  className="h-[13.33px] w-[13.33px]"
-                />
+                <span className="flex size-5 shrink-0 items-center justify-center">
+                  <Image
+                    src="/icons/usage/export.svg"
+                    alt=""
+                    aria-hidden
+                    width={13.33}
+                    height={13.33}
+                    className="h-[13.33px] w-[13.33px]"
+                  />
+                </span>
               )}
               {t("exportCSV")}
-            </button>
+            </DashboardActionButton>
           </div>
 
           <UsageTable

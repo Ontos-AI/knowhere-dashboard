@@ -1,31 +1,36 @@
 "use client";
 
 import { cn } from "@lib/utils";
-import { type ReactNode, useEffect, useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
 const monoDisplayClassName = "font-[family-name:var(--font-mono-display)]";
 const monoReadableClassName = "font-[family-name:var(--font-mono-readable)]";
 
-type CodeTab = "python" | "curl";
+type CodeTab = "python" | "node" | "curl";
 
-const pythonCode = `import requests
+const pythonCode = `# pip install knowhere-python-sdk
+import knowhere
 
-url = "https://api.knowhereto.ai/v1/jobs"
-headers = {
-  "Authorization": f"Bearer {KNOWHERE_API_KEY}",
-  "Content-Type": "application/json"
-}
-payload = {
-  "source_type": "url",
-  "source_url": "https://arxiv.org/pdf/1706.03762.pdf",
-  "parsing_params": {
-    "model": "base",
-    "ocr_enabled": True
-  }
-}
+client = knowhere.Knowhere(api_key="sk_...")
 
-response = requests.post(url, headers=headers, json=payload)
-print(response.json())`;
+result = client.parse(url="https://arxiv.org/pdf/1706.03762.pdf")
+
+print(result.statistics.total_chunks)
+print(result.full_markdown[:200])`;
+
+const nodeCode = `// npm install @ontos-ai/knowhere-sdk
+import Knowhere from "@ontos-ai/knowhere-sdk";
+
+const client = new Knowhere({
+  apiKey: "sk_...",
+});
+
+const result = await client.parse({
+  url: "https://arxiv.org/pdf/1706.03762.pdf",
+});
+
+console.log("Text chunks:", result.textChunks.length);
+console.log(result.textChunks[0]?.content);`;
 
 const curlCode = `curl -X POST https://api.knowhereto.ai/v1/jobs \\
   --oauth2-bearer "$KNOWHERE_API_KEY" \\
@@ -41,98 +46,15 @@ const curlCode = `curl -X POST https://api.knowhereto.ai/v1/jobs \\
 
 const codeByTab = {
   python: pythonCode,
+  node: nodeCode,
   curl: curlCode,
 } satisfies Record<CodeTab, string>;
 
-const codeMarkupByTab = {
-  python: (
-    <>
-      <span className="text-[#51a2ff]">import</span> requests{"\n\n"}
-      url = <span className="text-[#ff6467]">"https://api.knowhereto.ai/v1/jobs"</span>
-      {"\n"}
-      headers = {"{"}
-      {"\n"}
-      {"  "}
-      <span className="text-[#ff6467]">"Authorization"</span>:{" "}
-      <span className="text-[#ff6467]">
-        f"Bearer {"{"}KNOWHERE_API_KEY{"}"}"
-      </span>
-      ,{"\n"}
-      {"  "}
-      <span className="text-[#ff6467]">"Content-Type"</span>:{" "}
-      <span className="text-[#ff6467]">"application/json"</span>
-      {"\n"}
-      {"}"}
-      {"\n"}
-      payload = {"{"}
-      {"\n"}
-      {"  "}
-      <span className="text-[#ff6467]">"source_type"</span>:{" "}
-      <span className="text-[#ff6467]">"url"</span>,{"\n"}
-      {"  "}
-      <span className="text-[#ff6467]">"source_url"</span>:{" "}
-      <span className="text-[#ff6467]">"https://arxiv.org/pdf/1706.03762.pdf"</span>,{"\n"}
-      {"  "}
-      <span className="text-[#ff6467]">"parsing_params"</span>: {"{"}
-      {"\n"}
-      {"    "}
-      <span className="text-[#ff6467]">"model"</span>:{" "}
-      <span className="text-[#ff6467]">"base"</span>,{"\n"}
-      {"    "}
-      <span className="text-[#ff6467]">"ocr_enabled"</span>:{" "}
-      <span className="text-[#51a2ff]">True</span>
-      {"\n"}
-      {"  "}
-      {"}"}
-      {"\n"}
-      {"}"}
-      {"\n\n"}
-      response = requests.<span className="text-[#d08700]">post</span>(url, headers=headers,
-      json=payload)
-      {"\n"}
-      <span className="text-[#51a2ff]">print</span>(response.
-      <span className="text-[#d08700]">json</span>())
-    </>
-  ),
-  curl: (
-    <>
-      <span className="text-[#51a2ff]">curl</span> -X POST{" "}
-      <span className="text-[#ff6467]">https://api.knowhereto.ai/v1/jobs</span> {"\\"}
-      {"\n"}
-      {"  "}
-      <span className="text-[#d08700]">--oauth2-bearer</span>{" "}
-      <span className="text-[#ff6467]">"$KNOWHERE_API_KEY"</span> {"\\"}
-      {"\n"}
-      {"  "}
-      <span className="text-[#d08700]">-H</span>{" "}
-      <span className="text-[#ff6467]">"Content-Type: application/json"</span> {"\\"}
-      {"\n"}
-      {"  "}
-      <span className="text-[#d08700]">-d</span> <span className="text-[#ff6467]">'{"{"}</span>
-      {"\n"}
-      {"    "}
-      <span className="text-[#ff6467]">"source_type"</span>:{" "}
-      <span className="text-[#ff6467]">"url"</span>,{"\n"}
-      {"    "}
-      <span className="text-[#ff6467]">"source_url"</span>:{" "}
-      <span className="text-[#ff6467]">"https://arxiv.org/pdf/1706.03762.pdf"</span>,{"\n"}
-      {"    "}
-      <span className="text-[#ff6467]">"parsing_params"</span>: {"{"}
-      {"\n"}
-      {"      "}
-      <span className="text-[#ff6467]">"model"</span>:{" "}
-      <span className="text-[#ff6467]">"base"</span>,{"\n"}
-      {"      "}
-      <span className="text-[#ff6467]">"ocr_enabled"</span>:{" "}
-      <span className="text-[#51a2ff]">true</span>
-      {"\n"}
-      {"    "}
-      {"}"}
-      {"\n"}
-      <span className="text-[#ff6467]">'{"}"}</span>
-    </>
-  ),
-} satisfies Record<CodeTab, ReactNode>;
+const codeTabLabelMap: Record<CodeTab, string> = {
+  python: "Python",
+  node: "Node.js",
+  curl: "CURL",
+};
 
 export const IntegrateCodePanel = () => {
   const [activeTab, setActiveTab] = useState<CodeTab>("python");
@@ -168,7 +90,7 @@ export const IntegrateCodePanel = () => {
           className="flex items-center gap-2"
           role="tablist"
         >
-          {(["python", "curl"] as const).map((tab) => {
+          {(["python", "node", "curl"] as const).map((tab) => {
             const isActive = activeTab === tab;
 
             return (
@@ -189,7 +111,7 @@ export const IntegrateCodePanel = () => {
                 tabIndex={isActive ? 0 : -1}
                 type="button"
               >
-                {tab === "python" ? "Python" : "CURL"}
+                {codeTabLabelMap[tab]}
               </button>
             );
           })}
@@ -217,7 +139,7 @@ export const IntegrateCodePanel = () => {
             monoReadableClassName
           )}
         >
-          <code>{codeMarkupByTab[activeTab]}</code>
+          <code>{currentCode}</code>
         </pre>
       </div>
       <style jsx>{`

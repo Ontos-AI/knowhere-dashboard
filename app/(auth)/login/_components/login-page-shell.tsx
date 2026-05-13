@@ -25,7 +25,7 @@ export const LoginPageShell = () => {
 
   return (
     <div className="min-h-screen bg-[#fafafa] text-[#09090b]">
-      <header className="h-16 border-b border-[#d4d4d8] bg-[#fafafa] px-6 lg:px-8 max-[639px]:h-12 max-[639px]:px-[30px] max-[374px]:px-4">
+      <header className="h-12 border-b border-[#d4d4d8] bg-[#fafafa] px-[30px] lg:h-16 lg:px-8">
         <div className="flex h-full items-center">
           <Link
             aria-label="Knowhere homepage"
@@ -37,13 +37,13 @@ export const LoginPageShell = () => {
         </div>
       </header>
 
-      <main className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-[#f4f4f5] px-4 py-8 sm:px-6 lg:px-16 lg:py-8 max-[639px]:min-h-[calc(100vh-48px)] max-[639px]:items-start max-[639px]:bg-[#fafafa] max-[639px]:px-0 max-[639px]:py-[18px] max-[374px]:py-4">
-        <section className="w-full max-w-[402px] border border-[#e4e4e7] bg-[#fafafa] px-8 pb-12 pt-6 lg:min-h-[492px] lg:px-12 lg:pb-14 max-[639px]:max-w-none max-[639px]:border-none max-[639px]:bg-transparent max-[639px]:px-[30px] max-[639px]:pb-[54px] max-[639px]:pt-[22px] max-[639px]:min-h-0 max-[374px]:px-4 max-[374px]:pb-10 max-[374px]:pt-5">
-          <div className="flex flex-col gap-6">
+      <main className="flex min-h-[calc(100vh-48px)] items-start justify-center bg-[#fafafa] px-0 py-[18px] sm:items-center sm:bg-[#f4f4f5] sm:px-[62px] sm:py-[30px] lg:min-h-[calc(100vh-64px)] lg:px-16 lg:py-8">
+        <section className="w-full bg-transparent px-[30px] pb-[54px] pt-[22px] sm:min-h-[468px] sm:max-w-[402px] sm:border sm:border-[#e4e4e7] sm:bg-[#fafafa] sm:px-[46px] sm:pb-[54px] sm:pt-[22px] lg:min-h-[492px] lg:px-12 lg:pb-14 lg:pt-6">
+          <div className="flex flex-col gap-[22px] lg:gap-6">
             <LoginBrand className="h-16 max-[639px]:hidden" variant="card" />
 
-            <div className="space-y-4 max-[639px]:space-y-[14px]">
-              <h1 className="text-xl font-bold leading-7 text-[#09090b] max-[639px]:text-base max-[639px]:leading-[26px]">
+            <div className="space-y-[14px] lg:space-y-4">
+              <h1 className="text-base font-bold leading-[26px] text-[#09090b] sm:text-lg lg:text-xl lg:leading-7">
                 {t("login")}
               </h1>
               <SocialLoginButtons
@@ -55,7 +55,7 @@ export const LoginPageShell = () => {
 
             <div
               aria-hidden="true"
-              className="flex items-center justify-center gap-5 text-sm font-normal leading-5 text-[#9f9fa9] max-[639px]:gap-[18px] max-[639px]:text-xs max-[639px]:leading-[18px]"
+              className="flex items-center justify-center gap-[18px] text-xs font-normal leading-[18px] text-[#9f9fa9] lg:gap-5 lg:text-sm lg:leading-5"
             >
               <span className="h-px flex-1 bg-[#e4e4e7]" />
               <span>or</span>

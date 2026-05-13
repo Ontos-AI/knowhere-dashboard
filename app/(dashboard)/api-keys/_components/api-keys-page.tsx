@@ -1,5 +1,6 @@
 "use client";
 
+import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
 import { ApiKeyCreatedDialog } from "@app/(dashboard)/api-keys/_components/api-key-created-dialog";
 import { ApiKeysEmptyState } from "@app/(dashboard)/api-keys/_components/api-keys-empty-state";
 import { ApiKeysTable } from "@app/(dashboard)/api-keys/_components/api-keys-table";
@@ -14,8 +15,6 @@ import {
 import { LoadingSpinner } from "@components/common/loading-spinner";
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -24,7 +23,7 @@ import {
 } from "@components/ui/alert-dialog";
 import { useTimezone } from "@hooks/use-timezone";
 import { useToast } from "@hooks/use-toast";
-import { cn } from "@lib/utils";
+import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { Plus } from "lucide-react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
@@ -52,12 +51,6 @@ const EXPIRATION_OPTIONS: Array<{ labelKey: string; value: ExpirationDuration }>
   { labelKey: "exp365d", value: "365d" },
   { labelKey: "expNever", value: "never" },
 ];
-
-const primaryButtonClassName =
-  "inline-flex h-9 items-center justify-center gap-1 border border-[#7008e7] border-b-4 bg-[#7f22fe] px-3 pb-0.5 font-mono-display text-xs font-medium leading-5 text-[#f5f3ff] transition-[transform,border-width,background-color] hover:border-b-[6px] hover:bg-[#7008e7] active:translate-y-[2px] active:border-b-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/25 disabled:cursor-not-allowed disabled:border-[#d6d3d1] disabled:bg-[#d6d3d1] disabled:text-[#a8a29e]";
-
-const secondaryButtonClassName =
-  "inline-flex h-9 items-center justify-center gap-1 border border-[#f4f4f5] border-b-4 bg-white px-3 pb-0.5 font-mono-display text-xs font-medium leading-5 text-[#27272a] transition-[transform,border-width,background-color] hover:border-b-[6px] hover:bg-[#fafafa] active:translate-y-[2px] active:border-b-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/25 disabled:cursor-not-allowed disabled:border-[#e7e5e4] disabled:bg-[#f4f4f5] disabled:text-[#a1a1a1]";
 
 const isExpirationDuration = (value: string): value is ExpirationDuration =>
   EXPIRATION_OPTIONS.some((option) => option.value === value);
@@ -129,9 +122,9 @@ const ApiKeysErrorState = ({
       <div className="space-y-2">
         <h2 className="text-base font-semibold leading-6 text-[#09090b]">{title}</h2>
       </div>
-      <button type="button" className={secondaryButtonClassName} onClick={onRetry}>
+      <DashboardActionButton type="button" variant="secondary" size="page" onClick={onRetry}>
         {retryLabel}
-      </button>
+      </DashboardActionButton>
     </section>
   );
 };
@@ -287,13 +280,22 @@ export const ApiKeysPage = () => {
 
   return (
     <>
-      <div className="flex w-full flex-col gap-5 sm:gap-[18px] lg:gap-5">
-        <p className="text-base leading-6 text-[#09090b] sm:text-[14px] sm:leading-[22px] lg:text-base lg:leading-6">
+      <div className="flex w-full flex-col gap-3.5 sm:gap-[18px] lg:gap-5">
+        <div className="flex flex-col gap-0.5 sm:hidden">
+          <h2 className="truncate text-sm font-bold leading-[22px] text-black dark:text-[#fafafa]">
+            {t("title")}
+          </h2>
+          <p className="text-xs leading-[18px] text-[#52525c] dark:text-[#d4d4d8]">
+            {t("subtitle")}
+          </p>
+        </div>
+
+        <p className="hidden text-base leading-6 text-[#09090b] dark:text-[#fafafa] sm:block sm:text-[14px] sm:leading-[22px] lg:text-base lg:leading-6">
           {t("subtitle")}
         </p>
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <label className="flex h-9 w-full items-center gap-[6px] border border-[#e4e4e7] bg-white py-1.5 pl-2 pr-[14px] focus-within:ring-2 focus-within:ring-[#7f22fe]/20 sm:max-w-[240px]">
+        <div className="flex items-start justify-between">
+          <label className="flex h-9 w-[240px] shrink-0 items-center gap-1 border border-[#e4e4e7] bg-white py-1.5 pl-[6px] pr-3 focus-within:ring-2 focus-within:ring-[#7f22fe]/20 dark:border-[#3f3f46] dark:bg-[#18181b] sm:gap-1 sm:pl-[6px] sm:pr-3 lg:gap-[6px] lg:pl-2 lg:pr-[14px]">
             <span className="sr-only">{t("searchPlaceholder")}</span>
             <Image
               src="/icons/api-keys/search-box.svg"
@@ -301,28 +303,27 @@ export const ApiKeysPage = () => {
               aria-hidden
               width={16}
               height={16}
-              className="h-4 w-4 shrink-0"
+              className="h-4 w-3.5 shrink-0 lg:w-4"
             />
             <input
               value={searchTerm}
               onChange={(event) => handleSearchChange(event.target.value)}
               placeholder={t("searchPlaceholder")}
-              className="min-w-0 flex-1 bg-transparent text-xs leading-4 text-[#09090b] outline-none placeholder:text-[#9f9fa9] focus-visible:ring-0 sm:leading-[14px] lg:leading-4"
+              className="min-w-0 flex-1 bg-transparent text-xs leading-[14px] text-[#09090b] outline-none placeholder:text-[#9f9fa9] focus-visible:ring-0 dark:text-[#fafafa] sm:leading-[14px] lg:leading-4"
             />
           </label>
 
-          <button
+          <DashboardActionButton
             type="button"
             aria-label={t("createKey")}
-            className={cn(
-              primaryButtonClassName,
-              "w-full sm:h-9 sm:w-10 sm:border-b-[3px] sm:px-0 sm:pb-px sm:hover:border-b-[5px] lg:h-9 lg:w-[150px] lg:border-b-4 lg:px-3 lg:pb-0.5 lg:hover:border-b-[6px]"
-            )}
+            variant="primary"
+            size="page"
+            className="h-9 w-10 border-b-[3px] px-0 pb-px hover:border-b-[5px] sm:h-9 sm:w-10 sm:border-b-[3px] sm:px-0 sm:pb-px sm:hover:border-b-[5px] lg:h-9 lg:w-[150px] lg:border-b-4 lg:px-3 lg:pb-0.5 lg:hover:border-b-[6px]"
             onClick={() => setIsCreateDialogOpen(true)}
           >
-            <Plus className="h-4 w-4 stroke-[2.5]" />
-            <span className="sm:hidden lg:inline">{t("createKey")}</span>
-          </button>
+            <Plus className="h-5 w-5 stroke-[2.5]" />
+            <span className="hidden lg:inline">{t("createKey")}</span>
+          </DashboardActionButton>
         </div>
 
         {filteredApiKeys.length === 0 ? (
@@ -391,26 +392,36 @@ export const ApiKeysPage = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col gap-3 sm:flex-row sm:justify-end sm:space-x-0">
-            <AlertDialogCancel
-              className={cn(secondaryButtonClassName, "mt-0 w-full rounded-none sm:w-auto")}
-              disabled={toggleMutation.isPending}
+            <DashboardActionButton
+              asChild
+              variant="secondary"
+              size="page"
+              className="mt-0 w-full sm:w-auto"
             >
-              {t("cancel")}
-            </AlertDialogCancel>
-            <AlertDialogAction
-              className={cn(primaryButtonClassName, "w-full rounded-none sm:w-auto")}
-              onClick={(event) => {
-                event.preventDefault();
+              <AlertDialogPrimitive.Cancel disabled={toggleMutation.isPending}>
+                {t("cancel")}
+              </AlertDialogPrimitive.Cancel>
+            </DashboardActionButton>
+            <DashboardActionButton
+              asChild
+              variant="primary"
+              size="page"
+              className="w-full sm:w-auto"
+            >
+              <AlertDialogPrimitive.Action
+                onClick={(event) => {
+                  event.preventDefault();
 
-                if (keyToToggle) {
-                  performToggle(keyToToggle);
-                }
-              }}
-              disabled={toggleMutation.isPending}
-            >
-              {toggleMutation.isPending ? <LoadingSpinner className="h-4 w-4" /> : null}
-              <span>{t("confirmDisable")}</span>
-            </AlertDialogAction>
+                  if (keyToToggle) {
+                    performToggle(keyToToggle);
+                  }
+                }}
+                disabled={toggleMutation.isPending}
+              >
+                {toggleMutation.isPending ? <LoadingSpinner className="h-4 w-4" /> : null}
+                <span>{t("confirmDisable")}</span>
+              </AlertDialogPrimitive.Action>
+            </DashboardActionButton>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

@@ -1,8 +1,8 @@
 "use client";
 
+import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
 import {
   DashboardCopyIcon,
-  DashboardDesktopActionButton,
   DashboardDesktopDialogCloseButton,
   DashboardSuccessCircleIcon,
   DashboardWarningIcon,
@@ -43,16 +43,16 @@ export const ApiKeyCreatedDialog = ({ apiKey, onOpenChange }: ApiKeyCreatedDialo
   return (
     <Dialog open={Boolean(apiKey)} onOpenChange={onOpenChange}>
       <DialogContent className={dashboardDesktopModalContentClassName}>
-        <div className="flex flex-col items-end gap-8 px-6 pb-10 pt-8 sm:gap-[38px] sm:px-[46px] sm:pb-[54px] sm:pt-[38px] lg:gap-10 lg:px-12 lg:pb-14 lg:pt-10">
+        <div className="flex flex-col items-end gap-[38px] px-[22px] pb-[38px] pt-[22px] sm:px-[46px] sm:pb-[54px] sm:pt-[38px] lg:gap-10 lg:px-12 lg:pb-14 lg:pt-10">
           <div className="flex w-full items-start gap-6 sm:gap-8">
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1">
                 <DashboardSuccessCircleIcon />
-                <h2 className="text-[20px] font-bold leading-7 text-[#09090b] sm:leading-[26px] lg:leading-7">
+                <h2 className="text-[20px] font-bold leading-[26px] text-[#09090b] lg:leading-7">
                   {t("createSuccess")}
                 </h2>
               </div>
-              <p className="mt-1 text-sm leading-5 text-[#71717b] sm:leading-[18px] lg:leading-5">
+              <p className="mt-0.5 text-sm leading-[18px] text-[#71717b] lg:mt-1 lg:leading-5">
                 {t("copyAndSave")}
               </p>
             </div>
@@ -60,23 +60,15 @@ export const ApiKeyCreatedDialog = ({ apiKey, onOpenChange }: ApiKeyCreatedDialo
             <DashboardDesktopDialogCloseButton />
           </div>
 
-          <div className="flex w-full flex-col gap-2">
-            <p
-              className={cn(dashboardDesktopFieldLabelClassName, "sm:leading-[18px] lg:leading-5")}
-            >
-              {t("yourApiKey")}
-            </p>
-            <div
-              className={cn(
-                dashboardDesktopSecretFieldClassName,
-                "break-all sm:min-h-[58px] sm:py-2.5 lg:min-h-[68px] lg:py-2.5"
-              )}
-            >
+          <div className="flex w-full flex-col gap-[6px] lg:gap-2">
+            <p className={dashboardDesktopFieldLabelClassName}>{t("yourApiKey")}</p>
+            <div className={cn(dashboardDesktopSecretFieldClassName, "break-all")}>
               {apiKey ?? ""}
             </div>
-            <DashboardDesktopActionButton
+            <DashboardActionButton
               variant="secondary"
-              className="w-fit sm:min-w-[105px] lg:min-w-[111px]"
+              size="dialog"
+              className="h-9 w-fit sm:min-w-[105px] lg:min-w-[111px]"
               onClick={() => {
                 void handleCopy();
               }}
@@ -84,23 +76,24 @@ export const ApiKeyCreatedDialog = ({ apiKey, onOpenChange }: ApiKeyCreatedDialo
             >
               <DashboardCopyIcon />
               <span>{t("copyKey")}</span>
-            </DashboardDesktopActionButton>
+            </DashboardActionButton>
           </div>
 
           <div className="flex w-full items-start gap-[6px] text-[#ff6900] lg:gap-2">
             <DashboardWarningIcon />
-            <p className="flex-1 text-sm font-medium leading-5 sm:leading-[18px] lg:leading-5">
+            <p className="flex-1 text-sm font-medium leading-[18px] lg:leading-5">
               {t("securityWarning")}
             </p>
           </div>
 
-          <DashboardDesktopActionButton
+          <DashboardActionButton
             variant="primary"
+            size="dialog"
             onClick={() => onOpenChange(false)}
-            className="w-full sm:min-w-[138px] sm:w-auto lg:min-w-[142px]"
+            className="w-full justify-center sm:min-w-[138px] sm:w-auto sm:justify-start lg:min-w-[142px]"
           >
             {t("iHaveSaved")}
-          </DashboardDesktopActionButton>
+          </DashboardActionButton>
         </div>
       </DialogContent>
     </Dialog>

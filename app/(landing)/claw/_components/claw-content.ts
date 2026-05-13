@@ -13,6 +13,12 @@ export const clawNavItems: ClawNavItem[] = [
   { href: "#docs", label: "Docs" },
 ];
 
+export const homeNavItems: ClawNavItem[] = [
+  { href: "#workflow", label: "Comparison" },
+  { href: "#integration", label: "Pricing" },
+  { href: "https://docs.knowhereto.ai/", isExternal: true, label: "Docs" },
+];
+
 export type HeroFileBadge = {
   backgroundColor: string;
   borderColor: string;

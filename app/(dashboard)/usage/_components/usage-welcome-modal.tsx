@@ -1,5 +1,7 @@
 "use client";
 
+import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
+import { dashboardDialogDesign } from "@app/(dashboard)/_components/dashboard-dialog-design";
 import { useUsageWelcome } from "@app/(dashboard)/usage/_hooks/use-usage-welcome";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@components/ui/dialog";
 import { useToast } from "@hooks/use-toast";
@@ -31,17 +33,11 @@ const codeTabConfig: Array<{
   label: string;
   language: "bash" | "go" | "javascript" | "python";
 }> = [
-  { id: "curl", label: "cURL", language: "bash" },
   { id: "python", label: "Python", language: "python" },
   { id: "node", label: "Node.js", language: "javascript" },
+  { id: "curl", label: "cURL", language: "bash" },
   { id: "go", label: "Go", language: "go" },
 ];
-
-const actionButtonBaseClassName =
-  "inline-flex items-center justify-center gap-2 border border-[#7008e7] border-b-[4px] bg-[#7f22fe] px-4 pb-[2px] pt-0 font-mono-display text-[12px] font-medium leading-5 text-[#f5f3ff] transition-[background-color,border-width,transform] hover:border-b-[6px] hover:bg-[#7008e7] active:translate-y-[2px] active:border-b-[4px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25";
-
-const secondaryButtonClassName =
-  "inline-flex items-center justify-center gap-2 border border-[#f4f4f5] border-b-[4px] bg-white px-3 pb-[2px] pt-0 font-mono-display text-[12px] font-medium leading-5 text-[#27272a] transition-[background-color,border-width,transform] hover:border-b-[6px] hover:bg-[#fafafa] active:translate-y-[2px] active:border-b-[4px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25 disabled:cursor-not-allowed disabled:border-[#e4e4e7] disabled:bg-[#f4f4f5] disabled:text-[#a1a1aa]";
 
 const buildCodeByTab = ({
   apiBaseUrl,
@@ -61,42 +57,32 @@ const buildCodeByTab = ({
       "ocr_enabled": true
     }
   }'`,
-  python: `import requests
+  python: `# pip install knowhere-python-sdk
+import knowhere
 
-url = "${apiBaseUrl}/v1/jobs"
-headers = {
-    "Authorization": "Bearer ${apiKey}",
-    "Content-Type": "application/json"
-}
-payload = {
-    "source_type": "url",
-    "source_url": "${SAMPLE_PDF_URL}",
-    "parsing_params": {
-        "model": "base",
-        "ocr_enabled": True
-    }
-}
+client = knowhere.Knowhere(
+    api_key="${apiKey}",
+    base_url="${apiBaseUrl}",
+)
 
-response = requests.post(url, headers=headers, json=payload)
-print(response.json())`,
-  node: `const response = await fetch("${apiBaseUrl}/v1/jobs", {
-  method: "POST",
-  headers: {
-    Authorization: "Bearer ${apiKey}",
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    source_type: "url",
-    source_url: "${SAMPLE_PDF_URL}",
-    parsing_params: {
-      model: "base",
-      ocr_enabled: true,
-    },
-  }),
+result = client.parse(url="${SAMPLE_PDF_URL}")
+
+print(result.statistics.total_chunks)
+print(result.full_markdown[:200])`,
+  node: `// npm install @ontos-ai/knowhere-sdk
+import Knowhere from "@ontos-ai/knowhere-sdk";
+
+const client = new Knowhere({
+  apiKey: "${apiKey}",
+  baseURL: "${apiBaseUrl}",
 });
 
-const data = await response.json();
-console.log(data);`,
+const result = await client.parse({
+  url: "${SAMPLE_PDF_URL}",
+});
+
+console.log("Text chunks:", result.textChunks.length);
+console.log(result.textChunks[0]?.content);`,
   go: `package main
 
 import (
@@ -143,7 +129,7 @@ export const UsageWelcomeModal = () => {
   const tabsId = useId();
   const { apiKey, dismiss, hasProvisionError, isDismissing, isOpen, isProvisioning } =
     useUsageWelcome();
-  const [activeTab, setActiveTab] = useState<WelcomeCodeTab>("curl");
+  const [activeTab, setActiveTab] = useState<WelcomeCodeTab>("python");
   const apiBaseUrl = env.NEXT_PUBLIC_API_URL.replace(/\/$/, "");
   const canDismiss = Boolean(apiKey) || hasProvisionError;
   const codeByTab = apiKey
@@ -195,7 +181,7 @@ export const UsageWelcomeModal = () => {
     >
       <DialogContent className="w-screen max-w-none gap-0 rounded-none border-[#e4e4e7] bg-[#fafafa] p-0 shadow-none [&>button]:hidden sm:w-[560px] sm:max-w-[560px] lg:max-w-[724px]">
         <div className="max-h-[100dvh] overflow-y-auto">
-          <div className="border-b border-[#e6defe] px-4 pb-8 pt-5 min-[375px]:px-[46px] min-[375px]:pb-[38px] min-[375px]:pt-[38px] sm:border-[#e4e4e7] sm:px-12 sm:pb-10 sm:pt-10 lg:px-12 lg:py-10">
+          <div className="px-4 pb-8 pt-5 min-[375px]:px-[46px] min-[375px]:pb-[38px] min-[375px]:pt-[38px] sm:px-12 sm:pb-10 sm:pt-10 lg:px-12 lg:py-10">
             <div className="flex items-start justify-between gap-6 sm:gap-[30px]">
               <div className="min-w-0 flex-1 sm:max-w-[408px] lg:max-w-none">
                 <DialogTitle className="text-[18px] font-bold leading-[26px] text-[#09090b] sm:text-[18px] sm:leading-[26px] sm:tracking-normal lg:text-[20px] lg:leading-7">
@@ -251,9 +237,11 @@ export const UsageWelcomeModal = () => {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3">
-                  <button
+                  <DashboardActionButton
                     type="button"
-                    className={cn(secondaryButtonClassName, "h-9 min-w-[105px] sm:min-w-[129px]")}
+                    variant="secondary"
+                    size="dialog"
+                    className="h-9 min-w-[105px] sm:min-w-[129px] lg:min-w-[111px]"
                     onClick={() => {
                       void handleCopyApiKey();
                     }}
@@ -261,7 +249,7 @@ export const UsageWelcomeModal = () => {
                   >
                     <Copy className="h-4 w-4" strokeWidth={1.8} />
                     <span>{t("copyKey")}</span>
-                  </button>
+                  </DashboardActionButton>
 
                   {hasProvisionError ? (
                     <p className="text-[13px] leading-5 text-[#b91c1c] sm:text-[12px] sm:leading-[18px]">
@@ -273,20 +261,18 @@ export const UsageWelcomeModal = () => {
             </div>
           </div>
 
-          <div className="border-b border-[#e6defe] bg-[#f5f3ff]">
-            <div className="relative px-0 pb-4 pl-16 pr-4 pt-[14px] min-[375px]:pl-[78px] min-[375px]:pr-[46px] sm:border-b-0 sm:px-0 sm:pb-4 sm:pl-20 sm:pr-12 sm:pt-4 lg:border-b lg:px-12 lg:py-[18px]">
-              <div className="absolute left-0 top-0 flex size-10 items-center justify-center border border-[#ddd6fe] border-l-[4px] bg-[#ede9fe] min-[375px]:size-10 sm:inset-y-auto sm:top-0 sm:size-12 sm:border sm:border-[#ddd6fe] sm:border-l-[4px] sm:bg-[#ede9fe] lg:inset-y-0 lg:top-auto lg:h-auto lg:w-12 lg:border-b-0 lg:border-l-0 lg:border-r lg:border-t-0">
+          <div className="border-y border-[#e6defe] bg-[#f5f3ff]">
+            <div className={dashboardDialogDesign.usageWelcome.codeTitleFrame}>
+              <div className={dashboardDialogDesign.usageWelcome.codeIconTag}>
                 <TerminalSquare
                   className="h-3 w-3 text-[#7f22fe] sm:h-5 sm:w-5 lg:h-4 lg:w-4"
                   strokeWidth={1.8}
                 />
               </div>
-              <p className="text-[14px] font-medium leading-[22px] text-[#09090b] sm:pl-0 sm:text-[14px] sm:leading-[22px] lg:pl-10 lg:text-[16px] lg:leading-6">
-                {t("codeTitle")}
-              </p>
+              <p className={dashboardDialogDesign.usageWelcome.codeTitleText}>{t("codeTitle")}</p>
             </div>
 
-            <div className="px-4 pb-[38px] pt-0 min-[375px]:pb-[38px] min-[375px]:pl-[78px] min-[375px]:pr-[46px] sm:pb-10 sm:pl-20 sm:pr-12 sm:pt-0 lg:px-12 lg:py-8">
+            <div className={dashboardDialogDesign.usageWelcome.codePanelFrame}>
               <div className="overflow-hidden bg-[#27272a]">
                 <div className="relative flex items-start gap-[10px] border-b border-[#3f3f46] px-[14px] py-[14px] sm:flex-wrap sm:items-center sm:gap-3 sm:px-4 sm:py-4 lg:gap-2">
                   <div
@@ -320,17 +306,13 @@ export const UsageWelcomeModal = () => {
 
                   <button
                     type="button"
-                    className="absolute right-[14px] top-1/2 inline-flex -translate-y-1/2 items-center gap-2 rounded-full bg-[#27272a] px-[14px] py-[6px] font-mono-display text-[12px] leading-4 text-[#a684ff] transition-colors hover:bg-[#3f3f46] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a684ff] sm:static sm:ml-auto sm:h-9 sm:translate-y-0 sm:px-4 sm:py-2 sm:text-[14px] sm:leading-5 lg:h-auto lg:rounded-none lg:px-3 lg:py-2 lg:text-[12px] lg:leading-4"
+                    className="absolute right-[14px] top-1/2 inline-flex -translate-y-1/2 items-center rounded-full bg-[#27272a] px-[14px] py-[6px] font-mono-display text-[12px] leading-4 text-[#a684ff] transition-colors hover:bg-[#3f3f46] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a684ff] sm:static sm:ml-auto sm:h-9 sm:translate-y-0 sm:px-4 sm:py-2 sm:text-[14px] sm:leading-5 lg:h-auto lg:px-4 lg:py-2 lg:text-[12px] lg:leading-4"
                     onClick={() => {
                       void handleCopyCode();
                     }}
                     disabled={!currentCode}
                   >
-                    {isProvisioning ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Copy className="h-4 w-4" strokeWidth={1.8} />
-                    )}
+                    {isProvisioning ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                     <span>{t("copyCode")}</span>
                   </button>
                 </div>
@@ -384,24 +366,29 @@ export const UsageWelcomeModal = () => {
           </div>
 
           <div className="px-4 pb-0 pt-[38px] min-[375px]:px-[22px] min-[375px]:pb-0 min-[375px]:pt-[38px] sm:px-12 sm:pb-0 sm:pt-10 lg:px-12 lg:py-10">
-            <Link
-              href={DOCUMENTATION_URL}
-              target="_blank"
-              rel="noreferrer"
+            <DashboardActionButton
+              asChild
+              variant="primary"
+              size="dialog"
               className={cn(
-                actionButtonBaseClassName,
-                "h-12 w-full text-[14px] leading-[18px] min-[375px]:w-full sm:mx-auto sm:h-12 sm:w-[320px] sm:max-w-none sm:text-[14px] sm:leading-5 lg:max-w-[320px]",
+                "h-12 w-full justify-center min-[375px]:w-full sm:mx-auto sm:h-12 sm:w-[320px] sm:max-w-none sm:justify-center lg:max-w-[320px]",
                 (!canDismiss || isDismissing) && "pointer-events-none opacity-60"
               )}
-              onClick={() => {
-                if (canDismiss) {
-                  dismiss();
-                }
-              }}
             >
-              <span>{t("viewDocumentation")}</span>
-              <ExternalLink className="h-4 w-4 sm:h-5 sm:w-5 lg:h-4 lg:w-4" strokeWidth={2} />
-            </Link>
+              <Link
+                href={DOCUMENTATION_URL}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => {
+                  if (canDismiss) {
+                    dismiss();
+                  }
+                }}
+              >
+                <span>{t("viewDocumentation")}</span>
+                <ExternalLink className="h-5 w-5" strokeWidth={2} />
+              </Link>
+            </DashboardActionButton>
 
             <button
               type="button"

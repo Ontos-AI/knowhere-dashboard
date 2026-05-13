@@ -21,7 +21,6 @@ import { Highlight, themes } from "prism-react-renderer";
 import {
   type CSSProperties,
   Fragment,
-  type PointerEvent as ReactPointerEvent,
   type RefObject,
   startTransition,
   useCallback,
@@ -183,7 +182,7 @@ type HeroDemoFile = {
 
 const playgroundSamples: Record<PlaygroundSampleId, PlaygroundSample> = {
   atlas: {
-    cardLabel: "Atlas Handbook.pdf",
+    cardLabel: "Invoice.pdf",
     extension: ".pdf",
     id: "atlas",
     modalLabel: "EN Atlas Technical Handbook Rev Aug 2013.pdf",
@@ -197,8 +196,8 @@ const playgroundSamples: Record<PlaygroundSampleId, PlaygroundSample> = {
     tone: { background: "#fb2c36", text: "#fef2f2" },
   },
   epstein: {
-    cardLabel: "Epstein Flight Logs.pdf",
-    extension: ".pdf",
+    cardLabel: "Database.csv",
+    extension: ".csv",
     id: "epstein",
     modalLabel: "Epstein Flight Logs.pdf",
     pdfPath: "/playground-files/epstein/Epstein_Flight_Logs.pdf",
@@ -214,10 +213,10 @@ const playgroundSamples: Record<PlaygroundSampleId, PlaygroundSample> = {
       left: "calc(50% + clamp(59px, 7vw, 71px))",
       top: "calc(50% + clamp(25px, 3.5vh, 37px))",
     },
-    tone: { background: "#fb2c36", text: "#fef2f2" },
+    tone: { background: "#00b8db", text: "#ecfeff" },
   },
   tsla: {
-    cardLabel: "Tesla Q4 2025.pdf",
+    cardLabel: "Report.pdf",
     extension: ".pdf",
     id: "tsla",
     modalLabel: "Tesla Q4 2025 Update.pdf",
@@ -286,9 +285,6 @@ const heroDemoFiles: readonly HeroDemoFile[] = [
     tone: playgroundSamples.tsla.tone,
   },
 ] as const;
-
-const isPlaygroundSampleId = (value: string): value is PlaygroundSampleId =>
-  value === "atlas" || value === "epstein" || value === "tsla";
 
 const formatBytes = (value: number) => {
   if (value < 1024) {
@@ -1728,7 +1724,7 @@ export const HeroPlayground = () => {
     <>
       <div className="grid grid-cols-2 max-[767px]:grid-cols-1">
         <div
-          className="relative h-[320px] border-r border-t border-zinc-200 bg-white min-[768px]:h-[400px] max-[767px]:border-b max-[767px]:border-r-0"
+          className="relative h-[320px] border-r border-t border-zinc-200 bg-white min-[768px]:h-[420px] max-[767px]:border-b max-[767px]:border-r-0"
           style={heroFieldPatternStyle}
         >
           <div className="relative h-full">
@@ -1775,7 +1771,7 @@ export const HeroPlayground = () => {
         <section
           aria-label="Interactive document playground"
           className={cn(
-            "relative h-[320px] border-t border-zinc-200 bg-[#27272a] min-[768px]:h-[400px] min-[768px]:border-l-0 max-[767px]:border-t-0 transition-colors duration-500"
+            "relative h-[320px] border-t border-zinc-200 bg-[#27272a] min-[768px]:h-[420px] min-[768px]:border-l-0 max-[767px]:border-t-0 transition-colors duration-500"
           )}
           ref={dropZoneRef}
         >

@@ -1,5 +1,7 @@
 "use client";
 
+import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
+import { dashboardDialogDesign } from "@app/(dashboard)/_components/dashboard-dialog-design";
 import {
   useBuyCreditsPackage,
   usePriceConfigs,
@@ -29,19 +31,8 @@ type AmountOptionButtonProps = {
   onClick: () => void;
 };
 
-type ActionButtonProps = {
-  children: React.ReactNode;
-  disabled?: boolean;
-  onClick?: () => void;
-  type?: "button" | "submit";
-  variant: "primary" | "secondary";
-};
-
 const amountOptionBaseClassName =
   "flex h-9 w-[72px] items-center justify-center border px-6 text-[12px] leading-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25";
-
-const actionButtonBaseClassName =
-  "flex h-12 w-full items-center justify-center gap-1 border-b-[4px] border-l border-r border-t px-3 pb-[2px] pt-0 font-mono-display text-[12px] font-medium leading-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25 disabled:cursor-not-allowed disabled:border-[#e4e4e7] disabled:bg-[#f4f4f5] disabled:text-[#a1a1aa] sm:h-9 sm:w-auto";
 
 const AmountOptionButton = ({ isSelected, label, onClick }: AmountOptionButtonProps) => {
   return (
@@ -56,30 +47,6 @@ const AmountOptionButton = ({ isSelected, label, onClick }: AmountOptionButtonPr
       onClick={onClick}
     >
       {label}
-    </button>
-  );
-};
-
-const ActionButton = ({
-  children,
-  disabled = false,
-  onClick,
-  type = "button",
-  variant,
-}: ActionButtonProps) => {
-  return (
-    <button
-      type={type}
-      disabled={disabled}
-      onClick={onClick}
-      className={cn(
-        actionButtonBaseClassName,
-        variant === "primary"
-          ? "border-[#7008e7] bg-[#7f22fe] text-[#f5f3ff] hover:bg-[#7008e7] sm:min-w-[173px]"
-          : "border-[#f4f4f5] bg-white text-[#27272a] hover:bg-[#fafafa] sm:min-w-[71px]"
-      )}
-    >
-      {children}
     </button>
   );
 };
@@ -137,7 +104,6 @@ export function BuyCreditsModal() {
 
   const handleCustomSelect = () => {
     setIsCustom(true);
-    setSelectedAmount(null);
     setCustomAmountStr("");
     void setAmountParam(null);
   };
@@ -159,7 +125,12 @@ export function BuyCreditsModal() {
 
   const currentAmount = isCustom ? Number.parseFloat(customAmountStr) : (selectedAmount ?? 0);
   const safeAmount = Number.isNaN(currentAmount) ? 0 : currentAmount;
-  const displayAmount = isCustom ? customAmountStr || "0" : String(selectedAmount ?? 0);
+  const displayAmount: string = dashboardDialogDesign.formatBuyCreditsDisplayAmount({
+    customAmount: customAmountStr,
+    fallbackAmount: PRESET_AMOUNTS[0],
+    isCustom,
+    selectedAmount,
+  });
   const quantity = Math.floor(safeAmount);
   const isValidSelection = isCustom
     ? !Number.isNaN(safeAmount) && safeAmount >= MIN_CREDITS_PURCHASE
@@ -238,11 +209,11 @@ export function BuyCreditsModal() {
           <div className="mx-auto flex w-[331px] max-w-[calc(100vw-44px)] flex-col gap-[22px] sm:w-[464px] sm:max-w-none sm:gap-10">
             <div className="flex items-center justify-center">
               <p className="text-center text-[42px] font-bold leading-[42px] tracking-normal text-black sm:text-[48px] sm:leading-[48px]">
-                ${Number(displayAmount).toFixed(2)}
+                {displayAmount}
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5 sm:gap-2">
+            <div className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1.5 lg:gap-x-2">
               {PRESET_AMOUNTS.map((amount) => (
                 <AmountOptionButton
                   key={amount}
@@ -279,15 +250,25 @@ export function BuyCreditsModal() {
             ) : null}
           </div>
 
-          <div className="mx-auto flex w-[331px] max-w-[calc(100vw-44px)] flex-col gap-1.5 sm:w-[464px] sm:max-w-none sm:flex-row sm:justify-end sm:gap-2">
-            <ActionButton
+          <div className="mx-auto flex w-[331px] max-w-[calc(100vw-44px)] flex-col gap-1.5 sm:w-[464px] sm:max-w-none sm:flex-row sm:justify-end sm:gap-[6px] lg:gap-2">
+            <DashboardActionButton
+              type="button"
               variant="secondary"
+              size="dialog"
+              className="w-full justify-center sm:w-auto sm:min-w-[67px] sm:justify-start lg:min-w-[71px]"
               disabled={buyMutation.isPending}
               onClick={handleClose}
             >
               {t("cancel")}
-            </ActionButton>
-            <ActionButton variant="primary" disabled={isPurchaseDisabled} onClick={handlePurchase}>
+            </DashboardActionButton>
+            <DashboardActionButton
+              type="button"
+              variant="primary"
+              size="dialog"
+              className="w-full justify-center sm:w-auto sm:min-w-[169px] sm:justify-start lg:min-w-[173px]"
+              disabled={isPurchaseDisabled}
+              onClick={handlePurchase}
+            >
               {buyMutation.isPending ? (
                 <>
                   <Loader2 className="size-3 animate-spin" />
@@ -296,7 +277,7 @@ export function BuyCreditsModal() {
               ) : (
                 t("purchase")
               )}
-            </ActionButton>
+            </DashboardActionButton>
           </div>
         </div>
       </DialogContent>

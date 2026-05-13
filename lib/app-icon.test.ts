@@ -3,7 +3,7 @@ import path from "node:path";
 import { appMetadata } from "@lib/app-metadata";
 import { describe, expect, test } from "vitest";
 
-const dashboardIconPath = "/images/knowhere/logo-icon.png" as const;
+const dashboardIconPath = "/images/knowhere/app-icon.png" as const;
 const rootDirectory: string = process.cwd();
 
 async function hasFile(filePath: string): Promise<boolean> {
@@ -21,6 +21,7 @@ describe("dashboard page icon", () => {
 
     expect(serializedIcons).toContain(dashboardIconPath);
     expect(serializedIcons).toContain("image/png");
+    expect(serializedIcons).toContain("1024x1024");
   });
 
   test("keeps the configured icon asset available from public", async (): Promise<void> => {
@@ -29,7 +30,7 @@ describe("dashboard page icon", () => {
       "public",
       "images",
       "knowhere",
-      "logo-icon.png"
+      "app-icon.png"
     );
 
     await expect(hasFile(iconFilePath)).resolves.toBe(true);

@@ -16,9 +16,11 @@ export const WebhooksDashboardShell = ({
 }: WebhooksDashboardShellProps) => {
   return (
     <DashboardShell
+      compactMobileHeader={true}
       compactTabletHeader={true}
       user={user}
       isBuyCreditsOpen={isBuyCreditsOpen}
+      mainClassName="px-[18px] pb-[22px] pt-[22px] sm:px-[30px] sm:pb-6 sm:pt-[22px] lg:px-12 lg:pb-8 lg:pt-8"
       titleNamespace="Webhooks"
       creditsIconSrc="/icons/api-keys/credits-coin.svg"
     >
