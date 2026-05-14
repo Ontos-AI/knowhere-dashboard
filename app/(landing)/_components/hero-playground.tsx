@@ -33,6 +33,8 @@ import { flushSync } from "react-dom";
 
 const monoDisplayClassName = "font-[family-name:var(--font-mono-display)]";
 const monoReadableClassName = "font-[family-name:var(--font-mono-readable)]";
+const englishHandwritingClassName = "font-[family-name:var(--font-handwriting-en)]";
+const dragToParseHintLabel = "Drag to parse";
 const epsteinChunksPreview = `{
   "dataset": "EPSTEIN FLIGHT LOGS UNREDACTED",
   "summary": {
@@ -182,7 +184,7 @@ type HeroDemoFile = {
 
 const playgroundSamples: Record<PlaygroundSampleId, PlaygroundSample> = {
   atlas: {
-    cardLabel: "Invoice.pdf",
+    cardLabel: "EN Atlas Technical Handbook Rev Aug 2013.pdf",
     extension: ".pdf",
     id: "atlas",
     modalLabel: "EN Atlas Technical Handbook Rev Aug 2013.pdf",
@@ -196,8 +198,8 @@ const playgroundSamples: Record<PlaygroundSampleId, PlaygroundSample> = {
     tone: { background: "#fb2c36", text: "#fef2f2" },
   },
   epstein: {
-    cardLabel: "Database.csv",
-    extension: ".csv",
+    cardLabel: "Epstein Flight Logs.pdf",
+    extension: ".pdf",
     id: "epstein",
     modalLabel: "Epstein Flight Logs.pdf",
     pdfPath: "/playground-files/epstein/Epstein_Flight_Logs.pdf",
@@ -216,7 +218,7 @@ const playgroundSamples: Record<PlaygroundSampleId, PlaygroundSample> = {
     tone: { background: "#00b8db", text: "#ecfeff" },
   },
   tsla: {
-    cardLabel: "Report.pdf",
+    cardLabel: "Tesla Q4 2025 Update.pdf",
     extension: ".pdf",
     id: "tsla",
     modalLabel: "Tesla Q4 2025 Update.pdf",
@@ -304,20 +306,6 @@ const sortFilePaths = (left: string, right: string) =>
 const encodeResultPath = (sample: PlaygroundSample, relativePath: string) =>
   `${sample.resultRoot}/${relativePath.split("/").map(encodeURIComponent).join("/")}`;
 
-const getDisplayName = (sample: PlaygroundSample, path: string, fallbackName: string) => {
-  if (sample.id === "tsla") {
-    if (path === "hierarchy_view.html") {
-      return "hierarc....html";
-    }
-
-    if (path.startsWith("images/")) {
-      return "imag....jpg";
-    }
-  }
-
-  return fallbackName;
-};
-
 const getFileKind = (name: string, kind: ResultTreeNode["kind"]): ResultFileKind => {
   if (kind === "directory") {
     return "directory";
@@ -362,6 +350,17 @@ const getPreviewLanguage = (fileKind: ResultFileKind): PreviewLanguage => {
   return "text";
 };
 
+const humanReadableLabels: Record<string, string> = {
+  "chunks.json": "Document Data",
+  "doc_nav.json": "Navigation",
+  "full.md": "Full Text",
+  "hierarchy.json": "Structure",
+  "hierarchy_slim.json": "Structure (Slim)",
+  "hierarchy_view.html": "Document Outline",
+  "kb.csv": "Knowledge Base",
+  "manifest.json": "Manifest",
+};
+
 const createNode = ({
   children = [],
   depth,
@@ -377,7 +376,7 @@ const createNode = ({
 }): ResultTreeNode => ({
   children,
   depth,
-  displayName: name,
+  displayName: humanReadableLabels[name] ?? name,
   fileKind: getFileKind(name, kind),
   kind,
   name,
@@ -413,7 +412,7 @@ const buildResultTree = (
         createNode({
           depth: 1,
           kind: "file",
-          name: getDisplayName(sample, filePath, filePath.split("/").pop() ?? filePath),
+          name: filePath.split("/").pop() ?? filePath,
           path: filePath,
         })
       );
@@ -430,7 +429,7 @@ const buildResultTree = (
     return createNode({
       depth: 0,
       kind: "file",
-      name: getDisplayName(sample, entry, entry),
+      name: entry,
       path: entry,
     });
   });
@@ -1071,6 +1070,52 @@ const TargetDragContent = () => {
   );
 };
 
+const DragToParseHint = () => {
+  const hintClassName: string = englishHandwritingClassName;
+
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 z-10 overflow-hidden text-zinc-500"
+    >
+      <div className="absolute left-1/2 top-[13px] flex -translate-x-1/2 -rotate-[1.5deg] flex-col items-center text-center min-[768px]:left-[28%] min-[768px]:translate-x-0 min-[1024px]:left-[30%] min-[1024px]:top-[18px]">
+        <div className="relative inline-block">
+          <p
+            className={cn(
+              "text-[29px] font-normal leading-none tracking-normal text-current opacity-90 min-[768px]:text-[32px] min-[1024px]:text-[36px]",
+              hintClassName
+            )}
+          >
+            {dragToParseHintLabel}
+          </p>
+          <svg
+            aria-hidden="true"
+            className="absolute left-full top-[0.6em] h-12 w-16 translate-x-2 overflow-visible text-current opacity-75 min-[768px]:h-14 min-[768px]:w-[74px] min-[768px]:translate-x-3 min-[1024px]:h-16 min-[1024px]:w-20 min-[1024px]:translate-x-4"
+            fill="none"
+            viewBox="0 0 80 64"
+          >
+            <title>Drag direction arrow</title>
+            <path
+              d="M4 12C29 10 49 26 52 48"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+            />
+            <path
+              d="M45 42C49 44 52 48 55 54C58 48 61 44 65 42"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const TreeNodeIcon = ({ fileKind, open }: { fileKind: ResultFileKind; open?: boolean }) => {
   if (fileKind === "directory") {
     const DirectoryIcon = open ? FolderOpen : Folder;
@@ -1120,18 +1165,25 @@ const ResultTree = ({
       <Fragment key={node.path}>
         <button
           className={cn(
-            "flex h-9 w-full items-center gap-1.5 overflow-hidden px-2 py-0.5 text-left transition-colors hover:bg-[#3f3f46]",
-            isSelected && "bg-[#52525c]"
+            "group flex h-9 w-full items-center gap-1.5 overflow-hidden rounded-r-md border-l-2 px-2 py-0.5 text-left transition-all duration-150 hover:bg-[#3f3f46]",
+            isSelected
+              ? "border-l-[#a78bfa] bg-[#3f3f46]/80 text-zinc-100"
+              : "border-l-transparent hover:border-l-zinc-600"
           )}
           onClick={() => onNodeClick(node)}
           type="button"
         >
           <div
-            className="flex min-w-0 flex-1 items-center gap-1"
+            className="flex min-w-0 flex-1 items-center gap-1 cursor-pointer select-none"
             style={{ paddingLeft: `${node.depth * 28}px` }}
           >
             <TreeNodeIcon fileKind={node.fileKind} open={isExpanded} />
-            <span className="min-w-0 truncate text-xs leading-4 text-zinc-300">
+            <span
+              className={cn(
+                "min-w-0 truncate text-xs leading-4 transition-colors duration-150",
+                isSelected ? "text-zinc-100" : "text-zinc-400 group-hover:text-zinc-200"
+              )}
+            >
               {node.displayName}
             </span>
           </div>
@@ -1342,6 +1394,7 @@ const ResultState = ({
   imageMetadataByPath,
   preview,
   selectedPath,
+  sourceLabel,
   tree,
 }: {
   directoryCounts: DirectoryCounts;
@@ -1350,6 +1403,7 @@ const ResultState = ({
   imageMetadataByPath: Map<string, PlaygroundImageMetadata>;
   preview: PreviewState | null;
   selectedPath: string;
+  sourceLabel: string;
   tree: ResultTreeNode[];
 }) => {
   const treeViewportRef = useRef<HTMLDivElement | null>(null);
@@ -1386,8 +1440,19 @@ const ResultState = ({
 
   return (
     <div className="flex h-full min-h-0 items-stretch overflow-hidden bg-[#18181b]">
-      <aside className="h-full min-h-0 self-stretch w-[160px] shrink-0 border-r border-[#3f3f46] bg-[#27272a]">
-        <ScrollAreaPrimitive.Root type="auto" className="relative h-full w-full overflow-hidden">
+      <aside className="flex h-full min-h-0 w-[160px] shrink-0 flex-col border-r border-[#3f3f46] bg-[#27272a]">
+        <div className="shrink-0 border-b border-[#3f3f46] px-2 py-1.5">
+          <span className="block truncate text-[10px] font-medium uppercase tracking-[0.12em] text-zinc-500">
+            Source
+          </span>
+          <span className="block truncate text-xs text-zinc-200" title={sourceLabel}>
+            {sourceLabel}
+          </span>
+        </div>
+        <ScrollAreaPrimitive.Root
+          type="auto"
+          className="relative min-h-0 flex-1 w-full overflow-hidden"
+        >
           <ScrollAreaPrimitive.Viewport
             className={cn("h-full w-full", hasTreeScrollbar && "pr-2")}
             ref={treeViewportRef}
@@ -1727,6 +1792,7 @@ export const HeroPlayground = () => {
           className="relative h-[320px] border-r border-t border-zinc-200 bg-white min-[768px]:h-[420px] max-[767px]:border-b max-[767px]:border-r-0"
           style={heroFieldPatternStyle}
         >
+          <DragToParseHint />
           <div className="relative h-full">
             {heroDemoFiles.map((file) => (
               <HeroFileCard
@@ -1809,6 +1875,7 @@ export const HeroPlayground = () => {
                     imageMetadataByPath={imageMetadataByPath}
                     preview={preview}
                     selectedPath={selectedPath}
+                    sourceLabel={currentSample.cardLabel}
                     tree={tree}
                   />
                 </div>
