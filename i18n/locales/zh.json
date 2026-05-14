@@ -462,6 +462,9 @@
       "billingName": "Credits购买"
     }
   },
+  "LandingPlayground": {
+    "dragToParse": "拖到右边解析"
+  },
   "Webhooks": {
     "title": "Webhook 密钥",
     "subtitle": "管理用于保护 webhook 端点的密钥",

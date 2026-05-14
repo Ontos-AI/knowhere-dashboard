@@ -461,6 +461,9 @@
       "billingName": "Credits Purchase"
     }
   },
+  "LandingPlayground": {
+    "dragToParse": "Drag to parse"
+  },
   "Webhooks": {
     "title": "Webhook Secrets",
     "subtitle": "Manage webhook secrets for securing webhook endpoints",

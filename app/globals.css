@@ -1,3 +1,6 @@
+@import "@fontsource-variable/caveat";
+@import "@fontsource/ma-shan-zheng";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -19,6 +22,9 @@
       "Cascadia Code", Menlo, Consolas, ui-monospace, monospace;
     --font-accent:
       "Anuphan", "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, system-ui, sans-serif;
+    --font-handwriting-en:
+      "Caveat Variable", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive;
+    --font-handwriting-cn: "Ma Shan Zheng", "Kaiti SC", KaiTi, "STKaiti", "FangSong", cursive;
     --font-brand:
       "Geist", "Ysabeau", "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, ui-serif,
       serif;
