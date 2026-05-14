@@ -32,19 +32,19 @@ describe("landing contracts", () => {
       join(process.cwd(), "app/(landing)/_components/hero-playground.tsx"),
       "utf8"
     );
-    const englishMessagesSource: string = readFileSync(
-      join(process.cwd(), "i18n/locales/en.json"),
-      "utf8"
-    );
-    const chineseMessagesSource: string = readFileSync(
-      join(process.cwd(), "i18n/locales/zh.json"),
+
+    expect(heroPlaygroundSource).toContain('const dragToParseHintLabel = "Drag to parse";');
+    expect(heroPlaygroundSource).not.toContain('useTranslations("LandingPlayground")');
+    expect(heroPlaygroundSource).not.toContain('t("dragToParse")');
+    expect(heroPlaygroundSource).not.toContain(">拖到右边解析<");
+  });
+
+  it("keeps the shared language switcher from shifting the page when opened", () => {
+    const languageSwitcherSource: string = readFileSync(
+      join(process.cwd(), "components/language-switcher.tsx"),
       "utf8"
     );
 
-    expect(heroPlaygroundSource).toContain('useTranslations("LandingPlayground")');
-    expect(heroPlaygroundSource).not.toContain(">Drag to parse<");
-    expect(heroPlaygroundSource).not.toContain(">拖到右边解析<");
-    expect(englishMessagesSource).toContain('"dragToParse": "Drag to parse"');
-    expect(chineseMessagesSource).toContain('"dragToParse": "拖到右边解析"');
+    expect(languageSwitcherSource).toContain("<DropdownMenu modal={false}>");
   });
 });

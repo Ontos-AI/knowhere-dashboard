@@ -11,9 +11,6 @@ importers:
       '@fontsource-variable/caveat':
         specifier: ^5.2.8
         version: 5.2.8
-      '@fontsource/ma-shan-zheng':
-        specifier: ^5.2.9
-        version: 5.2.9
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.69.0(react@19.2.3))
@@ -837,9 +834,6 @@ packages:
 
   '@fontsource-variable/caveat@5.2.8':
     resolution: {integrity: sha512-Iv+G8xn0pKG7RtanBmYGMjIfkO819N13LXZBwmRVcgfJvJwKVom/v3KT9pwANXTSoUbPeRp228twRDK7hcabLw==}
-
-  '@fontsource/ma-shan-zheng@5.2.9':
-    resolution: {integrity: sha512-5Pvpb5q6sq00/g+yLLE8iYWcsAqnoIqCloBsjN0bphkGWU3Wp3EfT0CgTsKOiLsPM8GN3AUP0ZaFM2/JR33C/g==}
 
   '@formatjs/ecma402-abstract@2.3.6':
     resolution: {integrity: sha512-HJnTFeRM2kVFVr5gr5kH1XP6K0JcJtE7Lzvtr3FS/so5f1kpsqqqxy5JF+FRaO6H2qmcMfAUIox7AJteieRtVw==}
@@ -4726,8 +4720,6 @@ snapshots:
   '@floating-ui/utils@0.2.10': {}
 
   '@fontsource-variable/caveat@5.2.8': {}
-
-  '@fontsource/ma-shan-zheng@5.2.9': {}
 
   '@formatjs/ecma402-abstract@2.3.6':
     dependencies:

@@ -17,7 +17,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useLocale, useTranslations } from "next-intl";
 import { Highlight, themes } from "prism-react-renderer";
 import {
   type CSSProperties,
@@ -35,7 +34,7 @@ import { flushSync } from "react-dom";
 const monoDisplayClassName = "font-[family-name:var(--font-mono-display)]";
 const monoReadableClassName = "font-[family-name:var(--font-mono-readable)]";
 const englishHandwritingClassName = "font-[family-name:var(--font-handwriting-en)]";
-const chineseHandwritingClassName = "font-[family-name:var(--font-handwriting-cn)]";
+const dragToParseHintLabel = "Drag to parse";
 const epsteinChunksPreview = `{
   "dataset": "EPSTEIN FLIGHT LOGS UNREDACTED",
   "summary": {
@@ -1072,12 +1071,7 @@ const TargetDragContent = () => {
 };
 
 const DragToParseHint = () => {
-  const locale: string = useLocale();
-  const t = useTranslations("LandingPlayground");
-  const isChineseLocale: boolean = locale.startsWith("zh");
-  const hintClassName: string = isChineseLocale
-    ? chineseHandwritingClassName
-    : englishHandwritingClassName;
+  const hintClassName: string = englishHandwritingClassName;
 
   return (
     <div
@@ -1085,57 +1079,39 @@ const DragToParseHint = () => {
       className="pointer-events-none absolute inset-0 z-10 overflow-hidden text-zinc-500"
     >
       <div className="absolute left-1/2 top-[13px] flex -translate-x-1/2 -rotate-[1.5deg] flex-col items-center text-center min-[768px]:left-[28%] min-[768px]:translate-x-0 min-[1024px]:left-[30%] min-[1024px]:top-[18px]">
-        <p
-          className={cn(
-            "text-[29px] font-normal leading-none tracking-normal text-current opacity-90 min-[768px]:text-[32px] min-[1024px]:text-[36px]",
-            isChineseLocale &&
-              "text-[25px] font-normal min-[768px]:text-[27px] min-[1024px]:text-[30px]",
-            hintClassName
-          )}
-        >
-          {t("dragToParse")}
-        </p>
+        <div className="relative inline-block">
+          <p
+            className={cn(
+              "text-[29px] font-normal leading-none tracking-normal text-current opacity-90 min-[768px]:text-[32px] min-[1024px]:text-[36px]",
+              hintClassName
+            )}
+          >
+            {dragToParseHintLabel}
+          </p>
+          <svg
+            aria-hidden="true"
+            className="absolute left-full top-[0.6em] h-12 w-16 translate-x-2 overflow-visible text-current opacity-75 min-[768px]:h-14 min-[768px]:w-[74px] min-[768px]:translate-x-3 min-[1024px]:h-16 min-[1024px]:w-20 min-[1024px]:translate-x-4"
+            fill="none"
+            viewBox="0 0 80 64"
+          >
+            <title>Drag direction arrow</title>
+            <path
+              d="M4 12C29 10 49 26 52 48"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+            />
+            <path
+              d="M45 42C49 44 52 48 55 54C58 48 61 44 65 42"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+            />
+          </svg>
+        </div>
       </div>
-      <svg
-        aria-hidden="true"
-        className="absolute left-1/2 top-[38px] h-[92px] w-[118px] -translate-x-1/2 overflow-visible text-current opacity-75 min-[768px]:left-[43%] min-[768px]:top-[36px] min-[768px]:h-[118px] min-[768px]:w-[24%] min-[768px]:min-w-[190px] min-[768px]:translate-x-0 min-[1024px]:left-[44%] min-[1024px]:top-[40px]"
-        fill="none"
-        viewBox="0 0 220 100"
-      >
-        <title>Drag direction arrow</title>
-        <path
-          d="M18 20C48 6 76 8 102 25C126 41 150 43 176 28"
-          className="max-[767px]:hidden"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="4"
-        />
-        <path
-          d="M169 28C176 29 183 31 188 36C184 41 180 47 178 54"
-          className="max-[767px]:hidden"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="4"
-        />
-        <path
-          className="min-[768px]:hidden"
-          d="M20 18C43 7 66 9 87 24C105 37 123 40 145 30"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="4"
-        />
-        <path
-          className="min-[768px]:hidden"
-          d="M137 30C144 31 150 34 155 38C151 43 148 49 145 55"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="4"
-        />
-      </svg>
     </div>
   );
 };
