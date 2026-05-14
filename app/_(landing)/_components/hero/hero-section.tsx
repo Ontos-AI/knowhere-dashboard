@@ -121,14 +121,6 @@ export const HeroSection = () => {
                 <PixelIcon icon="check" size={16} className="text-pixel-green" />
                 <span>No Card Required</span>
               </div>
-              <div className="flex items-center gap-2">
-                <PixelIcon icon="check" size={16} className="text-pixel-green" />
-                <span>99.8% Accuracy</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <PixelIcon icon="performance" size={16} className="text-pixel-green" />
-                <span>&lt;200ms Speed</span>
-              </div>
             </div>
           </div>
         </div>
