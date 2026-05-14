@@ -473,7 +473,7 @@ export const LandingHome = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 divide-x divide-zinc-200 dark:divide-[#3f3f46] max-[639px]:grid-cols-1 max-[639px]:divide-x-0 max-[639px]:divide-y">
+          <div className="flex justify-center border-t border-zinc-200 dark:border-[#3f3f46]">
             <StatsItem
               icon={
                 <Image
@@ -487,36 +487,6 @@ export const LandingHome = () => {
               }
               leading="No Card"
               trailing="Required"
-              leadingClassName="font-bold"
-            />
-            <StatsItem
-              icon={
-                <Image
-                  alt=""
-                  aria-hidden
-                  className="size-5"
-                  height={20}
-                  src="/icons/landing/stats/2.svg"
-                  width={20}
-                />
-              }
-              leading="99.8%"
-              trailing="Accuracy"
-              leadingClassName="font-bold"
-            />
-            <StatsItem
-              icon={
-                <Image
-                  alt=""
-                  aria-hidden
-                  className="size-5"
-                  height={20}
-                  src="/icons/landing/stats/3.svg"
-                  width={20}
-                />
-              }
-              leading="<200ms"
-              trailing="Speed"
               leadingClassName="font-bold"
             />
           </div>
