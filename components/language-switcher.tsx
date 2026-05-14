@@ -49,7 +49,7 @@ export const LanguageSwitcher = ({
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         {children ?? (
           <Button variant="ghost" size="sm" className="h-8 gap-2">

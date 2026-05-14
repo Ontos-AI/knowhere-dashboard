@@ -29,6 +29,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@fontsource-variable/caveat": "^5.2.8",
     "@hookform/resolvers": "^5.2.2",
     "@neondatabase/serverless": "^1.0.2",
     "@orpc/client": "^1.13.4",

@@ -26,4 +26,25 @@ describe("landing contracts", () => {
       '{ href: "https://github.com/Ontos-AI/knowhere", label: "GitHub", external: true }'
     );
   });
+
+  it("keeps the playground sample area annotated with the drag-to-parse cue", () => {
+    const heroPlaygroundSource: string = readFileSync(
+      join(process.cwd(), "app/(landing)/_components/hero-playground.tsx"),
+      "utf8"
+    );
+
+    expect(heroPlaygroundSource).toContain('const dragToParseHintLabel = "Drag to parse";');
+    expect(heroPlaygroundSource).not.toContain('useTranslations("LandingPlayground")');
+    expect(heroPlaygroundSource).not.toContain('t("dragToParse")');
+    expect(heroPlaygroundSource).not.toContain(">拖到右边解析<");
+  });
+
+  it("keeps the shared language switcher from shifting the page when opened", () => {
+    const languageSwitcherSource: string = readFileSync(
+      join(process.cwd(), "components/language-switcher.tsx"),
+      "utf8"
+    );
+
+    expect(languageSwitcherSource).toContain("<DropdownMenu modal={false}>");
+  });
 });

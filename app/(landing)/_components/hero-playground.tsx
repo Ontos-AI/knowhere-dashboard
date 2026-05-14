@@ -33,6 +33,8 @@ import { flushSync } from "react-dom";
 
 const monoDisplayClassName = "font-[family-name:var(--font-mono-display)]";
 const monoReadableClassName = "font-[family-name:var(--font-mono-readable)]";
+const englishHandwritingClassName = "font-[family-name:var(--font-handwriting-en)]";
+const dragToParseHintLabel = "Drag to parse";
 const epsteinChunksPreview = `{
   "dataset": "EPSTEIN FLIGHT LOGS UNREDACTED",
   "summary": {
@@ -1068,6 +1070,52 @@ const TargetDragContent = () => {
   );
 };
 
+const DragToParseHint = () => {
+  const hintClassName: string = englishHandwritingClassName;
+
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 z-10 overflow-hidden text-zinc-500"
+    >
+      <div className="absolute left-1/2 top-[13px] flex -translate-x-1/2 -rotate-[1.5deg] flex-col items-center text-center min-[768px]:left-[28%] min-[768px]:translate-x-0 min-[1024px]:left-[30%] min-[1024px]:top-[18px]">
+        <div className="relative inline-block">
+          <p
+            className={cn(
+              "text-[29px] font-normal leading-none tracking-normal text-current opacity-90 min-[768px]:text-[32px] min-[1024px]:text-[36px]",
+              hintClassName
+            )}
+          >
+            {dragToParseHintLabel}
+          </p>
+          <svg
+            aria-hidden="true"
+            className="absolute left-full top-[0.6em] h-12 w-16 translate-x-2 overflow-visible text-current opacity-75 min-[768px]:h-14 min-[768px]:w-[74px] min-[768px]:translate-x-3 min-[1024px]:h-16 min-[1024px]:w-20 min-[1024px]:translate-x-4"
+            fill="none"
+            viewBox="0 0 80 64"
+          >
+            <title>Drag direction arrow</title>
+            <path
+              d="M4 12C29 10 49 26 52 48"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+            />
+            <path
+              d="M45 42C49 44 52 48 55 54C58 48 61 44 65 42"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const TreeNodeIcon = ({ fileKind, open }: { fileKind: ResultFileKind; open?: boolean }) => {
   if (fileKind === "directory") {
     const DirectoryIcon = open ? FolderOpen : Folder;
@@ -1744,6 +1792,7 @@ export const HeroPlayground = () => {
           className="relative h-[320px] border-r border-t border-zinc-200 bg-white min-[768px]:h-[420px] max-[767px]:border-b max-[767px]:border-r-0"
           style={heroFieldPatternStyle}
         >
+          <DragToParseHint />
           <div className="relative h-full">
             {heroDemoFiles.map((file) => (
               <HeroFileCard
