@@ -59,6 +59,7 @@ const AXIS_NUMBER_GAP = 2;
 const VALUE_LABEL_GAP = 3;
 const VALUE_LABEL_X_OFFSET = -3;
 const VALUE_LABEL_Z_INDEX = 2000;
+const VALUE_AXIS_ID = "value";
 const TIME_AXIS_ID = "secondary-time";
 const LOOP_AXIS_ID = "tertiary-loops";
 const benchmarkChartThemes = {
@@ -824,7 +825,12 @@ const BenchmarkChart = ({
               data={[...benchmarkData]}
               margin={{ bottom: 42, left: 0, right: 34, top: 40 }}
             >
-              <CartesianGrid stroke={colors.grid} strokeDasharray="0" vertical={false} />
+              <CartesianGrid
+                stroke={colors.grid}
+                strokeDasharray="0"
+                vertical={false}
+                yAxisId={VALUE_AXIS_ID}
+              />
               <XAxis
                 axisLine={{ stroke: colors.axis, strokeWidth: 1 }}
                 dataKey="compactLabel"
@@ -851,7 +857,7 @@ const BenchmarkChart = ({
                 tickMargin={AXIS_NUMBER_GAP}
                 ticks={[...leftAxisTicks]}
                 width={50}
-                yAxisId="value"
+                yAxisId={VALUE_AXIS_ID}
               />
               <YAxis
                 axisLine={{ stroke: colors.axis, strokeWidth: 1 }}
@@ -905,7 +911,7 @@ const BenchmarkChart = ({
                 stroke={colors.reference}
                 strokeDasharray="5 5"
                 x="first-time acc"
-                yAxisId="value"
+                yAxisId={VALUE_AXIS_ID}
               />
               {benchmarkSeries.map((series) => {
                 const isHidden = hiddenSeriesIds.includes(series.id);
@@ -937,7 +943,7 @@ const BenchmarkChart = ({
                         <BenchmarkRawBarShape isDarkTheme={isDarkTheme} />
                       ) : undefined
                     }
-                    yAxisId="value"
+                    yAxisId={VALUE_AXIS_ID}
                   >
                     {benchmarkData.map((datum) => (
                       <Cell

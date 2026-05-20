@@ -45,9 +45,18 @@ describe("landing comparison chart contracts", () => {
       "app/(landing)/_components/comparison-showcase.tsx"
     );
 
+    expect(comparisonChartSource).toMatch(/VALUE_AXIS_ID = "value"/);
     expect(comparisonChartSource).toMatch(/TIME_AXIS_ID = "secondary-time"/);
     expect(comparisonChartSource).toMatch(/LOOP_AXIS_ID = "tertiary-loops"/);
     expect(comparisonChartSource).toMatch(/dataKey="raw"[\s\S]*yAxisId={TIME_AXIS_ID}/);
     expect(comparisonChartSource).toMatch(/dataKey="knowhere"[\s\S]*yAxisId={LOOP_AXIS_ID}/);
+  });
+
+  it("keeps the benchmark grid bound to the primary value axis", () => {
+    const comparisonChartSource: string = readProjectFile(
+      "app/(landing)/_components/comparison-showcase.tsx"
+    );
+
+    expect(comparisonChartSource).toMatch(/<CartesianGrid[\s\S]*yAxisId={VALUE_AXIS_ID}/);
   });
 });
