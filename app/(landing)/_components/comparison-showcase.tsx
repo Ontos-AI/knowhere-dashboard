@@ -19,10 +19,11 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
+  LabelList,
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
-  type TooltipProps,
+  type TooltipContentProps,
   XAxis,
   YAxis,
 } from "recharts";
@@ -57,6 +58,10 @@ const RAW_PATTERN_SIZE = 6;
 const AXIS_NUMBER_GAP = 2;
 const VALUE_LABEL_GAP = 3;
 const VALUE_LABEL_X_OFFSET = -3;
+const VALUE_LABEL_Z_INDEX = 2000;
+const VALUE_AXIS_ID = "value";
+const TIME_AXIS_ID = "secondary-time";
+const LOOP_AXIS_ID = "tertiary-loops";
 const benchmarkChartThemes = {
   light: {
     activeStroke: "#27272a",
@@ -455,9 +460,9 @@ const BenchmarkTooltip = ({
   active,
   colors,
   payload,
-}: TooltipProps<number, string> & {
+}: Partial<TooltipContentProps<number, string>> & {
   readonly colors: BenchmarkChartColors;
-}) => {
+}): JSX.Element | null => {
   const datum = payload?.find((item) => isBenchmarkDatum(item.payload))?.payload;
 
   if (!active || !isBenchmarkDatum(datum)) {
@@ -598,6 +603,10 @@ const renderBenchmarkValueLabel =
         fill={colors.valueLabel}
         fontFamily="var(--font-mono-display)"
         fontSize={11}
+        paintOrder="stroke"
+        stroke={colors.panel}
+        strokeLinejoin="round"
+        strokeWidth={3}
         textAnchor="start"
         transform={`rotate(-60 ${labelX} ${labelY})`}
         x={labelX}
@@ -816,7 +825,12 @@ const BenchmarkChart = ({
               data={[...benchmarkData]}
               margin={{ bottom: 42, left: 0, right: 34, top: 40 }}
             >
-              <CartesianGrid stroke={colors.grid} strokeDasharray="0" vertical={false} />
+              <CartesianGrid
+                stroke={colors.grid}
+                strokeDasharray="0"
+                vertical={false}
+                yAxisId={VALUE_AXIS_ID}
+              />
               <XAxis
                 axisLine={{ stroke: colors.axis, strokeWidth: 1 }}
                 dataKey="compactLabel"
@@ -843,10 +857,11 @@ const BenchmarkChart = ({
                 tickMargin={AXIS_NUMBER_GAP}
                 ticks={[...leftAxisTicks]}
                 width={50}
-                yAxisId="value"
+                yAxisId={VALUE_AXIS_ID}
               />
               <YAxis
                 axisLine={{ stroke: colors.axis, strokeWidth: 1 }}
+                dataKey="raw"
                 domain={[0, 100]}
                 label={{
                   angle: -90,
@@ -863,10 +878,11 @@ const BenchmarkChart = ({
                 tickMargin={AXIS_NUMBER_GAP}
                 ticks={[...percentAxisTicks]}
                 width={54}
-                yAxisId="time"
+                yAxisId={TIME_AXIS_ID}
               />
               <YAxis
                 axisLine={{ stroke: colors.axis, strokeWidth: 1 }}
+                dataKey="knowhere"
                 domain={[0, 100]}
                 label={{
                   angle: -90,
@@ -883,7 +899,7 @@ const BenchmarkChart = ({
                 tickMargin={AXIS_NUMBER_GAP}
                 ticks={[...percentAxisTicks]}
                 width={54}
-                yAxisId="loops"
+                yAxisId={LOOP_AXIS_ID}
               />
               <Tooltip
                 content={<BenchmarkTooltip colors={colors} />}
@@ -895,7 +911,7 @@ const BenchmarkChart = ({
                 stroke={colors.reference}
                 strokeDasharray="5 5"
                 x="first-time acc"
-                yAxisId="value"
+                yAxisId={VALUE_AXIS_ID}
               />
               {benchmarkSeries.map((series) => {
                 const isHidden = hiddenSeriesIds.includes(series.id);
@@ -919,7 +935,6 @@ const BenchmarkChart = ({
                     hide={isHidden}
                     isAnimationActive={false}
                     key={series.id}
-                    label={renderBenchmarkValueLabel(series.id, colors)}
                     maxBarSize={24}
                     name={series.label}
                     radius={[1, 1, 0, 0]}
@@ -928,7 +943,7 @@ const BenchmarkChart = ({
                         <BenchmarkRawBarShape isDarkTheme={isDarkTheme} />
                       ) : undefined
                     }
-                    yAxisId="value"
+                    yAxisId={VALUE_AXIS_ID}
                   >
                     {benchmarkData.map((datum) => (
                       <Cell
@@ -939,6 +954,10 @@ const BenchmarkChart = ({
                         strokeWidth={0}
                       />
                     ))}
+                    <LabelList
+                      content={renderBenchmarkValueLabel(series.id, colors)}
+                      zIndex={VALUE_LABEL_Z_INDEX}
+                    />
                   </Bar>
                 );
               })}
