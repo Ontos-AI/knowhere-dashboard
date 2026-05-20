@@ -79,8 +79,8 @@ const benchmarkChartThemes = {
     text: "#3f3f46",
     tooltipBorder: "#e4e4e7",
     tooltipShadow: "4px 4px 0 0 rgba(24, 24, 27, 0.12)",
-    unstructured: "#f97316",
-    unstructuredBorder: "#ea580c",
+    unstructured: "#d8a34a",
+    unstructuredBorder: "#b88432",
     valueLabel: "#52525b",
   },
   dark: {
@@ -104,8 +104,8 @@ const benchmarkChartThemes = {
     text: "#d4d4d8",
     tooltipBorder: "#3f3f46",
     tooltipShadow: "4px 4px 0 0 rgba(0, 0, 0, 0.3)",
-    unstructured: "#fb923c",
-    unstructuredBorder: "#fed7aa",
+    unstructured: "#cda35d",
+    unstructuredBorder: "#e3c17d",
     valueLabel: "#d4d4d8",
   },
 } as const;
@@ -192,7 +192,7 @@ const benchmarkSeries: readonly BenchmarkSeries[] = [
   { color: RAW_PATTERN_BASE_COLOR, id: "raw", label: "Agent + Raw Docs", pattern: true },
   { color: "#9b7af8", id: "knowhere", label: "Agent + Knowhere" },
   { color: "#3f3f3f", id: "mineru", label: "Agent + MinerU" },
-  { color: "#f97316", id: "unstructured", label: "Agent + Unstructured" },
+  { color: "#d8a34a", id: "unstructured", label: "Agent + Unstructured" },
 ] as const;
 
 const benchmarkMetrics: readonly BenchmarkMetric[] = [
