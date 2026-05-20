@@ -13,7 +13,7 @@ import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { cn } from "@lib/utils";
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
 import { useTheme } from "next-themes";
-import { type CSSProperties, type JSX, type ReactNode, useEffect, useState } from "react";
+import { type CSSProperties, type JSX, type ReactNode, useEffect, useRef, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -55,7 +55,7 @@ const RAW_PATTERN_LINE_OPACITY = 1;
 const RAW_PATTERN_LINE_WIDTH = 0.7;
 const RAW_PATTERN_SIZE = 6;
 const AXIS_NUMBER_GAP = 2;
-const VALUE_LABEL_GAP = 3;
+const VALUE_LABEL_GAP = 10;
 const VALUE_LABEL_X_OFFSET = -3;
 const benchmarkChartThemes = {
   light: {
@@ -598,6 +598,10 @@ const renderBenchmarkValueLabel =
         fill={colors.valueLabel}
         fontFamily="var(--font-mono-display)"
         fontSize={11}
+        paintOrder="stroke"
+        stroke={colors.panel}
+        strokeLinejoin="round"
+        strokeWidth={3}
         textAnchor="start"
         transform={`rotate(-60 ${labelX} ${labelY})`}
         x={labelX}
@@ -751,9 +755,29 @@ const BenchmarkChart = ({
   readonly isThemeReady: boolean;
 }) => {
   const [hiddenSeriesIds, setHiddenSeriesIds] = useState<readonly BenchmarkSeriesId[]>([]);
+  const chartFrameRef = useRef<HTMLDivElement | null>(null);
   const chartLayout = useBenchmarkChartLayout();
   const colors = getBenchmarkChartColors(isDarkTheme);
   const isChartReady = isThemeReady && chartLayout !== null;
+
+  useEffect(() => {
+    if (!isChartReady) {
+      return;
+    }
+
+    const animationFrameId = window.requestAnimationFrame(() => {
+      const chartSurface = chartFrameRef.current?.querySelector<SVGSVGElement>(".recharts-surface");
+
+      // Recharts paints each bar series with its labels, so later bars can obscure rotated labels.
+      chartSurface?.querySelectorAll<SVGGElement>(".recharts-label-list").forEach((labelList) => {
+        chartSurface.appendChild(labelList);
+      });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(animationFrameId);
+    };
+  });
 
   const handleToggleSeries = (seriesId: BenchmarkSeriesId): void => {
     setHiddenSeriesIds((currentSeriesIds) => {
@@ -804,7 +828,7 @@ const BenchmarkChart = ({
           })}
         </div>
 
-        <div className="min-h-0 flex-1">
+        <div className="min-h-0 flex-1" ref={chartFrameRef}>
           <ResponsiveContainer
             height="100%"
             initialDimension={{ height: 410, width: 912 }}
