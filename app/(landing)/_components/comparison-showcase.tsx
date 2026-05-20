@@ -13,7 +13,7 @@ import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { cn } from "@lib/utils";
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
 import { useTheme } from "next-themes";
-import { type CSSProperties, type JSX, useEffect, useState } from "react";
+import { type CSSProperties, type JSX, type ReactNode, useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -30,6 +30,12 @@ import {
 const monoDisplayClassName = "font-[family-name:var(--font-mono-display)]";
 const comparisonTableGridClassName =
   "min-w-[720px] grid grid-cols-[1.35fr_0.9fr_0.9fr] min-[769px]:min-w-0";
+const benchmarkChartShellClassName =
+  "-mx-[18px] h-[482px] bg-white py-6 dark:bg-[#111113] min-[640px]:max-[767px]:-mx-[46px] min-[768px]:-mx-[48px]";
+const benchmarkChartScrollClassName =
+  "h-full w-full min-w-0 max-w-full overflow-x-auto overflow-y-hidden";
+const benchmarkChartContentClassName =
+  "ml-[30px] flex h-full w-[580px] flex-col gap-[22px] min-[768px]:ml-8 min-[768px]:w-[704px] min-[768px]:gap-6 min-[769px]:w-[912px]";
 const comparisonTabTone = {
   selectedBg: "#71717b",
   selectedBorder: "#52525c",
@@ -73,6 +79,8 @@ const benchmarkChartThemes = {
     text: "#3f3f46",
     tooltipBorder: "#e4e4e7",
     tooltipShadow: "4px 4px 0 0 rgba(24, 24, 27, 0.12)",
+    unstructured: "#f97316",
+    unstructuredBorder: "#ea580c",
     valueLabel: "#52525b",
   },
   dark: {
@@ -96,6 +104,8 @@ const benchmarkChartThemes = {
     text: "#d4d4d8",
     tooltipBorder: "#3f3f46",
     tooltipShadow: "4px 4px 0 0 rgba(0, 0, 0, 0.3)",
+    unstructured: "#fb923c",
+    unstructuredBorder: "#fed7aa",
     valueLabel: "#d4d4d8",
   },
 } as const;
@@ -104,7 +114,7 @@ type BenchmarkChartColors = (typeof benchmarkChartThemes)[keyof typeof benchmark
 
 type BenchmarkSeries = {
   color: string;
-  id: "raw" | "knowhere" | "mineru";
+  id: "raw" | "knowhere" | "mineru" | "unstructured";
   label: string;
   pattern?: boolean;
 };
@@ -127,6 +137,8 @@ type BenchmarkDatum = {
   mineruValue: number;
   raw: number;
   rawValue: number;
+  unstructured: number;
+  unstructuredValue: number;
 };
 
 type BenchmarkLabelProps = {
@@ -154,15 +166,23 @@ type BenchmarkBarShapeProps = {
   y?: number | string;
 };
 
-const useIsDarkTheme = (): boolean => {
+type ResolvedThemeState = {
+  isDarkTheme: boolean;
+  isThemeReady: boolean;
+};
+
+const useResolvedThemeState = (): ResolvedThemeState => {
   const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const [isThemeReady, setIsThemeReady] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    setIsThemeReady(true);
   }, []);
 
-  return mounted && resolvedTheme === "dark";
+  return {
+    isDarkTheme: isThemeReady && resolvedTheme === "dark",
+    isThemeReady,
+  };
 };
 
 const getBenchmarkChartColors = (isDarkTheme: boolean): BenchmarkChartColors =>
@@ -172,25 +192,78 @@ const benchmarkSeries: readonly BenchmarkSeries[] = [
   { color: RAW_PATTERN_BASE_COLOR, id: "raw", label: "Agent + Raw Docs", pattern: true },
   { color: "#9b7af8", id: "knowhere", label: "Agent + Knowhere" },
   { color: "#3f3f3f", id: "mineru", label: "Agent + MinerU" },
+  { color: "#f97316", id: "unstructured", label: "Agent + Unstructured" },
 ] as const;
 
 const benchmarkMetrics: readonly BenchmarkMetric[] = [
-  { label: "token used", values: { raw: 1629.55, knowhere: 1573.86, mineru: 1502.65 } },
-  { label: "time used", values: { raw: 20.57, knowhere: 15.25, mineru: 15.2 } },
-  { label: "agent loops", values: { raw: 2.61, knowhere: 2.14, mineru: 2.18 } },
-  { label: "first-time acc", values: { raw: 0.5, knowhere: 0.68, mineru: 0.59 } },
-  { label: "acc with user feedback", values: { raw: 0.53, knowhere: 0.79, mineru: 0.54 } },
-  { label: "recall", values: { raw: 0.74, knowhere: 0.82, mineru: 0.76 } },
+  {
+    label: "token used",
+    values: {
+      raw: 1629.545455,
+      knowhere: 1573.863636,
+      mineru: 1502.646491,
+      unstructured: 1886.363636,
+    },
+  },
+  {
+    label: "time used",
+    values: {
+      raw: 20.56818182,
+      knowhere: 15.25,
+      mineru: 15.20454545,
+      unstructured: 16.61365,
+    },
+  },
+  {
+    label: "agent loops",
+    values: {
+      raw: 2.613636364,
+      knowhere: 2.136363636,
+      mineru: 2.181818182,
+      unstructured: 2.340909091,
+    },
+  },
+  {
+    label: "first-time acc",
+    values: {
+      raw: 0.5,
+      knowhere: 0.681818182,
+      mineru: 0.590909091,
+      unstructured: 0.613636364,
+    },
+  },
+  {
+    label: "acc with user feedback",
+    values: {
+      raw: 0.527777778,
+      knowhere: 0.788888889,
+      mineru: 0.538961039,
+      unstructured: 0.685714286,
+    },
+  },
+  {
+    label: "recall",
+    values: {
+      raw: 0.738636362,
+      knowhere: 0.821969697,
+      mineru: 0.761363629,
+      unstructured: 0.768939,
+    },
+  },
 ] as const;
+
+const TOKEN_SCALE_MAX = 2000;
+const TIME_SCALE_MAX = 25;
+const LOOP_SCALE_MAX = 5;
 
 const getBenchmarkMetricScaleMax = (label: string): number => {
   switch (label) {
     case "token used":
-      return 1800;
+      return TOKEN_SCALE_MAX;
     case "time used":
-      return 25;
+      return TIME_SCALE_MAX;
     case "agent loops":
-      return 5;
+      return LOOP_SCALE_MAX;
     default:
       return 1;
   }
@@ -209,6 +282,8 @@ const benchmarkData: readonly BenchmarkDatum[] = benchmarkMetrics.map((metric) =
     mineruValue: metric.values.mineru,
     raw: scaleValue(metric.values.raw),
     rawValue: metric.values.raw,
+    unstructured: scaleValue(metric.values.unstructured),
+    unstructuredValue: metric.values.unstructured,
   };
 });
 
@@ -249,14 +324,15 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;
 
 const isBenchmarkSeriesId = (value: unknown): value is BenchmarkSeriesId =>
-  value === "raw" || value === "knowhere" || value === "mineru";
+  value === "raw" || value === "knowhere" || value === "mineru" || value === "unstructured";
 
 const isBenchmarkDatum = (value: unknown): value is BenchmarkDatum =>
   isRecord(value) &&
   typeof value.label === "string" &&
   typeof value.rawValue === "number" &&
   typeof value.knowhereValue === "number" &&
-  typeof value.mineruValue === "number";
+  typeof value.mineruValue === "number" &&
+  typeof value.unstructuredValue === "number";
 
 const getBenchmarkDatumValue = (datum: BenchmarkDatum, seriesId: BenchmarkSeriesId): number => {
   switch (seriesId) {
@@ -266,6 +342,8 @@ const getBenchmarkDatumValue = (datum: BenchmarkDatum, seriesId: BenchmarkSeries
       return datum.knowhereValue;
     case "mineru":
       return datum.mineruValue;
+    case "unstructured":
+      return datum.unstructuredValue;
   }
 };
 
@@ -280,6 +358,8 @@ const getBenchmarkSeriesColor = (series: BenchmarkSeries, colors: BenchmarkChart
       return colors.knowhere;
     case "mineru":
       return colors.mineru;
+    case "unstructured":
+      return colors.unstructured;
   }
 };
 
@@ -294,6 +374,8 @@ const getBenchmarkSeriesSwatchBorderColor = (
       return colors.knowhereBorder;
     case "mineru":
       return colors.mineruBorder;
+    case "unstructured":
+      return colors.unstructuredBorder;
   }
 };
 
@@ -562,12 +644,15 @@ const BenchmarkXAxisTick = ({
   );
 };
 
-const leftAxisTicks = [0, 16.6667, 33.3333, 50, 66.6667, 83.3333, 100] as const;
+const leftAxisTicks = [0, 25, 50, 75, 100] as const;
 const percentAxisTicks = [0, 20, 40, 60, 80, 100] as const;
 
-const formatTokenScaleTick = (value: number): string => `${Math.round(value * 18)}`;
-const formatTimeScaleTick = (value: number): string => `${Math.round(value / 4)}`;
-const formatLoopScaleTick = (value: number): string => `${Math.round(value / 20)}`;
+const formatTokenScaleTick = (value: number): string =>
+  `${Math.round((value / 100) * TOKEN_SCALE_MAX)}`;
+const formatTimeScaleTick = (value: number): string =>
+  `${Math.round((value / 100) * TIME_SCALE_MAX)}`;
+const formatLoopScaleTick = (value: number): string =>
+  `${Math.round((value / 100) * LOOP_SCALE_MAX)}`;
 
 const getBenchmarkChartLayout = (): BenchmarkChartLayout => {
   if (typeof window === "undefined") {
@@ -585,8 +670,8 @@ const getBenchmarkChartLayout = (): BenchmarkChartLayout => {
   return "compact";
 };
 
-const useBenchmarkChartLayout = (): BenchmarkChartLayout => {
-  const [chartLayout, setChartLayout] = useState<BenchmarkChartLayout>("wide");
+const useBenchmarkChartLayout = (): BenchmarkChartLayout | null => {
+  const [chartLayout, setChartLayout] = useState<BenchmarkChartLayout | null>(null);
 
   useEffect(() => {
     const handleResize = (): void => {
@@ -646,10 +731,29 @@ const getBenchmarkTickLines = (
 const getBenchmarkTickFontSize = (chartLayout: BenchmarkChartLayout): number =>
   chartLayout === "compact" ? 10 : 11;
 
-const BenchmarkChart = ({ isDarkTheme }: { readonly isDarkTheme: boolean }) => {
+const BenchmarkChartShell = ({ children }: { readonly children: ReactNode }) => (
+  <div className={benchmarkChartShellClassName}>
+    <div className={benchmarkChartScrollClassName}>{children}</div>
+  </div>
+);
+
+const BenchmarkChartPlaceholder = (): JSX.Element => (
+  <BenchmarkChartShell>
+    <div aria-hidden="true" className={benchmarkChartContentClassName} />
+  </BenchmarkChartShell>
+);
+
+const BenchmarkChart = ({
+  isDarkTheme,
+  isThemeReady,
+}: {
+  readonly isDarkTheme: boolean;
+  readonly isThemeReady: boolean;
+}) => {
   const [hiddenSeriesIds, setHiddenSeriesIds] = useState<readonly BenchmarkSeriesId[]>([]);
   const chartLayout = useBenchmarkChartLayout();
   const colors = getBenchmarkChartColors(isDarkTheme);
+  const isChartReady = isThemeReady && chartLayout !== null;
 
   const handleToggleSeries = (seriesId: BenchmarkSeriesId): void => {
     setHiddenSeriesIds((currentSeriesIds) => {
@@ -667,180 +771,182 @@ const BenchmarkChart = ({ isDarkTheme }: { readonly isDarkTheme: boolean }) => {
     });
   };
 
+  if (!isChartReady) {
+    return <BenchmarkChartPlaceholder />;
+  }
+
   return (
-    <div className="-mx-[18px] h-[482px] bg-white py-6 dark:bg-[#111113] min-[640px]:max-[767px]:-mx-[46px] min-[768px]:-mx-[48px]">
-      <div className="h-full w-full min-w-0 max-w-full overflow-x-auto overflow-y-hidden">
-        <div className="ml-[30px] flex h-full w-[580px] flex-col gap-[22px] min-[768px]:ml-8 min-[768px]:w-[704px] min-[768px]:gap-6 min-[769px]:w-[912px]">
-          <div className="flex shrink-0 flex-nowrap items-center justify-center gap-x-[22px] text-xs leading-4 text-zinc-950 dark:text-[#fafafa] min-[768px]:gap-x-6">
-            {benchmarkSeries.map((series) => {
-              const isHidden = hiddenSeriesIds.includes(series.id);
+    <BenchmarkChartShell>
+      <div className={benchmarkChartContentClassName}>
+        <div className="flex shrink-0 flex-nowrap items-center justify-center gap-x-[22px] text-xs leading-4 text-zinc-950 dark:text-[#fafafa] min-[768px]:gap-x-6">
+          {benchmarkSeries.map((series) => {
+            const isHidden = hiddenSeriesIds.includes(series.id);
 
-              return (
-                <button
-                  aria-pressed={!isHidden}
-                  className={cn(
-                    "flex items-center gap-2 whitespace-nowrap border border-transparent px-1 py-0.5 transition-opacity hover:border-zinc-300 dark:hover:border-[#52525b]",
-                    isHidden && "opacity-40"
-                  )}
-                  key={series.id}
-                  onClick={() => handleToggleSeries(series.id)}
-                  type="button"
-                >
-                  <BenchmarkSeriesSwatch
-                    className="h-4 w-8 shrink-0"
-                    colors={colors}
-                    series={series}
-                  />
-                  <BenchmarkSeriesLabel colors={colors} series={series} />
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="min-h-0 flex-1">
-            <ResponsiveContainer
-              height="100%"
-              initialDimension={{ height: 410, width: 912 }}
-              width="100%"
-            >
-              <BarChart
-                barCategoryGap="20%"
-                barGap={0}
-                data={[...benchmarkData]}
-                margin={{ bottom: 42, left: 0, right: 34, top: 40 }}
+            return (
+              <button
+                aria-pressed={!isHidden}
+                className={cn(
+                  "flex items-center gap-2 whitespace-nowrap border border-transparent px-1 py-0.5 transition-opacity hover:border-zinc-300 dark:hover:border-[#52525b]",
+                  isHidden && "opacity-40"
+                )}
+                key={series.id}
+                onClick={() => handleToggleSeries(series.id)}
+                type="button"
               >
-                <CartesianGrid stroke={colors.grid} strokeDasharray="0" vertical={false} />
-                <XAxis
-                  axisLine={{ stroke: colors.axis, strokeWidth: 1 }}
-                  dataKey="compactLabel"
-                  interval={0}
-                  minTickGap={0}
-                  tick={<BenchmarkXAxisTick colors={colors} layout={chartLayout} />}
-                  tickLine={false}
+                <BenchmarkSeriesSwatch
+                  className="h-4 w-8 shrink-0"
+                  colors={colors}
+                  series={series}
                 />
-                <YAxis
-                  axisLine={{ stroke: colors.axis, strokeWidth: 1 }}
-                  domain={[0, 100]}
-                  label={{
-                    angle: -90,
-                    dx: -1,
-                    fill: colors.mutedText,
-                    fontSize: 11,
-                    offset: 4,
-                    position: "insideLeft",
-                    value: "token used",
-                  }}
-                  tick={{ fill: colors.text, fontSize: 11, fontFamily: "var(--font-mono-display)" }}
-                  tickFormatter={formatTokenScaleTick}
-                  tickLine={false}
-                  tickMargin={AXIS_NUMBER_GAP}
-                  ticks={[...leftAxisTicks]}
-                  width={50}
-                  yAxisId="value"
-                />
-                <YAxis
-                  axisLine={{ stroke: colors.axis, strokeWidth: 1 }}
-                  domain={[0, 100]}
-                  label={{
-                    angle: -90,
-                    fill: colors.mutedText,
-                    fontSize: 11,
-                    offset: 16,
-                    position: "insideRight",
-                    value: "time used (s)",
-                  }}
-                  orientation="right"
-                  tick={{ fill: colors.text, fontSize: 11, fontFamily: "var(--font-mono-display)" }}
-                  tickFormatter={formatTimeScaleTick}
-                  tickLine={false}
-                  tickMargin={AXIS_NUMBER_GAP}
-                  ticks={[...percentAxisTicks]}
-                  width={54}
-                  yAxisId="time"
-                />
-                <YAxis
-                  axisLine={{ stroke: colors.axis, strokeWidth: 1 }}
-                  domain={[0, 100]}
-                  label={{
-                    angle: -90,
-                    fill: colors.mutedText,
-                    fontSize: 11,
-                    offset: 16,
-                    position: "insideRight",
-                    value: "agent loops",
-                  }}
-                  orientation="right"
-                  tick={{ fill: colors.text, fontSize: 11, fontFamily: "var(--font-mono-display)" }}
-                  tickFormatter={formatLoopScaleTick}
-                  tickLine={false}
-                  tickMargin={AXIS_NUMBER_GAP}
-                  ticks={[...percentAxisTicks]}
-                  width={54}
-                  yAxisId="loops"
-                />
-                <Tooltip
-                  content={<BenchmarkTooltip colors={colors} />}
-                  cursor={{ fill: colors.cursor }}
-                  isAnimationActive={false}
-                />
-                <ReferenceLine
-                  position="start"
-                  stroke={colors.reference}
-                  strokeDasharray="5 5"
-                  x="first-time acc"
-                  yAxisId="value"
-                />
-                {benchmarkSeries.map((series) => {
-                  const isHidden = hiddenSeriesIds.includes(series.id);
-                  const seriesColor = getBenchmarkSeriesColor(series, colors);
+                <BenchmarkSeriesLabel colors={colors} series={series} />
+              </button>
+            );
+          })}
+        </div>
 
-                  return (
-                    <Bar
-                      activeBar={
-                        series.pattern ? (
-                          <BenchmarkRawBarShape isDarkTheme={isDarkTheme} />
-                        ) : (
-                          {
-                            fillOpacity: 1,
-                            stroke: colors.activeStroke,
-                            strokeWidth: 1,
-                          }
-                        )
-                      }
-                      dataKey={series.id}
-                      fill={seriesColor}
-                      hide={isHidden}
-                      isAnimationActive={false}
-                      key={series.id}
-                      label={renderBenchmarkValueLabel(series.id, colors)}
-                      maxBarSize={24}
-                      name={series.label}
-                      radius={[1, 1, 0, 0]}
-                      shape={
-                        series.pattern ? (
-                          <BenchmarkRawBarShape isDarkTheme={isDarkTheme} />
-                        ) : undefined
-                      }
-                      yAxisId="value"
-                    >
-                      {benchmarkData.map((datum) => (
-                        <Cell
-                          fill={seriesColor}
-                          fillOpacity={1}
-                          key={`${series.id}-${datum.label}`}
-                          stroke="none"
-                          strokeWidth={0}
-                        />
-                      ))}
-                    </Bar>
-                  );
-                })}
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+        <div className="min-h-0 flex-1">
+          <ResponsiveContainer
+            height="100%"
+            initialDimension={{ height: 410, width: 912 }}
+            width="100%"
+          >
+            <BarChart
+              barCategoryGap="20%"
+              barGap={0}
+              data={[...benchmarkData]}
+              margin={{ bottom: 42, left: 0, right: 34, top: 40 }}
+            >
+              <CartesianGrid stroke={colors.grid} strokeDasharray="0" vertical={false} />
+              <XAxis
+                axisLine={{ stroke: colors.axis, strokeWidth: 1 }}
+                dataKey="compactLabel"
+                interval={0}
+                minTickGap={0}
+                tick={<BenchmarkXAxisTick colors={colors} layout={chartLayout} />}
+                tickLine={false}
+              />
+              <YAxis
+                axisLine={{ stroke: colors.axis, strokeWidth: 1 }}
+                domain={[0, 100]}
+                label={{
+                  angle: -90,
+                  dx: -1,
+                  fill: colors.mutedText,
+                  fontSize: 11,
+                  offset: 4,
+                  position: "insideLeft",
+                  value: "token used",
+                }}
+                tick={{ fill: colors.text, fontSize: 11, fontFamily: "var(--font-mono-display)" }}
+                tickFormatter={formatTokenScaleTick}
+                tickLine={false}
+                tickMargin={AXIS_NUMBER_GAP}
+                ticks={[...leftAxisTicks]}
+                width={50}
+                yAxisId="value"
+              />
+              <YAxis
+                axisLine={{ stroke: colors.axis, strokeWidth: 1 }}
+                domain={[0, 100]}
+                label={{
+                  angle: -90,
+                  fill: colors.mutedText,
+                  fontSize: 11,
+                  offset: 16,
+                  position: "insideRight",
+                  value: "time used (s)",
+                }}
+                orientation="right"
+                tick={{ fill: colors.text, fontSize: 11, fontFamily: "var(--font-mono-display)" }}
+                tickFormatter={formatTimeScaleTick}
+                tickLine={false}
+                tickMargin={AXIS_NUMBER_GAP}
+                ticks={[...percentAxisTicks]}
+                width={54}
+                yAxisId="time"
+              />
+              <YAxis
+                axisLine={{ stroke: colors.axis, strokeWidth: 1 }}
+                domain={[0, 100]}
+                label={{
+                  angle: -90,
+                  fill: colors.mutedText,
+                  fontSize: 11,
+                  offset: 16,
+                  position: "insideRight",
+                  value: "agent loops",
+                }}
+                orientation="right"
+                tick={{ fill: colors.text, fontSize: 11, fontFamily: "var(--font-mono-display)" }}
+                tickFormatter={formatLoopScaleTick}
+                tickLine={false}
+                tickMargin={AXIS_NUMBER_GAP}
+                ticks={[...percentAxisTicks]}
+                width={54}
+                yAxisId="loops"
+              />
+              <Tooltip
+                content={<BenchmarkTooltip colors={colors} />}
+                cursor={{ fill: colors.cursor }}
+                isAnimationActive={false}
+              />
+              <ReferenceLine
+                position="start"
+                stroke={colors.reference}
+                strokeDasharray="5 5"
+                x="first-time acc"
+                yAxisId="value"
+              />
+              {benchmarkSeries.map((series) => {
+                const isHidden = hiddenSeriesIds.includes(series.id);
+                const seriesColor = getBenchmarkSeriesColor(series, colors);
+
+                return (
+                  <Bar
+                    activeBar={
+                      series.pattern ? (
+                        <BenchmarkRawBarShape isDarkTheme={isDarkTheme} />
+                      ) : (
+                        {
+                          fillOpacity: 1,
+                          stroke: colors.activeStroke,
+                          strokeWidth: 1,
+                        }
+                      )
+                    }
+                    dataKey={series.id}
+                    fill={seriesColor}
+                    hide={isHidden}
+                    isAnimationActive={false}
+                    key={series.id}
+                    label={renderBenchmarkValueLabel(series.id, colors)}
+                    maxBarSize={24}
+                    name={series.label}
+                    radius={[1, 1, 0, 0]}
+                    shape={
+                      series.pattern ? (
+                        <BenchmarkRawBarShape isDarkTheme={isDarkTheme} />
+                      ) : undefined
+                    }
+                    yAxisId="value"
+                  >
+                    {benchmarkData.map((datum) => (
+                      <Cell
+                        fill={seriesColor}
+                        fillOpacity={1}
+                        key={`${series.id}-${datum.label}`}
+                        stroke="none"
+                        strokeWidth={0}
+                      />
+                    ))}
+                  </Bar>
+                );
+              })}
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
-    </div>
+    </BenchmarkChartShell>
   );
 };
 
@@ -883,7 +989,7 @@ const getFilteredRows = (activeTab: ComparisonTab) => {
 
 export const ComparisonShowcase = () => {
   const [activeTab, setActiveTab] = useState<ComparisonTab>("All");
-  const isDarkTheme = useIsDarkTheme();
+  const { isDarkTheme, isThemeReady } = useResolvedThemeState();
   const filteredRows = getFilteredRows(activeTab);
   const activeComparisonTabTone = isDarkTheme
     ? {
@@ -901,7 +1007,7 @@ export const ComparisonShowcase = () => {
 
   return (
     <div className="flex flex-col gap-10">
-      <BenchmarkChart isDarkTheme={isDarkTheme} />
+      <BenchmarkChart isDarkTheme={isDarkTheme} isThemeReady={isThemeReady} />
       <div className="hide-scrollbar overflow-x-auto">
         <div className="flex w-max flex-nowrap gap-px">
           {comparisonTabs.map((tab) => (
