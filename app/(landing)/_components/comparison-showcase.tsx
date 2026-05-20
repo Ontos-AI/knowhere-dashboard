@@ -55,7 +55,7 @@ const RAW_PATTERN_LINE_OPACITY = 1;
 const RAW_PATTERN_LINE_WIDTH = 0.7;
 const RAW_PATTERN_SIZE = 6;
 const AXIS_NUMBER_GAP = 2;
-const VALUE_LABEL_GAP = 10;
+const VALUE_LABEL_GAP = 3;
 const VALUE_LABEL_X_OFFSET = -3;
 const benchmarkChartThemes = {
   light: {
