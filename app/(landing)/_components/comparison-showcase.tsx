@@ -13,16 +13,17 @@ import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { cn } from "@lib/utils";
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
 import { useTheme } from "next-themes";
-import { type CSSProperties, type JSX, type ReactNode, useEffect, useRef, useState } from "react";
+import { type CSSProperties, type JSX, type ReactNode, useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
   CartesianGrid,
   Cell,
+  LabelList,
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
-  type TooltipProps,
+  type TooltipContentProps,
   XAxis,
   YAxis,
 } from "recharts";
@@ -57,6 +58,7 @@ const RAW_PATTERN_SIZE = 6;
 const AXIS_NUMBER_GAP = 2;
 const VALUE_LABEL_GAP = 3;
 const VALUE_LABEL_X_OFFSET = -3;
+const VALUE_LABEL_Z_INDEX = 2000;
 const benchmarkChartThemes = {
   light: {
     activeStroke: "#27272a",
@@ -455,9 +457,9 @@ const BenchmarkTooltip = ({
   active,
   colors,
   payload,
-}: TooltipProps<number, string> & {
+}: Partial<TooltipContentProps<number, string>> & {
   readonly colors: BenchmarkChartColors;
-}) => {
+}): JSX.Element | null => {
   const datum = payload?.find((item) => isBenchmarkDatum(item.payload))?.payload;
 
   if (!active || !isBenchmarkDatum(datum)) {
@@ -755,29 +757,9 @@ const BenchmarkChart = ({
   readonly isThemeReady: boolean;
 }) => {
   const [hiddenSeriesIds, setHiddenSeriesIds] = useState<readonly BenchmarkSeriesId[]>([]);
-  const chartFrameRef = useRef<HTMLDivElement | null>(null);
   const chartLayout = useBenchmarkChartLayout();
   const colors = getBenchmarkChartColors(isDarkTheme);
   const isChartReady = isThemeReady && chartLayout !== null;
-
-  useEffect(() => {
-    if (!isChartReady) {
-      return;
-    }
-
-    const animationFrameId = window.requestAnimationFrame(() => {
-      const chartSurface = chartFrameRef.current?.querySelector<SVGSVGElement>(".recharts-surface");
-
-      // Recharts paints each bar series with its labels, so later bars can obscure rotated labels.
-      chartSurface?.querySelectorAll<SVGGElement>(".recharts-label-list").forEach((labelList) => {
-        chartSurface.appendChild(labelList);
-      });
-    });
-
-    return () => {
-      window.cancelAnimationFrame(animationFrameId);
-    };
-  });
 
   const handleToggleSeries = (seriesId: BenchmarkSeriesId): void => {
     setHiddenSeriesIds((currentSeriesIds) => {
@@ -828,7 +810,7 @@ const BenchmarkChart = ({
           })}
         </div>
 
-        <div className="min-h-0 flex-1" ref={chartFrameRef}>
+        <div className="min-h-0 flex-1">
           <ResponsiveContainer
             height="100%"
             initialDimension={{ height: 410, width: 912 }}
@@ -943,7 +925,6 @@ const BenchmarkChart = ({
                     hide={isHidden}
                     isAnimationActive={false}
                     key={series.id}
-                    label={renderBenchmarkValueLabel(series.id, colors)}
                     maxBarSize={24}
                     name={series.label}
                     radius={[1, 1, 0, 0]}
@@ -963,6 +944,10 @@ const BenchmarkChart = ({
                         strokeWidth={0}
                       />
                     ))}
+                    <LabelList
+                      content={renderBenchmarkValueLabel(series.id, colors)}
+                      zIndex={VALUE_LABEL_Z_INDEX}
+                    />
                   </Bar>
                 );
               })}
