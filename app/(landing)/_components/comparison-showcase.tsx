@@ -59,6 +59,8 @@ const AXIS_NUMBER_GAP = 2;
 const VALUE_LABEL_GAP = 3;
 const VALUE_LABEL_X_OFFSET = -3;
 const VALUE_LABEL_Z_INDEX = 2000;
+const TIME_AXIS_ID = "secondary-time";
+const LOOP_AXIS_ID = "tertiary-loops";
 const benchmarkChartThemes = {
   light: {
     activeStroke: "#27272a",
@@ -853,6 +855,7 @@ const BenchmarkChart = ({
               />
               <YAxis
                 axisLine={{ stroke: colors.axis, strokeWidth: 1 }}
+                dataKey="raw"
                 domain={[0, 100]}
                 label={{
                   angle: -90,
@@ -869,10 +872,11 @@ const BenchmarkChart = ({
                 tickMargin={AXIS_NUMBER_GAP}
                 ticks={[...percentAxisTicks]}
                 width={54}
-                yAxisId="time"
+                yAxisId={TIME_AXIS_ID}
               />
               <YAxis
                 axisLine={{ stroke: colors.axis, strokeWidth: 1 }}
+                dataKey="knowhere"
                 domain={[0, 100]}
                 label={{
                   angle: -90,
@@ -889,7 +893,7 @@ const BenchmarkChart = ({
                 tickMargin={AXIS_NUMBER_GAP}
                 ticks={[...percentAxisTicks]}
                 width={54}
-                yAxisId="loops"
+                yAxisId={LOOP_AXIS_ID}
               />
               <Tooltip
                 content={<BenchmarkTooltip colors={colors} />}

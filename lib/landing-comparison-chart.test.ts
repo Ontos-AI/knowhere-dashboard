@@ -39,4 +39,15 @@ describe("landing comparison chart contracts", () => {
     expect(comparisonChartSource).not.toContain(".recharts-label-list");
     expect(comparisonChartSource).not.toContain("appendChild");
   });
+
+  it("keeps secondary benchmark axes bound so Recharts renders their ticks", () => {
+    const comparisonChartSource: string = readProjectFile(
+      "app/(landing)/_components/comparison-showcase.tsx"
+    );
+
+    expect(comparisonChartSource).toMatch(/TIME_AXIS_ID = "secondary-time"/);
+    expect(comparisonChartSource).toMatch(/LOOP_AXIS_ID = "tertiary-loops"/);
+    expect(comparisonChartSource).toMatch(/dataKey="raw"[\s\S]*yAxisId={TIME_AXIS_ID}/);
+    expect(comparisonChartSource).toMatch(/dataKey="knowhere"[\s\S]*yAxisId={LOOP_AXIS_ID}/);
+  });
 });
