@@ -350,7 +350,7 @@ export function UsageTable({
                     </TableCell>
                     <TableCell>
                       <span
-                        className="inline-flex items-center border py-1 pl-[6px] pr-2 font-mono-display text-[18px] leading-6"
+                        className="inline-flex items-center border px-[6px] font-mono-display text-[12px] leading-4"
                         style={{
                           backgroundColor: fileTypeTheme.background,
                           borderColor: fileTypeTheme.border,
