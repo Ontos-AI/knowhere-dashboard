@@ -134,7 +134,6 @@ function mapJobToUsageRecord(job: JobResponse): UsageRecord {
     fileType: fileType,
     model: job.model || (job.result_metadata?.model as string | undefined) || "-",
     pages: (job.result_metadata?.pages as number | undefined) || 0,
-    ocr: job.ocr_enabled ?? (job.result_metadata?.ocr as boolean | undefined) ?? false,
     status: statusInfo.label,
     statusKind: statusInfo.kind,
     duration: job.duration_seconds

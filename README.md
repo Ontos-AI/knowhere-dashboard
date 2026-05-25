@@ -13,21 +13,23 @@ Knowhere API Dashboard is the Next.js web application for managing Knowhere API 
 - PostgreSQL for the dashboard auth and account database
 - A reachable Knowhere API backend
 
-## Local Setup
+## Local Development
 
-Install dependencies:
+Install dependencies and create your local environment file:
 
 ```bash
 pnpm install
-```
-
-Create local environment configuration:
-
-```bash
 cp .env.example .env.local
 ```
 
-Fill in the required values in `.env.local`, then start the development server:
+Fill in the required values in `.env.local`. For most local work, the important values are:
+
+- `DATABASE_URL`: PostgreSQL database used by the dashboard.
+- `NEXT_PUBLIC_API_URL`: Knowhere API backend URL.
+- `NEXT_PUBLIC_APP_URL` and `BETTER_AUTH_URL`: usually `http://localhost:3000`.
+- `BETTER_AUTH_SECRET`: any random secret with at least 32 characters.
+
+Start the development server:
 
 ```bash
 pnpm dev
@@ -35,20 +37,12 @@ pnpm dev
 
 The app runs on `http://localhost:3000` by default.
 
-## Self-hosted Dashboard Flow
+## Self-hosted
 
-For the combined open-source stack, start the dashboard migration/bootstrap step before the API service runs its Alembic migrations. The dashboard owns the Better Auth user/auth schema and provides the normal first-user registration flow.
+For self-hosted deployment, use the combined stack in the dedicated repository:
+https://github.com/Ontos-AI/knowhere-self-hosted
 
-The default self-hosted flow is:
-
-1. Start PostgreSQL, Redis, object storage, and other shared dependencies.
-2. Start the dashboard migration/bootstrap step so Better Auth tables exist.
-3. Start the API with standalone mode disabled, then run API migrations.
-4. Register or sign in through the dashboard with email and password, or use Resend-backed magic-link login when email delivery is configured.
-5. Create and manage API keys from the dashboard.
-6. Process jobs through the API/worker with dashboard billing disabled.
-
-Use `BILLING_ENABLED=false` for the open-source self-hosted dashboard unless the matching paid billing endpoints are deployed and configured.
+This dashboard repository is useful when developing the web app directly. The self-hosted repository owns the end-to-end local stack and deployment instructions.
 
 ## Environment Variables
 
@@ -122,26 +116,3 @@ The image runs the standard Next.js Node server with `pnpm start`. Runtime confi
 The public workflow runs lint, type-check, tests, and build on pull requests and pushes to `main` and `staging`.
 
 This repository does not publish standalone public dashboard images. Public self-hosted image publishing is handled by the combined self-hosted release workflow.
-
-## Deployment
-
-Merging a pull request into `staging` or `main` triggers `.github/workflows/deploy.yml` through the branch push created by the merge. The workflow builds the dashboard image, pushes it to the configured AWS image registry, and updates the configured Kubernetes deployment with `kubectl set image`.
-
-DevOps must configure these GitHub repository secrets:
-
-| Name | Purpose |
-| --- | --- |
-| `AWS_ACCESS_KEY_ID` | AWS principal allowed to push images and update the cluster. |
-| `AWS_SECRET_ACCESS_KEY` | Secret key for the AWS principal. |
-| `AWS_EKS_PROD_CLUSTER_NAME` | Kubernetes cluster name used by `aws eks update-kubeconfig`. |
-| `AWS_EKS_PROD_REGION` | AWS region for the image registry and cluster. |
-| `DASHBOARD_IMAGE_REGISTRY` | Registry host, for example an AWS account registry host. |
-| `DASHBOARD_IMAGE_REPOSITORY` | Dashboard image repository path inside the registry. |
-| `DASHBOARD_KUBE_CONTAINER` | Container name inside the dashboard Deployment. |
-| `DASHBOARD_KUBE_DEPLOYMENT` | Dashboard Kubernetes Deployment name. |
-| `DASHBOARD_KUBE_NAMESPACE_STAGING` | Namespace updated when `staging` is deployed. |
-| `DASHBOARD_KUBE_NAMESPACE_PROD` | Namespace updated when `main` is deployed. |
-
-The AWS principal must be able to authenticate to the image registry, push the dashboard image, call `eks:DescribeCluster`, and update the target deployment. The cluster must be able to pull the pushed image.
-
-Runtime environment variables are still injected by the deployment platform, not by the Docker build. Because the container runs `pnpm db:generate` and `pnpm db:migrate` before `pnpm start`, the deployed pod must have `DATABASE_URL` and the required auth/app URL environment variables at startup. The container filesystem must allow writes to the app directory unless the migration generation step is moved out of container startup.

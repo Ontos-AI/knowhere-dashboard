@@ -398,9 +398,6 @@
 | Cost | 花费 | 表头 |
 | Status | 状态 | 表头 |
 | Type | 类型 | 表头 |
-| OCR | OCR | 表头 |
-| Yes | 是 | 是/否 |
-| No | 否 | 是/否 |
 | No results. | 暂无数据 | 空状态 |
 | Previous | 上一页 | 分页 |
 | Next | 下一页 | 分页 |
