@@ -36,7 +36,16 @@ const hardcodedLandingCopy = [
 ] as const;
 
 type LocaleMessages = {
-  readonly Landing?: unknown;
+  readonly Landing?: {
+    readonly header?: {
+      readonly nav?: {
+        readonly playground?: string;
+      };
+    };
+    readonly playground?: {
+      readonly dragToParse?: string;
+    };
+  };
 };
 
 describe("landing localization contract", () => {
@@ -46,6 +55,20 @@ describe("landing localization contract", () => {
 
     expect(englishMessages.Landing).toBeDefined();
     expect(chineseMessages.Landing).toBeDefined();
+  });
+
+  it("keeps the drag-to-parse hint in English for every locale", () => {
+    const englishMessages = parseJsonFile<LocaleMessages>("i18n/locales/en.json");
+    const chineseMessages = parseJsonFile<LocaleMessages>("i18n/locales/zh.json");
+
+    expect(englishMessages.Landing?.playground?.dragToParse).toBe("Drag to parse");
+    expect(chineseMessages.Landing?.playground?.dragToParse).toBe("Drag to parse");
+  });
+
+  it("uses a natural Chinese label for the playground nav item", () => {
+    const chineseMessages = parseJsonFile<LocaleMessages>("i18n/locales/zh.json");
+
+    expect(chineseMessages.Landing?.header?.nav?.playground).toBe("在线体验");
   });
 
   it("keeps visible landing copy out of component source", () => {

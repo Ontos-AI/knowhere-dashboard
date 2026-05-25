@@ -517,7 +517,7 @@
     "header": {
       "nav": {
         "comparison": "对比",
-        "playground": "演示场",
+        "playground": "在线体验",
         "pricing": "价格",
         "docs": "文档",
         "github": "GitHub"
@@ -787,7 +787,7 @@
           "sub": "输出"
         }
       },
-      "dragToParse": "拖动解析",
+      "dragToParse": "Drag to parse",
       "directoryPreview": {
         "folder": "文件夹",
         "imagesHelper": "预览任意提取图片，检查 Knowhere 输出的原始图像。",
