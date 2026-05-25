@@ -512,5 +512,300 @@
     "retry": "重试",
     "createFailed": "创建 webhook 密钥失败",
     "duplicateEndpointError": "该端点已存在密钥"
+  },
+  "Landing": {
+    "header": {
+      "nav": {
+        "comparison": "对比",
+        "playground": "在线体验",
+        "pricing": "价格",
+        "docs": "文档",
+        "github": "GitHub"
+      },
+      "cta": "获取 API Key",
+      "openNavigationMenu": "打开导航菜单"
+    },
+    "home": {
+      "announcement": {
+        "prefix": "现已支持",
+        "description": "可安装插件与技能。",
+        "link": "了解"
+      },
+      "hero": {
+        "titleStart": "将非结构化文档转成",
+        "clean": "干净",
+        "structured": "结构化",
+        "titleEnd": "数据。",
+        "description": "精准提取表格、公式与版式，保留像素级结构细节。"
+      },
+      "actions": {
+        "startFreeTrial": "免费开始",
+        "viewDocs": "查看文档",
+        "contactSales": "联系销售",
+        "bookDemo": "预约演示"
+      },
+      "stats": {
+        "noCardRequiredLeading": "无需绑卡",
+        "noCardRequiredTrailing": "即可开始"
+      },
+      "playgroundSection": {
+        "title": "把任意文档转成适合 RAG 的结构块",
+        "description": "拖动下方文件，体验 Knowhere 如何把复杂文档转成干净、结构化的 JSON"
+      },
+      "formats": {
+        "title": "支持格式",
+        "comingSoon": "即将支持"
+      },
+      "integration": {
+        "title": "几分钟即可集成",
+        "description": "真实场景对比，展示开发者为什么选择 Knowhere API"
+      },
+      "comparison": {
+        "title": "能力对比",
+        "description": "在覆盖 500+ 精选文档的 50 个检索任务基准中，Knowhere 相比原始文档管线获得了更高的一次命中准确率与召回率，同时使用更少 token、更少 agent 循环并降低延迟。"
+      },
+      "challenges": {
+        "titleStart": "应对各种",
+        "titleHighlight": "文档挑战",
+        "description": "面向复杂文档解析场景设计的企业级能力"
+      },
+      "transform": {
+        "titleStart": "看见数据",
+        "titleHighlight": "完成转化",
+        "description": "智能管线通过多阶段处理文档，输出可靠结果"
+      },
+      "pricing": {
+        "titleStart": "简单、",
+        "titleHighlight": "透明定价",
+        "description": "只按实际用量付费。没有隐藏费用，也没有复杂套餐。",
+        "burstLabel": "每 1,000 页",
+        "bodyLineOne": "就是这样。没有复杂套餐，没有隐藏费用。",
+        "bodyLineTwo": "随时购买页面额度。无最低消费，无长期承诺。"
+      },
+      "fileLimits": {
+        "title": "文件大小限制",
+        "contactStart": "需要更高限制？请联系团队",
+        "contactEnd": "获取自定义限制的企业定价。"
+      },
+      "enterprise": {
+        "badge": "企业版",
+        "titleStart": "需要定制",
+        "titleHighlight": "方案",
+        "description": "为企业需求提供自定义限制、SLA 与专属支持。"
+      },
+      "faq": {
+        "titleStart": "常见",
+        "titleHighlight": "问题"
+      },
+      "finalCta": {
+        "titleStart": "准备",
+        "titleHighlight": "开始了吗",
+        "description": "和众多开发者一起，用高准确度文档解析 API 构建 AI agent",
+        "noCreditCard": "无需信用卡",
+        "freeTrial": "14 天免费试用",
+        "cancelAnytime": "可随时取消"
+      },
+      "footer": {
+        "copyright": "© 2026 Knowhere API。保留所有权利。"
+      }
+    },
+    "data": {
+      "integrationSteps": {
+        "getApiKey": {
+          "title": "获取 API Key",
+          "description": "注册后在控制台生成安全的 API key。"
+        },
+        "submitJob": {
+          "title": "提交任务",
+          "description": "发送 URL 或上传文件到处理队列。"
+        },
+        "receiveResults": {
+          "title": "接收结果",
+          "description": "通过 webhook 或轮询获得结构化 JSON 数据。"
+        }
+      },
+      "comparisonHighlights": {
+        "search": "复杂生产数据中搜索准确率提升 >10%",
+        "traceability": "100% 可追溯",
+        "tokens": "构建知识图谱时节省 50%+ token"
+      },
+      "comparisonTabs": {
+        "all": "全部",
+        "structures": "结构",
+        "tables": "表格",
+        "interpretability": "可解释性",
+        "downstream": "下游应用"
+      },
+      "comparisonRows": {
+        "hierarchy": {
+          "feature": "层级结构构建",
+          "description": "自动识别并构建多级章节标题、多级表头等层级数据结构"
+        },
+        "mergedCells": {
+          "feature": "复杂合并单元格",
+          "description": "准确处理文档与表格中的多级合并单元格"
+        },
+        "tableBoundaries": {
+          "feature": "表格边界检测",
+          "description": "基于边界检测自动拆分同一工作表中的多个表格"
+        },
+        "traceability": {
+          "feature": "来源可追溯",
+          "description": "把每条信息追溯到原始来源章节，并保留清晰边界"
+        },
+        "memory": {
+          "feature": "层级记忆与渐进披露",
+          "description": "天然支持层级记忆与渐进式上下文披露"
+        },
+        "rag": {
+          "feature": "无向量 RAG 与混合 RAG",
+          "description": "输出更干净的层级、更清晰的边界，并为检索和引用提供更好依据"
+        },
+        "topK": {
+          "feature": "生产环境 Top-K 提升约 10%+",
+          "description": "应用 RAG 管线时，在生产数据上提升 Top-K 约 10%+"
+        },
+        "tokenSavings": {
+          "feature": "图谱构建节省 50%+ token",
+          "description": "开发知识图谱时节省 50%+ token"
+        }
+      },
+      "challengeCards": {
+        "agentic": {
+          "title": "Agent 原生结构",
+          "description": "为 agent 工程工作流原生设计渐进披露与层级记忆"
+        },
+        "adaptive": {
+          "title": "公式与化学结构识别",
+          "description": "为科学文档提取数学公式 (LaTeX/MathML) 与化学结构，准确率约 95%"
+        },
+        "format": {
+          "title": "多格式支持",
+          "description": "通过统一 API 处理 20+ 主流格式：PDF、DOCX、XLSX、PPT、HTML、图片等"
+        },
+        "trace": {
+          "title": "完整来源追踪",
+          "description": "每个提取元素都具备 100% 来源追踪，便于审计与验证 AI 生成内容"
+        },
+        "deploy": {
+          "title": "本地化部署",
+          "description": "支持企业长尾需求的本地部署：冲突检测、合规审计、风险识别等"
+        },
+        "api": {
+          "title": "API 优先设计",
+          "description": "RESTful API、webhook、主流语言 SDK 与完整文档"
+        }
+      },
+      "transformSteps": {
+        "input": {
+          "title": "输入",
+          "description": "上传文档 (PDF、DOCX、XLSX 等)"
+        },
+        "detection": {
+          "title": "OCR 与检测",
+          "description": "提取文本，检测表格、公式与图片"
+        },
+        "structure": {
+          "title": "结构分析",
+          "description": "分析版式、关系与层级"
+        },
+        "output": {
+          "title": "JSON 输出",
+          "description": "为 AI 消费输出干净、结构化数据"
+        }
+      },
+      "transformMetrics": {
+        "formats": "文件格式",
+        "formula": "公式准确率",
+        "traceability": "来源可追溯",
+        "ragBoost": "RAG Top-K 提升"
+      },
+      "pricingExamples": {
+        "small": "100 页 PDF",
+        "medium": "500 页文档",
+        "large": "10,000 页"
+      },
+      "enterpriseItems": {
+        "rateLimits": "自定义速率限制",
+        "priority": "优先处理",
+        "support": "专属支持渠道",
+        "sla": "自定义 SLA",
+        "discounts": "批量折扣",
+        "invoice": "发票账单"
+      },
+      "faqItems": {
+        "charged": {
+          "question": "什么时候扣费？",
+          "answer": "任务成功完成后才会扣除页面额度。失败任务不会消耗额度。"
+        },
+        "rollover": {
+          "question": "未用完的页面额度会滚存吗？",
+          "answer": "页面额度会在购买后 3 个月过期。"
+        },
+        "refund": {
+          "question": "可以退款吗？",
+          "answer": "购买后 14 天内可联系 team@knowhereto.ai 申请退款。"
+        },
+        "payment": {
+          "question": "支持哪些付款方式？",
+          "answer": "我们通过 Stripe 接受主流信用卡，包括 Visa、Mastercard、American Express 等。"
+        }
+      }
+    },
+    "integrationCode": {
+      "tabListLabel": "集成代码示例",
+      "copy": "复制",
+      "copied": "已复制"
+    },
+    "comparisonShowcase": {
+      "feature": "功能",
+      "others": "其他方案",
+      "status": {
+        "yes": "支持",
+        "bad": "较弱",
+        "no": "不支持"
+      }
+    },
+    "playground": {
+      "ariaLabel": "交互式文档演示区",
+      "fileActionAria": "{fileName}。点击运行示例，拖到右侧解析，或双击预览 PDF。",
+      "fileActionTitle": "点击解析。双击预览 PDF。",
+      "loading": "正在把文档解析成结构化块...",
+      "bottomCta": "领取 $5 免费额度，无需绑卡",
+      "dropPrompt": "把文件拖到这里，或选择左侧示例",
+      "defaultSteps": {
+        "document": {
+          "label": "文档",
+          "sub": "输入"
+        },
+        "processing": {
+          "label": "处理",
+          "sub": "API"
+        },
+        "output": {
+          "label": "干净 JSON",
+          "sub": "输出"
+        }
+      },
+      "dragToParse": "Drag to parse",
+      "directoryPreview": {
+        "folder": "文件夹",
+        "imagesHelper": "预览任意提取图片，检查 Knowhere 输出的原始图像。",
+        "tablesHelper": "打开表格文件，检查下游可用的 HTML 输出。",
+        "defaultHelper": "在左侧选择节点，查看输出资产。",
+        "files": "{count} 个文件",
+        "extractedImages": "{count} 张提取图片",
+        "renderedTables": "{count} 个渲染表格"
+      },
+      "preview": {
+        "preparing": "正在准备解析结果...",
+        "opening": "正在打开 {fileName}...",
+        "errorTitle": "预览错误"
+      },
+      "resultSource": "来源",
+      "replayDrop": "松开以重新解析示例",
+      "samplePdf": "示例 PDF",
+      "openRawPdf": "打开原始 PDF"
+    }
   }
 }

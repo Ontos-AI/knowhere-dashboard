@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@lib/utils";
+import { useTranslations } from "next-intl";
 import { useEffect, useId, useState } from "react";
 
 const monoDisplayClassName = "font-[family-name:var(--font-mono-display)]";
@@ -58,38 +59,35 @@ const codeTabLabelMap: Record<CodeTab, string> = {
 
 export const IntegrateCodePanel = () => {
   const [activeTab, setActiveTab] = useState<CodeTab>("python");
-  const [copied, setCopied] = useState(false);
+  const [hasCopiedCode, setHasCopiedCode] = useState(false);
+  const t = useTranslations("Landing.integrationCode");
   const panelId = useId();
 
   useEffect(() => {
-    if (!copied) {
+    if (!hasCopiedCode) {
       return undefined;
     }
 
-    const timeoutId = window.setTimeout(() => setCopied(false), 2000);
+    const timeoutId = window.setTimeout(() => setHasCopiedCode(false), 2000);
     return () => window.clearTimeout(timeoutId);
-  }, [copied]);
+  }, [hasCopiedCode]);
 
   const currentCode = codeByTab[activeTab];
 
   const handleTabChange = (tab: CodeTab) => {
     setActiveTab(tab);
-    setCopied(false);
+    setHasCopiedCode(false);
   };
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(currentCode);
-    setCopied(true);
+    setHasCopiedCode(true);
   };
 
   return (
     <div className="min-w-0 overflow-hidden bg-zinc-800 text-zinc-50">
       <div className="flex items-center justify-between gap-3 border-b border-zinc-800 px-[14px] py-[14px]">
-        <div
-          aria-label="Integration code examples"
-          className="flex items-center gap-2"
-          role="tablist"
-        >
+        <div aria-label={t("tabListLabel")} className="flex items-center gap-2" role="tablist">
           {(["python", "node", "curl"] as const).map((tab) => {
             const isActive = activeTab === tab;
 
@@ -124,7 +122,7 @@ export const IntegrateCodePanel = () => {
           onClick={handleCopy}
           type="button"
         >
-          {copied ? "Copied" : "Copy"}
+          {hasCopiedCode ? t("copied") : t("copy")}
         </button>
       </div>
       <div

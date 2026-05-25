@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Highlight, themes } from "prism-react-renderer";
 import {
   type CSSProperties,
@@ -34,7 +35,6 @@ import { flushSync } from "react-dom";
 const monoDisplayClassName = "font-[family-name:var(--font-mono-display)]";
 const monoReadableClassName = "font-[family-name:var(--font-mono-readable)]";
 const englishHandwritingClassName = "font-[family-name:var(--font-handwriting-en)]";
-const dragToParseHintLabel = "Drag to parse";
 const epsteinChunksPreview = `{
   "dataset": "EPSTEIN FLIGHT LOGS UNREDACTED",
   "summary": {
@@ -696,6 +696,7 @@ const HeroFileCard = ({
   style: CSSProperties;
   tone: { background: string; text: string };
 }) => {
+  const t = useTranslations("Landing.playground");
   const pointerStartRef = useRef<{ pointerId: number; x: number; y: number } | null>(null);
   const pointerLastPositionRef = useRef<{ x: number; y: number } | null>(null);
   const suppressClickRef = useRef(false);
@@ -756,7 +757,7 @@ const HeroFileCard = ({
     <div className="absolute -translate-x-1/2 -translate-y-1/2" style={style}>
       {interactive ? (
         <button
-          aria-label={`${fileName}. Click to run the sample, drag it to the right, or double click to preview the PDF.`}
+          aria-label={t("fileActionAria", { fileName })}
           className={cn(
             "group relative flex flex-col items-center justify-center gap-1 border-none bg-transparent px-[10px] py-[8px] text-left transition-all duration-200 ease-out",
             "focus-visible:outline-none",
@@ -836,7 +837,7 @@ const HeroFileCard = ({
           }}
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
-          title="Click to parse. Double click to preview the PDF."
+          title={t("fileActionTitle")}
           type="button"
         >
           <div className="relative h-16 w-[65px]">
@@ -993,6 +994,8 @@ const LoadingDocument = ({ fileName }: { fileName: string }) => {
 };
 
 const LoadingProgress = () => {
+  const t = useTranslations("Landing.playground");
+
   return (
     <div className="flex w-full flex-col items-center gap-[10px] px-12">
       <div className="h-2 w-full max-w-[360px] overflow-hidden border border-[#a684ff] bg-[#7008e7]">
@@ -1007,13 +1010,15 @@ const LoadingProgress = () => {
         />
       </div>
       <p className={cn("w-full text-center text-xs leading-4 text-zinc-200", monoDisplayClassName)}>
-        Parsing your document into structured chunks...
+        {t("loading")}
       </p>
     </div>
   );
 };
 
 const PlaygroundBottomCta = () => {
+  const t = useTranslations("Landing.playground");
+
   return (
     <div className="border-t border-[#3f3f46] px-10 py-6 min-[768px]:px-12">
       <div className="flex justify-center">
@@ -1024,7 +1029,7 @@ const PlaygroundBottomCta = () => {
           href="/login"
         >
           <span className="inline-flex h-full translate-y-1 items-center pb-[var(--btn-bottom)] transition-[padding-bottom,transform] duration-150 ease-out">
-            Get $5 free credits, no card
+            {t("bottomCta")}
           </span>
         </Link>
       </div>
@@ -1033,17 +1038,20 @@ const PlaygroundBottomCta = () => {
 };
 
 const DefaultDragContent = () => {
+  const t = useTranslations("Landing.playground");
+  const steps = [
+    { label: t("defaultSteps.document.label"), sub: t("defaultSteps.document.sub") },
+    { label: t("defaultSteps.processing.label"), sub: t("defaultSteps.processing.sub") },
+    { label: t("defaultSteps.output.label"), sub: t("defaultSteps.output.sub") },
+  ] as const;
+
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 px-10 py-8 text-center min-[768px]:px-12">
       <p className="w-full px-12 text-xs leading-4 text-zinc-200 font-sans overflow-hidden text-ellipsis whitespace-nowrap">
-        Drop a file here or pick a sample on the left
+        {t("dropPrompt")}
       </p>
       <div className="flex items-center gap-0">
-        {[
-          { label: "Document", sub: "input" },
-          { label: "Processing", sub: "API" },
-          { label: "Clean JOSN", sub: "output" },
-        ].map((item, index) => (
+        {steps.map((item, index) => (
           <Fragment key={item.label}>
             <div className="min-w-[88px] overflow-hidden rounded-lg border border-[#52525c] bg-[#27272a] min-[768px]:min-w-[96px]">
               <div className="whitespace-nowrap bg-[#3f3f46] px-2 py-2 text-[11px] leading-4 text-[#9f9fa9] min-[768px]:px-3 min-[768px]:text-xs">
@@ -1060,11 +1068,13 @@ const DefaultDragContent = () => {
 };
 
 const TargetDragContent = () => {
+  const t = useTranslations("Landing.playground");
+
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 px-10 py-8 text-center min-[768px]:px-12">
       <DragFieldIllustration />
       <p className="w-full px-12 text-xs leading-4 text-zinc-200 font-sans overflow-hidden text-ellipsis whitespace-nowrap">
-        Drop a file here or pick a sample on the left
+        {t("dropPrompt")}
       </p>
     </div>
   );
@@ -1072,6 +1082,7 @@ const TargetDragContent = () => {
 
 const DragToParseHint = () => {
   const hintClassName: string = englishHandwritingClassName;
+  const t = useTranslations("Landing.playground");
 
   return (
     <div
@@ -1086,7 +1097,7 @@ const DragToParseHint = () => {
               hintClassName
             )}
           >
-            {dragToParseHintLabel}
+            {t("dragToParse")}
           </p>
           <svg
             aria-hidden="true"
@@ -1212,13 +1223,14 @@ const DirectoryPreview = ({
   directoryCounts: DirectoryCounts;
   entry: ResultTreeNode;
 }) => {
+  const t = useTranslations("Landing.playground");
   const itemCount = entry.children.length;
   const helperText =
     entry.path === "images"
-      ? "Preview any extracted figure to inspect the raw image that Knowhere emitted."
+      ? t("directoryPreview.imagesHelper")
       : entry.path === "tables"
-        ? "Open a table file to inspect the HTML emitted for downstream use."
-        : "Browse a node on the left to inspect the emitted assets.";
+        ? t("directoryPreview.tablesHelper")
+        : t("directoryPreview.defaultHelper");
 
   return (
     <div className="min-w-max p-5 text-zinc-100">
@@ -1229,7 +1241,7 @@ const DirectoryPreview = ({
             monoDisplayClassName
           )}
         >
-          Folder
+          {t("directoryPreview.folder")}
         </span>
         <h3 className={cn("text-lg leading-6 text-white", monoDisplayClassName)}>{entry.name}</h3>
         <p className="max-w-[420px] text-sm leading-6 text-zinc-400">{helperText}</p>
@@ -1237,16 +1249,16 @@ const DirectoryPreview = ({
 
       <div className="mt-5 flex flex-wrap gap-3">
         <span className="rounded-full border border-zinc-700 bg-zinc-800 px-3 py-1 text-xs leading-5 text-zinc-300">
-          {itemCount} files
+          {t("directoryPreview.files", { count: itemCount })}
         </span>
         {entry.path === "images" ? (
           <span className="rounded-full border border-zinc-700 bg-zinc-800 px-3 py-1 text-xs leading-5 text-zinc-300">
-            {directoryCounts.images} extracted images
+            {t("directoryPreview.extractedImages", { count: directoryCounts.images })}
           </span>
         ) : null}
         {entry.path === "tables" ? (
           <span className="rounded-full border border-zinc-700 bg-zinc-800 px-3 py-1 text-xs leading-5 text-zinc-300">
-            {directoryCounts.tables} rendered tables
+            {t("directoryPreview.renderedTables", { count: directoryCounts.tables })}
           </span>
         ) : null}
       </div>
@@ -1312,10 +1324,12 @@ const ResultPreview = ({
   imageMetadataByPath: Map<string, PlaygroundImageMetadata>;
   preview: PreviewState | null;
 }) => {
+  const t = useTranslations("Landing.playground");
+
   if (!preview) {
     return (
       <div className="flex h-full items-center justify-center px-6 text-center text-sm leading-6 text-zinc-500">
-        Preparing parse results...
+        {t("preview.preparing")}
       </div>
     );
   }
@@ -1324,7 +1338,7 @@ const ResultPreview = ({
     return (
       <div className="flex h-full items-center justify-center gap-3 px-6 text-sm leading-6 text-zinc-400">
         <Loader2 className="size-4 animate-spin" />
-        Opening {preview.entry.name}...
+        {t("preview.opening", { fileName: preview.entry.name })}
       </div>
     );
   }
@@ -1334,7 +1348,7 @@ const ResultPreview = ({
       <div className="flex h-full items-center justify-center px-6">
         <div className="max-w-[360px] rounded-xl border border-[#7f1d1d] bg-[#2b0d12] p-4 text-left">
           <p className={cn("text-sm leading-5 text-[#fda4af]", monoDisplayClassName)}>
-            Preview error
+            {t("preview.errorTitle")}
           </p>
           <p className="mt-2 text-sm leading-6 text-[#fecdd3]">{preview.message}</p>
         </div>
@@ -1406,6 +1420,7 @@ const ResultState = ({
   sourceLabel: string;
   tree: ResultTreeNode[];
 }) => {
+  const t = useTranslations("Landing.playground");
   const treeViewportRef = useRef<HTMLDivElement | null>(null);
   const [hasTreeScrollbar, setHasTreeScrollbar] = useState(false);
 
@@ -1443,7 +1458,7 @@ const ResultState = ({
       <aside className="flex h-full min-h-0 w-[160px] shrink-0 flex-col border-r border-[#3f3f46] bg-[#27272a]">
         <div className="shrink-0 border-b border-[#3f3f46] px-2 py-1.5">
           <span className="block truncate text-[10px] font-medium uppercase tracking-[0.12em] text-zinc-500">
-            Source
+            {t("resultSource")}
           </span>
           <span className="block truncate text-xs text-zinc-200" title={sourceLabel}>
             {sourceLabel}
@@ -1571,6 +1586,7 @@ const DragGhost = ({
 };
 
 export const HeroPlayground = () => {
+  const t = useTranslations("Landing.playground");
   const [activeSampleId, setActiveSampleId] = useState<PlaygroundSampleId | null>(null);
   const [parsedSampleId, setParsedSampleId] = useState<PlaygroundSampleId>("tsla");
   const [isDropTarget, setIsDropTarget] = useState(false);
@@ -1835,7 +1851,7 @@ export const HeroPlayground = () => {
         </div>
 
         <section
-          aria-label="Interactive document playground"
+          aria-label={t("ariaLabel")}
           className={cn(
             "relative h-[320px] border-t border-zinc-200 bg-[#27272a] min-[768px]:h-[420px] min-[768px]:border-l-0 max-[767px]:border-t-0 transition-colors duration-500"
           )}
@@ -1888,7 +1904,7 @@ export const HeroPlayground = () => {
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center border-4 border-[#a684ff] bg-[#18181b]/82">
               <div className="rounded-full border border-[#a684ff] bg-[#27272a] px-4 py-2">
                 <span className={cn("text-xs leading-4 text-[#f5f3ff]", monoDisplayClassName)}>
-                  Drop to replay the sample parse
+                  {t("replayDrop")}
                 </span>
               </div>
             </div>
@@ -1974,7 +1990,7 @@ export const HeroPlayground = () => {
                   monoDisplayClassName
                 )}
               >
-                Sample PDF
+                {t("samplePdf")}
               </p>
               <p className="mt-1 truncate text-sm leading-5 text-zinc-100">
                 {previewSample?.modalLabel ?? currentSample.modalLabel}
@@ -1989,7 +2005,7 @@ export const HeroPlayground = () => {
               rel="noreferrer"
               target="_blank"
             >
-              Open raw PDF
+              {t("openRawPdf")}
             </Link>
           </div>
           <div className="min-h-0 flex-1 bg-zinc-950">

@@ -4,14 +4,16 @@ import { LandingBrand } from "@app/(landing)/_components/landing-brand";
 import {
   type ComparisonStatus,
   type ComparisonTab,
-  comparisonRows,
   comparisonTabs,
+  getComparisonRows,
+  getComparisonTabLabel,
 } from "@app/(landing)/_components/landing-home-data";
 import { StatefulTab } from "@app/(landing)/_components/stateful-tab";
 import { KnowhereBrand } from "@components/brand/knowhere-brand";
 import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { cn } from "@lib/utils";
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
+import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { type CSSProperties, type JSX, type ReactNode, useEffect, useState } from "react";
 import {
@@ -969,21 +971,18 @@ const BenchmarkChart = ({
   );
 };
 
-const ComparisonIndicator = ({ status }: { status: ComparisonStatus }) => {
+const ComparisonIndicator = ({ label, status }: { label: string; status: ComparisonStatus }) => {
   const map = {
     yes: {
       icon: <KnowhereIcon className="size-4" name="check-2" />,
-      label: "Yes",
       color: "#00bc7d",
     },
     bad: {
       icon: <KnowhereIcon className="size-4" name="component" />,
-      label: "Bad",
       color: "#efb100",
     },
     no: {
       icon: <KnowhereIcon className="size-4" name="state-x" />,
-      label: "No",
       color: "#ff6467",
     },
   } as const;
@@ -993,23 +992,26 @@ const ComparisonIndicator = ({ status }: { status: ComparisonStatus }) => {
   return (
     <span className="inline-flex items-center justify-center gap-2" style={{ color: item.color }}>
       {item.icon}
-      <span className="text-base font-semibold leading-6">{item.label}</span>
+      <span className="text-base font-semibold leading-6">{label}</span>
     </span>
   );
 };
 
-const getFilteredRows = (activeTab: ComparisonTab) => {
+const getFilteredRows = (activeTab: ComparisonTab, rows: ReturnType<typeof getComparisonRows>) => {
   if (activeTab === "All") {
-    return comparisonRows;
+    return rows;
   }
 
-  return comparisonRows.filter((row) => row.category === activeTab);
+  return rows.filter((row) => row.category === activeTab);
 };
 
 export const ComparisonShowcase = () => {
   const [activeTab, setActiveTab] = useState<ComparisonTab>("All");
   const { isDarkTheme, isThemeReady } = useResolvedThemeState();
-  const filteredRows = getFilteredRows(activeTab);
+  const t = useTranslations("Landing.data");
+  const tComparison = useTranslations("Landing.comparisonShowcase");
+  const comparisonRows = getComparisonRows(t);
+  const filteredRows = getFilteredRows(activeTab, comparisonRows);
   const activeComparisonTabTone = isDarkTheme
     ? {
         activeBg: "#3f3f46",
@@ -1038,7 +1040,7 @@ export const ComparisonShowcase = () => {
               tone={activeComparisonTabTone}
               type="button"
             >
-              {tab}
+              {getComparisonTabLabel(t, tab)}
             </StatefulTab>
           ))}
         </div>
@@ -1056,7 +1058,7 @@ export const ComparisonShowcase = () => {
                 monoDisplayClassName
               )}
             >
-              Feature
+              {tComparison("feature")}
             </div>
             <div className="relative flex items-center justify-center gap-3 overflow-hidden border-r border-zinc-200 px-6 py-4 dark:border-[#3f3f46]">
               <div
@@ -1073,7 +1075,7 @@ export const ComparisonShowcase = () => {
                 monoDisplayClassName
               )}
             >
-              Others
+              {tComparison("others")}
             </div>
           </div>
 
@@ -1112,7 +1114,10 @@ export const ComparisonShowcase = () => {
                   />
                 ) : null}
                 <div className="relative">
-                  <ComparisonIndicator status={row.knowhere} />
+                  <ComparisonIndicator
+                    label={tComparison(`status.${row.knowhere}`)}
+                    status={row.knowhere}
+                  />
                 </div>
               </div>
               <div className="relative flex items-center justify-center px-6 py-6">
@@ -1123,7 +1128,10 @@ export const ComparisonShowcase = () => {
                   />
                 ) : null}
                 <div className="relative">
-                  <ComparisonIndicator status={row.others} />
+                  <ComparisonIndicator
+                    label={tComparison(`status.${row.others}`)}
+                    status={row.others}
+                  />
                 </div>
               </div>
             </div>
