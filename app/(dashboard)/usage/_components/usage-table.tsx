@@ -30,7 +30,6 @@ export type UsageRecord = {
   fileType: string;
   model: string;
   pages: number;
-  ocr: boolean;
   status: string;
   statusKind: UsageStatusKind;
   duration: string;
@@ -53,6 +52,23 @@ type UsageTableProps = {
 };
 
 type PaginationItem = number | "ellipsis";
+type FileTypeTheme = {
+  readonly background: string;
+  readonly border: string;
+  readonly text: string;
+  readonly darkBackground: string;
+  readonly darkBorder: string;
+  readonly darkText: string;
+};
+
+type FileTypeBadgeStyle = React.CSSProperties & {
+  readonly "--file-type-background": string;
+  readonly "--file-type-border": string;
+  readonly "--file-type-text": string;
+  readonly "--file-type-dark-background": string;
+  readonly "--file-type-dark-border": string;
+  readonly "--file-type-dark-text": string;
+};
 
 const tableHeaders = [
   { key: "date", labelKey: "date", width: "210px" },
@@ -61,16 +77,19 @@ const tableHeaders = [
   { key: "type", labelKey: "type", width: "80px" },
   { key: "model", labelKey: "model", width: "144px" },
   { key: "pages", labelKey: "pages", width: "60px" },
-  { key: "ocr", labelKey: "ocr", width: "56px" },
   { key: "status", labelKey: "status", width: "80px" },
   { key: "duration", labelKey: "duration", width: "100px" },
   { key: "cost", labelKey: "cost", width: "120px" },
 ] as const;
 
-const tableGridTemplate = tableHeaders.map((header) => header.width).join(" ");
+const rowActionColumnWidth = "48px";
+const tableGridTemplate = [
+  ...tableHeaders.map((header) => header.width),
+  rowActionColumnWidth,
+].join(" ");
 const tableMinWidth = tableHeaders.reduce(
   (total, header) => total + Number.parseInt(header.width, 10),
-  0
+  Number.parseInt(rowActionColumnWidth, 10)
 );
 const tableScrollThumbWidth: number = 151;
 
@@ -79,58 +98,100 @@ const fileTypeColorMap = {
     background: "#fef2f2",
     border: "#ffe2e2",
     text: "#c10007",
+    darkBackground: "#450a0a",
+    darkBorder: "#7f1d1d",
+    darkText: "#fca5a5",
   },
   docx: {
     background: "#eff6ff",
     border: "#dbeafe",
     text: "#1447e6",
+    darkBackground: "#172554",
+    darkBorder: "#1d4ed8",
+    darkText: "#93c5fd",
   },
   jpg: {
     background: "#fdf4ff",
     border: "#fae8ff",
     text: "#a800b7",
+    darkBackground: "#4a044e",
+    darkBorder: "#86198f",
+    darkText: "#f0abfc",
   },
   jpeg: {
     background: "#fdf4ff",
     border: "#fae8ff",
     text: "#a800b7",
+    darkBackground: "#4a044e",
+    darkBorder: "#86198f",
+    darkText: "#f0abfc",
   },
   pptx: {
     background: "#fff7ed",
     border: "#ffedd4",
     text: "#ca3500",
+    darkBackground: "#431407",
+    darkBorder: "#9a3412",
+    darkText: "#fdba74",
   },
   xlsx: {
     background: "#ecfdf5",
     border: "#d0fae5",
     text: "#007a55",
+    darkBackground: "#052e16",
+    darkBorder: "#047857",
+    darkText: "#86efac",
   },
   csv: {
     background: "#ecfeff",
     border: "#cefafe",
     text: "#007595",
+    darkBackground: "#083344",
+    darkBorder: "#0e7490",
+    darkText: "#67e8f9",
   },
   png: {
     background: "#f5f3ff",
     border: "#ede9fe",
     text: "#7008e7",
+    darkBackground: "#2e1065",
+    darkBorder: "#6d28d9",
+    darkText: "#c4b5fd",
   },
   md: {
     background: "#f7fee7",
     border: "#ecfcca",
     text: "#497d00",
+    darkBackground: "#1a2e05",
+    darkBorder: "#4d7c0f",
+    darkText: "#bef264",
   },
   json: {
     background: "#fefce8",
     border: "#fef9c2",
     text: "#a65f00",
+    darkBackground: "#422006",
+    darkBorder: "#a16207",
+    darkText: "#fde68a",
   },
   txt: {
     background: "#eef2ff",
     border: "#e0e7ff",
     text: "#432dd7",
+    darkBackground: "#1e1b4b",
+    darkBorder: "#4338ca",
+    darkText: "#a5b4fc",
   },
-} as const;
+} satisfies Readonly<Record<string, FileTypeTheme>>;
+
+const buildFileTypeBadgeStyle = (theme: FileTypeTheme): FileTypeBadgeStyle => ({
+  "--file-type-background": theme.background,
+  "--file-type-border": theme.border,
+  "--file-type-text": theme.text,
+  "--file-type-dark-background": theme.darkBackground,
+  "--file-type-dark-border": theme.darkBorder,
+  "--file-type-dark-text": theme.darkText,
+});
 
 const buildPaginationItems = (page: number, pageCount: number): PaginationItem[] => {
   if (pageCount <= 6) {
@@ -310,6 +371,10 @@ export function UsageTable({
                   {header.key === "date" ? <ArrowUp className="h-3 w-3 text-[#9f9fa9]" /> : null}
                 </div>
               ))}
+              <div
+                aria-hidden="true"
+                className="sticky right-0 z-10 h-full border-l border-[#e4e4e7] bg-[#f4f4f5] dark:border-[#3f3f46] dark:bg-[#27272a]"
+              />
             </div>
 
             {data.length > 0 ? (
@@ -350,12 +415,8 @@ export function UsageTable({
                     </TableCell>
                     <TableCell>
                       <span
-                        className="inline-flex items-center border px-[6px] font-mono-display text-[12px] leading-4"
-                        style={{
-                          backgroundColor: fileTypeTheme.background,
-                          borderColor: fileTypeTheme.border,
-                          color: fileTypeTheme.text,
-                        }}
+                        className="inline-flex items-center border border-[var(--file-type-border)] bg-[var(--file-type-background)] px-[6px] font-mono-display text-[12px] leading-4 text-[var(--file-type-text)] dark:border-[var(--file-type-dark-border)] dark:bg-[var(--file-type-dark-background)] dark:text-[var(--file-type-dark-text)]"
+                        style={buildFileTypeBadgeStyle(fileTypeTheme)}
                       >
                         {formatFileTypeLabel(row.fileType)}
                       </span>
@@ -365,9 +426,6 @@ export function UsageTable({
                     </TableCell>
                     <TableCell className="font-mono-display leading-4 text-[#3f3f46] dark:text-[#e4e4e7]">
                       {row.pages}
-                    </TableCell>
-                    <TableCell className={row.ocr ? "text-[#00a63e]" : "text-[#e7000b]"}>
-                      {row.ocr ? t("yes") : t("no")}
                     </TableCell>
                     <TableCell className="gap-1.5">
                       <StatusIcon statusKind={row.statusKind} />
@@ -392,19 +450,21 @@ export function UsageTable({
 
                     <button
                       type="button"
-                      className="sticky right-0 z-10 col-[1/-1] row-start-1 flex h-10 w-12 items-center justify-center self-center justify-self-end border-l border-[#f4f4f5] bg-[#fafafa] text-[#ff8904] transition-colors hover:bg-[#fff7ed] disabled:cursor-not-allowed disabled:text-[#d4d4d8] dark:border-[#3f3f46] dark:bg-[#27272a] dark:hover:bg-[#3f3f46]"
+                      className="sticky right-0 z-10 flex h-10 w-12 items-center justify-center border-l border-[#f4f4f5] bg-[#fafafa] text-[#ff8904] transition-colors hover:bg-[#fff7ed] disabled:cursor-not-allowed disabled:text-[#d4d4d8] dark:border-[#3f3f46] dark:bg-[#27272a] dark:hover:bg-[#3f3f46] sm:h-[22px] lg:h-8"
                       onClick={() => onDownloadResult?.(row.jobId, row.resultUrl)}
                       disabled={!row.resultUrl}
                       aria-label={row.resultUrl ? t("download") : row.status}
                     >
-                      <Image
-                        src="/icons/usage/row-action.svg"
-                        alt=""
-                        aria-hidden
-                        width={14.33}
-                        height={14.33}
-                        className="h-[14.33px] w-[14.33px]"
-                      />
+                      <span className="flex size-6 items-center justify-center overflow-hidden rounded-full">
+                        <Image
+                          src="/icons/usage/row-action.svg"
+                          alt=""
+                          aria-hidden
+                          width={16}
+                          height={16}
+                          className="h-4 w-4"
+                        />
+                      </span>
                     </button>
                   </div>
                 );
