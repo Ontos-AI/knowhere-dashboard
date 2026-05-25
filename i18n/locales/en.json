@@ -511,5 +511,300 @@
     "retry": "Retry",
     "createFailed": "Failed to create webhook secret",
     "duplicateEndpointError": "A secret for this endpoint already exists"
+  },
+  "Landing": {
+    "header": {
+      "nav": {
+        "comparison": "Comparison",
+        "playground": "Playground",
+        "pricing": "Pricing",
+        "docs": "Docs",
+        "github": "GitHub"
+      },
+      "cta": "GET API KEY",
+      "openNavigationMenu": "Open navigation menu"
+    },
+    "home": {
+      "announcement": {
+        "prefix": "Now live on",
+        "description": "with an installable plugin and skill.",
+        "link": "EXPLORE"
+      },
+      "hero": {
+        "titleStart": "Transform unstructured documents into",
+        "clean": "clean",
+        "structured": "structured",
+        "titleEnd": "data.",
+        "description": "Extract tables, formulas, and layouts with pixel-perfect precision."
+      },
+      "actions": {
+        "startFreeTrial": "Start Free Trial",
+        "viewDocs": "View Docs",
+        "contactSales": "Contact Sales",
+        "bookDemo": "Book A Demo"
+      },
+      "stats": {
+        "noCardRequiredLeading": "No Card",
+        "noCardRequiredTrailing": "Required"
+      },
+      "playgroundSection": {
+        "title": "Turn any document into RAG-ready chunks",
+        "description": "Grab a file below and experience Knowhere turn messy documents into clean & structured JSON"
+      },
+      "formats": {
+        "title": "Supported Formats",
+        "comingSoon": "Coming Soon"
+      },
+      "integration": {
+        "title": "Integrate In Minutes",
+        "description": "Real-world comparisons showing why developers choose Knowhere API"
+      },
+      "comparison": {
+        "title": "How We Compare",
+        "description": "On a benchmark of 50 retrieval tasks across 500+ curated documents, Knowhere achieved significantly higher first-pass accuracy and recall than raw document pipelines, while using fewer tokens, fewer agent loops, and lower latency."
+      },
+      "challenges": {
+        "titleStart": "Built For Every",
+        "titleHighlight": "Document Challenge",
+        "description": "Enterprise-grade features designed to handle the most complex document parsing scenarios"
+      },
+      "transform": {
+        "titleStart": "Watch Your Data",
+        "titleHighlight": "Transform",
+        "description": "Our intelligent pipeline processes documents through multiple stages to deliver perfect results"
+      },
+      "pricing": {
+        "titleStart": "Simple,",
+        "titleHighlight": "Transparent Pricing",
+        "description": "Pay only for what you use. No hidden fees, no complex tiers.",
+        "burstLabel": "per 1,000 pages",
+        "bodyLineOne": "That's it. No complex tiers, no hidden fees.",
+        "bodyLineTwo": "Purchase page credits anytime. No minimum, no commitment."
+      },
+      "fileLimits": {
+        "title": "File Size Limits",
+        "contactStart": "Need higher limits? Contact team",
+        "contactEnd": "for enterprise pricing with custom limits."
+      },
+      "enterprise": {
+        "badge": "ENTERPRISE",
+        "titleStart": "Need Custom",
+        "titleHighlight": "Solutions",
+        "description": "Get custom limits, SLAs, and dedicated support for your enterprise needs."
+      },
+      "faq": {
+        "titleStart": "Frequently Asked",
+        "titleHighlight": "Questions"
+      },
+      "finalCta": {
+        "titleStart": "Ready To Get",
+        "titleHighlight": "Started",
+        "description": "Join thousands of developers building AI agents with the most accurate document parsing API",
+        "noCreditCard": "No credit card required",
+        "freeTrial": "Free 14-day trial",
+        "cancelAnytime": "Cancel anytime"
+      },
+      "footer": {
+        "copyright": "© 2026 Knowhere API. All rights reserved."
+      }
+    },
+    "data": {
+      "integrationSteps": {
+        "getApiKey": {
+          "title": "GET YOUR API KEY",
+          "description": "Sign up and generate your secure API key from the dashboard."
+        },
+        "submitJob": {
+          "title": "SUBMIT A JOB",
+          "description": "Send a URL or upload a file to our processing queue."
+        },
+        "receiveResults": {
+          "title": "RECEIVE RESULTS",
+          "description": "Get structured JSON data via webhook or polling."
+        }
+      },
+      "comparisonHighlights": {
+        "search": ">10% Searching accuracy improvement in complex production data",
+        "traceability": "100% Traceability",
+        "tokens": "50%+ Token saving when developing knowledge graphs"
+      },
+      "comparisonTabs": {
+        "all": "All",
+        "structures": "Structures",
+        "tables": "Tables",
+        "interpretability": "Interpretability",
+        "downstream": "Downstream"
+      },
+      "comparisonRows": {
+        "hierarchy": {
+          "feature": "Hierarchy construction",
+          "description": "Automatically recognize and construct hierarchical data structures, such as multi-level section titles and multi-index headers"
+        },
+        "mergedCells": {
+          "feature": "Complex merged cells",
+          "description": "Accurately handle multi-level merged cells in both doc files and tables"
+        },
+        "tableBoundaries": {
+          "feature": "Table boundary detection",
+          "description": "Automatically separate tables in one table sheet based on boundary detection"
+        },
+        "traceability": {
+          "feature": "Source traceability",
+          "description": "Trace each information piece to its original section in the raw source with clear boundary"
+        },
+        "memory": {
+          "feature": "Hierarchical memory & progressive disclosure",
+          "description": "Naturally supports hierarchical memory and progressive disclosure"
+        },
+        "rag": {
+          "feature": "Vectorless RAG & hybrid RAG",
+          "description": "Produces cleaner hierarchies, clearer boundaries, and better grounding for retrieval and citation"
+        },
+        "topK": {
+          "feature": "Top-K boost ~10%+ in production",
+          "description": "Boost Top-K by ~10%+ in production data when applying RAG pipelines"
+        },
+        "tokenSavings": {
+          "feature": "50%+ token savings on graphs",
+          "description": "Save 50%+ tokens when developing graphs"
+        }
+      },
+      "challengeCards": {
+        "agentic": {
+          "title": "Agentic-Native Structure",
+          "description": "Progressive disclosure and hierarchical memory natively designed for agentic engineering workflows"
+        },
+        "adaptive": {
+          "title": "Formula & Chemical Recognition",
+          "description": "Extract mathematical formulas (LaTeX/MathML) and chemical structures with ~95% accuracy for scientific documents"
+        },
+        "format": {
+          "title": "Multi-format Support",
+          "description": "Process 20+ major file formats: PDF, DOCX, XLSX, PPT, HTML, Images, and more with unified API"
+        },
+        "trace": {
+          "title": "Full Provenance Tracing",
+          "description": "100% source traceability for every extracted element, making it easy to audit and verify AI-generated content"
+        },
+        "deploy": {
+          "title": "On-premise Deployment",
+          "description": "Supports local deployment for enterprise long-tail needs: conflict detection, compliance auditing, risk identification, and more"
+        },
+        "api": {
+          "title": "API First Design",
+          "description": "RESTful API with webhooks, comprehensive SDKs for all major languages, and detailed documentation"
+        }
+      },
+      "transformSteps": {
+        "input": {
+          "title": "Input",
+          "description": "Upload document (PDF, DOCX, XLSX, etc.)"
+        },
+        "detection": {
+          "title": "OCR & Detection",
+          "description": "Extract text, detect tables, formulas, images"
+        },
+        "structure": {
+          "title": "Structure Analysis",
+          "description": "Analyze layout, relationships, hierarchies"
+        },
+        "output": {
+          "title": "JSON Output",
+          "description": "Clean, structured data for AI consumption"
+        }
+      },
+      "transformMetrics": {
+        "formats": "File Formats",
+        "formula": "Formula Accuracy",
+        "traceability": "Source Traceability",
+        "ragBoost": "RAG Top-K Boost"
+      },
+      "pricingExamples": {
+        "small": "100-page PDF",
+        "medium": "500-page document",
+        "large": "10,000 pages"
+      },
+      "enterpriseItems": {
+        "rateLimits": "Custom rate limits",
+        "priority": "Priority processing",
+        "support": "Dedicated support channel",
+        "sla": "Custom SLA agreements",
+        "discounts": "Volume discounts",
+        "invoice": "Invoice billing"
+      },
+      "faqItems": {
+        "charged": {
+          "question": "When am I charged?",
+          "answer": "Page credits are deducted when a job completes successfully. Failed jobs do not consume credits."
+        },
+        "rollover": {
+          "question": "Do unused pages roll over?",
+          "answer": "Page credits expire 3 months after purchase."
+        },
+        "refund": {
+          "question": "Can I get a refund?",
+          "answer": "Contact team@knowhereto.ai for refund requests within 14 days of purchase."
+        },
+        "payment": {
+          "question": "What payment methods are accepted?",
+          "answer": "We accept all major credit cards through Stripe: Visa, Mastercard, American Express, and more."
+        }
+      }
+    },
+    "integrationCode": {
+      "tabListLabel": "Integration code examples",
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "comparisonShowcase": {
+      "feature": "Feature",
+      "others": "Others",
+      "status": {
+        "yes": "Yes",
+        "bad": "Bad",
+        "no": "No"
+      }
+    },
+    "playground": {
+      "ariaLabel": "Interactive document playground",
+      "fileActionAria": "{fileName}. Click to run the sample, drag it to the right, or double click to preview the PDF.",
+      "fileActionTitle": "Click to parse. Double click to preview the PDF.",
+      "loading": "Parsing your document into structured chunks...",
+      "bottomCta": "Get $5 free credits, no card",
+      "dropPrompt": "Drop a file here or pick a sample on the left",
+      "defaultSteps": {
+        "document": {
+          "label": "Document",
+          "sub": "input"
+        },
+        "processing": {
+          "label": "Processing",
+          "sub": "API"
+        },
+        "output": {
+          "label": "Clean JSON",
+          "sub": "output"
+        }
+      },
+      "dragToParse": "Drag to parse",
+      "directoryPreview": {
+        "folder": "Folder",
+        "imagesHelper": "Preview any extracted figure to inspect the raw image that Knowhere emitted.",
+        "tablesHelper": "Open a table file to inspect the HTML emitted for downstream use.",
+        "defaultHelper": "Browse a node on the left to inspect the emitted assets.",
+        "files": "{count} files",
+        "extractedImages": "{count} extracted images",
+        "renderedTables": "{count} rendered tables"
+      },
+      "preview": {
+        "preparing": "Preparing parse results...",
+        "opening": "Opening {fileName}...",
+        "errorTitle": "Preview error"
+      },
+      "resultSource": "Source",
+      "replayDrop": "Drop to replay the sample parse",
+      "samplePdf": "Sample PDF",
+      "openRawPdf": "Open raw PDF"
+    }
   }
 }

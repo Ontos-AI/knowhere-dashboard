@@ -7,7 +7,7 @@ import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { useActiveSection } from "@hooks/use-active-section";
 import { cn } from "@lib/utils";
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useState } from "react";
 
 const landingHeaderCanvasWidthClassName =
@@ -16,16 +16,16 @@ const monoDisplayClassName = "font-[family-name:var(--font-mono-display)]";
 
 type LandingNavItem = {
   href: string;
-  label: string;
+  labelKey: "comparison" | "docs" | "github" | "playground" | "pricing";
   external?: boolean;
 };
 
 const landingNavItems: LandingNavItem[] = [
-  { href: "#comparison", label: "Comparison" },
-  { href: "https://notebook.knowhereto.ai", label: "Playground", external: true },
-  { href: "#pricing", label: "Pricing" },
-  { href: "https://docs.knowhereto.ai/", label: "Docs", external: true },
-  { href: "https://github.com/Ontos-AI/knowhere", label: "GitHub", external: true },
+  { href: "#comparison", labelKey: "comparison" },
+  { href: "https://notebook.knowhereto.ai", labelKey: "playground", external: true },
+  { href: "#pricing", labelKey: "pricing" },
+  { href: "https://docs.knowhereto.ai/", labelKey: "docs", external: true },
+  { href: "https://github.com/Ontos-AI/knowhere", labelKey: "github", external: true },
 ];
 
 const localeLabels = {
@@ -88,6 +88,7 @@ export const LandingHeader = () => {
     ids: ["comparison", "pricing"],
   });
   const locale = useLocale();
+  const t = useTranslations("Landing.header");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const currentLocaleLabel = localeLabels[locale as keyof typeof localeLabels] ?? "English";
 
@@ -104,16 +105,17 @@ export const LandingHeader = () => {
           <nav className="hidden h-full min-w-0 items-center overflow-x-auto min-[640px]:flex">
             {landingNavItems.map((item) => {
               const targetSection = item.href.startsWith("#") ? item.href.slice(1) : null;
+              const label = t(`nav.${item.labelKey}`);
 
               return (
                 <LandingHeaderLink
-                  key={item.label}
+                  key={item.labelKey}
                   active={targetSection === activeSection}
                   external={item.external}
                   href={item.href}
-                  label={item.label}
+                  label={label}
                 >
-                  {item.label}
+                  {label}
                 </LandingHeaderLink>
               );
             })}
@@ -134,7 +136,7 @@ export const LandingHeader = () => {
           <button
             aria-expanded={mobileMenuOpen}
             aria-haspopup="menu"
-            aria-label="Open navigation menu"
+            aria-label={t("openNavigationMenu")}
             className="flex h-full w-11 items-center justify-center text-zinc-950 transition-colors hover:bg-zinc-100/70 hover:text-zinc-600 dark:text-[#fafafa] dark:hover:bg-[#27272a] dark:hover:text-[#d4d4d8] min-[640px]:hidden"
             onClick={() => setMobileMenuOpen((open) => !open)}
             type="button"
@@ -149,7 +151,7 @@ export const LandingHeader = () => {
             )}
             href="/login"
           >
-            GET API KEY
+            {t("cta")}
           </Link>
         </div>
 
@@ -166,10 +168,11 @@ export const LandingHeader = () => {
             </LanguageSwitcher>
             {landingNavItems.map((item) => {
               const targetSection = item.href.startsWith("#") ? item.href.slice(1) : null;
+              const label = t(`nav.${item.labelKey}`);
 
               return (
                 <Link
-                  key={`mobile-${item.label}`}
+                  key={`mobile-${item.labelKey}`}
                   aria-current={targetSection === activeSection ? "location" : undefined}
                   className={cn(
                     "flex h-12 w-full items-center border-t border-zinc-200 px-4 text-sm text-zinc-950 transition-colors hover:bg-zinc-100/70 dark:border-[#3f3f46] dark:text-[#fafafa] dark:hover:bg-[#27272a]",
@@ -180,7 +183,7 @@ export const LandingHeader = () => {
                   rel={item.external ? "noreferrer" : undefined}
                   target={item.external ? "_blank" : undefined}
                 >
-                  {item.label}
+                  {label}
                 </Link>
               );
             })}
