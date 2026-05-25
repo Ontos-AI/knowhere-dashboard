@@ -5,24 +5,25 @@ import { LandingBrand } from "@app/(landing)/_components/landing-brand";
 import { LandingHeader } from "@app/(landing)/_components/landing-header";
 import {
   type ChallengeCard,
-  challengeCards,
   comingSoonFormats,
-  enterpriseItems,
   type FormatChip,
-  faqItems,
   fileLimits,
-  integrationSteps,
+  getChallengeCards,
+  getEnterpriseItems,
+  getFaqItems,
+  getIntegrationSteps,
+  getPricingExamples,
+  getTransformMetrics,
+  getTransformSteps,
   type MetricCard,
-  pricingExamples,
   supportedFormats,
   type TransformStep,
-  transformMetrics,
-  transformSteps,
 } from "@app/(landing)/_components/landing-home-data";
 import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { cn } from "@lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import type { CSSProperties, ReactNode } from "react";
 
 const sectionFrameClassName =
@@ -301,7 +302,7 @@ const MetricPanel = ({ card }: { card: MetricCard }) => (
   </div>
 );
 
-const PricingBurst = () => (
+const PricingBurst = ({ label }: { label: string }) => (
   <div className="relative flex h-[180px] w-[259px] items-center justify-center overflow-hidden border border-[#7008e7] bg-[#7f22fe] max-[639px]:h-[140px] max-[639px]:w-[210px]">
     <div className="absolute inset-0 opacity-40" style={stripePattern("#8e51ff", 1, 8)} />
     <div className="relative text-center text-[#f5f3ff]">
@@ -320,7 +321,7 @@ const PricingBurst = () => (
           // geistSansClassName
         )}
       >
-        per 1,000 pages
+        {label}
       </div>
     </div>
   </div>
@@ -373,6 +374,16 @@ const FooterChip = ({ color, children }: { color: string; children: string }) =>
 );
 
 export const LandingHome = () => {
+  const t = useTranslations("Landing.home");
+  const tData = useTranslations("Landing.data");
+  const challengeCards = getChallengeCards(tData);
+  const enterpriseItems = getEnterpriseItems(tData);
+  const faqItems = getFaqItems(tData);
+  const integrationSteps = getIntegrationSteps(tData);
+  const pricingExamples = getPricingExamples(tData);
+  const transformMetrics = getTransformMetrics(tData);
+  const transformSteps = getTransformSteps(tData);
+
   return (
     <div className="min-h-dvh bg-white text-[#09090b] dark:bg-[#18181b] dark:text-[#fafafa]">
       <LandingHeader />
@@ -397,7 +408,7 @@ export const LandingHome = () => {
                 <div className="flex flex-1 flex-wrap items-center gap-x-2 gap-y-1 px-7 py-5 text-left max-[639px]:justify-center max-[639px]:px-0 max-[639px]:py-0 max-[639px]:text-center">
                   <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 max-[639px]:max-w-[240px]">
                     <span className="text-[14px] font-bold leading-[22px] tracking-[-1px] text-zinc-950 dark:text-[#fafafa] min-[769px]:text-base min-[769px]:leading-6">
-                      Now live on
+                      {t("announcement.prefix")}
                     </span>
                     <span className="inline-flex h-[18px] w-5 shrink-0 items-center justify-center">
                       <Image
@@ -417,7 +428,7 @@ export const LandingHome = () => {
                         "text-[14px] font-normal leading-[22px] tracking-[-0.5px] text-zinc-600 dark:text-[#d4d4d8] min-[769px]:text-base min-[769px]:leading-6 font-sans"
                       )}
                     >
-                      with an installable plugin and skill.
+                      {t("announcement.description")}
                     </span>
                   </div>
                 </div>
@@ -428,7 +439,7 @@ export const LandingHome = () => {
                 >
                   <span className="flex items-center gap-2">
                     <span className={cn("text-[16px] font-[600] leading-7", monoDisplayClassName)}>
-                      EXPLOR
+                      {t("announcement.link")}
                     </span>
                     <KnowhereIcon className="size-3 text-current" name="arrow-outward" />
                   </span>
@@ -443,23 +454,23 @@ export const LandingHome = () => {
                       monoDisplayClassName
                     )}
                   >
-                    Transform unstructured documents into{" "}
-                    <span className="text-[#4f39f6]">clean</span>,{" "}
-                    <span className="text-[#a800b7]">structured</span> data.
+                    {t("hero.titleStart")} <span className="text-[#4f39f6]">{t("hero.clean")}</span>
+                    , <span className="text-[#a800b7]">{t("hero.structured")}</span>{" "}
+                    {t("hero.titleEnd")}
                   </h1>
                   <p
                     className={cn(
                       "max-w-[640px] text-base font-normal leading-[1.5] tracking-[-0.5px] text-zinc-600 dark:text-[#d4d4d8] max-[639px]:max-w-[320px] max-[639px]:leading-[1.5] min-[769px]:max-w-[780px] min-[769px]:text-[18px] font-sans"
                     )}
                   >
-                    Extract tables, formulas, and layouts with pixel-perfect precision.
+                    {t("hero.description")}
                   </p>
                 </div>
               </div>
 
               <div className="flex flex-row items-center justify-center gap-2 max-[639px]:flex-col max-[639px]:gap-3">
                 <ActionLink href="/login" className={cn(mobileActionLinkClassName, "w-fit")}>
-                  Start Free Trial
+                  {t("actions.startFreeTrial")}
                 </ActionLink>
                 <ActionLink
                   external
@@ -467,7 +478,7 @@ export const LandingHome = () => {
                   variant="secondary"
                   className={cn(mobileActionLinkClassName, "w-fit")}
                 >
-                  View Docs
+                  {t("actions.viewDocs")}
                 </ActionLink>
               </div>
             </div>
@@ -485,16 +496,16 @@ export const LandingHome = () => {
                   width={20}
                 />
               }
-              leading="No Card"
-              trailing="Required"
+              trailing={t("stats.noCardRequiredTrailing")}
+              leading={t("stats.noCardRequiredLeading")}
               leadingClassName="font-bold"
             />
           </div>
 
           <div className="flex flex-col gap-9 border-t border-zinc-200 pt-14 dark:border-[#3f3f46] max-[639px]:gap-[30px] max-[639px]:pt-[38px] min-[640px]:max-[767px]:gap-[34px] min-[640px]:max-[767px]:pt-[54px]">
             <SectionTitle
-              description="Grab a file below and experience Knowhere turn messy documents into clean & structured JSON"
-              title="Turn any document into RAG-ready chunks"
+              description={t("playgroundSection.description")}
+              title={t("playgroundSection.title")}
             />
             <HeroPlayground />
           </div>
@@ -509,7 +520,7 @@ export const LandingHome = () => {
           )}
         >
           <div className="flex flex-col items-start gap-8 max-[639px]:gap-6">
-            <SectionTitle title="Supported Formats" className="px-0" />
+            <SectionTitle title={t("formats.title")} className="px-0" />
             <div className="flex flex-wrap gap-x-1.5 gap-y-1 min-[769px]:gap-1.5">
               {supportedFormats.map((chip) => (
                 <div
@@ -535,7 +546,7 @@ export const LandingHome = () => {
 
           <div className="flex flex-col gap-8 pt-1 max-[639px]:gap-6 max-[639px]:pt-0 min-[640px]:max-[767px]:pt-0">
             <h3 className="text-base font-normal leading-6 text-zinc-950 dark:text-[#fafafa]">
-              Coming Soon
+              {t("formats.comingSoon")}
             </h3>
             <div className="flex flex-wrap gap-x-1.5 gap-y-1 min-[769px]:gap-1.5">
               {comingSoonFormats.map((chip) => (
@@ -570,8 +581,8 @@ export const LandingHome = () => {
             )}
           >
             <SectionTitle
-              description="Real-world comparisons showing why developers choose Knowhere API"
-              title="Integrate In Minutes"
+              description={t("integration.description")}
+              title={t("integration.title")}
             />
 
             <div className="grid grid-cols-2 gap-0 border-t border-zinc-100 dark:border-[#27272a] max-[639px]:grid-cols-1 max-[639px]:gap-4 max-[639px]:pl-[18px] max-[639px]:pr-[18px] min-[640px]:max-[767px]:grid-cols-1 min-[640px]:max-[767px]:gap-6 min-[640px]:max-[767px]:pl-[46px] min-[640px]:max-[767px]:pr-[46px] min-[769px]:pl-[48px] min-[769px]:pr-0">
@@ -602,9 +613,9 @@ export const LandingHome = () => {
         >
           <div className="flex flex-col gap-[36px] pb-[56px] pl-[48px] pr-[48px] pt-[56px] max-[639px]:gap-[30px] max-[639px]:pb-[38px] max-[639px]:pl-[18px] max-[639px]:pr-[18px] max-[639px]:pt-[38px] min-[640px]:max-[767px]:gap-[34px] min-[640px]:max-[767px]:pb-[54px] min-[640px]:max-[767px]:pl-[46px] min-[640px]:max-[767px]:pr-[46px] min-[640px]:max-[767px]:pt-[54px] min-[769px]:gap-[36px] min-[769px]:pl-[48px] min-[769px]:pr-[48px] min-[769px]:pt-[56px]">
             <SectionTitle
-              description="On a benchmark of 50 retrieval tasks across 500+ curated documents, Knowhere achieved significantly higher first-pass accuracy and recall than raw document pipelines, while using fewer tokens, fewer agent loops, and lower latency."
+              description={t("comparison.description")}
               descriptionClassName="max-w-[900px] text-zinc-500"
-              title="How We Compare"
+              title={t("comparison.title")}
               className="px-0 max-[639px]:px-0 min-[640px]:max-[767px]:px-0"
             />
 
@@ -617,10 +628,11 @@ export const LandingHome = () => {
         >
           <div className="flex flex-col pt-[56px] gap-[36px] min-[640px]:max-[767px]:pt-[54px] min-[640px]:max-[767px]:gap-[34px] max-[639px]:pt-[38px] max-[639px]:gap-[30px]">
             <SectionTitle
-              description="Enterprise-grade features designed to handle the most complex document parsing scenarios"
+              description={t("challenges.description")}
               title={
                 <>
-                  Built For Every <span className="text-[#7f22fe]">Document Challenge</span>
+                  {t("challenges.titleStart")}{" "}
+                  <span className="text-[#7f22fe]">{t("challenges.titleHighlight")}</span>
                 </>
               }
             />
@@ -666,11 +678,12 @@ export const LandingHome = () => {
         <section className={sectionFrameClassName}>
           <div className="flex flex-col gap-12 pb-[56px] pt-[56px] max-[639px]:gap-9 max-[639px]:pb-[38px] max-[639px]:pt-[38px] min-[640px]:max-[767px]:gap-9 min-[640px]:max-[767px]:pb-[54px] min-[640px]:max-[767px]:pt-[54px] min-[769px]:pb-[56px] min-[769px]:pt-[56px]">
             <SectionTitle
-              description="Our intelligent pipeline processes documents through multiple stages to deliver perfect results"
+              description={t("transform.description")}
               descriptionClassName="text-zinc-600"
               title={
                 <>
-                  Watch Your Data <span className="text-[#7f22fe]">Transform</span>
+                  {t("transform.titleStart")}{" "}
+                  <span className="text-[#7f22fe]">{t("transform.titleHighlight")}</span>
                 </>
               }
             />
@@ -713,11 +726,13 @@ export const LandingHome = () => {
               )}
             >
               <h2 className="text-left text-[30px] font-bold leading-9 text-zinc-950 dark:text-[#fafafa] max-[639px]:text-[22px] max-[639px]:leading-8">
-                <span className="text-zinc-950 dark:text-[#fafafa]">Simple, </span>
-                <span className="text-[#7f22fe]">Transparent Pricing</span>
+                <span className="text-zinc-950 dark:text-[#fafafa]">
+                  {t("pricing.titleStart")}{" "}
+                </span>
+                <span className="text-[#7f22fe]">{t("pricing.titleHighlight")}</span>
               </h2>
               <p className="text-base leading-6 text-[#5d0ec0] dark:text-[#c4b5fd]">
-                Pay only for what you use. No hidden fees, no complex tiers.
+                {t("pricing.description")}
               </p>
             </div>
 
@@ -729,17 +744,15 @@ export const LandingHome = () => {
                 )}
               >
                 <div className="flex justify-center min-[769px]:justify-start">
-                  <PricingBurst />
+                  <PricingBurst label={t("pricing.burstLabel")} />
                 </div>
                 <div
                   className={cn(
                     "text-left text-[26px] leading-[34px] text-[#5d0ec0] dark:text-[#c4b5fd] max-[639px]:max-w-[260px] max-[639px]:text-center max-[639px]:text-[18px] max-[639px]:leading-7 min-[769px]:text-left min-[769px]:text-[30px] min-[769px]:leading-9 font-sans"
                   )}
                 >
-                  <p>That&apos;s it. No complex tiers, no hidden fees.</p>
-                  <p className="mt-8 max-[639px]:mt-6">
-                    Purchase page credits anytime. No minimum, no commitment.
-                  </p>
+                  <p>{t("pricing.bodyLineOne")}</p>
+                  <p className="mt-8 max-[639px]:mt-6">{t("pricing.bodyLineTwo")}</p>
                 </div>
               </div>
 
@@ -780,17 +793,17 @@ export const LandingHome = () => {
                   <div className="border-r border-[#ddd6ff] px-6 py-8 dark:border-[#3f3f46] max-[639px]:border-b max-[639px]:border-r-0 max-[639px]:px-4 max-[639px]:py-6 min-[640px]:max-[767px]:border-b min-[640px]:max-[767px]:border-r-0 min-[640px]:max-[767px]:px-12 min-[640px]:max-[767px]:py-6 min-[769px]:border-b-0 min-[769px]:border-r min-[769px]:px-12 min-[769px]:py-7">
                     <div className="flex flex-col gap-4 items-start max-[639px]:items-center min-[640px]:max-[767px]:items-center">
                       <h3 className="text-[24px] font-bold leading-8 text-[#2e1065] dark:text-[#fafafa] max-[639px]:text-[22px] max-[639px]:leading-8 text-left min-[640px]:max-[767px]:text-left">
-                        File Size Limits
+                        {t("fileLimits.title")}
                       </h3>
                       <p className="max-w-[228px] text-sm leading-5 text-[#7f22fe] dark:text-[#c4b5fd] max-[639px]:max-w-[320px] max-[639px]:text-center min-[640px]:max-[767px]:max-w-none min-[640px]:max-[767px]:text-center">
-                        Need higher limits? Contact team{" "}
+                        {t("fileLimits.contactStart")}{" "}
                         <Link
                           className="text-[#7f22fe] dark:text-[#c4b5fd]"
                           href="mailto:team@knowhereto.ai"
                         >
                           @knowhereto.ai
                         </Link>{" "}
-                        for enterprise pricing with custom limits.
+                        {t("fileLimits.contactEnd")}
                       </p>
                     </div>
                   </div>
@@ -834,15 +847,16 @@ export const LandingHome = () => {
                     style={stripePattern("#ddd6ff", 1, 8)}
                   />
                   <span className="relative text-[30px] font-bold leading-9 text-[#5d0ec0]">
-                    ENTERPRISE
+                    {t("enterprise.badge")}
                   </span>
                 </div>
                 <h2 className="text-left text-[30px] font-bold leading-9 text-zinc-950 dark:text-[#fafafa] max-[639px]:text-[22px] max-[639px]:leading-8">
-                  Need Custom <span className="text-[#7f22fe]">Solutions</span>?
+                  {t("enterprise.titleStart")}{" "}
+                  <span className="text-[#7f22fe]">{t("enterprise.titleHighlight")}</span>?
                 </h2>
               </div>
               <p className="text-base leading-6 text-zinc-600 dark:text-[#d4d4d8] max-[639px]:max-w-[330px]">
-                Get custom limits, SLAs, and dedicated support for your enterprise needs.
+                {t("enterprise.description")}
               </p>
             </div>
             <div className="flex justify-center min-[769px]:justify-start">
@@ -851,7 +865,7 @@ export const LandingHome = () => {
                 className={mobileActionLinkClassName}
                 external
               >
-                Contact Sales
+                {t("actions.contactSales")}
               </ActionLink>
             </div>
           </div>
@@ -868,7 +882,8 @@ export const LandingHome = () => {
             <SectionTitle
               title={
                 <>
-                  Frequently Asked <span className="text-[#7f22fe]">Questions</span>
+                  {t("faq.titleStart")}{" "}
+                  <span className="text-[#7f22fe]">{t("faq.titleHighlight")}</span>
                 </>
               }
             />
@@ -894,18 +909,19 @@ export const LandingHome = () => {
           >
             <SectionTitle
               className="items-center"
-              description="Join thousands of developers building AI agents with the most accurate document parsing API"
+              description={t("finalCta.description")}
               descriptionClassName="max-w-[980px] text-center text-base leading-6 text-zinc-600 max-[639px]:max-w-[320px]"
               title={
                 <>
-                  Ready To Get <span className="text-[#7f22fe]">Started</span>?
+                  {t("finalCta.titleStart")}{" "}
+                  <span className="text-[#7f22fe]">{t("finalCta.titleHighlight")}</span>?
                 </>
               }
             />
 
             <div className="flex flex-row items-center justify-center gap-2 max-[639px]:flex-col max-[639px]:gap-3">
               <ActionLink href="/login" className={cn(mobileActionLinkClassName, "w-fit")}>
-                Start Free Trial
+                {t("actions.startFreeTrial")}
               </ActionLink>
               <ActionLink
                 href="mailto:team@knowhereto.ai"
@@ -913,14 +929,14 @@ export const LandingHome = () => {
                 className={cn(mobileActionLinkClassName, "w-fit")}
                 external
               >
-                Book A Demo
+                {t("actions.bookDemo")}
               </ActionLink>
             </div>
 
             <div className="flex w-full flex-col items-center gap-[8px] pb-[8px]">
-              <FooterChip color="#fb2c36">No credit card required</FooterChip>
-              <FooterChip color="#efb100">Free 14-day trial</FooterChip>
-              <FooterChip color="#00c951">Cancel anytime</FooterChip>
+              <FooterChip color="#fb2c36">{t("finalCta.noCreditCard")}</FooterChip>
+              <FooterChip color="#efb100">{t("finalCta.freeTrial")}</FooterChip>
+              <FooterChip color="#00c951">{t("finalCta.cancelAnytime")}</FooterChip>
             </div>
           </div>
         </section>
@@ -933,7 +949,7 @@ export const LandingHome = () => {
         )}
       >
         <LandingBrand size="header" />
-        <p className="text-xs leading-4 text-zinc-400">© 2026 Knowhere API. All rights reserved.</p>
+        <p className="text-xs leading-4 text-zinc-400">{t("footer.copyright")}</p>
       </footer>
     </div>
   );

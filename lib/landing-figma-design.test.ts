@@ -20,10 +20,10 @@ describe("landing contracts", () => {
     );
 
     expect(landingHeaderSource).toContain(
-      '{ href: "https://notebook.knowhereto.ai", label: "Playground", external: true }'
+      '{ href: "https://notebook.knowhereto.ai", labelKey: "playground", external: true }'
     );
     expect(landingHeaderSource).toContain(
-      '{ href: "https://github.com/Ontos-AI/knowhere", label: "GitHub", external: true }'
+      '{ href: "https://github.com/Ontos-AI/knowhere", labelKey: "github", external: true }'
     );
   });
 
@@ -33,9 +33,8 @@ describe("landing contracts", () => {
       "utf8"
     );
 
-    expect(heroPlaygroundSource).toContain('const dragToParseHintLabel = "Drag to parse";');
-    expect(heroPlaygroundSource).not.toContain('useTranslations("LandingPlayground")');
-    expect(heroPlaygroundSource).not.toContain('t("dragToParse")');
+    expect(heroPlaygroundSource).toContain('useTranslations("Landing.playground")');
+    expect(heroPlaygroundSource).toContain('t("dragToParse")');
     expect(heroPlaygroundSource).not.toContain(">拖到右边解析<");
   });
 
