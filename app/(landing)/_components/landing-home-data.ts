@@ -87,6 +87,8 @@ export type FaqItem = {
   answer: string;
 };
 
+type LandingDataTranslate = (key: string) => string;
+
 export const supportedFormats: FormatChip[] = [
   { label: ".docx", tone: { background: "#dbeafe", border: "#bedbff", text: "#1c398e" } },
   { label: ".pdf", tone: { background: "#ffe2e2", border: "#ffc9c9", text: "#9f0712" } },
@@ -109,29 +111,30 @@ export const comingSoonFormats: FormatChip[] = [
   { label: ".skills.md", tone: { background: "#f4f4f5", border: "#d4d4d8", text: "#9f9fa9" } },
 ];
 
-export const integrationSteps: IntegrationStep[] = [
+export const getIntegrationSteps = (t: LandingDataTranslate): IntegrationStep[] => [
   {
     number: "1",
-    title: "GET YOUR API KEY",
-    description: "Sign up and generate your secure API key from the dashboard.",
+    title: t("integrationSteps.getApiKey.title"),
+    description: t("integrationSteps.getApiKey.description"),
   },
   {
     number: "2",
-    title: "SUBMIT A JOB",
-    description: "Send a URL or upload a file to our processing queue.",
+    title: t("integrationSteps.submitJob.title"),
+    description: t("integrationSteps.submitJob.description"),
   },
   {
     number: "3",
-    title: "RECEIVE RESULTS",
-    description: "Get structured JSON data via webhook or polling.",
+    title: t("integrationSteps.receiveResults.title"),
+    description: t("integrationSteps.receiveResults.description"),
   },
 ];
 
-export const comparisonHighlights = [
-  ">10% Searching accuracy improvement in complex production data",
-  "100% Traceability",
-  "50%+ Token saving when developing knowledge graphs",
-] as const;
+export const getComparisonHighlights = (t: LandingDataTranslate): readonly string[] =>
+  [
+    t("comparisonHighlights.search"),
+    t("comparisonHighlights.traceability"),
+    t("comparisonHighlights.tokens"),
+  ] as const;
 
 export const comparisonTabs: ComparisonTab[] = [
   "All",
@@ -141,74 +144,83 @@ export const comparisonTabs: ComparisonTab[] = [
   "Downstream",
 ];
 
-export const comparisonRows: ComparisonRow[] = [
+export const getComparisonTabLabel = (t: LandingDataTranslate, tab: ComparisonTab): string => {
+  const comparisonTabLabelKeyByTab = {
+    All: "comparisonTabs.all",
+    Structures: "comparisonTabs.structures",
+    Tables: "comparisonTabs.tables",
+    Interpretability: "comparisonTabs.interpretability",
+    Downstream: "comparisonTabs.downstream",
+  } as const satisfies Record<ComparisonTab, string>;
+
+  return t(comparisonTabLabelKeyByTab[tab]);
+};
+
+export const getComparisonRows = (t: LandingDataTranslate): ComparisonRow[] => [
   {
     category: "Structures",
-    feature: "Hierarchy construction",
+    feature: t("comparisonRows.hierarchy.feature"),
     knowhere: "yes",
     others: "bad",
-    description:
-      "Automatically recognize and construct hierarchical data structures, such as multi-level section titles and multi-index headers",
+    description: t("comparisonRows.hierarchy.description"),
   },
   {
     category: "Tables",
-    feature: "Complex merged cells",
+    feature: t("comparisonRows.mergedCells.feature"),
     knowhere: "yes",
     others: "bad",
-    description: "Accurately handle multi-level merged cells in both doc files and tables",
+    description: t("comparisonRows.mergedCells.description"),
     emphasize: true,
     knowhereStripe: true,
     othersStripe: true,
   },
   {
     category: "Tables",
-    feature: "Table boundary detection",
+    feature: t("comparisonRows.tableBoundaries.feature"),
     knowhere: "yes",
     others: "no",
-    description: "Automatically separate tables in one table sheet based on boundary detection",
+    description: t("comparisonRows.tableBoundaries.description"),
   },
   {
     category: "Interpretability",
-    feature: "Source traceability",
+    feature: t("comparisonRows.traceability.feature"),
     knowhere: "yes",
     others: "bad",
-    description:
-      "Trace each information piece to its original section in the raw source with clear boundary",
+    description: t("comparisonRows.traceability.description"),
     emphasize: true,
     knowhereStripe: true,
     othersStripe: true,
   },
   {
     category: "Downstream",
-    feature: "Hierarchical memory & progressive disclosure",
+    feature: t("comparisonRows.memory.feature"),
     knowhere: "yes",
     others: "no",
-    description: "Naturally supports hierarchical memory and progressive disclosure",
+    description: t("comparisonRows.memory.description"),
   },
   {
     category: "Downstream",
-    feature: "Vectorless RAG & hybrid RAG",
+    feature: t("comparisonRows.rag.feature"),
     knowhere: "yes",
     others: "no",
-    description:
-      "Produces cleaner hierarchies, clearer boundaries, and better grounding for retrieval and citation",
+    description: t("comparisonRows.rag.description"),
     emphasize: true,
     knowhereStripe: true,
     othersStripe: true,
   },
   {
     category: "Downstream",
-    feature: "Top-K boost ~10%+ in production",
+    feature: t("comparisonRows.topK.feature"),
     knowhere: "yes",
     others: "no",
-    description: "Boost Top-K by ~10%+ in production data when applying RAG pipelines",
+    description: t("comparisonRows.topK.description"),
   },
   {
     category: "Downstream",
-    feature: "50%+ token savings on graphs",
+    feature: t("comparisonRows.tokenSavings.feature"),
     knowhere: "yes",
     others: "no",
-    description: "Save 50%+ tokens when developing graphs",
+    description: t("comparisonRows.tokenSavings.description"),
     emphasize: true,
     knowhereStripe: true,
     othersStripe: true,
@@ -262,106 +274,100 @@ export const whyChooseProducts: WhyChooseProduct[] = [
   },
 ];
 
-export const challengeCards: ChallengeCard[] = [
+export const getChallengeCards = (t: LandingDataTranslate): ChallengeCard[] => [
   {
-    title: "Agentic-Native Structure",
-    description:
-      "Progressive disclosure and hierarchical memory natively designed for agentic engineering workflows",
+    title: t("challengeCards.agentic.title"),
+    description: t("challengeCards.agentic.description"),
     icon: "agentic",
     tone: { background: "#ffe2e2", border: "#ffc9c9", text: "#e7000b" },
   },
   {
-    title: "Formula & Chemical Recognition",
-    description:
-      "Extract mathematical formulas (LaTeX/MathML) and chemical structures with ~95% accuracy for scientific documents",
+    title: t("challengeCards.adaptive.title"),
+    description: t("challengeCards.adaptive.description"),
     icon: "adaptive",
     tone: { background: "#fef3c6", border: "#fde68a", text: "#d08700" },
   },
   {
-    title: "Multi-format Support",
-    description:
-      "Process 20+ major file formats: PDF, DOCX, XLSX, PPT, HTML, Images, and more with unified API",
+    title: t("challengeCards.format.title"),
+    description: t("challengeCards.format.description"),
     icon: "format",
     tone: { background: "#d0fae5", border: "#a4f4cf", text: "#00bc7d" },
   },
   {
-    title: "Full Provenance Tracing",
-    description:
-      "100% source traceability for every extracted element, making it easy to audit and verify AI-generated content",
+    title: t("challengeCards.trace.title"),
+    description: t("challengeCards.trace.description"),
     icon: "trace",
     tone: { background: "#dbeafe", border: "#bedbff", text: "#2b7fff" },
   },
   {
-    title: "On-premise Deployment",
-    description:
-      "Supports local deployment for enterprise long-tail needs: conflict detection, compliance auditing, risk identification, and more",
+    title: t("challengeCards.deploy.title"),
+    description: t("challengeCards.deploy.description"),
     icon: "deploy",
     tone: { background: "#e0e7ff", border: "#c7d2fe", text: "#615fff" },
   },
   {
-    title: "API First Design",
-    description:
-      "RESTful API with webhooks, comprehensive SDKs for all major languages, and detailed documentation",
+    title: t("challengeCards.api.title"),
+    description: t("challengeCards.api.description"),
     icon: "api",
     tone: { background: "#fae8ff", border: "#f6cfff", text: "#d100d7" },
   },
 ];
 
-export const transformSteps: TransformStep[] = [
+export const getTransformSteps = (t: LandingDataTranslate): TransformStep[] => [
   {
     number: "1",
-    title: "Input",
-    description: "Upload document (PDF, DOCX, XLSX, etc.)",
+    title: t("transformSteps.input.title"),
+    description: t("transformSteps.input.description"),
     tone: { background: "#f5f3ff", border: "#ddd6ff", text: "#7c3aed", numberBg: "#a78bfa" },
   },
   {
     number: "2",
-    title: "OCR & Detection",
-    description: "Extract text, detect tables, formulas, images",
+    title: t("transformSteps.detection.title"),
+    description: t("transformSteps.detection.description"),
     tone: { background: "#eef2ff", border: "#c7d2fe", text: "#4338ca", numberBg: "#818cf8" },
   },
   {
     number: "3",
-    title: "Structure Analysis",
-    description: "Analyze layout, relationships, hierarchies",
+    title: t("transformSteps.structure.title"),
+    description: t("transformSteps.structure.description"),
     tone: { background: "#eff6ff", border: "#bfdbfe", text: "#2563eb", numberBg: "#60a5fa" },
   },
   {
     number: "4",
-    title: "JSON Output",
-    description: "Clean, structured data for AI consumption",
+    title: t("transformSteps.output.title"),
+    description: t("transformSteps.output.description"),
     tone: { background: "#f0f9ff", border: "#bae6fd", text: "#0284c7", numberBg: "#38bdf8" },
   },
 ];
 
-export const transformMetrics: MetricCard[] = [
+export const getTransformMetrics = (t: LandingDataTranslate): MetricCard[] => [
   {
     value: "20+",
-    label: "File Formats",
+    label: t("transformMetrics.formats"),
     tone: { background: "#f5f3ff", border: "#ede9fe", text: "#7c3aed" },
     stripe: true,
   },
   {
     value: "~95%",
-    label: "Formula Accuracy",
+    label: t("transformMetrics.formula"),
     tone: { background: "#eff6ff", border: "#dbeafe", text: "#3b82f6" },
   },
   {
     value: "100%",
-    label: "Source Traceability",
+    label: t("transformMetrics.traceability"),
     tone: { background: "#eef2ff", border: "#e0e7ff", text: "#6366f1" },
   },
   {
     value: ">10%",
-    label: "RAG Top-K Boost",
+    label: t("transformMetrics.ragBoost"),
     tone: { background: "#f0f9ff", border: "#dff2fe", text: "#0ea5e9" },
   },
 ];
 
-export const pricingExamples: PriceExample[] = [
-  { value: "$0.15", label: "100-page PDF" },
-  { value: "$0.75", label: "500-page document" },
-  { value: "$15", label: "10,000 pages" },
+export const getPricingExamples = (t: LandingDataTranslate): PriceExample[] => [
+  { value: "$0.15", label: t("pricingExamples.small") },
+  { value: "$0.75", label: t("pricingExamples.medium") },
+  { value: "$15", label: t("pricingExamples.large") },
 ];
 
 export const fileLimits: FileLimit[] = [
@@ -387,32 +393,31 @@ export const fileLimits: FileLimit[] = [
   },
 ];
 
-export const enterpriseItems = [
-  "Custom rate limits",
-  "Priority processing",
-  "Dedicated support channel",
-  "Custom SLA agreements",
-  "Volume discounts",
-  "Invoice billing",
-] as const;
+export const getEnterpriseItems = (t: LandingDataTranslate): readonly string[] =>
+  [
+    t("enterpriseItems.rateLimits"),
+    t("enterpriseItems.priority"),
+    t("enterpriseItems.support"),
+    t("enterpriseItems.sla"),
+    t("enterpriseItems.discounts"),
+    t("enterpriseItems.invoice"),
+  ] as const;
 
-export const faqItems: FaqItem[] = [
+export const getFaqItems = (t: LandingDataTranslate): FaqItem[] => [
   {
-    question: "When am I charged?",
-    answer:
-      "Page credits are deducted when a job completes successfully. Failed jobs do not consume credits.",
+    question: t("faqItems.charged.question"),
+    answer: t("faqItems.charged.answer"),
   },
   {
-    question: "Do unused pages roll over?",
-    answer: "Page credits expire 3 months after purchase.",
+    question: t("faqItems.rollover.question"),
+    answer: t("faqItems.rollover.answer"),
   },
   {
-    question: "Can I get a refund?",
-    answer: "Contact team@knowhereto.ai for refund requests within 14 days of purchase.",
+    question: t("faqItems.refund.question"),
+    answer: t("faqItems.refund.answer"),
   },
   {
-    question: "What payment methods are accepted?",
-    answer:
-      "We accept all major credit cards through Stripe: Visa, Mastercard, American Express, and more.",
+    question: t("faqItems.payment.question"),
+    answer: t("faqItems.payment.answer"),
   },
 ];
