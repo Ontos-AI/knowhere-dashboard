@@ -206,9 +206,9 @@ const getBenchmarkChartColors = (isDarkTheme: boolean): BenchmarkChartColors =>
 const benchmarkSeries: readonly BenchmarkSeries[] = [
   { color: RAW_PATTERN_BASE_COLOR, id: "raw", label: "Agent + Raw Docs", pattern: true },
   { color: "#9b7af8", id: "knowhere", label: "Agent + Knowhere" },
-  { color: "#2563eb", id: "markitdown", label: "Agent + Markitdown" },
   { color: "#d8a34a", id: "unstructured", label: "Agent + Unstructured" },
   { color: "#3f3f3f", id: "mineru", label: "Agent + MinerU" },
+  { color: "#2563eb", id: "markitdown", label: "Agent + Markitdown" },
 ] as const;
 
 const benchmarkMetrics: readonly BenchmarkMetric[] = [
