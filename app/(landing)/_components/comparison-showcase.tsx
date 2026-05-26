@@ -486,7 +486,7 @@ const BenchmarkSeriesLabel = ({
           className={cn("block shrink-0", compact ? "size-[15px]" : "size-4")}
           src={UNSTRUCTURED_LOGO_SRC}
         />
-        <span className="font-semibold">Unstructured</span>
+        <span className="font-medium">Unstructured</span>
       </span>
     );
   }
@@ -495,7 +495,7 @@ const BenchmarkSeriesLabel = ({
     return (
       <span className="inline-flex min-w-0 items-center gap-1.5 whitespace-nowrap">
         {compact ? null : <span>Agent +</span>}
-        <span className="font-semibold">Markitdown</span>
+        <span className="font-medium">Markitdown</span>
       </span>
     );
   }
