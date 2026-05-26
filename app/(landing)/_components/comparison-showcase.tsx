@@ -52,6 +52,8 @@ const comparisonTabTone = {
 } as const;
 const MINERU_LOGO_SRC =
   "https://webpub.shlab.tech/dps/mineru/mineru-seo-fe/mineru-seo-prod.153/_next/static/media/logo.8cddbe47.svg";
+const UNSTRUCTURED_LOGO_SRC =
+  "https://raw.githubusercontent.com/Unstructured-IO/unstructured/main/img/unstructured_logo.png";
 const RAW_PATTERN_BASE_COLOR = "#e4e4e7";
 const RAW_PATTERN_LINE_COLOR = "#f4f4f5";
 const RAW_PATTERN_LINE_OPACITY = 1;
@@ -451,7 +453,7 @@ const BenchmarkSeriesLabel = ({
   if (series.id === "knowhere") {
     return (
       <span className="inline-flex min-w-0 items-center gap-1.5 whitespace-nowrap">
-        <span>Agent +</span>
+        {compact ? null : <span>Agent +</span>}
         <KnowhereBrand
           className={compact ? "w-[68px]" : "w-[78px]"}
           sizes={compact ? "68px" : "78px"}
@@ -464,7 +466,7 @@ const BenchmarkSeriesLabel = ({
   if (series.id === "mineru") {
     return (
       <span className="inline-flex min-w-0 items-center gap-1.5 whitespace-nowrap">
-        <span>Agent +</span>
+        {compact ? null : <span>Agent +</span>}
         <span
           aria-hidden="true"
           className={cn("block shrink-0", compact ? "h-[14px] w-[58px]" : "h-[16px] w-[66px]")}
@@ -472,6 +474,29 @@ const BenchmarkSeriesLabel = ({
         />
       </span>
     );
+  }
+
+  if (series.id === "unstructured") {
+    return (
+      <span className="inline-flex min-w-0 items-center gap-1.5 whitespace-nowrap">
+        {compact ? null : <span>Agent +</span>}
+        <img
+          alt=""
+          aria-hidden="true"
+          className={cn("block shrink-0", compact ? "size-[15px]" : "size-4")}
+          src={UNSTRUCTURED_LOGO_SRC}
+        />
+        <span>Unstructured</span>
+      </span>
+    );
+  }
+
+  if (compact && series.id === "raw") {
+    return <span className="whitespace-nowrap">Raw Docs</span>;
+  }
+
+  if (compact && series.id === "markitdown") {
+    return <span className="whitespace-nowrap">Markitdown</span>;
   }
 
   return <span className="whitespace-nowrap">{series.label}</span>;
@@ -843,7 +868,7 @@ const BenchmarkChart = ({
                   colors={colors}
                   series={series}
                 />
-                <BenchmarkSeriesLabel colors={colors} series={series} />
+                <BenchmarkSeriesLabel colors={colors} compact series={series} />
               </button>
             );
           })}
