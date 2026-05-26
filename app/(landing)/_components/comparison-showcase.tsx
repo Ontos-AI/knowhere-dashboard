@@ -673,7 +673,7 @@ const renderBenchmarkValueLabel =
         strokeLinejoin="round"
         strokeWidth={2}
         textAnchor="start"
-        transform={`rotate(-90 ${labelX} ${labelY})`}
+        transform={`rotate(-75 ${labelX} ${labelY})`}
         x={labelX}
         y={labelY}
       >
