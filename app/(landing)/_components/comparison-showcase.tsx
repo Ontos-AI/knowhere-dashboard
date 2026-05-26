@@ -60,8 +60,7 @@ const RAW_PATTERN_LINE_OPACITY = 1;
 const RAW_PATTERN_LINE_WIDTH = 0.7;
 const RAW_PATTERN_SIZE = 6;
 const AXIS_NUMBER_GAP = 2;
-const VALUE_LABEL_GAP = 3;
-const VALUE_LABEL_X_OFFSET = -3;
+const VALUE_LABEL_GAP = 5;
 const VALUE_LABEL_Z_INDEX = 2000;
 const VALUE_AXIS_ID = "value";
 const TIME_AXIS_ID = "secondary-time";
@@ -661,20 +660,20 @@ const renderBenchmarkValueLabel =
       return <g />;
     }
 
-    const labelX = xValue + widthValue / 2 + VALUE_LABEL_X_OFFSET;
+    const labelX = xValue + widthValue / 2;
     const labelY = yValue - VALUE_LABEL_GAP;
 
     return (
       <text
         fill={colors.valueLabel}
         fontFamily="var(--font-mono-display)"
-        fontSize={11}
+        fontSize={10}
         paintOrder="stroke"
         stroke={colors.panel}
         strokeLinejoin="round"
-        strokeWidth={3}
+        strokeWidth={2}
         textAnchor="start"
-        transform={`rotate(-60 ${labelX} ${labelY})`}
+        transform={`rotate(-90 ${labelX} ${labelY})`}
         x={labelX}
         y={labelY}
       >
