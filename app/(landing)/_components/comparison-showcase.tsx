@@ -486,17 +486,22 @@ const BenchmarkSeriesLabel = ({
           className={cn("block shrink-0", compact ? "size-[15px]" : "size-4")}
           src={UNSTRUCTURED_LOGO_SRC}
         />
-        <span>Unstructured</span>
+        <span className="font-semibold">Unstructured</span>
+      </span>
+    );
+  }
+
+  if (series.id === "markitdown") {
+    return (
+      <span className="inline-flex min-w-0 items-center gap-1.5 whitespace-nowrap">
+        {compact ? null : <span>Agent +</span>}
+        <span className="font-semibold">Markitdown</span>
       </span>
     );
   }
 
   if (compact && series.id === "raw") {
     return <span className="whitespace-nowrap">Raw Docs</span>;
-  }
-
-  if (compact && series.id === "markitdown") {
-    return <span className="whitespace-nowrap">Markitdown</span>;
   }
 
   return <span className="whitespace-nowrap">{series.label}</span>;
