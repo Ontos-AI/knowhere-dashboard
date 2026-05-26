@@ -73,6 +73,8 @@ const benchmarkChartThemes = {
     highText: "#09090b",
     knowhere: "#9b7af8",
     knowhereBorder: "#8b5cf6",
+    markitdown: "#2563eb",
+    markitdownBorder: "#1d4ed8",
     mineru: "#3f3f3f",
     mineruBorder: "#27272a",
     mineruLogo: "#18181b",
@@ -98,6 +100,8 @@ const benchmarkChartThemes = {
     highText: "#fafafa",
     knowhere: "#8e6cf3",
     knowhereBorder: "#a78bfa",
+    markitdown: "#60a5fa",
+    markitdownBorder: "#93c5fd",
     mineru: "#a1a1aa",
     mineruBorder: "#d4d4d8",
     mineruLogo: "#fafafa",
@@ -121,7 +125,7 @@ type BenchmarkChartColors = (typeof benchmarkChartThemes)[keyof typeof benchmark
 
 type BenchmarkSeries = {
   color: string;
-  id: "raw" | "knowhere" | "mineru" | "unstructured";
+  id: "raw" | "knowhere" | "markitdown" | "mineru" | "unstructured";
   label: string;
   pattern?: boolean;
 };
@@ -140,6 +144,8 @@ type BenchmarkDatum = {
   knowhere: number;
   knowhereValue: number;
   label: string;
+  markitdown: number;
+  markitdownValue: number;
   mineru: number;
   mineruValue: number;
   raw: number;
@@ -198,8 +204,9 @@ const getBenchmarkChartColors = (isDarkTheme: boolean): BenchmarkChartColors =>
 const benchmarkSeries: readonly BenchmarkSeries[] = [
   { color: RAW_PATTERN_BASE_COLOR, id: "raw", label: "Agent + Raw Docs", pattern: true },
   { color: "#9b7af8", id: "knowhere", label: "Agent + Knowhere" },
-  { color: "#3f3f3f", id: "mineru", label: "Agent + MinerU" },
+  { color: "#2563eb", id: "markitdown", label: "Agent + Markitdown" },
   { color: "#d8a34a", id: "unstructured", label: "Agent + Unstructured" },
+  { color: "#3f3f3f", id: "mineru", label: "Agent + MinerU" },
 ] as const;
 
 const benchmarkMetrics: readonly BenchmarkMetric[] = [
@@ -208,8 +215,9 @@ const benchmarkMetrics: readonly BenchmarkMetric[] = [
     values: {
       raw: 1629.545455,
       knowhere: 1573.863636,
-      mineru: 1502.646491,
+      markitdown: 1502.646491,
       unstructured: 1886.363636,
+      mineru: 1670.454545,
     },
   },
   {
@@ -217,8 +225,9 @@ const benchmarkMetrics: readonly BenchmarkMetric[] = [
     values: {
       raw: 20.56818182,
       knowhere: 15.25,
-      mineru: 15.20454545,
+      markitdown: 15.20454545,
       unstructured: 16.61365,
+      mineru: 17.47727273,
     },
   },
   {
@@ -226,8 +235,9 @@ const benchmarkMetrics: readonly BenchmarkMetric[] = [
     values: {
       raw: 2.613636364,
       knowhere: 2.136363636,
-      mineru: 2.181818182,
+      markitdown: 2.181818182,
       unstructured: 2.340909091,
+      mineru: 2.204545455,
     },
   },
   {
@@ -235,8 +245,9 @@ const benchmarkMetrics: readonly BenchmarkMetric[] = [
     values: {
       raw: 0.5,
       knowhere: 0.681818182,
-      mineru: 0.590909091,
+      markitdown: 0.590909091,
       unstructured: 0.613636364,
+      mineru: 0.659090909,
     },
   },
   {
@@ -244,8 +255,9 @@ const benchmarkMetrics: readonly BenchmarkMetric[] = [
     values: {
       raw: 0.527777778,
       knowhere: 0.788888889,
-      mineru: 0.538961039,
+      markitdown: 0.538961039,
       unstructured: 0.685714286,
+      mineru: 0.642857143,
     },
   },
   {
@@ -253,8 +265,9 @@ const benchmarkMetrics: readonly BenchmarkMetric[] = [
     values: {
       raw: 0.738636362,
       knowhere: 0.821969697,
-      mineru: 0.761363629,
+      markitdown: 0.761363629,
       unstructured: 0.768939,
+      mineru: 0.780303,
     },
   },
 ] as const;
@@ -285,6 +298,8 @@ const benchmarkData: readonly BenchmarkDatum[] = benchmarkMetrics.map((metric) =
     knowhere: scaleValue(metric.values.knowhere),
     knowhereValue: metric.values.knowhere,
     label: metric.label,
+    markitdown: scaleValue(metric.values.markitdown),
+    markitdownValue: metric.values.markitdown,
     mineru: scaleValue(metric.values.mineru),
     mineruValue: metric.values.mineru,
     raw: scaleValue(metric.values.raw),
@@ -327,17 +342,30 @@ const formatBenchmarkValue = (value: number): string => {
   return value.toFixed(2);
 };
 
+const formatBenchmarkBarLabelValue = (value: number): string => {
+  if (value >= 100) {
+    return Math.round(value).toString();
+  }
+
+  return formatBenchmarkValue(value);
+};
+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;
 
 const isBenchmarkSeriesId = (value: unknown): value is BenchmarkSeriesId =>
-  value === "raw" || value === "knowhere" || value === "mineru" || value === "unstructured";
+  value === "raw" ||
+  value === "knowhere" ||
+  value === "markitdown" ||
+  value === "mineru" ||
+  value === "unstructured";
 
 const isBenchmarkDatum = (value: unknown): value is BenchmarkDatum =>
   isRecord(value) &&
   typeof value.label === "string" &&
   typeof value.rawValue === "number" &&
   typeof value.knowhereValue === "number" &&
+  typeof value.markitdownValue === "number" &&
   typeof value.mineruValue === "number" &&
   typeof value.unstructuredValue === "number";
 
@@ -347,6 +375,8 @@ const getBenchmarkDatumValue = (datum: BenchmarkDatum, seriesId: BenchmarkSeries
       return datum.rawValue;
     case "knowhere":
       return datum.knowhereValue;
+    case "markitdown":
+      return datum.markitdownValue;
     case "mineru":
       return datum.mineruValue;
     case "unstructured":
@@ -363,6 +393,8 @@ const getBenchmarkSeriesColor = (series: BenchmarkSeries, colors: BenchmarkChart
       return colors.rawBase;
     case "knowhere":
       return colors.knowhere;
+    case "markitdown":
+      return colors.markitdown;
     case "mineru":
       return colors.mineru;
     case "unstructured":
@@ -379,6 +411,8 @@ const getBenchmarkSeriesSwatchBorderColor = (
       return colors.rawBorder;
     case "knowhere":
       return colors.knowhereBorder;
+    case "markitdown":
+      return colors.markitdownBorder;
     case "mineru":
       return colors.mineruBorder;
     case "unstructured":
@@ -614,7 +648,7 @@ const renderBenchmarkValueLabel =
         x={labelX}
         y={labelY}
       >
-        {formatBenchmarkValue(getBenchmarkDatumValue(datum, seriesId))}
+        {formatBenchmarkBarLabelValue(getBenchmarkDatumValue(datum, seriesId))}
       </text>
     );
   };
