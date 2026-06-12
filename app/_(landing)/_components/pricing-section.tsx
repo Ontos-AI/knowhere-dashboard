@@ -30,9 +30,9 @@ type FAQ = {
 };
 
 const examples: Example[] = [
-  { pages: "100-page PDF", cost: "$0.15" },
-  { pages: "500-page document", cost: "$0.75" },
-  { pages: "10,000 pages", cost: "$15.00" },
+  { pages: "100-page PDF", cost: "$1.50" },
+  { pages: "500-page document", cost: "$7.50" },
+  { pages: "10,000 pages", cost: "$150.00" },
 ];
 
 const rateLimits: Limit[] = [
@@ -119,7 +119,7 @@ export function PricingSection() {
                 <div className="text-5xl md:text-6xl font-bold font-pixel mb-2 text-pixel-green">
                   $1.50
                 </div>
-                <div className="text-base text-pixel-muted font-sans">per 1,000 pages</div>
+                <div className="text-base text-pixel-muted font-sans">per 100 pages</div>
               </div>
 
               <p className="text-base text-pixel-muted font-sans max-w-2xl mx-auto">
