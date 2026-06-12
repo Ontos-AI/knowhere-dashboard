@@ -365,9 +365,9 @@ export const getTransformMetrics = (t: LandingDataTranslate): MetricCard[] => [
 ];
 
 export const getPricingExamples = (t: LandingDataTranslate): PriceExample[] => [
-  { value: "$0.15", label: t("pricingExamples.small") },
-  { value: "$0.75", label: t("pricingExamples.medium") },
-  { value: "$15", label: t("pricingExamples.large") },
+  { value: "$1.50", label: t("pricingExamples.small") },
+  { value: "$7.50", label: t("pricingExamples.medium") },
+  { value: "$150", label: t("pricingExamples.large") },
 ];
 
 export const fileLimits: FileLimit[] = [

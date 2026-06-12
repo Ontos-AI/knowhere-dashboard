@@ -503,7 +503,7 @@ export const versusUnstructured: VersusPageData = {
         id: "pricing",
         question: "How much does Knowhere cost compared to Unstructured?",
         answer:
-          "Knowhere offers competitive pricing with better value. Our free tier includes 1,000 pages/month, and paid plans start at $49/month. We also offer volume discounts for enterprise customers.",
+          "Knowhere offers competitive pricing with better value. Pay-as-you-go processing is $1.50 per 100 pages, and we offer volume discounts for enterprise customers.",
         category: "pricing",
       },
       {
@@ -893,7 +893,7 @@ export const versusMarkitdown: VersusPageData = {
         id: "pricing-comparison",
         question: "Is Knowhere more expensive than Markitdown?",
         answer:
-          "Knowhere offers competitive pricing with significantly better output quality. Our free tier includes 1,000 pages/month, and enterprise plans include volume discounts.",
+          "Knowhere offers competitive pricing with significantly better output quality. Pay-as-you-go processing is $1.50 per 100 pages, and enterprise plans include volume discounts.",
         category: "pricing",
       },
       {
