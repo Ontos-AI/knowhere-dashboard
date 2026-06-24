@@ -29,6 +29,13 @@
       "when": 1777322413744,
       "tag": "0003_flaky_radioactive_man",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1782325418322,
+      "tag": "0004_faithful_wither",
+      "breakpoints": true
     }
   ]
 }
