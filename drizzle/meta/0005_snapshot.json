@@ -431,8 +431,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.mcpAuthorizationCode": {
-      "name": "mcpAuthorizationCode",
+    "public.oauthAuthorizationCode": {
+      "name": "oauthAuthorizationCode",
       "schema": "",
       "columns": {
         "id": {
@@ -499,8 +499,8 @@
         }
       },
       "indexes": {
-        "mcpAuthorizationCode_codeHash_unique": {
-          "name": "mcpAuthorizationCode_codeHash_unique",
+        "oauthAuthorizationCode_codeHash_unique": {
+          "name": "oauthAuthorizationCode_codeHash_unique",
           "columns": [
             {
               "expression": "codeHash",
@@ -514,8 +514,8 @@
           "method": "btree",
           "with": {}
         },
-        "mcpAuthorizationCode_userId_idx": {
-          "name": "mcpAuthorizationCode_userId_idx",
+        "oauthAuthorizationCode_userId_idx": {
+          "name": "oauthAuthorizationCode_userId_idx",
           "columns": [
             {
               "expression": "userId",
@@ -531,9 +531,9 @@
         }
       },
       "foreignKeys": {
-        "mcpAuthorizationCode_userId_user_id_fk": {
-          "name": "mcpAuthorizationCode_userId_user_id_fk",
-          "tableFrom": "mcpAuthorizationCode",
+        "oauthAuthorizationCode_userId_user_id_fk": {
+          "name": "oauthAuthorizationCode_userId_user_id_fk",
+          "tableFrom": "oauthAuthorizationCode",
           "tableTo": "user",
           "columnsFrom": ["userId"],
           "columnsTo": ["id"],
@@ -547,8 +547,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.mcpRefreshToken": {
-      "name": "mcpRefreshToken",
+    "public.oauthRefreshToken": {
+      "name": "oauthRefreshToken",
       "schema": "",
       "columns": {
         "id": {
@@ -609,8 +609,8 @@
         }
       },
       "indexes": {
-        "mcpRefreshToken_tokenHash_unique": {
-          "name": "mcpRefreshToken_tokenHash_unique",
+        "oauthRefreshToken_tokenHash_unique": {
+          "name": "oauthRefreshToken_tokenHash_unique",
           "columns": [
             {
               "expression": "tokenHash",
@@ -624,8 +624,8 @@
           "method": "btree",
           "with": {}
         },
-        "mcpRefreshToken_userId_idx": {
-          "name": "mcpRefreshToken_userId_idx",
+        "oauthRefreshToken_userId_idx": {
+          "name": "oauthRefreshToken_userId_idx",
           "columns": [
             {
               "expression": "userId",
@@ -641,9 +641,9 @@
         }
       },
       "foreignKeys": {
-        "mcpRefreshToken_userId_user_id_fk": {
-          "name": "mcpRefreshToken_userId_user_id_fk",
-          "tableFrom": "mcpRefreshToken",
+        "oauthRefreshToken_userId_user_id_fk": {
+          "name": "oauthRefreshToken_userId_user_id_fk",
+          "tableFrom": "oauthRefreshToken",
           "tableTo": "user",
           "columnsFrom": ["userId"],
           "columnsTo": ["id"],

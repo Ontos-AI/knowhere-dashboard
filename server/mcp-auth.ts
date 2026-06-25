@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { db } from "@lib/db";
-import { mcpAuthorizationCode, mcpRefreshToken } from "@lib/db/schema";
+import { oauthAuthorizationCode, oauthRefreshToken } from "@lib/db/schema";
 import { type McpLoginRequest, type Permission, validatePkceVerifier } from "@lib/mcp-auth-request";
 import {
   issueKnowhereServiceJwt,
@@ -43,7 +43,7 @@ export async function createMcpAuthorizationCode({
   const code = createSecretToken();
   const expiresAt = new Date(Date.now() + MCP_AUTH_CODE_TTL_MS);
 
-  await db.insert(mcpAuthorizationCode).values({
+  await db.insert(oauthAuthorizationCode).values({
     userId,
     codeHash: hashSecretToken(code),
     redirectUri: request.redirectUri,
@@ -67,13 +67,13 @@ export async function exchangeMcpAuthorizationCode({
 }): Promise<McpTokenResponse> {
   const now = new Date();
   const [authorizationCode] = await db
-    .update(mcpAuthorizationCode)
+    .update(oauthAuthorizationCode)
     .set({ consumedAt: now })
     .where(
       and(
-        eq(mcpAuthorizationCode.codeHash, hashSecretToken(code)),
-        isNull(mcpAuthorizationCode.consumedAt),
-        gt(mcpAuthorizationCode.expiresAt, now)
+        eq(oauthAuthorizationCode.codeHash, hashSecretToken(code)),
+        isNull(oauthAuthorizationCode.consumedAt),
+        gt(oauthAuthorizationCode.expiresAt, now)
       )
     )
     .returning();
@@ -99,11 +99,11 @@ export async function exchangeMcpAuthorizationCode({
 
 export async function refreshMcpAccessToken(refreshToken: string): Promise<McpTokenResponse> {
   const now = new Date();
-  const storedRefreshToken = await db.query.mcpRefreshToken.findFirst({
+  const storedRefreshToken = await db.query.oauthRefreshToken.findFirst({
     where: and(
-      eq(mcpRefreshToken.tokenHash, hashSecretToken(refreshToken)),
-      isNull(mcpRefreshToken.revokedAt),
-      gt(mcpRefreshToken.expiresAt, now)
+      eq(oauthRefreshToken.tokenHash, hashSecretToken(refreshToken)),
+      isNull(oauthRefreshToken.revokedAt),
+      gt(oauthRefreshToken.expiresAt, now)
     ),
   });
 
@@ -112,9 +112,9 @@ export async function refreshMcpAccessToken(refreshToken: string): Promise<McpTo
   }
 
   await db
-    .update(mcpRefreshToken)
+    .update(oauthRefreshToken)
     .set({ lastUsedAt: now })
-    .where(eq(mcpRefreshToken.id, storedRefreshToken.id));
+    .where(eq(oauthRefreshToken.id, storedRefreshToken.id));
 
   const permission = normalizeStoredPermission(storedRefreshToken.permission);
 
@@ -128,12 +128,12 @@ export async function refreshMcpAccessToken(refreshToken: string): Promise<McpTo
 
 export async function revokeMcpRefreshToken(refreshToken: string): Promise<void> {
   await db
-    .update(mcpRefreshToken)
+    .update(oauthRefreshToken)
     .set({ revokedAt: new Date() })
     .where(
       and(
-        eq(mcpRefreshToken.tokenHash, hashSecretToken(refreshToken)),
-        isNull(mcpRefreshToken.revokedAt)
+        eq(oauthRefreshToken.tokenHash, hashSecretToken(refreshToken)),
+        isNull(oauthRefreshToken.revokedAt)
       )
     );
 }
@@ -150,7 +150,7 @@ async function issueMcpTokenPair({
   const refreshToken = createSecretToken();
   const refreshTokenExpiresAt = new Date(Date.now() + MCP_REFRESH_TOKEN_TTL_MS);
 
-  await db.insert(mcpRefreshToken).values({
+  await db.insert(oauthRefreshToken).values({
     userId,
     tokenHash: hashSecretToken(refreshToken),
     name: clientName,

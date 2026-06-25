@@ -2,8 +2,8 @@ import { user } from "@lib/db/auth-schema";
 import { createId } from "@paralleldrive/cuid2";
 import { index, pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
 
-export const mcpAuthorizationCode = pgTable(
-  "mcpAuthorizationCode",
+export const oauthAuthorizationCode = pgTable(
+  "oauthAuthorizationCode",
   {
     id: text("id")
       .primaryKey()
@@ -21,13 +21,13 @@ export const mcpAuthorizationCode = pgTable(
     createdAt: timestamp("createdAt", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
-    codeHashUnique: uniqueIndex("mcpAuthorizationCode_codeHash_unique").on(table.codeHash),
-    userIdIndex: index("mcpAuthorizationCode_userId_idx").on(table.userId),
+    codeHashUnique: uniqueIndex("oauthAuthorizationCode_codeHash_unique").on(table.codeHash),
+    userIdIndex: index("oauthAuthorizationCode_userId_idx").on(table.userId),
   })
 );
 
-export const mcpRefreshToken = pgTable(
-  "mcpRefreshToken",
+export const oauthRefreshToken = pgTable(
+  "oauthRefreshToken",
   {
     id: text("id")
       .primaryKey()
@@ -44,7 +44,7 @@ export const mcpRefreshToken = pgTable(
     createdAt: timestamp("createdAt", { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
-    tokenHashUnique: uniqueIndex("mcpRefreshToken_tokenHash_unique").on(table.tokenHash),
-    userIdIndex: index("mcpRefreshToken_userId_idx").on(table.userId),
+    tokenHashUnique: uniqueIndex("oauthRefreshToken_tokenHash_unique").on(table.tokenHash),
+    userIdIndex: index("oauthRefreshToken_userId_idx").on(table.userId),
   })
 );
