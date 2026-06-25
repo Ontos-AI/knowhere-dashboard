@@ -5,6 +5,10 @@ import { emailVerificationToken, user as userTable } from "@lib/db/auth-schema";
 import { env } from "@lib/env";
 import { ORPCError } from "@orpc/server";
 import { createApiKey } from "@server/external-api/api-keys";
+import {
+  issueKnowhereServiceJwt,
+  KNOWHERE_SERVICE_JWT_EXPIRY_SECONDS,
+} from "@server/knowhere-service-jwt";
 import { protectedProcedure, publicProcedure } from "@server/orpc";
 import type { User } from "better-auth/types";
 import { and, eq, gt } from "drizzle-orm";
@@ -524,25 +528,9 @@ export const usersRouter = protectedProcedure.router({
    * later, it calls this endpoint again with the still-valid session.
    */
   issueServiceJwt: protectedProcedure.handler(async ({ context }) => {
-    const SERVICE_JWT_EXPIRATION = "1h";
-    const SERVICE_JWT_EXPIRY_SECONDS = 60 * 60;
-
-    const { token } = await auth.api.signJWT({
-      body: {
-        payload: { id: context.user.id },
-        overrideOptions: { jwt: { expirationTime: SERVICE_JWT_EXPIRATION } },
-      },
-    });
-
-    if (!token || token.length === 0) {
-      throw new ORPCError("INTERNAL_SERVER_ERROR", {
-        message: "JWT signing returned an empty token.",
-      });
-    }
-
     return {
-      token,
-      expiresInSeconds: SERVICE_JWT_EXPIRY_SECONDS,
+      token: await issueKnowhereServiceJwt(context.user.id),
+      expiresInSeconds: KNOWHERE_SERVICE_JWT_EXPIRY_SECONDS,
     };
   }),
 });
