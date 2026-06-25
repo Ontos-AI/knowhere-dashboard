@@ -38,7 +38,7 @@ export async function handleConsentGet(
 
   const session = await auth.api.getSession({ headers: request.headers });
   if (!session?.user) {
-    return redirectToDashboardLogin(requestUrl.origin, requestUrl.searchParams, surface);
+    return redirectToDashboardLogin(requestUrl.searchParams, surface);
   }
 
   return renderConsentPage(loginRequest, surface);
@@ -49,7 +49,6 @@ export async function handleConsentPost(
   request: Request,
   surface: ConsentSurface
 ): Promise<Response> {
-  const requestUrl = new URL(request.url);
   const formData = await request.formData();
   const searchParams = buildLoginSearchParams(formData);
   const loginRequest = validateLoginRequest(searchParams);
@@ -59,7 +58,7 @@ export async function handleConsentPost(
 
   const session = await auth.api.getSession({ headers: request.headers });
   if (!session?.user) {
-    return redirectToDashboardLogin(requestUrl.origin, searchParams, surface);
+    return redirectToDashboardLogin(searchParams, surface);
   }
 
   const intent = formData.get("intent");
@@ -84,13 +83,18 @@ export async function handleConsentPost(
 }
 
 function redirectToDashboardLogin(
-  origin: string,
   searchParams: URLSearchParams,
   surface: ConsentSurface
 ): Response {
   const callbackURL = `${surface.loginPath}?${searchParams.toString()}`;
   const loginPath = authRedirect.buildAuthPagePath("/login", { callbackURL });
-  return NextResponse.redirect(new URL(loginPath, origin));
+  // Emit a relative Location so the browser resolves it against the public URL
+  // it is actually on. Using the server-derived request origin breaks behind a
+  // reverse proxy, where it can resolve to an internal host (e.g. localhost).
+  return new Response(null, {
+    status: 307,
+    headers: { Location: loginPath },
+  });
 }
 
 function redirectWithAuthorizationCode(loginRequest: OAuthLoginRequest, code: string): Response {
