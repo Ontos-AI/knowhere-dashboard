@@ -1,6 +1,6 @@
 import { handleRevokeRequest } from "@server/oauth-token-handlers";
 
-/** Legacy alias for /api/oauth/revoke. Retained for the deployed MCP client. */
+/** OAuth refresh-token revoke endpoint. Shared by all clients (CLI, MCP). */
 export async function POST(request: Request): Promise<Response> {
   return handleRevokeRequest(request);
 }
