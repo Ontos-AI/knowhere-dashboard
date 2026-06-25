@@ -182,20 +182,32 @@ function renderConsentPage(loginRequest: McpLoginRequest): Response {
       }
       .client {
         display: grid;
-        gap: 6px;
+        grid-template-columns: max-content minmax(0, 1fr);
+        column-gap: 16px;
+        row-gap: 10px;
+        align-items: baseline;
         margin: 0 0 24px;
         padding: 16px;
         background: #f9fafb;
         border: 1px solid #eaecf0;
         border-radius: 8px;
       }
+      .client dt,
+      .client dd {
+        margin: 0;
+        min-width: 0;
+        line-height: 1.5;
+      }
       .label {
         color: #667085;
         font-size: 13px;
+        white-space: nowrap;
       }
       .value {
-        overflow-wrap: anywhere;
         font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       fieldset {
         border: 0;
@@ -276,14 +288,10 @@ function renderConsentPage(loginRequest: McpLoginRequest): Response {
       <h1>Authorize Knowhere</h1>
       <p class="summary">${escapeHtml(loginRequest.clientName)} is requesting access to your Knowhere account.</p>
       <dl class="client">
-        <div>
-          <dt class="label">Client</dt>
-          <dd class="value">${escapeHtml(loginRequest.clientName)}</dd>
-        </div>
-        <div>
-          <dt class="label">Redirect URI</dt>
-          <dd class="value">${escapeHtml(loginRequest.redirectUri)}</dd>
-        </div>
+        <dt class="label">Client</dt>
+        <dd class="value" title="${escapeHtml(loginRequest.clientName)}">${escapeHtml(loginRequest.clientName)}</dd>
+        <dt class="label">Redirect URI</dt>
+        <dd class="value" title="${escapeHtml(loginRequest.redirectUri)}">${escapeHtml(loginRequest.redirectUri)}</dd>
       </dl>
       <form method="post">
         ${hiddenInputs}
