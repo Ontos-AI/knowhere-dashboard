@@ -1,18 +1,18 @@
 import crypto from "node:crypto";
 import { db } from "@lib/db";
 import { oauthAuthorizationCode, oauthRefreshToken } from "@lib/db/schema";
-import { type McpLoginRequest, type Permission, validatePkceVerifier } from "@lib/mcp-auth-request";
+import { type OAuthLoginRequest, type Permission, validatePkceVerifier } from "@lib/oauth-request";
 import {
   issueKnowhereServiceJwt,
   KNOWHERE_SERVICE_JWT_EXPIRY_SECONDS,
 } from "@server/knowhere-service-jwt";
 import { and, eq, gt, isNull } from "drizzle-orm";
 
-const MCP_AUTH_CODE_TTL_MS = 5 * 60 * 1000;
-const MCP_REFRESH_TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+const OAUTH_AUTH_CODE_TTL_MS = 5 * 60 * 1000;
+const OAUTH_REFRESH_TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const TOKEN_BYTE_LENGTH = 32;
 
-export type McpTokenResponse = {
+export type OAuthTokenResponse = {
   readonly accessToken: string;
   readonly expiresInSeconds: number;
   readonly permission: Permission;
@@ -21,27 +21,27 @@ export type McpTokenResponse = {
   readonly tokenType: "Bearer";
 };
 
-export class McpAuthError extends Error {
+export class OAuthAuthError extends Error {
   readonly status: number;
 
   constructor(message: string, status = 400) {
     super(message);
-    this.name = "McpAuthError";
+    this.name = "OAuthAuthError";
     this.status = status;
   }
 }
 
-export async function createMcpAuthorizationCode({
+export async function createOAuthAuthorizationCode({
   userId,
   request,
   permission,
 }: {
   readonly userId: string;
-  readonly request: McpLoginRequest;
+  readonly request: OAuthLoginRequest;
   readonly permission: Permission;
 }): Promise<string> {
   const code = createSecretToken();
-  const expiresAt = new Date(Date.now() + MCP_AUTH_CODE_TTL_MS);
+  const expiresAt = new Date(Date.now() + OAUTH_AUTH_CODE_TTL_MS);
 
   await db.insert(oauthAuthorizationCode).values({
     userId,
@@ -56,7 +56,7 @@ export async function createMcpAuthorizationCode({
   return code;
 }
 
-export async function exchangeMcpAuthorizationCode({
+export async function exchangeOAuthAuthorizationCode({
   code,
   codeVerifier,
   clientName,
@@ -64,7 +64,7 @@ export async function exchangeMcpAuthorizationCode({
   readonly code: string;
   readonly codeVerifier: string;
   readonly clientName?: string;
-}): Promise<McpTokenResponse> {
+}): Promise<OAuthTokenResponse> {
   const now = new Date();
   const [authorizationCode] = await db
     .update(oauthAuthorizationCode)
@@ -79,7 +79,7 @@ export async function exchangeMcpAuthorizationCode({
     .returning();
 
   if (!authorizationCode) {
-    throw new McpAuthError("Invalid or expired authorization code", 401);
+    throw new OAuthAuthError("Invalid or expired authorization code", 401);
   }
 
   const isVerifierValid = validatePkceVerifier({
@@ -87,17 +87,17 @@ export async function exchangeMcpAuthorizationCode({
     codeVerifier,
   });
   if (!isVerifierValid) {
-    throw new McpAuthError("Invalid authorization verifier", 401);
+    throw new OAuthAuthError("Invalid authorization verifier", 401);
   }
 
-  return issueMcpTokenPair({
+  return issueOAuthTokenPair({
     userId: authorizationCode.userId,
     clientName: clientName?.trim() || authorizationCode.clientName,
     permission: normalizeStoredPermission(authorizationCode.permission),
   });
 }
 
-export async function refreshMcpAccessToken(refreshToken: string): Promise<McpTokenResponse> {
+export async function refreshOAuthAccessToken(refreshToken: string): Promise<OAuthTokenResponse> {
   const now = new Date();
   const storedRefreshToken = await db.query.oauthRefreshToken.findFirst({
     where: and(
@@ -108,7 +108,7 @@ export async function refreshMcpAccessToken(refreshToken: string): Promise<McpTo
   });
 
   if (!storedRefreshToken) {
-    throw new McpAuthError("Invalid or expired refresh token", 401);
+    throw new OAuthAuthError("Invalid or expired refresh token", 401);
   }
 
   await db
@@ -126,7 +126,7 @@ export async function refreshMcpAccessToken(refreshToken: string): Promise<McpTo
   };
 }
 
-export async function revokeMcpRefreshToken(refreshToken: string): Promise<void> {
+export async function revokeOAuthRefreshToken(refreshToken: string): Promise<void> {
   await db
     .update(oauthRefreshToken)
     .set({ revokedAt: new Date() })
@@ -138,7 +138,7 @@ export async function revokeMcpRefreshToken(refreshToken: string): Promise<void>
     );
 }
 
-async function issueMcpTokenPair({
+async function issueOAuthTokenPair({
   userId,
   clientName,
   permission,
@@ -146,9 +146,9 @@ async function issueMcpTokenPair({
   readonly userId: string;
   readonly clientName: string;
   readonly permission: Permission;
-}): Promise<McpTokenResponse> {
+}): Promise<OAuthTokenResponse> {
   const refreshToken = createSecretToken();
-  const refreshTokenExpiresAt = new Date(Date.now() + MCP_REFRESH_TOKEN_TTL_MS);
+  const refreshTokenExpiresAt = new Date(Date.now() + OAUTH_REFRESH_TOKEN_TTL_MS);
 
   await db.insert(oauthRefreshToken).values({
     userId,

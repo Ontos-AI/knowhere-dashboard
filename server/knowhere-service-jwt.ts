@@ -1,5 +1,5 @@
 import { auth } from "@lib/auth";
-import type { Permission } from "@lib/mcp-auth-request";
+import type { Permission } from "@lib/oauth-request";
 import { ORPCError } from "@orpc/server";
 
 export const KNOWHERE_SERVICE_JWT_EXPIRY_SECONDS = 60 * 60;

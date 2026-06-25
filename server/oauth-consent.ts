@@ -2,13 +2,13 @@ import { auth } from "@lib/auth";
 import { authRedirect } from "@lib/auth-redirect";
 import {
   DEFAULT_PERMISSION,
-  McpAuthRequestError,
-  type McpLoginRequest,
+  OAuthAuthRequestError,
+  type OAuthLoginRequest,
   type Permission,
   parsePermission,
-  validateMcpLoginSearchParams,
-} from "@lib/mcp-auth-request";
-import { createMcpAuthorizationCode } from "@server/mcp-auth";
+  validateOAuthLoginSearchParams,
+} from "@lib/oauth-request";
+import { createOAuthAuthorizationCode } from "@server/oauth-auth";
 import { NextResponse } from "next/server";
 
 /**
@@ -75,7 +75,7 @@ export async function handleConsentPost(
     return permission;
   }
 
-  const code = await createMcpAuthorizationCode({
+  const code = await createOAuthAuthorizationCode({
     userId: session.user.id,
     request: loginRequest,
     permission,
@@ -93,25 +93,25 @@ function redirectToDashboardLogin(
   return NextResponse.redirect(new URL(loginPath, origin));
 }
 
-function redirectWithAuthorizationCode(loginRequest: McpLoginRequest, code: string): Response {
+function redirectWithAuthorizationCode(loginRequest: OAuthLoginRequest, code: string): Response {
   const redirectUrl = new URL(loginRequest.redirectUri);
   redirectUrl.searchParams.set("code", code);
   redirectUrl.searchParams.set("state", loginRequest.state);
   return NextResponse.redirect(redirectUrl);
 }
 
-function redirectWithDeniedAuthorization(loginRequest: McpLoginRequest): Response {
+function redirectWithDeniedAuthorization(loginRequest: OAuthLoginRequest): Response {
   const redirectUrl = new URL(loginRequest.redirectUri);
   redirectUrl.searchParams.set("error", "access_denied");
   redirectUrl.searchParams.set("state", loginRequest.state);
   return NextResponse.redirect(redirectUrl);
 }
 
-function validateLoginRequest(searchParams: URLSearchParams): McpLoginRequest | Response {
+function validateLoginRequest(searchParams: URLSearchParams): OAuthLoginRequest | Response {
   try {
-    return validateMcpLoginSearchParams(searchParams);
+    return validateOAuthLoginSearchParams(searchParams);
   } catch (error: unknown) {
-    if (error instanceof McpAuthRequestError) {
+    if (error instanceof OAuthAuthRequestError) {
       return NextResponse.json({ message: error.message }, { status: 400 });
     }
     throw error;
@@ -122,7 +122,7 @@ function validatePermission(value: FormDataEntryValue | string | null): Permissi
   try {
     return parsePermission(value);
   } catch (error: unknown) {
-    if (error instanceof McpAuthRequestError) {
+    if (error instanceof OAuthAuthRequestError) {
       return NextResponse.json({ message: error.message }, { status: 400 });
     }
     throw error;
@@ -146,7 +146,7 @@ function buildLoginSearchParams(formData: FormData): URLSearchParams {
   return searchParams;
 }
 
-function renderConsentPage(loginRequest: McpLoginRequest, surface: ConsentSurface): Response {
+function renderConsentPage(loginRequest: OAuthLoginRequest, surface: ConsentSurface): Response {
   const hiddenInputs = [
     ["redirect_uri", loginRequest.redirectUri],
     ["state", loginRequest.state],

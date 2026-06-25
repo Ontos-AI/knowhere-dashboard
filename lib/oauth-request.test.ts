@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
   buildPkceChallenge,
-  McpAuthRequestError,
+  OAuthAuthRequestError,
   parsePermission,
-  validateMcpLoginSearchParams,
+  validateOAuthLoginSearchParams,
   validatePkceVerifier,
-} from "@/lib/mcp-auth-request";
+} from "@/lib/oauth-request";
 
-describe("validateMcpLoginSearchParams", () => {
+describe("validateOAuthLoginSearchParams", () => {
   const validState = "abcdefghijklmnopqrstuvwxyz";
   const validVerifier = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   const validChallenge = buildPkceChallenge(validVerifier);
@@ -21,7 +21,7 @@ describe("validateMcpLoginSearchParams", () => {
       client_name: "Codex",
     });
 
-    expect(validateMcpLoginSearchParams(params)).toEqual({
+    expect(validateOAuthLoginSearchParams(params)).toEqual({
       redirectUri: "http://127.0.0.1:54321/callback",
       state: validState,
       codeChallenge: validChallenge,
@@ -37,7 +37,7 @@ describe("validateMcpLoginSearchParams", () => {
       code_challenge_method: "S256",
     });
 
-    expect(() => validateMcpLoginSearchParams(params)).toThrow(McpAuthRequestError);
+    expect(() => validateOAuthLoginSearchParams(params)).toThrow(OAuthAuthRequestError);
   });
 
   it("rejects redirect URIs without the callback path", () => {
@@ -48,7 +48,7 @@ describe("validateMcpLoginSearchParams", () => {
       code_challenge_method: "S256",
     });
 
-    expect(() => validateMcpLoginSearchParams(params)).toThrow(
+    expect(() => validateOAuthLoginSearchParams(params)).toThrow(
       "redirect_uri path must be /callback"
     );
   });
@@ -61,7 +61,7 @@ describe("validateMcpLoginSearchParams", () => {
       code_challenge_method: "plain",
     });
 
-    expect(() => validateMcpLoginSearchParams(params)).toThrow(
+    expect(() => validateOAuthLoginSearchParams(params)).toThrow(
       "code_challenge_method must be S256"
     );
   });
@@ -78,8 +78,8 @@ describe("validateMcpLoginSearchParams", () => {
       code_challenge: "not-valid!",
     });
 
-    expect(() => validateMcpLoginSearchParams(shortStateParams)).toThrow("state is invalid");
-    expect(() => validateMcpLoginSearchParams(invalidChallengeParams)).toThrow(
+    expect(() => validateOAuthLoginSearchParams(shortStateParams)).toThrow("state is invalid");
+    expect(() => validateOAuthLoginSearchParams(invalidChallengeParams)).toThrow(
       "code_challenge is invalid"
     );
   });
@@ -115,6 +115,6 @@ describe("parsePermission", () => {
 
   it("rejects unsupported permission values", () => {
     expect(() => parsePermission("admin")).toThrow("permission is invalid");
-    expect(() => parsePermission(null)).toThrow(McpAuthRequestError);
+    expect(() => parsePermission(null)).toThrow(OAuthAuthRequestError);
   });
 });

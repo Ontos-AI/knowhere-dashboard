@@ -8,7 +8,7 @@ const CODE_CHALLENGE_LENGTH = 43;
 const CLIENT_NAME_MAX_LENGTH = 120;
 const PERMISSION_VALUES = ["read_only", "full_access"] as const;
 
-export type McpLoginRequest = {
+export type OAuthLoginRequest = {
   readonly redirectUri: string;
   readonly state: string;
   readonly codeChallenge: string;
@@ -19,14 +19,14 @@ export type Permission = (typeof PERMISSION_VALUES)[number];
 
 export const DEFAULT_PERMISSION: Permission = "read_only";
 
-export class McpAuthRequestError extends Error {
+export class OAuthAuthRequestError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = "McpAuthRequestError";
+    this.name = "OAuthAuthRequestError";
   }
 }
 
-export function validateMcpLoginSearchParams(searchParams: URLSearchParams): McpLoginRequest {
+export function validateOAuthLoginSearchParams(searchParams: URLSearchParams): OAuthLoginRequest {
   const redirectUri = validateLoopbackRedirectUri(searchParams.get("redirect_uri"));
   const state = validateBase64UrlParam(searchParams.get("state"), {
     name: "state",
@@ -40,14 +40,14 @@ export function validateMcpLoginSearchParams(searchParams: URLSearchParams): Mcp
   });
   const codeChallengeMethod = searchParams.get("code_challenge_method") ?? "S256";
   if (codeChallengeMethod !== "S256") {
-    throw new McpAuthRequestError("code_challenge_method must be S256");
+    throw new OAuthAuthRequestError("code_challenge_method must be S256");
   }
 
   return {
     redirectUri,
     state,
     codeChallenge,
-    clientName: normalizeMcpClientName(searchParams.get("client_name")),
+    clientName: normalizeOAuthClientName(searchParams.get("client_name")),
   };
 }
 
@@ -76,35 +76,35 @@ export function parsePermission(value: FormDataEntryValue | string | null | unde
     return value as Permission;
   }
 
-  throw new McpAuthRequestError("permission is invalid");
+  throw new OAuthAuthRequestError("permission is invalid");
 }
 
 function validateLoopbackRedirectUri(value: string | null): string {
   if (!value) {
-    throw new McpAuthRequestError("redirect_uri is required");
+    throw new OAuthAuthRequestError("redirect_uri is required");
   }
 
   let parsed: URL;
   try {
     parsed = new URL(value);
   } catch {
-    throw new McpAuthRequestError("redirect_uri must be a valid URL");
+    throw new OAuthAuthRequestError("redirect_uri must be a valid URL");
   }
 
   if (parsed.protocol !== "http:") {
-    throw new McpAuthRequestError("redirect_uri must use http");
+    throw new OAuthAuthRequestError("redirect_uri must use http");
   }
   if (!LOOPBACK_HOSTNAMES.has(parsed.hostname)) {
-    throw new McpAuthRequestError("redirect_uri must use a loopback host");
+    throw new OAuthAuthRequestError("redirect_uri must use a loopback host");
   }
   if (!parsed.port) {
-    throw new McpAuthRequestError("redirect_uri must include a port");
+    throw new OAuthAuthRequestError("redirect_uri must include a port");
   }
   if (parsed.username || parsed.password || parsed.hash) {
-    throw new McpAuthRequestError("redirect_uri cannot include credentials or a fragment");
+    throw new OAuthAuthRequestError("redirect_uri cannot include credentials or a fragment");
   }
   if (parsed.pathname !== "/callback") {
-    throw new McpAuthRequestError("redirect_uri path must be /callback");
+    throw new OAuthAuthRequestError("redirect_uri path must be /callback");
   }
 
   return parsed.toString();
@@ -123,15 +123,15 @@ function validateBase64UrlParam(
   }
 ): string {
   if (!value) {
-    throw new McpAuthRequestError(`${name} is required`);
+    throw new OAuthAuthRequestError(`${name} is required`);
   }
   if (value.length < minLength || value.length > maxLength || !BASE64URL_PATTERN.test(value)) {
-    throw new McpAuthRequestError(`${name} is invalid`);
+    throw new OAuthAuthRequestError(`${name} is invalid`);
   }
   return value;
 }
 
-function normalizeMcpClientName(value: string | null): string {
+function normalizeOAuthClientName(value: string | null): string {
   const trimmedValue = value?.trim();
   if (!trimmedValue) {
     return "Knowhere MCP";

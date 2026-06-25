@@ -1,4 +1,4 @@
-import { McpAuthError, revokeMcpRefreshToken } from "@server/mcp-auth";
+import { OAuthAuthError, revokeOAuthRefreshToken } from "@server/oauth-auth";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -15,10 +15,10 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   try {
-    await revokeMcpRefreshToken(parsedRequest.data.refresh_token);
+    await revokeOAuthRefreshToken(parsedRequest.data.refresh_token);
     return NextResponse.json({ revoked: true });
   } catch (error: unknown) {
-    if (error instanceof McpAuthError) {
+    if (error instanceof OAuthAuthError) {
       return NextResponse.json({ message: error.message }, { status: error.status });
     }
 

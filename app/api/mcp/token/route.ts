@@ -1,8 +1,8 @@
 import {
-  exchangeMcpAuthorizationCode,
-  McpAuthError,
-  refreshMcpAccessToken,
-} from "@server/mcp-auth";
+  exchangeOAuthAuthorizationCode,
+  OAuthAuthError,
+  refreshOAuthAccessToken,
+} from "@server/oauth-auth";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -29,7 +29,7 @@ export async function POST(request: Request): Promise<Response> {
 
   try {
     if (parsedRequest.data.grant_type === "authorization_code") {
-      const tokenResponse = await exchangeMcpAuthorizationCode({
+      const tokenResponse = await exchangeOAuthAuthorizationCode({
         code: parsedRequest.data.code,
         codeVerifier: parsedRequest.data.code_verifier,
         clientName: parsedRequest.data.client_name,
@@ -37,10 +37,10 @@ export async function POST(request: Request): Promise<Response> {
       return NextResponse.json(tokenResponse);
     }
 
-    const tokenResponse = await refreshMcpAccessToken(parsedRequest.data.refresh_token);
+    const tokenResponse = await refreshOAuthAccessToken(parsedRequest.data.refresh_token);
     return NextResponse.json(tokenResponse);
   } catch (error: unknown) {
-    if (error instanceof McpAuthError) {
+    if (error instanceof OAuthAuthError) {
       return NextResponse.json({ message: error.message }, { status: error.status });
     }
 
