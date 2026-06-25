@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildPkceChallenge,
   McpAuthRequestError,
+  parsePermission,
   validateMcpLoginSearchParams,
   validatePkceVerifier,
 } from "@/lib/mcp-auth-request";
@@ -103,5 +104,17 @@ describe("validatePkceVerifier", () => {
         codeVerifier: "different-verifier",
       })
     ).toBe(false);
+  });
+});
+
+describe("parsePermission", () => {
+  it("accepts supported permission values", () => {
+    expect(parsePermission("read_only")).toBe("read_only");
+    expect(parsePermission("full_access")).toBe("full_access");
+  });
+
+  it("rejects unsupported permission values", () => {
+    expect(() => parsePermission("admin")).toThrow("permission is invalid");
+    expect(() => parsePermission(null)).toThrow(McpAuthRequestError);
   });
 });

@@ -6,6 +6,7 @@ const STATE_MIN_LENGTH = 24;
 const STATE_MAX_LENGTH = 256;
 const CODE_CHALLENGE_LENGTH = 43;
 const CLIENT_NAME_MAX_LENGTH = 120;
+const PERMISSION_VALUES = ["read_only", "full_access"] as const;
 
 export type McpLoginRequest = {
   readonly redirectUri: string;
@@ -13,6 +14,10 @@ export type McpLoginRequest = {
   readonly codeChallenge: string;
   readonly clientName: string;
 };
+
+export type Permission = (typeof PERMISSION_VALUES)[number];
+
+export const DEFAULT_PERMISSION: Permission = "read_only";
 
 export class McpAuthRequestError extends Error {
   constructor(message: string) {
@@ -64,6 +69,14 @@ export function validatePkceVerifier({
     actualBuffer.length === expectedBuffer.length &&
     crypto.timingSafeEqual(actualBuffer, expectedBuffer)
   );
+}
+
+export function parsePermission(value: FormDataEntryValue | string | null | undefined): Permission {
+  if (typeof value === "string" && PERMISSION_VALUES.includes(value as Permission)) {
+    return value as Permission;
+  }
+
+  throw new McpAuthRequestError("permission is invalid");
 }
 
 function validateLoopbackRedirectUri(value: string | null): string {

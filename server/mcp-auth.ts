@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import { db } from "@lib/db";
 import { mcpAuthorizationCode, mcpRefreshToken } from "@lib/db/schema";
-import { type McpLoginRequest, validatePkceVerifier } from "@lib/mcp-auth-request";
+import { type McpLoginRequest, type Permission, validatePkceVerifier } from "@lib/mcp-auth-request";
 import {
   issueKnowhereServiceJwt,
   KNOWHERE_SERVICE_JWT_EXPIRY_SECONDS,
@@ -15,6 +15,7 @@ const TOKEN_BYTE_LENGTH = 32;
 export type McpTokenResponse = {
   readonly accessToken: string;
   readonly expiresInSeconds: number;
+  readonly permission: Permission;
   readonly refreshToken?: string;
   readonly refreshTokenExpiresAt?: string;
   readonly tokenType: "Bearer";
@@ -33,9 +34,11 @@ export class McpAuthError extends Error {
 export async function createMcpAuthorizationCode({
   userId,
   request,
+  permission,
 }: {
   readonly userId: string;
   readonly request: McpLoginRequest;
+  readonly permission: Permission;
 }): Promise<string> {
   const code = createSecretToken();
   const expiresAt = new Date(Date.now() + MCP_AUTH_CODE_TTL_MS);
@@ -46,6 +49,7 @@ export async function createMcpAuthorizationCode({
     redirectUri: request.redirectUri,
     codeChallenge: request.codeChallenge,
     clientName: request.clientName,
+    permission,
     expiresAt,
   });
 
@@ -89,6 +93,7 @@ export async function exchangeMcpAuthorizationCode({
   return issueMcpTokenPair({
     userId: authorizationCode.userId,
     clientName: clientName?.trim() || authorizationCode.clientName,
+    permission: normalizeStoredPermission(authorizationCode.permission),
   });
 }
 
@@ -111,9 +116,12 @@ export async function refreshMcpAccessToken(refreshToken: string): Promise<McpTo
     .set({ lastUsedAt: now })
     .where(eq(mcpRefreshToken.id, storedRefreshToken.id));
 
+  const permission = normalizeStoredPermission(storedRefreshToken.permission);
+
   return {
-    accessToken: await issueKnowhereServiceJwt(storedRefreshToken.userId),
+    accessToken: await issueKnowhereServiceJwt(storedRefreshToken.userId, { permission }),
     expiresInSeconds: KNOWHERE_SERVICE_JWT_EXPIRY_SECONDS,
+    permission,
     tokenType: "Bearer",
   };
 }
@@ -133,9 +141,11 @@ export async function revokeMcpRefreshToken(refreshToken: string): Promise<void>
 async function issueMcpTokenPair({
   userId,
   clientName,
+  permission,
 }: {
   readonly userId: string;
   readonly clientName: string;
+  readonly permission: Permission;
 }): Promise<McpTokenResponse> {
   const refreshToken = createSecretToken();
   const refreshTokenExpiresAt = new Date(Date.now() + MCP_REFRESH_TOKEN_TTL_MS);
@@ -144,16 +154,22 @@ async function issueMcpTokenPair({
     userId,
     tokenHash: hashSecretToken(refreshToken),
     name: clientName,
+    permission,
     expiresAt: refreshTokenExpiresAt,
   });
 
   return {
-    accessToken: await issueKnowhereServiceJwt(userId),
+    accessToken: await issueKnowhereServiceJwt(userId, { permission }),
     expiresInSeconds: KNOWHERE_SERVICE_JWT_EXPIRY_SECONDS,
+    permission,
     refreshToken,
     refreshTokenExpiresAt: refreshTokenExpiresAt.toISOString(),
     tokenType: "Bearer",
   };
+}
+
+function normalizeStoredPermission(permission: string): Permission {
+  return permission === "read_only" ? "read_only" : "full_access";
 }
 
 function createSecretToken(): string {

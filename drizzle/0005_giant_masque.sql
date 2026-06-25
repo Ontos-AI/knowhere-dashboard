@@ -1,0 +1,2 @@
+ALTER TABLE "mcpAuthorizationCode" ADD COLUMN "permission" text DEFAULT 'full_access' NOT NULL;--> statement-breakpoint
+ALTER TABLE "mcpRefreshToken" ADD COLUMN "permission" text DEFAULT 'full_access' NOT NULL;
