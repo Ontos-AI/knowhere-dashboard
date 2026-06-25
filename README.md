@@ -113,6 +113,6 @@ The image runs the standard Next.js Node server with `pnpm start`. Runtime confi
 
 ## Public CI and Images
 
-The public workflow runs lint, type-check, tests, and build on pull requests and pushes to `main` and `staging`.
+The public workflow runs lint, type-check, tests, and build on pull requests and repository pushes.
 
-This repository does not publish standalone public dashboard images. Public self-hosted image publishing is handled by the combined self-hosted release workflow.
+This repository does not publish standalone public dashboard images. Public self-hosted image publishing is handled by the combined self-hosted repository.
