@@ -525,6 +525,18 @@
       "cta": "获取 API Key",
       "openNavigationMenu": "打开导航菜单"
     },
+    "newsletter": {
+      "eyebrow": "Newsletter",
+      "title": "订阅 Knowhere 更新",
+      "description": "获取产品动态、解析基准和 agent 工作流实践。",
+      "placeholder": "you@example.com",
+      "submit": "订阅",
+      "submitting": "发送中",
+      "sentTitle": "请查看邮箱",
+      "sentDescription": "我们已发送确认链接。你可以在任意设备点击链接完成订阅。",
+      "error": "确认邮件发送失败，请稍后再试。",
+      "close": "关闭 newsletter 提示"
+    },
     "home": {
       "announcement": {
         "prefix": "现已支持",
