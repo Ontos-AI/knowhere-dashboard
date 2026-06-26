@@ -83,20 +83,21 @@ export function NewsletterSubscribePrompt() {
     <aside
       aria-live="polite"
       className={cn(
-        "fixed z-50 border border-[#3f3f46] bg-[#09090b] text-[#fafafa] shadow-[0_18px_70px_-38px_rgba(0,0,0,0.85)]",
+        "fixed z-50 overflow-hidden rounded-lg border border-[#3f3f46] bg-[#18181b] text-[#fafafa] shadow-[0_24px_70px_-36px_rgba(0,0,0,0.85)]",
         "left-3 right-3 top-3 p-4",
-        "min-[768px]:left-auto min-[768px]:right-6 min-[768px]:top-auto min-[768px]:bottom-6 min-[768px]:w-[360px] min-[768px]:p-5"
+        "min-[768px]:left-auto min-[768px]:right-6 min-[768px]:top-auto min-[768px]:bottom-6 min-[768px]:w-[448px] min-[768px]:p-5"
       )}
     >
-      <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(10,221,248,0.18)_1px,transparent_1px),linear-gradient(90deg,rgba(10,221,248,0.14)_1px,transparent_1px)] [background-size:18px_18px]" />
+      <div className="absolute inset-x-0 top-0 h-1 bg-[#8e51ff]" />
+      <div className="absolute inset-0 opacity-10 [background-image:linear-gradient(rgba(142,81,255,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(142,81,255,0.18)_1px,transparent_1px)] [background-size:18px_18px]" />
       <div className="relative flex gap-3">
-        <div className="mt-0.5 flex size-9 shrink-0 items-center justify-center border border-[#0addf8]/45 bg-[#0addf8]/10 text-[#0addf8]">
+        <div className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-md border border-[#7f22fe]/55 bg-[#8e51ff]/15 text-[#c4b5fd]">
           <Mail className="size-4" aria-hidden="true" />
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="font-[family-name:var(--font-mono-display)] text-[12px] uppercase leading-4 tracking-[0.08em] text-[#0addf8]">
+              <p className="font-[family-name:var(--font-mono-display)] text-[12px] uppercase leading-4 tracking-[0.08em] text-[#c4b5fd]">
                 {t("eyebrow")}
               </p>
               <h2 className="mt-1 text-base font-semibold leading-6 text-[#fafafa]">
@@ -106,7 +107,7 @@ export function NewsletterSubscribePrompt() {
             <button
               type="button"
               aria-label={t("close")}
-              className="flex size-7 shrink-0 items-center justify-center border border-[#3f3f46] text-[#a1a1aa] transition-colors hover:border-[#52525b] hover:text-[#fafafa]"
+              className="flex size-7 shrink-0 items-center justify-center rounded-md border border-[#3f3f46] text-[#a1a1aa] transition-colors hover:border-[#52525b] hover:bg-[#27272a] hover:text-[#fafafa]"
               onClick={dismissPrompt}
             >
               <X className="size-4" aria-hidden="true" />
@@ -118,7 +119,10 @@ export function NewsletterSubscribePrompt() {
           </p>
 
           {isSent ? null : (
-            <form className="mt-4 flex gap-2 max-[767px]:flex-col" onSubmit={handleSubmit}>
+            <form
+              className="mt-4 grid grid-cols-1 gap-2 min-[768px]:grid-cols-[minmax(0,1fr)_132px]"
+              onSubmit={handleSubmit}
+            >
               <Input
                 type="email"
                 required
@@ -127,12 +131,12 @@ export function NewsletterSubscribePrompt() {
                 placeholder={t("placeholder")}
                 autoComplete="email"
                 disabled={isSubmitting}
-                className="h-10 border-[#3f3f46] bg-[#18181b] text-[#fafafa] placeholder:text-[#71717a] hover:border-[#52525b] focus-visible:border-[#0addf8] disabled:border-[#27272a] disabled:bg-[#18181b] disabled:text-[#a1a1aa]"
+                className="h-11 min-w-0 rounded-md border-[#52525b] bg-[#09090b] px-3 text-sm text-[#fafafa] placeholder:text-[#71717a] hover:border-[#71717a] focus-visible:border-[#8e51ff] disabled:border-[#27272a] disabled:bg-[#18181b] disabled:text-[#a1a1aa]"
               />
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="h-10 shrink-0 rounded-none border-[#0bbad1] border-b-2 bg-[#0addf8] px-4 pb-0 font-[family-name:var(--font-mono-readable)] text-sm font-semibold text-[#09090b] hover:border-[#08a8bd] hover:bg-[#47e7fb] active:border-[#087f91] active:bg-[#08b7d0]"
+                className="h-11 w-full shrink-0 rounded-md border-[#7008e7] border-b-4 bg-[#8e51ff] px-3 pb-1 font-[family-name:var(--font-mono-display)] text-sm font-semibold text-[#f5f3ff] transition-[background-color,border-color,border-width,transform] hover:border-[#7008e7] hover:border-b-[6px] hover:bg-[#7f22fe] active:translate-y-0.5 active:border-b-4 active:bg-[#7008e7] disabled:border-[#3f3f46] disabled:bg-[#52525b] disabled:text-[#a1a1aa]"
               >
                 {isSubmitting ? t("submitting") : t("submit")}
                 <ArrowRight className="size-4" aria-hidden="true" />
