@@ -22,9 +22,14 @@ type NewsletterConfirmationResult = {
   readonly status: NewsletterConfirmationStatus;
 };
 
+type NewsletterUnsubscribeResult = {
+  readonly success: true;
+};
+
 const TOKEN_BYTE_LENGTH = 32;
 const PENDING_SUBSCRIPTION_STATUS = "pending";
 const CONFIRMED_SUBSCRIPTION_STATUS = "confirmed";
+const UNSUBSCRIBED_SUBSCRIPTION_STATUS = "unsubscribed";
 
 function createConfirmationToken(): string {
   return crypto.randomBytes(TOKEN_BYTE_LENGTH).toString("base64url");
@@ -146,6 +151,8 @@ export async function requestNewsletterSubscription(
         confirmationTokenHash,
         confirmationTokenExpiresAt,
         confirmationSentAt: now,
+        confirmedAt: null,
+        unsubscribedAt: null,
         updatedAt: now,
       })
       .where(eq(newsletterSubscription.id, existingSubscription.id));
@@ -214,9 +221,31 @@ export async function confirmNewsletterSubscription(
       confirmedAt: now,
       confirmationTokenHash: null,
       confirmationTokenExpiresAt: null,
+      unsubscribedAt: null,
       updatedAt: now,
     })
     .where(eq(newsletterSubscription.id, subscription.id));
 
   return { status: "confirmed" };
+}
+
+export async function unsubscribeNewsletterSubscription(
+  emailInput: string
+): Promise<NewsletterUnsubscribeResult> {
+  const email = normalizeNewsletterEmail(emailInput);
+  const now = new Date();
+
+  await db
+    .update(newsletterSubscription)
+    .set({
+      status: UNSUBSCRIBED_SUBSCRIPTION_STATUS,
+      confirmationTokenHash: null,
+      confirmationTokenExpiresAt: null,
+      confirmationSentAt: null,
+      unsubscribedAt: now,
+      updatedAt: now,
+    })
+    .where(eq(newsletterSubscription.email, email));
+
+  return { success: true };
 }

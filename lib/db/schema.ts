@@ -16,6 +16,7 @@ export const newsletterSubscription = pgTable(
     }),
     confirmationSentAt: timestamp("confirmationSentAt", { withTimezone: true }),
     confirmedAt: timestamp("confirmedAt", { withTimezone: true }),
+    unsubscribedAt: timestamp("unsubscribedAt", { withTimezone: true }),
     createdAt: timestamp("createdAt", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updatedAt", { withTimezone: true }).notNull().defaultNow(),
   },
