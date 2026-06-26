@@ -19,6 +19,7 @@ import {
   supportedFormats,
   type TransformStep,
 } from "@app/(landing)/_components/landing-home-data";
+import { NewsletterSubscribePrompt } from "@app/(landing)/_components/newsletter-subscribe-prompt";
 import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { cn } from "@lib/utils";
 import Image from "next/image";
@@ -951,6 +952,7 @@ export const LandingHome = () => {
         <LandingBrand size="header" />
         <p className="text-xs leading-4 text-zinc-400">{t("footer.copyright")}</p>
       </footer>
+      <NewsletterSubscribePrompt />
     </div>
   );
 };
