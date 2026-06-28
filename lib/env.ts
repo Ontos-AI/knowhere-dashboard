@@ -16,7 +16,7 @@ export const env = createEnv({
     GOOGLE_CLIENT_ID: z.string().optional(),
     GOOGLE_CLIENT_SECRET: z.string().optional(),
     RESEND_API_KEY: z.string().optional(),
-    RESEND_FROM: z.string().default("onboarding@resend.dev"),
+    RESEND_FROM: z.string().default("Knowhere <team@knowhereto.ai>"),
     BILLING_ENABLED: z.string().default("false"),
     PASSWORD_LOGIN_ENABLED: z.string().default("false"),
     /**

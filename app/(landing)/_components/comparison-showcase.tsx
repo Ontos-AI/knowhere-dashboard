@@ -60,6 +60,8 @@ const RAW_PATTERN_LINE_COLOR = "#f4f4f5";
 const RAW_PATTERN_LINE_OPACITY = 1;
 const RAW_PATTERN_LINE_WIDTH = 0.7;
 const RAW_PATTERN_SIZE = 6;
+const UNSTRUCTURED_LOGO_COLOR = "#0addf8";
+const UNSTRUCTURED_LOGO_BORDER_COLOR = "#08b7d0";
 const AXIS_NUMBER_GAP = 2;
 const VALUE_LABEL_GAP = 5;
 const VALUE_LABEL_Z_INDEX = 2000;
@@ -90,8 +92,8 @@ const benchmarkChartThemes = {
     text: "#3f3f46",
     tooltipBorder: "#e4e4e7",
     tooltipShadow: "4px 4px 0 0 rgba(24, 24, 27, 0.12)",
-    unstructured: "#d8a34a",
-    unstructuredBorder: "#b88432",
+    unstructured: UNSTRUCTURED_LOGO_COLOR,
+    unstructuredBorder: UNSTRUCTURED_LOGO_BORDER_COLOR,
     valueLabel: "#52525b",
   },
   dark: {
@@ -117,8 +119,8 @@ const benchmarkChartThemes = {
     text: "#d4d4d8",
     tooltipBorder: "#3f3f46",
     tooltipShadow: "4px 4px 0 0 rgba(0, 0, 0, 0.3)",
-    unstructured: "#cda35d",
-    unstructuredBorder: "#e3c17d",
+    unstructured: UNSTRUCTURED_LOGO_COLOR,
+    unstructuredBorder: UNSTRUCTURED_LOGO_BORDER_COLOR,
     valueLabel: "#d4d4d8",
   },
 } as const;
@@ -206,7 +208,7 @@ const getBenchmarkChartColors = (isDarkTheme: boolean): BenchmarkChartColors =>
 const benchmarkSeries: readonly BenchmarkSeries[] = [
   { color: RAW_PATTERN_BASE_COLOR, id: "raw", label: "Agent + Raw Docs", pattern: true },
   { color: "#9b7af8", id: "knowhere", label: "Agent + Knowhere" },
-  { color: "#d8a34a", id: "unstructured", label: "Agent + Unstructured" },
+  { color: UNSTRUCTURED_LOGO_COLOR, id: "unstructured", label: "Agent + Unstructured" },
   { color: "#3f3f3f", id: "mineru", label: "Agent + MinerU" },
   { color: "#2563eb", id: "markitdown", label: "Agent + Markitdown" },
 ] as const;

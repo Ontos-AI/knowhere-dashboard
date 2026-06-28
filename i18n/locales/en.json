@@ -525,6 +525,18 @@
       "cta": "GET API KEY",
       "openNavigationMenu": "Open navigation menu"
     },
+    "newsletter": {
+      "eyebrow": "Newsletter",
+      "title": "Get Knowhere updates",
+      "description": "Subscribe for product notes, parsing benchmarks, and agent workflow ideas.",
+      "placeholder": "you@example.com",
+      "submit": "Subscribe",
+      "submitting": "Sending",
+      "sentTitle": "Check your inbox",
+      "sentDescription": "We sent a confirmation link. Click it from any device to finish subscribing.",
+      "error": "We could not send the confirmation email. Please try again.",
+      "close": "Close newsletter prompt"
+    },
     "home": {
       "announcement": {
         "prefix": "Now live on",
