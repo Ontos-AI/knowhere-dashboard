@@ -23,6 +23,7 @@ import {
 } from "@components/ui/alert-dialog";
 import { useTimezone } from "@hooks/use-timezone";
 import { useToast } from "@hooks/use-toast";
+import { trackApiKeyCreated, trackApiKeyDeleted, trackError } from "@lib/posthog";
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import { Plus } from "lucide-react";
 import Image from "next/image";
@@ -179,6 +180,10 @@ export const ApiKeysPage = () => {
 
     createMutation.mutate(payload, {
       onSuccess: (data) => {
+        if (data?.id) {
+          trackApiKeyCreated(data.id, payload.name, "manual");
+        }
+
         if (data?.api_key) {
           setCreatedKey(data.api_key);
         }
@@ -188,6 +193,10 @@ export const ApiKeysPage = () => {
       },
       onError: (mutationError) => {
         console.error("Failed to create API key:", mutationError);
+        trackError("api_key_create_failed", {
+          context: "api_keys_page",
+          message: mutationError instanceof Error ? mutationError.message : "unknown",
+        });
         toast.error(t("createFailed"));
       },
     });
@@ -220,11 +229,16 @@ export const ApiKeysPage = () => {
       { id: keyToDelete },
       {
         onSuccess: () => {
+          trackApiKeyDeleted(keyToDelete);
           toast.success(t("revokeSuccess"));
           closeDeleteConfirm();
         },
         onError: (mutationError) => {
           console.error("Failed to revoke API key:", mutationError);
+          trackError("api_key_revoke_failed", {
+            context: "api_keys_page",
+            message: mutationError instanceof Error ? mutationError.message : "unknown",
+          });
           toast.error(t("revokeFailed"));
         },
       }

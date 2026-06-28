@@ -64,6 +64,7 @@
     "recentRecordsSubtitle": "最近的API调用详情",
     "export": "导出",
     "exportCSV": "导出 CSV",
+    "uploadFile": "上传文件",
     "callHistory": "调用历史",
     "comparedToLastMonth": "{value} 较上月",
     "estCost": "预估 {cost}",

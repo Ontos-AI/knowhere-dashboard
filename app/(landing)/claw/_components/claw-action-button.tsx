@@ -1,23 +1,33 @@
 "use client";
 
+import { trackLandingInteraction } from "@app/(landing)/_components/landing-tracked-link";
 import { cn } from "@lib/utils";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import type { MouseEvent, ReactNode } from "react";
 
 type ClawActionButtonProps = {
   children: ReactNode;
   className?: string;
+  ctaId: string;
   href: string;
+  sourceSection: string;
   variant?: "primary" | "secondary";
 };
 
 export const ClawActionButton = ({
   children,
   className,
+  ctaId,
   href,
+  sourceSection,
   variant = "primary",
 }: ClawActionButtonProps) => {
+  const locale = useLocale();
+
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    trackLandingInteraction(ctaId, sourceSection, locale, { href });
+
     if (!href.startsWith("#")) {
       return;
     }

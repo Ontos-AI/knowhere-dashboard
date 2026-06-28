@@ -1,9 +1,14 @@
 "use client";
 
 import { orpcQuery } from "@lib/orpc/client";
+import { trackApiKeyCreated } from "@lib/posthog";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
+import { authClient } from "@/lib/better-auth-client";
 
 const usageWelcomeQueryKey = orpcQuery.users.getUsageWelcomeState.queryKey();
+const WELCOME_API_KEY_NAME = "Welcome API Key";
+const WELCOME_API_KEY_TRACKED_PREFIX = "ph_welcome_api_key_tracked_";
 
 export const useUsageWelcomeState = () => {
   return useQuery({
@@ -29,6 +34,7 @@ export const useDismissUsageWelcome = () => {
 
       queryClient.setQueryData(usageWelcomeQueryKey, {
         apiKey: null,
+        apiKeyId: null,
         hasProvisionError: false,
         isProvisioning: false,
         shouldShow: false,
@@ -49,12 +55,54 @@ export const useDismissUsageWelcome = () => {
   });
 };
 
+const trackWelcomeApiKeyIfNeeded = ({
+  apiKey,
+  apiKeyId,
+  userId,
+}: {
+  apiKey: string | null;
+  apiKeyId: string | null;
+  userId: string;
+}) => {
+  if (!apiKey || typeof window === "undefined") {
+    return;
+  }
+
+  const dedupeKey = `${WELCOME_API_KEY_TRACKED_PREFIX}${userId}`;
+  if (localStorage.getItem(dedupeKey) === "1") {
+    return;
+  }
+
+  trackApiKeyCreated(
+    apiKeyId ?? `welcome:${userId}`,
+    WELCOME_API_KEY_NAME,
+    "welcome_auto_provision"
+  );
+  localStorage.setItem(dedupeKey, "1");
+};
+
 export const useUsageWelcome = () => {
   const usageWelcomeState = useUsageWelcomeState();
   const dismissWelcome = useDismissUsageWelcome();
+  const session = authClient.useSession();
+  const hasTrackedWelcomeApiKey = useRef(false);
+
+  const apiKey = usageWelcomeState.data?.apiKey ?? null;
+  const apiKeyId = usageWelcomeState.data?.apiKeyId ?? null;
+  const userId = session.data?.user?.id;
+
+  useEffect(() => {
+    if (!userId || !apiKey || hasTrackedWelcomeApiKey.current) {
+      return;
+    }
+
+    trackWelcomeApiKeyIfNeeded({ apiKey, apiKeyId, userId });
+    hasTrackedWelcomeApiKey.current = true;
+  }, [apiKey, apiKeyId, userId]);
 
   return {
-    apiKey: usageWelcomeState.data?.apiKey ?? null,
+    apiKey,
+    apiKeyId,
     dismiss: () => dismissWelcome.mutate(undefined),
     hasProvisionError: usageWelcomeState.data?.hasProvisionError ?? false,
     isDismissing: dismissWelcome.isPending,

@@ -1,7 +1,9 @@
 "use client";
 
+import { trackLandingInteraction } from "@app/(landing)/_components/landing-tracked-link";
+import { trackFeatureUsage } from "@lib/posthog";
 import { cn } from "@lib/utils";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useId, useState } from "react";
 
 const monoDisplayClassName = "font-[family-name:var(--font-mono-display)]";
@@ -60,6 +62,7 @@ const codeTabLabelMap: Record<CodeTab, string> = {
 export const IntegrateCodePanel = () => {
   const [activeTab, setActiveTab] = useState<CodeTab>("python");
   const [hasCopiedCode, setHasCopiedCode] = useState(false);
+  const locale = useLocale();
   const t = useTranslations("Landing.integrationCode");
   const panelId = useId();
 
@@ -77,11 +80,14 @@ export const IntegrateCodePanel = () => {
   const handleTabChange = (tab: CodeTab) => {
     setActiveTab(tab);
     setHasCopiedCode(false);
+    trackLandingInteraction("integration_lang_tab", "integration", locale, { tab });
   };
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(currentCode);
     setHasCopiedCode(true);
+    trackFeatureUsage("integration_code_copy", { tab: activeTab, locale });
+    trackLandingInteraction("integration_copy", "integration", locale, { tab: activeTab });
   };
 
   return (

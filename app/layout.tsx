@@ -7,6 +7,7 @@ import { ThemeProvider } from "@components/theme-provider";
 import { appMetadata } from "@lib/app-metadata";
 import { getDefaultConfig } from "@lib/config";
 import { ConfigProvider } from "@providers/config-provider";
+import { GoogleAnalyticsProvider } from "@providers/google-analytics-provider";
 import PostHogProvider from "@providers/posthog-provider";
 import { Providers } from "@providers/providers";
 import { NextIntlClientProvider } from "next-intl";
@@ -45,11 +46,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <NextIntlClientProvider messages={messages} locale={locale}>
           <ConfigProvider config={appConfig}>
             <ThemeProvider attribute="class" enableSystem={true} disableTransitionOnChange>
-              <PostHogProvider>
-                <Providers>
-                  <div className="min-h-dvh">{children}</div>
-                </Providers>
-              </PostHogProvider>
+              <GoogleAnalyticsProvider>
+                <PostHogProvider>
+                  <Providers>
+                    <div className="min-h-dvh">{children}</div>
+                  </Providers>
+                </PostHogProvider>
+              </GoogleAnalyticsProvider>
             </ThemeProvider>
           </ConfigProvider>
         </NextIntlClientProvider>
@@ -64,7 +67,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
-                gtag('config', '${gaMeasurementId}');
+                gtag('config', '${gaMeasurementId}', { send_page_view: false });
               `}
             </Script>
           </>

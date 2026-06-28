@@ -55,8 +55,15 @@ export const ClawCtaSection = () => {
         </div>
 
         <div className="flex flex-col items-center justify-center gap-[10px] px-5 min-[640px]:flex-row min-[640px]:flex-wrap min-[640px]:items-start min-[640px]:gap-3 min-[640px]:px-16 min-[640px]:max-[767px]:items-center min-[640px]:max-[767px]:gap-3 min-[640px]:max-[767px]:px-12 min-[768px]:max-[768px]:items-center min-[768px]:max-[768px]:gap-4 min-[768px]:max-[768px]:px-12 min-[769px]:items-center min-[769px]:px-12">
-          <ClawActionButton href="/login">Get API key</ClawActionButton>
-          <ClawActionButton href="#integration" variant="secondary">
+          <ClawActionButton ctaId="get_api_key" href="/login" sourceSection="claw_cta">
+            Get API key
+          </ClawActionButton>
+          <ClawActionButton
+            ctaId="claw_integration_guide"
+            href="#integration"
+            sourceSection="claw_cta"
+            variant="secondary"
+          >
             Review install steps
           </ClawActionButton>
         </div>

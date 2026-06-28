@@ -32,7 +32,18 @@ export type ListAPIKeysResponse = {
 // ============================================
 
 export async function listApiKeys({ userId }: { userId: string }): Promise<ListAPIKeysResponse> {
-  return jwtRequest({ method: "GET", path: "/v1/auth/list", userId });
+  try {
+    const result = await jwtRequest<ListAPIKeysResponse>({
+      method: "GET",
+      path: "/v1/auth/list",
+      userId,
+    });
+    return result || { api_keys: [], total: 0 };
+  } catch (error) {
+    console.error("Failed to list API keys from backend:", error);
+    // 返回空列表作为后备
+    return { api_keys: [], total: 0 };
+  }
 }
 
 export async function createApiKey({
@@ -42,7 +53,12 @@ export async function createApiKey({
   userId: string;
   data: CreateAPIKeyRequest;
 }): Promise<APIKey> {
-  return jwtRequest({ method: "POST", path: "/v1/auth/create", userId, body: data });
+  return jwtRequest<APIKey>({
+    method: "POST",
+    path: "/v1/auth/create",
+    userId,
+    body: data,
+  });
 }
 
 export async function deleteApiKey({ userId, id }: { userId: string; id: string }): Promise<void> {
@@ -67,7 +83,7 @@ export async function updateApiKey({
   id: string;
   data: { is_active?: boolean; name?: string };
 }): Promise<APIKey> {
-  return jwtRequest({
+  return jwtRequest<APIKey>({
     method: "POST",
     path: "/v1/auth/update",
     userId,
@@ -82,5 +98,9 @@ export async function toggleApiKey({
   userId: string;
   id: string;
 }): Promise<APIKey> {
-  return jwtRequest({ method: "PUT", path: `/v1/auth/${id}/toggle`, userId });
+  return jwtRequest<APIKey>({
+    method: "PUT",
+    path: `/v1/auth/${id}/toggle`,
+    userId,
+  });
 }

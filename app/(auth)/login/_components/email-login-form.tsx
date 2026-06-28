@@ -37,7 +37,7 @@ export const EmailLoginForm = ({
   registerPath,
 }: EmailLoginFormProps) => {
   const t = useTranslations("Auth");
-  const [isPasswordLoginEnabled, setIsPasswordLoginEnabled] = useState(false);
+  const [isPasswordLoginEnabled, setIsPasswordLoginEnabled] = useState(true);
   const isSubmitting = isMagicLinkLoading || isPasswordLoading;
 
   const loginSchema = useMemo(

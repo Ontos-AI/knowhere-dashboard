@@ -33,6 +33,8 @@ export type UsageRecord = {
   status: string;
   statusKind: UsageStatusKind;
   duration: string;
+  durationSeconds?: number;
+  sourceType?: string;
   cost: number;
   apiKey: string;
   resultUrl?: string;

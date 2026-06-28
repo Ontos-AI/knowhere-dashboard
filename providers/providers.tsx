@@ -1,5 +1,6 @@
 "use client";
 
+import { ErrorBoundary } from "@components/common/error-boundary";
 import { Toaster } from "@components/ui/sonner";
 import { QueryProvider } from "@providers/query-provider";
 import { TimezoneSync } from "@providers/timezone-sync";
@@ -10,7 +11,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <NuqsAdapter>
       <QueryProvider>
         <TimezoneSync />
-        {children}
+        <ErrorBoundary>{children}</ErrorBoundary>
         <Toaster />
       </QueryProvider>
     </NuqsAdapter>

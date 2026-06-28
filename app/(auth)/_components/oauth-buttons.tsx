@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@components/ui/button";
+import { markPendingAuthLogin } from "@lib/posthog";
 import { Github, Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -31,6 +32,7 @@ export function OAuthButtons({ onError }: OAuthButtonsProps) {
     setIsLoading(true);
     setClickedProvider(provider);
     try {
+      markPendingAuthLogin();
       await authClient.signIn.social({
         provider,
         callbackURL,

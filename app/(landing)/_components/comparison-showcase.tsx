@@ -8,12 +8,13 @@ import {
   getComparisonRows,
   getComparisonTabLabel,
 } from "@app/(landing)/_components/landing-home-data";
+import { trackLandingInteraction } from "@app/(landing)/_components/landing-tracked-link";
 import { StatefulTab } from "@app/(landing)/_components/stateful-tab";
 import { KnowhereBrand } from "@components/brand/knowhere-brand";
 import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { cn } from "@lib/utils";
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { type CSSProperties, type JSX, type ReactNode, useEffect, useState } from "react";
 import {
@@ -1070,6 +1071,7 @@ const getFilteredRows = (activeTab: ComparisonTab, rows: ReturnType<typeof getCo
 
 export const ComparisonShowcase = () => {
   const [activeTab, setActiveTab] = useState<ComparisonTab>("All");
+  const locale = useLocale();
   const { isDarkTheme, isThemeReady } = useResolvedThemeState();
   const t = useTranslations("Landing.data");
   const tComparison = useTranslations("Landing.comparisonShowcase");
@@ -1089,6 +1091,11 @@ export const ComparisonShowcase = () => {
       }
     : comparisonTabTone;
 
+  const handleTabChange = (tab: ComparisonTab) => {
+    setActiveTab(tab);
+    trackLandingInteraction("comparison_tab", "comparison", locale, { tab });
+  };
+
   return (
     <div className="flex flex-col gap-10">
       <BenchmarkChart isDarkTheme={isDarkTheme} isThemeReady={isThemeReady} />
@@ -1099,7 +1106,7 @@ export const ComparisonShowcase = () => {
               active={activeTab === tab}
               key={tab}
               className={cn(monoDisplayClassName, "focus-visible:ring-zinc-500")}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => handleTabChange(tab)}
               tone={activeComparisonTabTone}
               type="button"
             >
