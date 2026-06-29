@@ -12,24 +12,8 @@ export type PaymentRedirectResult = {
   kind?: "success" | "canceled";
 };
 
-type SearchParamsLike = Pick<URLSearchParams, "get">;
-
-const parseCheckoutAmount = (
-  rawAmount: string | null | undefined,
-  fallbackAmount: number | undefined
-): number => {
-  if (rawAmount != null && rawAmount !== "") {
-    const parsed = Number(rawAmount);
-    if (Number.isFinite(parsed)) {
-      return parsed;
-    }
-  }
-
-  if (fallbackAmount != null && Number.isFinite(fallbackAmount)) {
-    return fallbackAmount;
-  }
-
-  return 0;
+type SearchParamsLike = {
+  get(name: string): string | null;
 };
 
 export const trackPaymentRedirectFromSearchParams = (
@@ -53,7 +37,10 @@ export const trackPaymentRedirectFromSearchParams = (
         : pendingCheckout?.checkout_type;
     const transactionId = sessionId || pendingCheckout?.session_id || "";
     const planId = searchParams.get("plan_id") ?? pendingCheckout?.plan_id;
-    const amount = parseCheckoutAmount(searchParams.get("amount"), pendingCheckout?.amount);
+    const rawAmount = searchParams.get("amount");
+    const amountParam = rawAmount ? Number.parseFloat(rawAmount) : Number.NaN;
+    const amountFallback = typeof pendingCheckout?.amount === "number" ? pendingCheckout.amount : 0;
+    const amount = Number.isFinite(amountParam) ? amountParam : amountFallback;
 
     if (checkoutType === "credits_package") {
       trackCreditsPurchased(amount, checkoutType, transactionId);

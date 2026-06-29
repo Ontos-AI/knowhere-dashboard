@@ -18,8 +18,7 @@ describe("job posthog tracking", () => {
     vi.useFakeTimers();
     vi.setSystemTime(Date.UTC(2026, 5, 26, 10, 0, 0));
 
-    const now = Date.UTC(2026, 5, 26, 10, 0, 0);
-    const oldCreatedAt = new Date(now - RECENT_JOB_CREATED_MS - 60_000).toISOString();
+    const oldCreatedAt = new Date(Date.now() - RECENT_JOB_CREATED_MS - 60_000).toISOString();
     const state = createInitialJobTrackingState();
     state.isInitialized = true;
 
