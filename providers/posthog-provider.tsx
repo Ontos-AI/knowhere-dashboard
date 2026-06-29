@@ -11,17 +11,9 @@ type PostHogProviderProps = {
   children: ReactNode;
 };
 
-function PostHogPageView({ children }: PostHogProviderProps) {
+function PostHogPageViewTracker() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
-  useEffect(() => {
-    if (!isPostHogEnabled) {
-      return;
-    }
-
-    initPostHogClient();
-  }, []);
 
   useEffect(() => {
     if (!isPostHogEnabled) {
@@ -33,19 +25,26 @@ function PostHogPageView({ children }: PostHogProviderProps) {
     trackPageView(pagePath);
   }, [pathname, searchParams]);
 
+  return null;
+}
+
+export default function PostHogProvider({ children }: PostHogProviderProps) {
+  useEffect(() => {
+    if (!isPostHogEnabled) {
+      return;
+    }
+
+    initPostHogClient();
+  }, []);
+
   return (
     <>
+      <Suspense fallback={null}>
+        <PostHogPageViewTracker />
+      </Suspense>
       <PostHogAuthSync />
       <AuthenticatedJobPosthogSync />
       {children}
     </>
-  );
-}
-
-export default function PostHogProvider({ children }: PostHogProviderProps) {
-  return (
-    <Suspense fallback={children}>
-      <PostHogPageView>{children}</PostHogPageView>
-    </Suspense>
   );
 }

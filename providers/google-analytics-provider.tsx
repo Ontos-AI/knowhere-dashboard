@@ -5,7 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import type { ReactNode } from "react";
 import { Suspense, useEffect } from "react";
 
-type GoogleAnalyticsPageViewProps = {
+type GoogleAnalyticsProviderProps = {
   children: ReactNode;
 };
 
@@ -15,7 +15,7 @@ declare global {
   }
 }
 
-function GoogleAnalyticsPageView({ children }: GoogleAnalyticsPageViewProps) {
+function GoogleAnalyticsPageViewTracker() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { gaMeasurementId } = useAppConfigContext();
@@ -33,13 +33,16 @@ function GoogleAnalyticsPageView({ children }: GoogleAnalyticsPageViewProps) {
     });
   }, [gaMeasurementId, pathname, searchParams]);
 
-  return <>{children}</>;
+  return null;
 }
 
-export function GoogleAnalyticsProvider({ children }: GoogleAnalyticsPageViewProps) {
+export function GoogleAnalyticsProvider({ children }: GoogleAnalyticsProviderProps) {
   return (
-    <Suspense fallback={children}>
-      <GoogleAnalyticsPageView>{children}</GoogleAnalyticsPageView>
-    </Suspense>
+    <>
+      <Suspense fallback={null}>
+        <GoogleAnalyticsPageViewTracker />
+      </Suspense>
+      {children}
+    </>
   );
 }

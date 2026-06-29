@@ -15,6 +15,9 @@ import {
 
 describe("job posthog tracking", () => {
   it("does not emit job_created for old jobs discovered via pagination", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(Date.UTC(2026, 5, 26, 10, 0, 0));
+
     const now = Date.UTC(2026, 5, 26, 10, 0, 0);
     const oldCreatedAt = new Date(now - RECENT_JOB_CREATED_MS - 60_000).toISOString();
     const state = createInitialJobTrackingState();
@@ -35,6 +38,8 @@ describe("job posthog tracking", () => {
 
     expect(result.didEmit).toBe(false);
     expect(result.state.tracked.created.size).toBe(0);
+
+    vi.useRealTimers();
   });
 
   it("backfills recent terminal jobs on baseline", () => {

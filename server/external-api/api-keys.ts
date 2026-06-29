@@ -32,18 +32,7 @@ export type ListAPIKeysResponse = {
 // ============================================
 
 export async function listApiKeys({ userId }: { userId: string }): Promise<ListAPIKeysResponse> {
-  try {
-    const result = await jwtRequest<ListAPIKeysResponse>({
-      method: "GET",
-      path: "/v1/auth/list",
-      userId,
-    });
-    return result || { api_keys: [], total: 0 };
-  } catch (error) {
-    console.error("Failed to list API keys from backend:", error);
-    // 返回空列表作为后备
-    return { api_keys: [], total: 0 };
-  }
+  return jwtRequest({ method: "GET", path: "/v1/auth/list", userId });
 }
 
 export async function createApiKey({
