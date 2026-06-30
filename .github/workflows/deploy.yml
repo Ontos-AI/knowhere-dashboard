@@ -36,6 +36,18 @@ jobs:
     name: Build and Publish
     runs-on: ubuntu-latest
     steps:
+      - name: Validate semantic release tag
+        if: ${{ github.event_name == 'release' }}
+        shell: bash
+        run: |
+          release_tag="${{ github.event.release.tag_name }}"
+          semver_pattern='^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?$'
+
+          if [[ ! "$release_tag" =~ $semver_pattern ]]; then
+            echo "::error::Dashboard releases must use semantic version tags like v1.0.1. Date-based tags such as 2026.06.26.1 or v2026.06.26.1 are not supported."
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -93,7 +105,12 @@ jobs:
           fi
 
           short_sha="${GITHUB_SHA::8}"
-          image_tag="${environment}-${short_sha}"
+          if [ "${{ github.event_name }}" = "release" ]; then
+            release_tag="${{ github.event.release.tag_name }}"
+            image_tag="${release_tag}-${environment}"
+          else
+            image_tag="${environment}-${short_sha}"
+          fi
           latest_tag="${environment}-latest"
           image_uri="${DASHBOARD_IMAGE_REGISTRY}/${DASHBOARD_IMAGE_REPOSITORY}:${image_tag}"
           latest_uri="${DASHBOARD_IMAGE_REGISTRY}/${DASHBOARD_IMAGE_REPOSITORY}:${latest_tag}"
@@ -161,6 +178,18 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-and-publish
     steps:
+      - name: Validate semantic release tag
+        if: ${{ github.event_name == 'release' }}
+        shell: bash
+        run: |
+          release_tag="${{ github.event.release.tag_name }}"
+          semver_pattern='^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?$'
+
+          if [[ ! "$release_tag" =~ $semver_pattern ]]; then
+            echo "::error::Dashboard releases must use semantic version tags like v1.0.1. Date-based tags such as 2026.06.26.1 or v2026.06.26.1 are not supported."
+            exit 1
+          fi
+
       - name: Decide deployment context
         shell: bash
         run: |
@@ -211,7 +240,12 @@ jobs:
           fi
 
           short_sha="${GITHUB_SHA::8}"
-          image_tag="${environment}-${short_sha}"
+          if [ "${{ github.event_name }}" = "release" ]; then
+            release_tag="${{ github.event.release.tag_name }}"
+            image_tag="${release_tag}-${environment}"
+          else
+            image_tag="${environment}-${short_sha}"
+          fi
           image_uri="${DASHBOARD_IMAGE_REGISTRY}/${DASHBOARD_IMAGE_REPOSITORY}:${image_tag}"
 
           echo "DEPLOY_ENVIRONMENT=${environment}" >> "$GITHUB_ENV"
