@@ -16,7 +16,7 @@ export function AuthenticatedJobPosthogSync() {
     enabled: shouldTrack,
   });
 
-  useJobPosthogTracking(shouldTrack ? (data?.jobs ?? []) : []);
+  useJobPosthogTracking(data?.jobs ?? [], shouldTrack && data !== undefined);
 
   return null;
 }

@@ -1,18 +1,19 @@
 "use client";
 
 import {
+  buildPostHogAuthCleanupPath,
   clearPendingAuthLogin,
   consumePendingMagicLinkAuth,
+  getPostHogAuthCallbackURL,
   hasPendingAuthLogin,
   identifyUser,
   isAuthEventTracked,
   isLikelyNewUser,
-  isPostHogEnabled,
   trackLogin,
   trackSignUp,
 } from "@lib/posthog";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { authClient } from "@/lib/better-auth-client";
 
 const EMAIL_PROVIDERS = new Set(["credential", "email", "magic-link"]);
@@ -63,8 +64,20 @@ export function PostHogAuthSync() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const finishPostAuthRedirect = useCallback(() => {
+    const callbackURL = getPostHogAuthCallbackURL(searchParams);
+    if (callbackURL) {
+      router.replace(callbackURL);
+      return;
+    }
+
+    if (searchParams.get("ph_auth")) {
+      router.replace(buildPostHogAuthCleanupPath(pathname, searchParams));
+    }
+  }, [pathname, router, searchParams]);
+
   useEffect(() => {
-    if (!isPostHogEnabled || isPending) {
+    if (isPending) {
       return;
     }
 
@@ -84,30 +97,40 @@ export function PostHogAuthSync() {
   }, [isPending, session?.user]);
 
   useEffect(() => {
-    if (!isPostHogEnabled || isPending) {
+    if (isPending) {
       return;
     }
 
     const user = session?.user;
-    if (!user?.id || isAuthEventTracked()) {
+    if (!user?.id) {
       return;
     }
 
+    const hasPostAuthCallback = Boolean(getPostHogAuthCallbackURL(searchParams));
     const phAuth = searchParams.get("ph_auth");
+
+    if (isAuthEventTracked()) {
+      finishPostAuthRedirect();
+      return;
+    }
+
     if (phAuth === "magic" && !hasHandledMagicLinkParam.current) {
       hasHandledMagicLinkParam.current = true;
-      void trackAuthEvent(user).finally(() => {
-        const params = new URLSearchParams(searchParams.toString());
-        params.delete("ph_auth");
-        const nextSearch = params.toString();
-        router.replace(nextSearch ? `${pathname}?${nextSearch}` : pathname);
-      });
+      consumePendingMagicLinkAuth();
+      void trackAuthEvent(user)
+        .catch((error) => {
+          console.error("Failed to track magic-link auth event:", error);
+        })
+        .finally(finishPostAuthRedirect);
       return;
     }
 
     const hasPendingOAuth = hasPendingAuthLogin();
     const hasPendingMagicLink = consumePendingMagicLinkAuth();
     if (!hasPendingOAuth && !hasPendingMagicLink) {
+      if (hasPostAuthCallback || phAuth) {
+        finishPostAuthRedirect();
+      }
       return;
     }
 
@@ -115,8 +138,12 @@ export function PostHogAuthSync() {
       clearPendingAuthLogin();
     }
 
-    void trackAuthEvent(user);
-  }, [isPending, pathname, router, searchParams, session?.user]);
+    void trackAuthEvent(user)
+      .catch((error) => {
+        console.error("Failed to track auth event:", error);
+      })
+      .finally(finishPostAuthRedirect);
+  }, [finishPostAuthRedirect, isPending, searchParams, session?.user]);
 
   return null;
 }

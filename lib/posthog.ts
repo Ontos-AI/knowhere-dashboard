@@ -3,7 +3,7 @@
  */
 
 import type { PostHog } from "posthog-js";
-import { isAllowedExternalOrigin } from "@/lib/auth-redirect";
+import { authRedirect } from "@/lib/auth-redirect";
 import { env } from "@/lib/env";
 import {
   mirrorApiKeyCreated,
@@ -43,6 +43,8 @@ const eventQueue: QueuedAction[] = [];
 const AUTH_EVENT_TRACKED_KEY = "ph_auth_event_tracked";
 const PENDING_AUTH_LOGIN_KEY = "ph_pending_auth_login";
 const PENDING_MAGIC_LINK_AUTH_KEY = "ph_pending_magic_link_auth";
+const POSTHOG_AUTH_CALLBACK_URL_KEY = "ph_auth_callback_url";
+const POSTHOG_AUTH_FLAG_KEY = "ph_auth";
 const PENDING_CHECKOUT_KEY = "ph_pending_checkout";
 const BUY_CREDITS_ENTRY_TS_KEY = "ph_buy_credits_entry_ts";
 const BUY_CREDITS_DEDUPE_MS = 5000;
@@ -132,32 +134,41 @@ export const consumePendingMagicLinkAuth = () => {
   return true;
 };
 
-export const appendPostHogAuthFlag = (callbackURL: string, flag: string) => {
+type SearchParamsLike = {
+  get(name: string): string | null;
+  toString(): string;
+};
+
+export const buildPostHogAuthCallbackURL = (callbackURL: string, flag?: string) => {
   if (typeof window === "undefined") {
     return callbackURL;
   }
 
-  try {
-    if (callbackURL.startsWith("/") && !callbackURL.startsWith("//")) {
-      const parsed = new URL(callbackURL, window.location.origin);
-      if (parsed.origin !== window.location.origin) {
-        return callbackURL;
-      }
+  const parsed = new URL(authRedirect.defaultPath, window.location.origin);
+  parsed.searchParams.set(POSTHOG_AUTH_CALLBACK_URL_KEY, callbackURL);
 
-      parsed.searchParams.set("ph_auth", flag);
-      return `${parsed.pathname}${parsed.search}`;
-    }
-
-    const parsed = new URL(callbackURL);
-    if (parsed.origin !== window.location.origin && !isAllowedExternalOrigin(parsed.origin)) {
-      return callbackURL;
-    }
-
-    parsed.searchParams.set("ph_auth", flag);
-    return parsed.toString();
-  } catch {
-    return callbackURL;
+  if (flag) {
+    parsed.searchParams.set(POSTHOG_AUTH_FLAG_KEY, flag);
   }
+
+  return `${parsed.pathname}${parsed.search}`;
+};
+
+export const getPostHogAuthCallbackURL = (searchParams: Pick<SearchParamsLike, "get">) => {
+  const callbackURL = searchParams.get(POSTHOG_AUTH_CALLBACK_URL_KEY);
+  return authRedirect.getSafeCallbackURL(callbackURL);
+};
+
+export const buildPostHogAuthCleanupPath = (
+  pathname: string,
+  searchParams: SearchParamsLike
+) => {
+  const params = new URLSearchParams(searchParams.toString());
+  params.delete(POSTHOG_AUTH_FLAG_KEY);
+  params.delete(POSTHOG_AUTH_CALLBACK_URL_KEY);
+
+  const nextSearch = params.toString();
+  return nextSearch ? `${pathname}?${nextSearch}` : pathname;
 };
 
 export type PendingCheckout = {

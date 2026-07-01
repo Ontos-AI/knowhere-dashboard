@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  appendPostHogAuthFlag,
+  buildPostHogAuthCallbackURL,
   markPendingAuthLogin,
   markPendingMagicLinkAuth,
   trackLogin,
@@ -53,12 +53,13 @@ export const useLoginActions = () => {
     setActiveOAuthProvider(provider);
 
     try {
+      const trackedCallbackURL = buildPostHogAuthCallbackURL(callbackURL);
       markPendingAuthLogin();
       await authClient.signIn.social({
         provider,
-        callbackURL,
+        callbackURL: trackedCallbackURL,
         errorCallbackURL: oauthErrorCallbackURL,
-        newUserCallbackURL: callbackURL,
+        newUserCallbackURL: trackedCallbackURL,
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : t("loginFailed");
@@ -75,12 +76,13 @@ export const useLoginActions = () => {
     setIsMagicLinkLoading(true);
 
     try {
+      const trackedCallbackURL = buildPostHogAuthCallbackURL(callbackURL, "magic");
       markPendingMagicLinkAuth();
       const { error } = await authClient.signIn.magicLink({
         email: email.trim(),
-        callbackURL: appendPostHogAuthFlag(callbackURL, "magic"),
+        callbackURL: trackedCallbackURL,
         errorCallbackURL: magicLinkErrorCallbackURL,
-        newUserCallbackURL: appendPostHogAuthFlag(callbackURL, "magic"),
+        newUserCallbackURL: trackedCallbackURL,
       });
 
       if (error) {
