@@ -1,7 +1,6 @@
 "use client";
 
 import { initPostHogClient, isPostHogEnabled, trackPageView } from "@lib/posthog";
-import { AuthenticatedJobPosthogSync } from "@providers/authenticated-job-posthog-sync";
 import { PostHogAuthSync } from "@providers/posthog-auth-sync";
 import { usePathname, useSearchParams } from "next/navigation";
 import type { ReactNode } from "react";
@@ -43,7 +42,6 @@ export default function PostHogProvider({ children }: PostHogProviderProps) {
         <PostHogPageViewTracker />
       </Suspense>
       <PostHogAuthSync />
-      <AuthenticatedJobPosthogSync />
       {children}
     </>
   );

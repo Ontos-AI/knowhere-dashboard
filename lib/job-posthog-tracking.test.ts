@@ -96,4 +96,55 @@ describe("job posthog tracking", () => {
 
     vi.useRealTimers();
   });
+
+  it("does not re-emit job_created after upload notification persisted tracked ids", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(Date.UTC(2026, 5, 26, 10, 0, 0));
+
+    const storage = new Map<string, string>();
+    storage.set(
+      "ph_tracked_job_events",
+      JSON.stringify({ created: ["job-uploaded"], completed: [], failed: [] })
+    );
+    const localStorageMock = {
+      getItem: (key: string) => storage.get(key) ?? null,
+      setItem: (key: string, value: string) => {
+        storage.set(key, value);
+      },
+      removeItem: (key: string) => {
+        storage.delete(key);
+      },
+    };
+    vi.stubGlobal("window", { localStorage: localStorageMock });
+    vi.stubGlobal("localStorage", localStorageMock);
+
+    const state = createInitialJobTrackingState();
+    state.isInitialized = true;
+    state.tracked = {
+      created: new Set(),
+      completed: new Set(),
+      failed: new Set(),
+    };
+
+    const recentCreatedAt = new Date(Date.UTC(2026, 5, 26, 9, 55, 0)).toISOString();
+    const result = processJobsForPosthogTracking(
+      [
+        {
+          jobId: "job-uploaded",
+          date: recentCreatedAt,
+          statusKind: "running",
+          status: "Running",
+          duration: "-",
+          sourceType: "direct_upload",
+        },
+      ],
+      state
+    );
+
+    expect(result.didEmit).toBe(false);
+    expect(result.state.tracked.created.has("job-uploaded")).toBe(true);
+
+    vi.unstubAllGlobals();
+    vi.useRealTimers();
+  });
 });

@@ -67,6 +67,15 @@ export const persistTrackedJobEvents = (tracked: TrackedJobEvents) => {
   );
 };
 
+export const mergeTrackedJobEvents = (
+  tracked: TrackedJobEvents,
+  persisted: TrackedJobEvents = loadTrackedJobEvents()
+): TrackedJobEvents => ({
+  created: new Set([...Array.from(tracked.created), ...Array.from(persisted.created)]),
+  completed: new Set([...Array.from(tracked.completed), ...Array.from(persisted.completed)]),
+  failed: new Set([...Array.from(tracked.failed), ...Array.from(persisted.failed)]),
+});
+
 export const clearTrackedJobEvents = () => {
   if (typeof window === "undefined") {
     return;
@@ -190,7 +199,7 @@ export const processJobsForPosthogTracking = (
 ): { state: JobTrackingState; didEmit: boolean } => {
   const previousJobs = state.previousJobs;
   const nextJobs = new Map<string, UsageStatusKind>();
-  const tracked = state.tracked;
+  const tracked = mergeTrackedJobEvents(state.tracked);
   let didEmit = false;
 
   for (const job of jobs) {
