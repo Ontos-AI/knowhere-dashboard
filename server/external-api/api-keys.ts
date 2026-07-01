@@ -42,7 +42,12 @@ export async function createApiKey({
   userId: string;
   data: CreateAPIKeyRequest;
 }): Promise<APIKey> {
-  return jwtRequest({ method: "POST", path: "/v1/auth/create", userId, body: data });
+  return jwtRequest<APIKey>({
+    method: "POST",
+    path: "/v1/auth/create",
+    userId,
+    body: data,
+  });
 }
 
 export async function deleteApiKey({ userId, id }: { userId: string; id: string }): Promise<void> {
@@ -67,7 +72,7 @@ export async function updateApiKey({
   id: string;
   data: { is_active?: boolean; name?: string };
 }): Promise<APIKey> {
-  return jwtRequest({
+  return jwtRequest<APIKey>({
     method: "POST",
     path: "/v1/auth/update",
     userId,
@@ -82,5 +87,9 @@ export async function toggleApiKey({
   userId: string;
   id: string;
 }): Promise<APIKey> {
-  return jwtRequest({ method: "PUT", path: `/v1/auth/${id}/toggle`, userId });
+  return jwtRequest<APIKey>({
+    method: "PUT",
+    path: `/v1/auth/${id}/toggle`,
+    userId,
+  });
 }

@@ -1,3 +1,4 @@
+import { LandingTrackedAnchor } from "@app/(landing)/_components/landing-tracked-link";
 import {
   type CommandSegment,
   type IntegrationResource,
@@ -18,31 +19,38 @@ type ResourceLinkProps = {
 };
 
 type ResourceAnchorProps = {
+  ctaId: string;
   href: string;
   label: string;
 };
 
-const ResourceAnchor = ({ href, label }: ResourceAnchorProps) => {
+const ResourceAnchor = ({ ctaId, href, label }: ResourceAnchorProps) => {
   return (
-    <a
+    <LandingTrackedAnchor
       className="inline-flex items-center font-mono-display text-base font-medium leading-6 text-[#7f22fe] underline decoration-solid underline-offset-2 min-[640px]:text-lg min-[640px]:leading-[26px] min-[640px]:max-[767px]:text-base min-[640px]:max-[767px]:leading-5 min-[768px]:max-[768px]:text-base min-[768px]:max-[768px]:leading-5 min-[769px]:text-base min-[769px]:leading-5"
+      ctaId={ctaId}
+      external
       href={href}
-      rel="noreferrer"
-      target="_blank"
+      sourceSection="claw_integration"
     >
       {label}
-    </a>
+    </LandingTrackedAnchor>
   );
 };
 
 const ResourceLink = ({ resource }: ResourceLinkProps) => {
   return resource.variant === "package" ? (
     <ResourceAnchor
+      ctaId="claw_npm_link"
       href="https://www.npmjs.com/package/@ontos-ai/knowhere-claw"
       label={resource.linkLabel}
     />
   ) : (
-    <ResourceAnchor href="https://www.clawhub.tools" label={resource.linkLabel} />
+    <ResourceAnchor
+      ctaId="claw_clawhub_link"
+      href="https://www.clawhub.tools"
+      label={resource.linkLabel}
+    />
   );
 };
 

@@ -1,6 +1,11 @@
 "use client";
 
+import {
+  LandingTrackedLink,
+  trackLandingInteraction,
+} from "@app/(landing)/_components/landing-tracked-link";
 import { Dialog, DialogContent, DialogTitle } from "@components/ui/dialog";
+import { mirrorPlaygroundParseStarted } from "@lib/google-analytics";
 import { cn } from "@lib/utils";
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
 import {
@@ -16,8 +21,7 @@ import {
   Plus,
 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Highlight, themes } from "prism-react-renderer";
 import {
   type CSSProperties,
@@ -702,6 +706,7 @@ const HeroFileCard = ({
   const suppressClickRef = useRef(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const locale = useLocale();
 
   useEffect(() => {
     if (dragEndSignal === 0) {
@@ -730,6 +735,7 @@ const HeroFileCard = ({
       return;
     }
 
+    trackLandingInteraction("playground_sample", "playground", locale, { file_name: fileName });
     onActivate();
   };
 
@@ -1022,16 +1028,18 @@ const PlaygroundBottomCta = () => {
   return (
     <div className="border-t border-[#3f3f46] px-10 py-6 min-[768px]:px-12">
       <div className="flex justify-center">
-        <Link
+        <LandingTrackedLink
           className={cn(
             "group inline-flex h-12 items-center justify-center rounded-full border border-b-[6px] border-[#7f22fe] bg-[#8e51ff] px-6 text-sm font-medium text-[#f5f3ff] [--btn-bottom:6px] transition-[background-color,border-color,border-bottom-width] hover:border-[#7008e7] hover:bg-[#7f22fe] hover:border-b-[8px] hover:[--btn-bottom:8px] active:border-[#7008e7] active:bg-[#7008e7] active:border-b-[6px] active:[--btn-bottom:6px] font-sans"
           )}
+          ctaId="playground_get_credits"
           href="/login"
+          sourceSection="playground"
         >
           <span className="inline-flex h-full translate-y-1 items-center pb-[var(--btn-bottom)] transition-[padding-bottom,transform] duration-150 ease-out">
             {t("bottomCta")}
           </span>
-        </Link>
+        </LandingTrackedLink>
       </div>
     </div>
   );
@@ -1587,6 +1595,7 @@ const DragGhost = ({
 
 export const HeroPlayground = () => {
   const t = useTranslations("Landing.playground");
+  const locale = useLocale();
   const [activeSampleId, setActiveSampleId] = useState<PlaygroundSampleId | null>(null);
   const [parsedSampleId, setParsedSampleId] = useState<PlaygroundSampleId>("tsla");
   const [isDropTarget, setIsDropTarget] = useState(false);
@@ -1649,6 +1658,13 @@ export const HeroPlayground = () => {
 
   const parseSampleFromDrop = useCallback(
     (sampleId: PlaygroundSampleId) => {
+      const sample = playgroundSamples[sampleId];
+      trackLandingInteraction("playground_parse_started", "playground", locale, {
+        file_name: sample.cardLabel,
+        sample_id: sampleId,
+      });
+      mirrorPlaygroundParseStarted(sample.cardLabel);
+
       setActiveSampleId(sampleId);
       setParsedSampleId(sampleId);
       setIsDropTarget(false);
@@ -1662,7 +1678,7 @@ export const HeroPlayground = () => {
         }, 1800)
       );
     },
-    [resetStageTimers]
+    [locale, resetStageTimers]
   );
 
   const applyGhostPosition = useCallback((x: number, y: number) => {
@@ -1996,17 +2012,18 @@ export const HeroPlayground = () => {
                 {previewSample?.modalLabel ?? currentSample.modalLabel}
               </p>
             </div>
-            <Link
+            <LandingTrackedLink
               className={cn(
                 "inline-flex h-9 items-center justify-center rounded-full border border-zinc-700 bg-zinc-900 px-4 text-xs text-zinc-200 transition-colors hover:bg-zinc-800",
                 monoDisplayClassName
               )}
+              ctaId="playground_open_pdf"
+              external
               href={previewSample?.pdfPath ?? currentSample.pdfPath}
-              rel="noreferrer"
-              target="_blank"
+              sourceSection="playground"
             >
               {t("openRawPdf")}
-            </Link>
+            </LandingTrackedLink>
           </div>
           <div className="min-h-0 flex-1 bg-zinc-950">
             <iframe

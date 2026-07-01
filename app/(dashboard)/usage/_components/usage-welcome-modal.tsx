@@ -5,6 +5,7 @@ import { dashboardDialogDesign } from "@app/(dashboard)/_components/dashboard-di
 import { useUsageWelcome } from "@app/(dashboard)/usage/_hooks/use-usage-welcome";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@components/ui/dialog";
 import { useToast } from "@hooks/use-toast";
+import { trackFeatureUsage } from "@lib/posthog";
 import { cn } from "@lib/utils";
 import { copyToClipboard } from "@utils/format";
 import {
@@ -153,6 +154,7 @@ export const UsageWelcomeModal = () => {
     }
 
     toast.success(t("copyKeySuccess"));
+    trackFeatureUsage("usage_welcome_copy_api_key");
   };
 
   const handleCopyCode = async () => {
@@ -168,6 +170,7 @@ export const UsageWelcomeModal = () => {
     }
 
     toast.success(t("copyCodeSuccess"));
+    trackFeatureUsage("usage_welcome_copy_sample_code", { tab: activeTab });
   };
 
   return (

@@ -1,8 +1,9 @@
 "use client";
 
+import { isAuthEventTracked, isLikelyNewUser, trackLogin, trackSignUp } from "@lib/posthog";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { authRedirect } from "@/lib/auth-redirect";
 import { authClient } from "@/lib/better-auth-client";
@@ -19,11 +20,20 @@ export default function MagicLinkCallbackPage() {
     callbackURL: rawCallbackURL,
     error: "magic",
   });
+  const hasTrackedLogin = useRef(false);
 
   useEffect(() => {
     if (session.isPending) return;
 
     if (session.data?.user) {
+      if (!hasTrackedLogin.current && !isAuthEventTracked()) {
+        if (isLikelyNewUser(session.data.user.createdAt)) {
+          trackSignUp("email", session.data.user.id);
+        } else {
+          trackLogin("email", session.data.user.id);
+        }
+        hasTrackedLogin.current = true;
+      }
       toast.success(t("magicLinkLoginSuccess"));
       router.replace(callbackURL);
     } else {

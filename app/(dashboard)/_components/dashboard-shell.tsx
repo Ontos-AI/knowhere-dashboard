@@ -12,6 +12,7 @@ import {
 import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import type { AuthUser } from "@hooks/use-auth";
 import { useCredits } from "@hooks/use-credits";
+import { trackBuyCreditsClicked } from "@lib/posthog";
 import { setCookie } from "@utils/cookies";
 import { Bell, Menu } from "lucide-react";
 import Image from "next/image";
@@ -132,6 +133,7 @@ const CreditsButton = ({
   return (
     <Link
       href={buyCreditsHref}
+      onClick={() => trackBuyCreditsClicked("sidebar")}
       className={[
         "flex h-10 min-w-[119px] items-center justify-center bg-white text-[12px] font-semibold text-[#292524] shadow-none transition-transform hover:-translate-y-px dark:border-[#3f3f46] dark:bg-[#18181b] dark:text-[#fafafa]",
         compactTabletHeader

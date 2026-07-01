@@ -64,6 +64,7 @@
     "recentRecordsSubtitle": "Details of recent API calls",
     "export": "Export",
     "exportCSV": "Export CSV",
+    "uploadFile": "Upload file",
     "callHistory": "Call History",
     "comparedToLastMonth": "{value} vs last month",
     "estCost": "est. {cost}",

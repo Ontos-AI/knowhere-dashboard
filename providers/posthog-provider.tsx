@@ -1,17 +1,33 @@
 "use client";
 
 import { initPostHogClient, isPostHogEnabled, trackPageView } from "@lib/posthog";
-import { usePathname } from "next/navigation";
+import { PostHogAuthSync } from "@providers/posthog-auth-sync";
+import { usePathname, useSearchParams } from "next/navigation";
 import type { ReactNode } from "react";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 
 type PostHogProviderProps = {
   children: ReactNode;
 };
 
-export default function PostHogProvider({ children }: PostHogProviderProps) {
+function PostHogPageViewTracker() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
+  useEffect(() => {
+    if (!isPostHogEnabled) {
+      return;
+    }
+
+    const query = searchParams.toString();
+    const pagePath = query ? `${pathname}?${query}` : pathname;
+    trackPageView(pagePath);
+  }, [pathname, searchParams]);
+
+  return null;
+}
+
+export default function PostHogProvider({ children }: PostHogProviderProps) {
   useEffect(() => {
     if (!isPostHogEnabled) {
       return;
@@ -20,13 +36,13 @@ export default function PostHogProvider({ children }: PostHogProviderProps) {
     initPostHogClient();
   }, []);
 
-  useEffect(() => {
-    if (!isPostHogEnabled) {
-      return;
-    }
-
-    trackPageView(pathname);
-  }, [pathname]);
-
-  return <>{children}</>;
+  return (
+    <>
+      <Suspense fallback={null}>
+        <PostHogPageViewTracker />
+      </Suspense>
+      <PostHogAuthSync />
+      {children}
+    </>
+  );
 }

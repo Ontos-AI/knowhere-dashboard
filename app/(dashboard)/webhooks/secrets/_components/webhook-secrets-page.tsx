@@ -20,6 +20,7 @@ import {
 } from "@components/ui/select";
 import { useTimezone } from "@hooks/use-timezone";
 import { useToast } from "@hooks/use-toast";
+import { trackWebhookConfigured, trackWebhookSecretRevoked } from "@lib/posthog";
 import type { WebhookSecret } from "@server/external-api/webhook-secrets";
 import { Plus } from "lucide-react";
 import Image from "next/image";
@@ -105,6 +106,7 @@ export const WebhookSecretsPage = () => {
   const handleCreateSecret = async (endpoint?: string | null) => {
     try {
       const result = await createMutation.mutateAsync({ endpoint });
+      trackWebhookConfigured(endpoint ?? "");
       setCreatedSecret(result.secret);
       setIsCreatedDialogOpen(true);
       setIsCreateDialogOpen(false);
@@ -131,6 +133,7 @@ export const WebhookSecretsPage = () => {
 
     try {
       await revokeMutation.mutateAsync({ id: secretToRevoke });
+      trackWebhookSecretRevoked(secretToRevoke);
       setSecretToRevoke(null);
       toast.success(t("revokeSuccess"));
     } catch (error) {

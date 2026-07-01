@@ -1,5 +1,11 @@
 "use client";
 
+import {
+  buildPostHogAuthCallbackURL,
+  markPendingAuthLogin,
+  markPendingMagicLinkAuth,
+  trackLogin,
+} from "@lib/posthog";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -47,11 +53,13 @@ export const useLoginActions = () => {
     setActiveOAuthProvider(provider);
 
     try {
+      const trackedCallbackURL = buildPostHogAuthCallbackURL(callbackURL);
+      markPendingAuthLogin();
       await authClient.signIn.social({
         provider,
-        callbackURL,
+        callbackURL: trackedCallbackURL,
         errorCallbackURL: oauthErrorCallbackURL,
-        newUserCallbackURL: callbackURL,
+        newUserCallbackURL: trackedCallbackURL,
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : t("loginFailed");
@@ -68,11 +76,13 @@ export const useLoginActions = () => {
     setIsMagicLinkLoading(true);
 
     try {
+      const trackedCallbackURL = buildPostHogAuthCallbackURL(callbackURL, "magic");
+      markPendingMagicLinkAuth();
       const { error } = await authClient.signIn.magicLink({
         email: email.trim(),
-        callbackURL,
+        callbackURL: trackedCallbackURL,
         errorCallbackURL: magicLinkErrorCallbackURL,
-        newUserCallbackURL: callbackURL,
+        newUserCallbackURL: trackedCallbackURL,
       });
 
       if (error) {
@@ -105,6 +115,11 @@ export const useLoginActions = () => {
 
       if (error) {
         throw new Error(error.message || t("loginFailed"));
+      }
+
+      const session = await authClient.getSession();
+      if (session.data?.user?.id) {
+        trackLogin("email", session.data.user.id);
       }
 
       toast.success(t("loginSuccess"));
