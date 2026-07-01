@@ -159,10 +159,7 @@ export const getPostHogAuthCallbackURL = (searchParams: Pick<SearchParamsLike, "
   return authRedirect.getSafeCallbackURL(callbackURL);
 };
 
-export const buildPostHogAuthCleanupPath = (
-  pathname: string,
-  searchParams: SearchParamsLike
-) => {
+export const buildPostHogAuthCleanupPath = (pathname: string, searchParams: SearchParamsLike) => {
   const params = new URLSearchParams(searchParams.toString());
   params.delete(POSTHOG_AUTH_FLAG_KEY);
   params.delete(POSTHOG_AUTH_CALLBACK_URL_KEY);
