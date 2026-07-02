@@ -543,6 +543,13 @@
         "description": "with an installable plugin and skill.",
         "link": "EXPLORE"
       },
+      "mcpAnnouncement": {
+        "ariaLabel": "Read the Knowhere MCP documentation",
+        "badge": "MCP",
+        "title": "MCP server available",
+        "description": "for Cursor, VS Code, Claude, and Codex.",
+        "link": "DOCS"
+      },
       "hero": {
         "titleStart": "Transform unstructured documents into",
         "clean": "clean",
