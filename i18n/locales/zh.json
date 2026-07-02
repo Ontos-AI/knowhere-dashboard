@@ -546,7 +546,6 @@
       },
       "mcpAnnouncement": {
         "ariaLabel": "查看 Knowhere MCP 文档",
-        "badge": "MCP",
         "title": "MCP 服务现已可用",
         "description": "支持 Cursor、VS Code、Claude 和 Codex。",
         "link": "文档"

@@ -519,14 +519,6 @@ export const LandingHome = () => {
                   sourceSection="hero_announcement"
                 >
                   <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 max-[639px]:max-w-[260px]">
-                    <span
-                      className={cn(
-                        "inline-flex h-6 shrink-0 items-center rounded-full border border-[#ddd6ff] bg-[#ede9fe] px-2 text-[11px] font-bold leading-4 tracking-[0.08em] text-[#7008e7] dark:border-[#4c1d95] dark:bg-[#312e81] dark:text-[#ddd6ff]",
-                        monoDisplayClassName
-                      )}
-                    >
-                      {t("mcpAnnouncement.badge")}
-                    </span>
                     <span className="text-[14px] font-bold leading-[22px] tracking-[-1px] text-zinc-950 dark:text-[#fafafa] min-[769px]:text-base min-[769px]:leading-6">
                       {t("mcpAnnouncement.title")}
                     </span>
