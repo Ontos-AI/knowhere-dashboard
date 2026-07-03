@@ -30,6 +30,7 @@ env:
   DASHBOARD_AUTH_COOKIE_DOMAIN_STAGING: staging.knowhereto.ai
   DASHBOARD_AUTH_ALLOWED_CALLBACK_ORIGINS_PROD: https://notebook.knowhereto.ai
   DASHBOARD_AUTH_ALLOWED_CALLBACK_ORIGINS_STAGING: https://notebook.staging.knowhereto.ai
+  DASHBOARD_POSTHOG_HOST: https://us.i.posthog.com
 
 jobs:
   build-and-publish:
@@ -157,6 +158,8 @@ jobs:
             NEXT_PUBLIC_AUTH_BASE_URL=${{ steps.context.outputs.auth_base_url }}
             NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS=${{ steps.context.outputs.auth_allowed_callback_origins }}
             NEXT_PUBLIC_APP_URL=${{ steps.context.outputs.app_url }}
+            NEXT_PUBLIC_POSTHOG_KEY=${{ secrets.NEXT_PUBLIC_POSTHOG_KEY }}
+            NEXT_PUBLIC_POSTHOG_HOST=${{ env.DASHBOARD_POSTHOG_HOST }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
