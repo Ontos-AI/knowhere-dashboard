@@ -478,39 +478,6 @@ export const LandingHome = () => {
             >
               <div className="flex w-full max-w-[934px] flex-col gap-3">
                 <HeroAnnouncementNotice
-                  ctaId="explore_claw"
-                  href="/claw"
-                  linkLabel={t("announcement.link")}
-                  sourceSection="hero_announcement"
-                >
-                  <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 max-[639px]:max-w-[240px]">
-                    <span className="text-[14px] font-bold leading-[22px] tracking-[-1px] text-zinc-950 dark:text-[#fafafa] min-[769px]:text-base min-[769px]:leading-6">
-                      {t("announcement.prefix")}
-                    </span>
-                    <span className="inline-flex h-[18px] w-5 shrink-0 items-center justify-center">
-                      <Image
-                        alt=""
-                        aria-hidden="true"
-                        className="h-[18px] w-5"
-                        height={18}
-                        src="/icons/knowhere/openclaw-icon.svg"
-                        width={20}
-                      />
-                    </span>
-                    <span className="text-[14px] font-bold leading-[22px] tracking-[-1px] text-[#e7000b] min-[769px]:text-base min-[769px]:leading-6">
-                      OpenClaw
-                    </span>
-                    <span
-                      className={cn(
-                        "text-[14px] font-normal leading-[22px] tracking-[-0.5px] text-zinc-600 dark:text-[#d4d4d8] min-[769px]:text-base min-[769px]:leading-6 font-sans"
-                      )}
-                    >
-                      {t("announcement.description")}
-                    </span>
-                  </div>
-                </HeroAnnouncementNotice>
-
-                <HeroAnnouncementNotice
                   ariaLabel={t("mcpAnnouncement.ariaLabel")}
                   ctaId="view_mcp_docs"
                   external

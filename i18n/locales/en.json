@@ -538,11 +538,6 @@
       "close": "Close newsletter prompt"
     },
     "home": {
-      "announcement": {
-        "prefix": "Now live on",
-        "description": "with an installable plugin and skill.",
-        "link": "EXPLORE"
-      },
       "mcpAnnouncement": {
         "ariaLabel": "Read the Knowhere MCP documentation",
         "title": "MCP server available",
