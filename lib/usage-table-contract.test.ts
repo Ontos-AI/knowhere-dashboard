@@ -1,6 +1,5 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { formatDate } from "@utils/format";
 import { describe, expect, it } from "vitest";
 
 const readWorkspaceFile = (path: string): string => readFileSync(join(process.cwd(), path), "utf8");
@@ -49,30 +48,27 @@ describe("Usage table contracts", () => {
     expect(usageTableSource).not.toContain("backgroundColor: fileTypeTheme.background");
   });
 
-  it("formats visible usage dates through the localized date formatter", (): void => {
+  it("formats visible usage dates through a compact localized date formatter", (): void => {
     const usagePageSource: string = readWorkspaceFile("app/(dashboard)/usage/page.tsx");
-    const englishDate: string = formatDate({
-      date: "2026-06-30T04:12:18Z",
-      format: "long",
-      locale: "en",
-      timeZone: "Asia/Shanghai",
-    });
-    const chineseDate: string = formatDate({
-      date: "2026-06-30T04:12:18Z",
-      format: "long",
-      locale: "zh",
-      timeZone: "Asia/Shanghai",
-    });
 
-    expect(usagePageSource).toContain("formatLocalizedDate");
-    expect(usagePageSource).toContain('format: "long"');
+    expect(usagePageSource).toContain("formatUsageTableDate");
+    expect(usagePageSource).toContain("usageTableDateFormatterOptions");
+    expect(usagePageSource).toContain('second: "2-digit"');
     expect(usagePageSource).toContain("locale");
     expect(usagePageSource).toContain("timeZone: timezone");
     expect(usagePageSource).not.toContain("MM/dd/yyyy, hh:mm:ss aa");
-    expect(englishDate).not.toContain("hh");
-    expect(englishDate).not.toContain("aa");
-    expect(chineseDate).not.toContain("hh");
-    expect(chineseDate).not.toContain("aa");
+  });
+
+  it("keeps visible usage dates on one line", (): void => {
+    const usageTableSource: string = readWorkspaceFile(
+      "app/(dashboard)/usage/_components/usage-table.tsx"
+    );
+    const usagePageSource: string = readWorkspaceFile("app/(dashboard)/usage/page.tsx");
+
+    expect(usageTableSource).toContain(
+      "font-mono-display leading-4 whitespace-nowrap text-[#3f3f46]"
+    );
+    expect(usagePageSource).not.toContain('format: "long"');
   });
 
   it("keeps the usage upload button label on one line", (): void => {
