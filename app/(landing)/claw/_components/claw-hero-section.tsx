@@ -112,13 +112,17 @@ export const ClawHeroSection = () => {
           <div className="flex flex-col items-center gap-3 min-[640px]:max-[767px]:flex-row min-[640px]:max-[767px]:justify-center min-[640px]:max-[767px]:gap-3 min-[768px]:max-[768px]:flex-row min-[768px]:max-[768px]:justify-center min-[768px]:max-[768px]:gap-3 min-[769px]:flex-row min-[769px]:justify-center min-[769px]:gap-3">
             <ClawActionButton
               className="w-fit min-[640px]:max-[767px]:w-auto min-[768px]:max-[768px]:w-auto min-[769px]:w-auto"
+              ctaId="claw_integration_guide"
               href="#integration"
+              sourceSection="claw_hero"
             >
               See integration guide
             </ClawActionButton>
             <ClawActionButton
               className="w-fit min-[640px]:max-[767px]:w-auto min-[768px]:max-[768px]:w-auto min-[769px]:w-auto"
+              ctaId="get_api_key"
               href="/login"
+              sourceSection="claw_hero"
               variant="secondary"
             >
               Get API key

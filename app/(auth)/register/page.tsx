@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@comp
 import { Input } from "@components/ui/input";
 import { Label } from "@components/ui/label";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { trackSignUp } from "@lib/posthog";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -66,6 +67,11 @@ export default function RegisterPage() {
 
       if (error) {
         throw new Error(error.message || t("registerFailed"));
+      }
+
+      const session = await authClient.getSession();
+      if (session.data?.user?.id) {
+        trackSignUp("email", session.data.user.id);
       }
 
       toast.success(t("registerSuccess"));

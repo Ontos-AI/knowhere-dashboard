@@ -98,7 +98,7 @@ export const supportedFormats: FormatChip[] = [
   { label: ".csv", tone: { background: "#cffafe", border: "#a5f3fc", text: "#155e75" } },
   { label: ".png", tone: { background: "#ede9fe", border: "#ddd6ff", text: "#5b21b6" } },
   { label: ".md", tone: { background: "#ecfccb", border: "#d9f99d", text: "#4d7c0f" } },
-  { label: ".josn", tone: { background: "#fef3c6", border: "#fde68a", text: "#a16207" } },
+  { label: ".json", tone: { background: "#fef3c6", border: "#fde68a", text: "#a16207" } },
   { label: ".txt", tone: { background: "#e0e7ff", border: "#c7d2fe", text: "#3730a3" } },
 ];
 

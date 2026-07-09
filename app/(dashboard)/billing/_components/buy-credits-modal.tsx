@@ -13,6 +13,7 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@components/ui/dialog";
+import { trackBuyCreditsClicked, trackCheckoutStarted } from "@lib/posthog";
 import { cn } from "@lib/utils";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
@@ -80,6 +81,18 @@ export function BuyCreditsModal() {
   );
 
   const customInputRef = useRef<HTMLInputElement>(null);
+  const hasTrackedDeepLink = useRef(false);
+
+  useEffect(() => {
+    if (hasTrackedDeepLink.current) {
+      return;
+    }
+
+    if (searchParams.get("buy") === "true") {
+      trackBuyCreditsClicked("deep_link");
+      hasTrackedDeepLink.current = true;
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (isCustom) {
@@ -153,6 +166,11 @@ export function BuyCreditsModal() {
       {
         onSuccess: (response) => {
           if (response.checkout_url) {
+            trackCheckoutStarted("credits_package", {
+              amount: safeAmount,
+              session_id: response.session_id,
+              price_id: packages[0].price_id,
+            });
             window.location.href = response.checkout_url;
             return;
           }

@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { formatDate } from "@utils/format";
 import { describe, expect, it } from "vitest";
 
 const readWorkspaceFile = (path: string): string => readFileSync(join(process.cwd(), path), "utf8");
@@ -46,5 +47,39 @@ describe("Usage table contracts", () => {
     expect(usageTableSource).toContain("darkText");
     expect(usageTableSource).toContain("dark:bg-[var(--file-type-dark-background)]");
     expect(usageTableSource).not.toContain("backgroundColor: fileTypeTheme.background");
+  });
+
+  it("formats visible usage dates through the localized date formatter", (): void => {
+    const usagePageSource: string = readWorkspaceFile("app/(dashboard)/usage/page.tsx");
+    const englishDate: string = formatDate({
+      date: "2026-06-30T04:12:18Z",
+      format: "long",
+      locale: "en",
+      timeZone: "Asia/Shanghai",
+    });
+    const chineseDate: string = formatDate({
+      date: "2026-06-30T04:12:18Z",
+      format: "long",
+      locale: "zh",
+      timeZone: "Asia/Shanghai",
+    });
+
+    expect(usagePageSource).toContain("formatLocalizedDate");
+    expect(usagePageSource).toContain('format: "long"');
+    expect(usagePageSource).toContain("locale");
+    expect(usagePageSource).toContain("timeZone: timezone");
+    expect(usagePageSource).not.toContain("MM/dd/yyyy, hh:mm:ss aa");
+    expect(englishDate).not.toContain("hh");
+    expect(englishDate).not.toContain("aa");
+    expect(chineseDate).not.toContain("hh");
+    expect(chineseDate).not.toContain("aa");
+  });
+
+  it("keeps the usage upload button label on one line", (): void => {
+    const usagePageSource: string = readWorkspaceFile("app/(dashboard)/usage/page.tsx");
+
+    expect(usagePageSource).toContain("min-w-[132px]");
+    expect(usagePageSource).toContain("whitespace-nowrap");
+    expect(usagePageSource).not.toContain('UsageFileUpload className="h-9 w-[121px]');
   });
 });

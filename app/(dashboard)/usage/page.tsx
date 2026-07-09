@@ -2,19 +2,22 @@
 
 import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
 import { DatePickerWithRange } from "@app/(dashboard)/usage/_components/date-range-picker";
+import { UsageFileUpload } from "@app/(dashboard)/usage/_components/usage-file-upload";
 import { UsageTable } from "@app/(dashboard)/usage/_components/usage-table";
 import { UsageWelcomeModal } from "@app/(dashboard)/usage/_components/usage-welcome-modal";
 import { useExportAllJobs, useJobs } from "@app/(dashboard)/usage/_hooks/use-jobs";
 import { useParseUsage } from "@app/(dashboard)/usage/_hooks/use-usage-stats";
 import { useCredits } from "@hooks/use-credits";
 import { useTimezone } from "@hooks/use-timezone";
+import { trackBuyCreditsClicked, trackError, trackFeatureUsage } from "@lib/posthog";
 import { cn } from "@lib/utils";
+import { formatDate as formatLocalizedDate } from "@utils/format";
 import { format, subDays } from "date-fns";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useQueryState } from "nuqs";
 import { startTransition, useState } from "react";
 import type { DateRange } from "react-day-picker";
@@ -132,6 +135,7 @@ const UsagePageSkeleton = () => {
 export default function UsagePage() {
   const t = useTranslations("Usage");
   const tTable = useTranslations("UsageTable");
+  const locale: string = useLocale();
   const { billingEnabled } = useAppConfigContext();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -142,7 +146,9 @@ export default function UsagePage() {
   const [date, setDate] = useState<DateRange | undefined>(getPresetDateRange(1));
   const [activeRange, setActiveRange] = useState<TimeRangePreset | null>(1);
   const { data: credits } = useCredits();
-  const { formatDate } = useTimezone();
+  const timezoneContext: ReturnType<typeof useTimezone> = useTimezone();
+  const formatDate: ReturnType<typeof useTimezone>["formatDate"] = timezoneContext.formatDate;
+  const timezone: string = timezoneContext.timezone;
 
   const [page, setPage] = useQueryState("page", { defaultValue: "1" });
   const [pageSize, setPageSize] = useQueryState("pageSize", { defaultValue: "30" });
@@ -225,78 +231,87 @@ export default function UsagePage() {
       return;
     }
 
-    const escapeCsvField = (value: string | number | undefined | null) => {
-      const stringValue = String(value ?? "");
+    try {
+      trackFeatureUsage("usage_export_csv", { total_count: totalCount });
+      const escapeCsvField = (value: string | number | undefined | null) => {
+        const stringValue = String(value ?? "");
 
-      if (stringValue.includes(",") || stringValue.includes('"') || stringValue.includes("\n")) {
-        return `"${stringValue.replace(/"/g, '""')}"`;
-      }
+        if (stringValue.includes(",") || stringValue.includes('"') || stringValue.includes("\n")) {
+          return `"${stringValue.replace(/"/g, '""')}"`;
+        }
 
-      return stringValue;
-    };
+        return stringValue;
+      };
 
-    const exportedJobs = await exportAllJobs({
-      total: totalCount,
-      recentDays:
-        queryParams.recentDays === 1 || queryParams.recentDays === 7
-          ? queryParams.recentDays
-          : undefined,
-      startTime: queryParams.startTime,
-      endTime: queryParams.endTime,
-    });
+      const exportedJobs = await exportAllJobs({
+        total: totalCount,
+        recentDays:
+          queryParams.recentDays === 1 || queryParams.recentDays === 7
+            ? queryParams.recentDays
+            : undefined,
+        startTime: queryParams.startTime,
+        endTime: queryParams.endTime,
+      });
 
-    const headers = [
-      tTable("date"),
-      tTable("jobId"),
-      tTable("fileName"),
-      tTable("model"),
-      tTable("pages"),
-      tTable("duration"),
-      tTable("cost"),
-      tTable("status"),
-      tTable("resultUrl"),
-    ];
+      const headers = [
+        tTable("date"),
+        tTable("jobId"),
+        tTable("fileName"),
+        tTable("model"),
+        tTable("pages"),
+        tTable("duration"),
+        tTable("cost"),
+        tTable("status"),
+        tTable("resultUrl"),
+      ];
 
-    const rows = exportedJobs.map((job) => [
-      formatDate({ date: job.date, formatStr: "yyyy-MM-dd HH:mm:ss" }),
-      job.jobId,
-      job.fileName,
-      job.model,
-      job.pages,
-      job.duration,
-      job.cost,
-      job.statusKind === "done"
-        ? tTable("statusDone")
-        : job.statusKind === "failed"
-          ? tTable("statusFailed")
-          : job.statusKind === "running"
-            ? tTable("statusRunning")
-            : job.statusKind === "pending"
-              ? tTable("statusPending")
-              : job.statusKind === "waiting-file"
-                ? tTable("statusWaitingFile")
-                : job.status,
-      job.resultUrl ?? "",
-    ]);
+      const rows = exportedJobs.map((job) => [
+        formatDate({ date: job.date, formatStr: "yyyy-MM-dd HH:mm:ss" }),
+        job.jobId,
+        job.fileName,
+        job.model,
+        job.pages,
+        job.duration,
+        job.cost,
+        job.statusKind === "done"
+          ? tTable("statusDone")
+          : job.statusKind === "failed"
+            ? tTable("statusFailed")
+            : job.statusKind === "running"
+              ? tTable("statusRunning")
+              : job.statusKind === "pending"
+                ? tTable("statusPending")
+                : job.statusKind === "waiting-file"
+                  ? tTable("statusWaitingFile")
+                  : job.status,
+        job.resultUrl ?? "",
+      ]);
 
-    const csvContent = [
-      headers.map(escapeCsvField).join(","),
-      ...rows.map((row) => row.map(escapeCsvField).join(",")),
-    ].join("\n");
+      const csvContent = [
+        headers.map(escapeCsvField).join(","),
+        ...rows.map((row) => row.map(escapeCsvField).join(",")),
+      ].join("\n");
 
-    const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
-    const blob = new Blob([bom, csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
+      const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
+      const blob = new Blob([bom, csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
 
-    link.setAttribute("href", url);
-    link.setAttribute("download", `usage_export_${format(new Date(), "yyyyMMdd")}.csv`);
-    link.style.visibility = "hidden";
+      link.setAttribute("href", url);
+      link.setAttribute("download", `usage_export_${format(new Date(), "yyyyMMdd")}.csv`);
+      link.style.visibility = "hidden";
 
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      trackError("usage_export_csv_failed", {
+        context: "usage_page",
+        message: error instanceof Error ? error.message : "unknown",
+      });
+      throw error;
+    }
   };
 
   if (isInitialLoading) {
@@ -348,6 +363,7 @@ export default function UsagePage() {
               helper={
                 <Link
                   href={buyCreditsHref}
+                  onClick={() => trackBuyCreditsClicked("usage_summary")}
                   className="text-[#ff6900] transition-opacity hover:opacity-80"
                 >
                   Buy Knowhere API Credit &gt;&gt;
@@ -428,6 +444,8 @@ export default function UsagePage() {
               })}
             </div>
 
+            <UsageFileUpload className="h-9 min-w-[132px] whitespace-nowrap sm:h-8 lg:min-w-[136px]" />
+
             <DashboardActionButton
               type="button"
               variant="secondary"
@@ -464,7 +482,12 @@ export default function UsagePage() {
             pageCount={pageCount}
             isLoading={isRefreshing}
             formatDateLabel={(value) =>
-              formatDate({ date: value, formatStr: "MM/dd/yyyy, hh:mm:ss aa" }).toLowerCase()
+              formatLocalizedDate({
+                date: value,
+                format: "long",
+                locale,
+                timeZone: timezone,
+              })
             }
             onPageChange={(nextPage) => {
               startTransition(() => {

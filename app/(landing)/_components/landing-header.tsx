@@ -2,6 +2,7 @@
 
 import { LandingBrand } from "@app/(landing)/_components/landing-brand";
 import { LandingThemeToggle } from "@app/(landing)/_components/landing-theme-toggle";
+import { LandingTrackedLink } from "@app/(landing)/_components/landing-tracked-link";
 import { LanguageSwitcher } from "@components/language-switcher";
 import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { useActiveSection } from "@hooks/use-active-section";
@@ -33,20 +34,32 @@ const localeLabels = {
   zh: "中文",
 } as const;
 
+const landingNavCtaIds: Record<LandingNavItem["labelKey"], string> = {
+  comparison: "comparison",
+  docs: "docs",
+  github: "github",
+  playground: "playground_external",
+  pricing: "pricing",
+};
+
 const LandingHeaderLink = ({
   href,
   label,
   children,
   active = false,
   external = false,
+  ctaId,
+  sourceSection,
 }: {
   href: string;
   label: string;
   children: ReactNode;
   active?: boolean;
   external?: boolean;
+  ctaId: string;
+  sourceSection: string;
 }) => (
-  <Link
+  <LandingTrackedLink
     aria-current={active ? "location" : undefined}
     className={cn(
       "group relative flex h-16 shrink-0 items-center justify-center px-4 text-[14px] leading-5 text-zinc-950 max-[639px]:h-12 dark:text-[#fafafa]",
@@ -54,9 +67,10 @@ const LandingHeaderLink = ({
         ? "font-semibold opacity-100"
         : "font-normal opacity-100 transition-opacity duration-150 ease-out hover:opacity-60 active:opacity-100 active:font-medium"
     )}
+    ctaId={ctaId}
+    external={external}
     href={href}
-    rel={external ? "noreferrer" : undefined}
-    target={external ? "_blank" : undefined}
+    sourceSection={sourceSection}
   >
     <span
       data-label={label}
@@ -80,7 +94,7 @@ const LandingHeaderLink = ({
         {children}
       </span>
     </span>
-  </Link>
+  </LandingTrackedLink>
 );
 
 export const LandingHeader = () => {
@@ -111,9 +125,11 @@ export const LandingHeader = () => {
                 <LandingHeaderLink
                   key={item.labelKey}
                   active={targetSection === activeSection}
+                  ctaId={landingNavCtaIds[item.labelKey]}
                   external={item.external}
                   href={item.href}
                   label={label}
+                  sourceSection="header"
                 >
                   {label}
                 </LandingHeaderLink>
@@ -143,16 +159,18 @@ export const LandingHeader = () => {
           >
             <KnowhereIcon className="h-[14px] w-[14px] text-current" name="menu" />
           </button>
-          <Link
+          <LandingTrackedLink
             className={cn(
               "inline-flex items-center justify-center border-b-[6px] border-b-[#7f22fe] bg-[#8e51ff] pt-[4px] pb-[4px] px-6 text-[#f5f3ff] transition-all hover:border-b-[8px] hover:border-b-[#7008e7] hover:bg-[#7f22fe] hover:pb-[6px] active:border-b-0 active:bg-[#7008e7] active:pb-[6px]",
               monoDisplayClassName,
               "hidden h-full w-[152px] rounded-none text-sm font-semibold min-[640px]:inline-flex"
             )}
+            ctaId="get_api_key"
             href="/login"
+            sourceSection="header"
           >
             {t("cta")}
-          </Link>
+          </LandingTrackedLink>
         </div>
 
         {mobileMenuOpen ? (
@@ -171,20 +189,21 @@ export const LandingHeader = () => {
               const label = t(`nav.${item.labelKey}`);
 
               return (
-                <Link
+                <LandingTrackedLink
                   key={`mobile-${item.labelKey}`}
                   aria-current={targetSection === activeSection ? "location" : undefined}
                   className={cn(
                     "flex h-12 w-full items-center border-t border-zinc-200 px-4 text-sm text-zinc-950 transition-colors hover:bg-zinc-100/70 dark:border-[#3f3f46] dark:text-[#fafafa] dark:hover:bg-[#27272a]",
                     targetSection === activeSection ? "font-semibold" : "font-normal"
                   )}
+                  ctaId={landingNavCtaIds[item.labelKey]}
+                  external={item.external}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  rel={item.external ? "noreferrer" : undefined}
-                  target={item.external ? "_blank" : undefined}
+                  sourceSection="header_mobile"
                 >
                   {label}
-                </Link>
+                </LandingTrackedLink>
               );
             })}
           </nav>

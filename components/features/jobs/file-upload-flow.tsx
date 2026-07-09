@@ -5,6 +5,11 @@ import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
 import { Card, CardContent } from "@components/ui/card";
 import { Progress } from "@components/ui/progress";
+import {
+  notifyFileUploadedFromUpload,
+  notifyJobCreatedFromUpload,
+  notifyJobFailedFromUpload,
+} from "@lib/job-posthog-tracking";
 import type { JobCreate, JobResponse, ParsingParams } from "@server/external-api/jobs";
 import { uploadFileToS3 } from "@utils/upload";
 import {
@@ -71,6 +76,8 @@ export default function FileUploadFlow({
     createJobMutation.isPending || confirmUploadMutation.isPending || getStatusMutation.isPending;
 
   const handleStartUpload = useCallback(async () => {
+    let activeJobId: string | null = null;
+
     try {
       setStep("creating");
       setError(null);
@@ -87,7 +94,9 @@ export default function FileUploadFlow({
       };
 
       const jobResponse = await createJobMutation.mutateAsync(jobCreate);
+      activeJobId = jobResponse.job_id;
       setJob(jobResponse);
+      notifyJobCreatedFromUpload(jobResponse.job_id, "direct_upload");
 
       if (jobResponse.status === "waiting-file" && jobResponse.upload_url) {
         // 2. Upload to S3 (keep as-is)
@@ -100,6 +109,7 @@ export default function FileUploadFlow({
           headers: jobResponse.upload_headers || {},
           onProgress: setProgress,
         });
+        notifyFileUploadedFromUpload(file.type || "unknown", file.size, "direct");
 
         // 3. Wait for S3 event
         setStep("confirming");
@@ -126,6 +136,9 @@ export default function FileUploadFlow({
     } catch (err) {
       console.error("Upload failed:", err);
       const errorMessage = err instanceof Error ? err.message : t("errors.uploadFailed");
+      if (activeJobId) {
+        notifyJobFailedFromUpload(activeJobId, errorMessage);
+      }
       setError(errorMessage);
       setStep("error");
       onError(errorMessage);

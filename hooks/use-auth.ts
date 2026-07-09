@@ -1,5 +1,6 @@
 "use client";
 
+import { resetUser } from "@lib/posthog";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/better-auth-client";
 
@@ -51,6 +52,7 @@ export function useAuth() {
   const logout = async () => {
     try {
       await authClient.signOut();
+      resetUser();
       router.push("/login");
     } catch (error) {
       console.error("[useAuth] Logout error:", error);

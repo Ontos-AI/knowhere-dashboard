@@ -8,12 +8,14 @@ import {
   getComparisonRows,
   getComparisonTabLabel,
 } from "@app/(landing)/_components/landing-home-data";
+import { trackLandingInteraction } from "@app/(landing)/_components/landing-tracked-link";
 import { StatefulTab } from "@app/(landing)/_components/stateful-tab";
 import { KnowhereBrand } from "@components/brand/knowhere-brand";
 import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { cn } from "@lib/utils";
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
-import { useTranslations } from "next-intl";
+import Image from "next/image";
+import { useLocale, useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { type CSSProperties, type JSX, type ReactNode, useEffect, useState } from "react";
 import {
@@ -52,8 +54,7 @@ const comparisonTabTone = {
 } as const;
 const MINERU_LOGO_SRC =
   "https://webpub.shlab.tech/dps/mineru/mineru-seo-fe/mineru-seo-prod.153/_next/static/media/logo.8cddbe47.svg";
-const UNSTRUCTURED_LOGO_SRC =
-  "https://raw.githubusercontent.com/Unstructured-IO/unstructured/main/img/unstructured_logo.png";
+const UNSTRUCTURED_LOGO_SRC = "/images/brand/unstructured-mark.png";
 const RAW_PATTERN_BASE_COLOR = "#e4e4e7";
 const RAW_PATTERN_LINE_COLOR = "#f4f4f5";
 const RAW_PATTERN_LINE_OPACITY = 1;
@@ -481,11 +482,13 @@ const BenchmarkSeriesLabel = ({
     return (
       <span className="inline-flex min-w-0 items-center gap-1.5 whitespace-nowrap">
         {compact ? null : <span>Agent +</span>}
-        <img
+        <Image
           alt=""
           aria-hidden="true"
           className={cn("block shrink-0", compact ? "size-[15px]" : "size-4")}
+          height={16}
           src={UNSTRUCTURED_LOGO_SRC}
+          width={16}
         />
         <span className="font-medium">Unstructured</span>
       </span>
@@ -1072,6 +1075,7 @@ const getFilteredRows = (activeTab: ComparisonTab, rows: ReturnType<typeof getCo
 
 export const ComparisonShowcase = () => {
   const [activeTab, setActiveTab] = useState<ComparisonTab>("All");
+  const locale = useLocale();
   const { isDarkTheme, isThemeReady } = useResolvedThemeState();
   const t = useTranslations("Landing.data");
   const tComparison = useTranslations("Landing.comparisonShowcase");
@@ -1091,6 +1095,11 @@ export const ComparisonShowcase = () => {
       }
     : comparisonTabTone;
 
+  const handleTabChange = (tab: ComparisonTab) => {
+    setActiveTab(tab);
+    trackLandingInteraction("comparison_tab", "comparison", locale, { tab });
+  };
+
   return (
     <div className="flex flex-col gap-10">
       <BenchmarkChart isDarkTheme={isDarkTheme} isThemeReady={isThemeReady} />
@@ -1101,7 +1110,7 @@ export const ComparisonShowcase = () => {
               active={activeTab === tab}
               key={tab}
               className={cn(monoDisplayClassName, "focus-visible:ring-zinc-500")}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => handleTabChange(tab)}
               tone={activeComparisonTabTone}
               type="button"
             >

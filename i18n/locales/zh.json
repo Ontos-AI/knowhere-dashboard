@@ -64,6 +64,7 @@
     "recentRecordsSubtitle": "最近的API调用详情",
     "export": "导出",
     "exportCSV": "导出 CSV",
+    "uploadFile": "上传文件",
     "callHistory": "调用历史",
     "comparedToLastMonth": "{value} 较上月",
     "estCost": "预估 {cost}",
@@ -538,10 +539,11 @@
       "close": "关闭 newsletter 提示"
     },
     "home": {
-      "announcement": {
-        "prefix": "现已支持",
-        "description": "可安装插件与技能。",
-        "link": "了解"
+      "mcpAnnouncement": {
+        "ariaLabel": "查看 Knowhere MCP 文档",
+        "title": "MCP 服务现已可用",
+        "description": "支持 Cursor、VS Code、Claude 和 Codex。",
+        "link": "文档"
       },
       "hero": {
         "titleStart": "将非结构化文档转成",

@@ -2,6 +2,7 @@
 
 import { Button } from "@components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
+import { trackError } from "@lib/posthog";
 import { AlertTriangle, RefreshCw } from "lucide-react";
 import { Component, type ReactNode } from "react";
 
@@ -27,6 +28,10 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error("ErrorBoundary caught an error:", error, errorInfo);
+    trackError(error.message, {
+      component_stack: errorInfo.componentStack,
+      boundary: "ErrorBoundary",
+    });
   }
 
   handleReset = () => {

@@ -1,7 +1,8 @@
 "use client";
 
+import { PaymentRedirectTracking } from "@providers/payment-redirect-tracking";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Header } from "@/app/(dashboard)/_components/header";
 import { Sidebar } from "@/app/(dashboard)/_components/sidebar";
 import { ApiKeysDashboardShell } from "@/app/(dashboard)/api-keys/_components/api-keys-dashboard-shell";
@@ -41,38 +42,61 @@ export function DashboardClient({ user, children }: DashboardClientProps) {
 
   if (isUsageRoute) {
     return (
-      <UsageDashboardShell user={user} isBuyCreditsOpen={isBuyCreditsOpen}>
-        {children}
-      </UsageDashboardShell>
+      <>
+        <Suspense fallback={null}>
+          <PaymentRedirectTracking />
+        </Suspense>
+        <UsageDashboardShell user={user} isBuyCreditsOpen={isBuyCreditsOpen}>
+          {children}
+        </UsageDashboardShell>
+      </>
     );
   }
 
   if (isApiKeysRoute) {
     return (
-      <ApiKeysDashboardShell user={user} isBuyCreditsOpen={isBuyCreditsOpen}>
-        {children}
-      </ApiKeysDashboardShell>
+      <>
+        <Suspense fallback={null}>
+          <PaymentRedirectTracking />
+        </Suspense>
+        <ApiKeysDashboardShell user={user} isBuyCreditsOpen={isBuyCreditsOpen}>
+          {children}
+        </ApiKeysDashboardShell>
+      </>
     );
   }
 
   if (isWebhooksRoute) {
     return (
-      <WebhooksDashboardShell user={user} isBuyCreditsOpen={isBuyCreditsOpen}>
-        {children}
-      </WebhooksDashboardShell>
+      <>
+        <Suspense fallback={null}>
+          <PaymentRedirectTracking />
+        </Suspense>
+        <WebhooksDashboardShell user={user} isBuyCreditsOpen={isBuyCreditsOpen}>
+          {children}
+        </WebhooksDashboardShell>
+      </>
     );
   }
 
   if (isSettingsRoute) {
     return (
-      <SettingsDashboardShell user={user} isBuyCreditsOpen={isBuyCreditsOpen}>
-        {children}
-      </SettingsDashboardShell>
+      <>
+        <Suspense fallback={null}>
+          <PaymentRedirectTracking />
+        </Suspense>
+        <SettingsDashboardShell user={user} isBuyCreditsOpen={isBuyCreditsOpen}>
+          {children}
+        </SettingsDashboardShell>
+      </>
     );
   }
 
   return (
     <div className="landing-tone relative min-h-screen bg-background text-foreground">
+      <Suspense fallback={null}>
+        <PaymentRedirectTracking />
+      </Suspense>
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(217,119,6,0.1),transparent_55%)]" />
       {/* 侧边栏 */}
       <Sidebar user={user} open={sidebarOpen} onOpenChange={setSidebarOpen} />

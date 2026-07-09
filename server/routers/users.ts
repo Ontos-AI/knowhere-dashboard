@@ -24,59 +24,65 @@ const NEVER_EXPIRES_AT = "9999-12-31T23:59:59";
 
 const buildUsageWelcomeResponse = ({
   apiKey,
+  apiKeyId,
   status,
 }: {
   apiKey: string | null;
+  apiKeyId?: string | null;
   status: string;
 }) => {
   const normalizedStatus = status as UsageWelcomeStatus;
+  const withApiKeyId = <T extends Record<string, unknown>>(payload: T) => ({
+    ...payload,
+    apiKeyId: apiKeyId ?? null,
+  });
 
   switch (normalizedStatus) {
     case "completed":
     case "hidden":
-      return {
+      return withApiKeyId({
         apiKey: null,
         hasProvisionError: false,
         isProvisioning: false,
         shouldShow: false,
-      };
+      });
     case "failed":
-      return {
+      return withApiKeyId({
         apiKey: null,
         hasProvisionError: true,
         isProvisioning: false,
         shouldShow: true,
-      };
+      });
     case "provisioning":
-      return {
+      return withApiKeyId({
         apiKey: null,
         hasProvisionError: false,
         isProvisioning: true,
         shouldShow: true,
-      };
+      });
     case "ready":
       if (!apiKey) {
-        return {
+        return withApiKeyId({
           apiKey: null,
           hasProvisionError: true,
           isProvisioning: false,
           shouldShow: true,
-        };
+        });
       }
 
-      return {
+      return withApiKeyId({
         apiKey,
         hasProvisionError: false,
         isProvisioning: false,
         shouldShow: true,
-      };
+      });
     default:
-      return {
+      return withApiKeyId({
         apiKey: null,
         hasProvisionError: false,
         isProvisioning: false,
         shouldShow: true,
-      };
+      });
   }
 };
 
@@ -305,6 +311,7 @@ export const usersRouter = protectedProcedure.router({
       if (!updatedUser) {
         return {
           apiKey: null,
+          apiKeyId: null,
           hasProvisionError: false,
           isProvisioning: true,
           shouldShow: true,
@@ -313,6 +320,7 @@ export const usersRouter = protectedProcedure.router({
 
       return buildUsageWelcomeResponse({
         apiKey: updatedUser.usageWelcomeApiKey,
+        apiKeyId: createdApiKey.id,
         status: updatedUser.usageWelcomeStatus,
       });
     } catch (error) {
@@ -328,6 +336,7 @@ export const usersRouter = protectedProcedure.router({
 
       return {
         apiKey: null,
+        apiKeyId: null,
         hasProvisionError: true,
         isProvisioning: false,
         shouldShow: true,

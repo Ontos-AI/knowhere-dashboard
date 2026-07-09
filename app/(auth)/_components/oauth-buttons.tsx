@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@components/ui/button";
+import { buildPostHogAuthCallbackURL, markPendingAuthLogin } from "@lib/posthog";
 import { Github, Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -31,11 +32,13 @@ export function OAuthButtons({ onError }: OAuthButtonsProps) {
     setIsLoading(true);
     setClickedProvider(provider);
     try {
+      const trackedCallbackURL = buildPostHogAuthCallbackURL(callbackURL);
+      markPendingAuthLogin();
       await authClient.signIn.social({
         provider,
-        callbackURL,
+        callbackURL: trackedCallbackURL,
         errorCallbackURL,
-        newUserCallbackURL: callbackURL,
+        newUserCallbackURL: trackedCallbackURL,
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : t("loginFailed");

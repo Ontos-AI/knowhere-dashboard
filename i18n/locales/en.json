@@ -64,6 +64,7 @@
     "recentRecordsSubtitle": "Details of recent API calls",
     "export": "Export",
     "exportCSV": "Export CSV",
+    "uploadFile": "Upload file",
     "callHistory": "Call History",
     "comparedToLastMonth": "{value} vs last month",
     "estCost": "est. {cost}",
@@ -537,10 +538,11 @@
       "close": "Close newsletter prompt"
     },
     "home": {
-      "announcement": {
-        "prefix": "Now live on",
-        "description": "with an installable plugin and skill.",
-        "link": "EXPLORE"
+      "mcpAnnouncement": {
+        "ariaLabel": "Read the Knowhere MCP documentation",
+        "title": "MCP server available",
+        "description": "for Cursor, VS Code, Claude, and Codex.",
+        "link": "DOCS"
       },
       "hero": {
         "titleStart": "Transform unstructured documents into",

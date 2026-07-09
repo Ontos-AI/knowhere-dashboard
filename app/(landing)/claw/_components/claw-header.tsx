@@ -2,6 +2,10 @@
 
 import { LandingBrand } from "@app/(landing)/_components/landing-brand";
 import { LandingThemeToggle } from "@app/(landing)/_components/landing-theme-toggle";
+import {
+  LandingTrackedLink,
+  trackLandingInteraction,
+} from "@app/(landing)/_components/landing-tracked-link";
 import { type ClawNavItem, clawNavItems } from "@app/(landing)/claw/_components/claw-content";
 import { clawHeaderDesign } from "@app/(landing)/claw/_components/claw-header-design";
 import { LanguageSwitcher } from "@components/language-switcher";
@@ -19,6 +23,14 @@ type ClawHeaderProps = {
 
 const getNavItemSectionId = (item: ClawNavItem) => {
   return item.href.startsWith("#") ? item.href.slice(1) : null;
+};
+
+const getClawNavCtaId = (item: ClawNavItem) => {
+  const sectionId = getNavItemSectionId(item);
+  if (item.isExternal && item.label === "Docs") {
+    return "docs";
+  }
+  return sectionId ? `claw_nav_${sectionId}` : "claw_nav_link";
 };
 
 const localeLabels = {
@@ -76,6 +88,11 @@ export const ClawHeader = ({
                   )}
                   href={item.href}
                   key={item.label}
+                  onClick={() =>
+                    trackLandingInteraction(getClawNavCtaId(item), "claw_header", locale, {
+                      href: item.href,
+                    })
+                  }
                   rel={item.isExternal ? "noreferrer" : undefined}
                   target={item.isExternal ? "_blank" : undefined}
                 >
@@ -139,15 +156,17 @@ export const ClawHeader = ({
               iconClassName="size-4"
             />
           ) : null}
-          <Link
+          <LandingTrackedLink
             className={cn(
               clawHeaderDesign.desktopCtaButton,
               showUtilityControls ? "w-[152px]" : "w-full"
             )}
+            ctaId="get_api_key"
             href="/login"
+            sourceSection="claw_header"
           >
             GET API KEY
-          </Link>
+          </LandingTrackedLink>
         </div>
 
         {mobileMenuOpen ? (
@@ -165,7 +184,12 @@ export const ClawHeader = ({
                     isActive ? clawHeaderDesign.mobileMenuItemActive : "font-normal"
                   )}
                   href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={() => {
+                    trackLandingInteraction(getClawNavCtaId(item), "claw_header_mobile", locale, {
+                      href: item.href,
+                    });
+                    setMobileMenuOpen(false);
+                  }}
                   rel={item.isExternal ? "noreferrer" : undefined}
                   target={item.isExternal ? "_blank" : undefined}
                 >

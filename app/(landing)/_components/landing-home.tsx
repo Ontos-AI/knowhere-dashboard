@@ -1,3 +1,5 @@
+"use client";
+
 import { ComparisonShowcase } from "@app/(landing)/_components/comparison-showcase";
 import { HeroPlayground } from "@app/(landing)/_components/hero-playground";
 import { IntegrateCodePanel } from "@app/(landing)/_components/integrate-code-panel";
@@ -19,11 +21,14 @@ import {
   supportedFormats,
   type TransformStep,
 } from "@app/(landing)/_components/landing-home-data";
+import {
+  LandingTrackedAnchor,
+  LandingTrackedLink,
+} from "@app/(landing)/_components/landing-tracked-link";
 import { NewsletterSubscribePrompt } from "@app/(landing)/_components/newsletter-subscribe-prompt";
 import { KnowhereIcon } from "@components/ui/knowhere-icon";
 import { cn } from "@lib/utils";
 import Image from "next/image";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
 import type { CSSProperties, ReactNode } from "react";
 
@@ -53,6 +58,8 @@ const cardStripePattern = (color: string): CSSProperties => ({
 type ActionLinkProps = {
   children: ReactNode;
   href: string;
+  ctaId: string;
+  sourceSection: string;
   variant?: "primary" | "secondary";
   size?: "sm" | "md";
   className?: string;
@@ -62,6 +69,8 @@ type ActionLinkProps = {
 const ActionLink = ({
   children,
   href,
+  ctaId,
+  sourceSection,
   variant = "primary",
   size = "md",
   className,
@@ -74,25 +83,87 @@ const ActionLink = ({
       ? "border border-b-[6px] border-[#7f22fe] bg-[#8e51ff] text-[#f5f3ff] [--btn-bottom:6px] hover:border-[#7008e7] hover:bg-[#7f22fe] hover:border-b-[8px] hover:[--btn-bottom:8px] active:border-[#7008e7] active:bg-[#7008e7] active:border-b-[6px] active:[--btn-bottom:6px]"
       : "border-x-2 border-t-2 border-b-[6px] border-zinc-200 bg-[#fafaf9] text-zinc-800 [--btn-bottom:6px] hover:border-zinc-200 hover:bg-[#f5f5f4] hover:border-b-[8px] hover:[--btn-bottom:8px] active:border-[#e7e5e4] active:bg-[#e7e5e4] active:border-b-[6px] active:[--btn-bottom:6px] dark:border-[#3f3f46] dark:bg-[#27272a] dark:text-[#fafafa] dark:hover:border-[#52525b] dark:hover:bg-[#3f3f46] dark:active:border-[#3f3f46] dark:active:bg-[#27272a]";
 
+  const linkClassName = cn(
+    "group inline-flex items-center justify-center rounded-full transition-[background-color,border-color,border-bottom-width]",
+    monoDisplayClassName,
+    sizeClassName,
+    variantClassName,
+    className
+  );
+
+  const linkChildren = (
+    <span className="inline-flex h-full translate-y-1 items-center pb-[var(--btn-bottom)] font-semibold transition-[padding-bottom,transform] duration-150 ease-out">
+      {children}
+    </span>
+  );
+
+  if (href.startsWith("mailto:")) {
+    return (
+      <LandingTrackedAnchor
+        className={linkClassName}
+        ctaId={ctaId}
+        href={href}
+        sourceSection={sourceSection}
+      >
+        {linkChildren}
+      </LandingTrackedAnchor>
+    );
+  }
+
   return (
-    <Link
+    <LandingTrackedLink
+      className={linkClassName}
+      ctaId={ctaId}
+      external={external}
       href={href}
-      className={cn(
-        "group inline-flex items-center justify-center rounded-full transition-[background-color,border-color,border-bottom-width]",
-        monoDisplayClassName,
-        sizeClassName,
-        variantClassName,
-        className
-      )}
-      rel={external ? "noreferrer" : undefined}
-      target={external ? "_blank" : undefined}
+      sourceSection={sourceSection}
     >
-      <span className="inline-flex h-full translate-y-1 items-center pb-[var(--btn-bottom)] font-semibold transition-[padding-bottom,transform] duration-150 ease-out">
-        {children}
-      </span>
-    </Link>
+      {linkChildren}
+    </LandingTrackedLink>
   );
 };
+
+type HeroAnnouncementNoticeProps = {
+  children: ReactNode;
+  ctaId: string;
+  href: string;
+  linkLabel: ReactNode;
+  sourceSection: string;
+  ariaLabel?: string;
+  external?: boolean;
+};
+
+const HeroAnnouncementNotice = ({
+  children,
+  ctaId,
+  href,
+  linkLabel,
+  sourceSection,
+  ariaLabel,
+  external = false,
+}: HeroAnnouncementNoticeProps) => (
+  <div className="flex w-full flex-row items-stretch overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-[#3f3f46] dark:bg-[#18181b] max-[639px]:flex-col max-[639px]:items-center max-[639px]:gap-2 max-[639px]:px-5 max-[639px]:py-3">
+    <div className="flex flex-1 flex-wrap items-center gap-x-2 gap-y-1 px-7 py-5 text-left max-[639px]:justify-center max-[639px]:px-0 max-[639px]:py-0 max-[639px]:text-center">
+      {children}
+    </div>
+    <div className="w-px shrink-0 bg-zinc-200 dark:bg-[#3f3f46] max-[639px]:hidden" />
+    <LandingTrackedLink
+      aria-label={ariaLabel}
+      className="flex min-w-[129px] items-center justify-center px-5 py-4 text-[#7008e7] transition-colors hover:bg-[#f5f3ff] min-[769px]:min-w-[168px] max-[639px]:min-w-0 max-[639px]:justify-center max-[639px]:rounded-full max-[639px]:px-4 max-[639px]:py-1.5"
+      ctaId={ctaId}
+      external={external}
+      href={href}
+      sourceSection={sourceSection}
+    >
+      <span className="flex items-center gap-2">
+        <span className={cn("text-[16px] font-[600] leading-7", monoDisplayClassName)}>
+          {linkLabel}
+        </span>
+        <KnowhereIcon className="size-3 text-current" name="arrow-outward" />
+      </span>
+    </LandingTrackedLink>
+  </div>
+);
 
 const SectionTitle = ({
   title,
@@ -405,46 +476,28 @@ export const LandingHome = () => {
                 heroSectionPaddingClassName
               )}
             >
-              <div className="flex w-full max-w-[934px] flex-row items-stretch overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-[#3f3f46] dark:bg-[#18181b] max-[639px]:flex-col max-[639px]:items-center max-[639px]:gap-2 max-[639px]:px-5 max-[639px]:py-3">
-                <div className="flex flex-1 flex-wrap items-center gap-x-2 gap-y-1 px-7 py-5 text-left max-[639px]:justify-center max-[639px]:px-0 max-[639px]:py-0 max-[639px]:text-center">
-                  <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 max-[639px]:max-w-[240px]">
+              <div className="flex w-full max-w-[934px] flex-col gap-3">
+                <HeroAnnouncementNotice
+                  ariaLabel={t("mcpAnnouncement.ariaLabel")}
+                  ctaId="view_mcp_docs"
+                  external
+                  href="https://docs.knowhereto.ai/mcp"
+                  linkLabel={t("mcpAnnouncement.link")}
+                  sourceSection="hero_announcement"
+                >
+                  <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 max-[639px]:max-w-[260px]">
                     <span className="text-[14px] font-bold leading-[22px] tracking-[-1px] text-zinc-950 dark:text-[#fafafa] min-[769px]:text-base min-[769px]:leading-6">
-                      {t("announcement.prefix")}
-                    </span>
-                    <span className="inline-flex h-[18px] w-5 shrink-0 items-center justify-center">
-                      <Image
-                        alt=""
-                        aria-hidden="true"
-                        className="h-[18px] w-5"
-                        height={18}
-                        src="/icons/knowhere/openclaw-icon.svg"
-                        width={20}
-                      />
-                    </span>
-                    <span className="text-[14px] font-bold leading-[22px] tracking-[-1px] text-[#e7000b] min-[769px]:text-base min-[769px]:leading-6">
-                      OpenClaw
+                      {t("mcpAnnouncement.title")}
                     </span>
                     <span
                       className={cn(
                         "text-[14px] font-normal leading-[22px] tracking-[-0.5px] text-zinc-600 dark:text-[#d4d4d8] min-[769px]:text-base min-[769px]:leading-6 font-sans"
                       )}
                     >
-                      {t("announcement.description")}
+                      {t("mcpAnnouncement.description")}
                     </span>
                   </div>
-                </div>
-                <div className="w-px shrink-0 bg-zinc-200 dark:bg-[#3f3f46] max-[639px]:hidden" />
-                <Link
-                  href="/claw"
-                  className="flex min-w-[129px] items-center justify-center px-5 py-4 text-[#7008e7] transition-colors hover:bg-[#f5f3ff] min-[769px]:min-w-[168px] max-[639px]:min-w-0 max-[639px]:justify-center max-[639px]:rounded-full max-[639px]:px-4 max-[639px]:py-1.5"
-                >
-                  <span className="flex items-center gap-2">
-                    <span className={cn("text-[16px] font-[600] leading-7", monoDisplayClassName)}>
-                      {t("announcement.link")}
-                    </span>
-                    <KnowhereIcon className="size-3 text-current" name="arrow-outward" />
-                  </span>
-                </Link>
+                </HeroAnnouncementNotice>
               </div>
 
               <div className="flex flex-col items-center gap-8">
@@ -470,12 +523,19 @@ export const LandingHome = () => {
               </div>
 
               <div className="flex flex-row items-center justify-center gap-2 max-[639px]:flex-col max-[639px]:gap-3">
-                <ActionLink href="/login" className={cn(mobileActionLinkClassName, "w-fit")}>
+                <ActionLink
+                  ctaId="start_free_trial"
+                  href="/login"
+                  sourceSection="hero"
+                  className={cn(mobileActionLinkClassName, "w-fit")}
+                >
                   {t("actions.startFreeTrial")}
                 </ActionLink>
                 <ActionLink
+                  ctaId="view_docs"
                   external
                   href="https://docs.knowhereto.ai/"
+                  sourceSection="hero"
                   variant="secondary"
                   className={cn(mobileActionLinkClassName, "w-fit")}
                 >
@@ -798,12 +858,14 @@ export const LandingHome = () => {
                       </h3>
                       <p className="max-w-[228px] text-sm leading-5 text-[#7f22fe] dark:text-[#c4b5fd] max-[639px]:max-w-[320px] max-[639px]:text-center min-[640px]:max-[767px]:max-w-none min-[640px]:max-[767px]:text-center">
                         {t("fileLimits.contactStart")}{" "}
-                        <Link
+                        <LandingTrackedAnchor
                           className="text-[#7f22fe] dark:text-[#c4b5fd]"
+                          ctaId="contact_sales"
                           href="mailto:team@knowhereto.ai"
+                          sourceSection="pricing"
                         >
                           @knowhereto.ai
-                        </Link>{" "}
+                        </LandingTrackedAnchor>{" "}
                         {t("fileLimits.contactEnd")}
                       </p>
                     </div>
@@ -862,7 +924,9 @@ export const LandingHome = () => {
             </div>
             <div className="flex justify-center min-[769px]:justify-start">
               <ActionLink
+                ctaId="contact_sales"
                 href="mailto:team@knowhereto.ai"
+                sourceSection="enterprise"
                 className={mobileActionLinkClassName}
                 external
               >
@@ -921,11 +985,18 @@ export const LandingHome = () => {
             />
 
             <div className="flex flex-row items-center justify-center gap-2 max-[639px]:flex-col max-[639px]:gap-3">
-              <ActionLink href="/login" className={cn(mobileActionLinkClassName, "w-fit")}>
+              <ActionLink
+                ctaId="start_free_trial"
+                href="/login"
+                sourceSection="final_cta"
+                className={cn(mobileActionLinkClassName, "w-fit")}
+              >
                 {t("actions.startFreeTrial")}
               </ActionLink>
               <ActionLink
+                ctaId="book_demo"
                 href="mailto:team@knowhereto.ai"
+                sourceSection="final_cta"
                 variant="secondary"
                 className={cn(mobileActionLinkClassName, "w-fit")}
                 external

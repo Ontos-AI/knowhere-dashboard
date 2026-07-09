@@ -10,6 +10,7 @@ type UseJobsParams = {
   recentDays?: number;
   startTime?: string;
   endTime?: string;
+  enabled?: boolean;
 };
 
 /**
@@ -17,23 +18,39 @@ type UseJobsParams = {
  * Uses keepPreviousData to prevent flickering during pagination
  */
 export function useJobs(params: UseJobsParams) {
+  const { enabled = true, ...queryParams } = params;
+
   return useQuery({
-    queryKey: ["jobs", params],
+    queryKey: ["jobs", queryParams],
     queryFn: () =>
       orpcClient.jobs.list({
-        page: params.page,
-        page_size: params.pageSize,
-        recent_days: params.recentDays as 1 | 7 | 30,
-        start_time: params.startTime,
-        end_time: params.endTime,
+        page: queryParams.page,
+        page_size: queryParams.pageSize,
+        recent_days: queryParams.recentDays as 1 | 7 | 30,
+        start_time: queryParams.startTime,
+        end_time: queryParams.endTime,
       }),
     select: (data) => ({
       jobs: data.jobs.map(mapJobToUsageRecord),
       total: data.total || 0,
     }),
+    enabled,
     placeholderData: keepPreviousData, // Prevent flickering during pagination
     staleTime: 0, // Real-time data, immediately stale
     gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
+    refetchOnWindowFocus: true,
+    refetchInterval: (query) => {
+      const data = query.state.data as { jobs: UsageRecord[]; total: number } | undefined;
+      const jobs = data?.jobs ?? [];
+      return jobs.some(
+        (job) =>
+          job.statusKind === "running" ||
+          job.statusKind === "pending" ||
+          job.statusKind === "waiting-file"
+      )
+        ? 5000
+        : false;
+    },
   });
 }
 
@@ -139,6 +156,8 @@ function mapJobToUsageRecord(job: JobResponse): UsageRecord {
     duration: job.duration_seconds
       ? `${job.duration_seconds.toFixed(2)}s`
       : (job.result_metadata?.duration as string | undefined) || "-",
+    durationSeconds: job.duration_seconds,
+    sourceType: job.source_type,
     cost: job.credits_spent ?? (job.result_metadata?.cost as number | undefined) ?? 0,
     apiKey: "-",
     resultUrl: job.result_url,

@@ -4,6 +4,7 @@ import { useSubscribePlan } from "@app/(dashboard)/billing/_hooks/use-subscripti
 import { Badge } from "@components/ui/badge";
 import { Button } from "@components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
+import { trackCheckoutStarted } from "@lib/posthog";
 import type { Subscription, SubscriptionPlan } from "@server/external-api/subscriptions";
 import { Check, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -43,6 +44,10 @@ export function SubscriptionCard({
       {
         onSuccess: (response) => {
           if (response.checkout_url) {
+            trackCheckoutStarted("subscription", {
+              plan_id: plan.id,
+              session_id: response.session_id,
+            });
             window.location.href = response.checkout_url;
           } else {
             toast.error(t("getPaymentLinkFailed"));
