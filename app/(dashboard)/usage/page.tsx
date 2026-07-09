@@ -11,7 +11,6 @@ import { useCredits } from "@hooks/use-credits";
 import { useTimezone } from "@hooks/use-timezone";
 import { trackBuyCreditsClicked, trackError, trackFeatureUsage } from "@lib/posthog";
 import { cn } from "@lib/utils";
-import { formatDate as formatLocalizedDate } from "@utils/format";
 import { format, subDays } from "date-fns";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
@@ -34,11 +33,45 @@ type UsageSummaryCardProps = {
   icon: React.ReactNode;
 };
 
+type UsageTableDateInput = {
+  readonly date: string;
+  readonly locale: string;
+  readonly timeZone: string;
+};
+
+const timezoneSuffixPattern: RegExp = /Z$|[+-]\d{2}:\d{2}$/;
+
+const usageTableDateFormatterOptions: Intl.DateTimeFormatOptions = {
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+};
+
 const getPresetDateRange = (days: TimeRangePreset): DateRange => {
   return {
     from: subDays(new Date(), days),
     to: new Date(),
   };
+};
+
+const normalizeUsageTableDate = (date: string): string => {
+  return timezoneSuffixPattern.test(date) ? date : `${date}Z`;
+};
+
+const formatUsageTableDate = ({ date, locale, timeZone }: UsageTableDateInput): string => {
+  const parsedDate: Date = new Date(normalizeUsageTableDate(date));
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return "-";
+  }
+
+  return new Intl.DateTimeFormat(locale, {
+    ...usageTableDateFormatterOptions,
+    timeZone,
+  }).format(parsedDate);
 };
 
 const buildBuyCreditsHref = (pathname: string, searchParams: URLSearchParams) => {
@@ -482,9 +515,8 @@ export default function UsagePage() {
             pageCount={pageCount}
             isLoading={isRefreshing}
             formatDateLabel={(value) =>
-              formatLocalizedDate({
+              formatUsageTableDate({
                 date: value,
-                format: "long",
                 locale,
                 timeZone: timezone,
               })

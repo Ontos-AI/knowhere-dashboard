@@ -393,7 +393,7 @@ export function UsageTable({
                     className={cn("relative grid", isLoading && "opacity-70")}
                     style={{ gridTemplateColumns: tableGridTemplate }}
                   >
-                    <TableCell className="font-mono-display leading-4 text-[#3f3f46] dark:text-[#e4e4e7]">
+                    <TableCell className="font-mono-display leading-4 whitespace-nowrap text-[#3f3f46] dark:text-[#e4e4e7]">
                       {formatDateLabel(row.date)}
                     </TableCell>
                     <TableCell className="text-[#71717b] dark:text-[#a1a1aa]">
