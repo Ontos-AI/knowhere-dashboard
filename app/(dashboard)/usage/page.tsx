@@ -11,12 +11,13 @@ import { useCredits } from "@hooks/use-credits";
 import { useTimezone } from "@hooks/use-timezone";
 import { trackBuyCreditsClicked, trackError, trackFeatureUsage } from "@lib/posthog";
 import { cn } from "@lib/utils";
+import { formatDate as formatLocalizedDate } from "@utils/format";
 import { format, subDays } from "date-fns";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useQueryState } from "nuqs";
 import { startTransition, useState } from "react";
 import type { DateRange } from "react-day-picker";
@@ -134,6 +135,7 @@ const UsagePageSkeleton = () => {
 export default function UsagePage() {
   const t = useTranslations("Usage");
   const tTable = useTranslations("UsageTable");
+  const locale: string = useLocale();
   const { billingEnabled } = useAppConfigContext();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -144,7 +146,9 @@ export default function UsagePage() {
   const [date, setDate] = useState<DateRange | undefined>(getPresetDateRange(1));
   const [activeRange, setActiveRange] = useState<TimeRangePreset | null>(1);
   const { data: credits } = useCredits();
-  const { formatDate } = useTimezone();
+  const timezoneContext: ReturnType<typeof useTimezone> = useTimezone();
+  const formatDate: ReturnType<typeof useTimezone>["formatDate"] = timezoneContext.formatDate;
+  const timezone: string = timezoneContext.timezone;
 
   const [page, setPage] = useQueryState("page", { defaultValue: "1" });
   const [pageSize, setPageSize] = useQueryState("pageSize", { defaultValue: "30" });
@@ -440,7 +444,7 @@ export default function UsagePage() {
               })}
             </div>
 
-            <UsageFileUpload className="h-9 w-[121px] sm:h-8 lg:w-[127px]" />
+            <UsageFileUpload className="h-9 min-w-[132px] whitespace-nowrap sm:h-8 lg:min-w-[136px]" />
 
             <DashboardActionButton
               type="button"
@@ -478,7 +482,12 @@ export default function UsagePage() {
             pageCount={pageCount}
             isLoading={isRefreshing}
             formatDateLabel={(value) =>
-              formatDate({ date: value, formatStr: "MM/dd/yyyy, hh:mm:ss aa" }).toLowerCase()
+              formatLocalizedDate({
+                date: value,
+                format: "long",
+                locale,
+                timeZone: timezone,
+              })
             }
             onPageChange={(nextPage) => {
               startTransition(() => {
