@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
-import { db } from "@lib/db";
-import { newsletterSubscription } from "@lib/db/schema";
+import { newsletterDb } from "@lib/db/newsletter";
+import { newsletterSubscription } from "@lib/db/newsletter-schema";
 import { env } from "@lib/env";
 import {
   createNewsletterConfirmationUrl,
@@ -123,7 +123,7 @@ export async function requestNewsletterSubscription(
   const email = normalizeNewsletterEmail(emailInput);
   const now = new Date();
 
-  const existingSubscription = await db.query.newsletterSubscription.findFirst({
+  const existingSubscription = await newsletterDb.query.newsletterSubscription.findFirst({
     where: eq(newsletterSubscription.email, email),
   });
 
@@ -144,7 +144,7 @@ export async function requestNewsletterSubscription(
   const confirmationUrl = createNewsletterConfirmationUrl(env.NEXT_PUBLIC_APP_URL, token);
 
   if (existingSubscription) {
-    await db
+    await newsletterDb
       .update(newsletterSubscription)
       .set({
         status: PENDING_SUBSCRIPTION_STATUS,
@@ -157,7 +157,7 @@ export async function requestNewsletterSubscription(
       })
       .where(eq(newsletterSubscription.id, existingSubscription.id));
   } else {
-    await db.insert(newsletterSubscription).values({
+    await newsletterDb.insert(newsletterSubscription).values({
       email,
       status: PENDING_SUBSCRIPTION_STATUS,
       confirmationTokenHash,
@@ -171,7 +171,7 @@ export async function requestNewsletterSubscription(
   try {
     await sendNewsletterConfirmationEmail(email, confirmationUrl);
   } catch (error) {
-    await db
+    await newsletterDb
       .update(newsletterSubscription)
       .set({ confirmationSentAt: null, updatedAt: new Date() })
       .where(eq(newsletterSubscription.email, email));
@@ -191,7 +191,7 @@ export async function confirmNewsletterSubscription(
   }
 
   const confirmationTokenHash = hashConfirmationToken(normalizedToken);
-  const subscription = await db.query.newsletterSubscription.findFirst({
+  const subscription = await newsletterDb.query.newsletterSubscription.findFirst({
     where: eq(newsletterSubscription.confirmationTokenHash, confirmationTokenHash),
   });
 
@@ -202,7 +202,7 @@ export async function confirmNewsletterSubscription(
   const now = new Date();
 
   if (!subscription.confirmationTokenExpiresAt || subscription.confirmationTokenExpiresAt < now) {
-    await db
+    await newsletterDb
       .update(newsletterSubscription)
       .set({
         confirmationTokenHash: null,
@@ -214,7 +214,7 @@ export async function confirmNewsletterSubscription(
     return { status: "expired" };
   }
 
-  await db
+  await newsletterDb
     .update(newsletterSubscription)
     .set({
       status: CONFIRMED_SUBSCRIPTION_STATUS,
@@ -235,7 +235,7 @@ export async function unsubscribeNewsletterSubscription(
   const email = normalizeNewsletterEmail(emailInput);
   const now = new Date();
 
-  await db
+  await newsletterDb
     .update(newsletterSubscription)
     .set({
       status: UNSUBSCRIBED_SUBSCRIPTION_STATUS,

@@ -26,6 +26,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
+    "newsletter-db:generate": "drizzle-kit generate --config=./drizzle.newsletter.config.ts",
+    "newsletter-db:migrate": "drizzle-kit migrate --config=./drizzle.newsletter.config.ts",
     "prepare": "husky"
   },
   "dependencies": {

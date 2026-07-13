@@ -25,6 +25,7 @@ cp .env.example .env.local
 Fill in the required values in `.env.local`. For most local work, the important values are:
 
 - `DATABASE_URL`: PostgreSQL database used by the dashboard.
+- `NEWSLETTER_DATABASE_URL`: optional PostgreSQL database used by newsletter subscriptions. Defaults to `DATABASE_URL` when unset.
 - `NEXT_PUBLIC_API_URL`: Knowhere API backend URL.
 - `NEXT_PUBLIC_APP_URL` and `BETTER_AUTH_URL`: usually `http://localhost:3000`.
 - `BETTER_AUTH_SECRET`: any random secret with at least 32 characters.
@@ -56,6 +57,7 @@ Required for startup:
 | `BETTER_AUTH_URL` | Base URL used by Better Auth callbacks. |
 | `BETTER_AUTH_SECRET` | Random secret with at least 32 characters. |
 | `DATABASE_URL` | PostgreSQL connection URL for dashboard auth/account data. |
+| `NEWSLETTER_DATABASE_URL` | Optional PostgreSQL connection URL for newsletter subscription data. Falls back to `DATABASE_URL` when unset. |
 | `UNSAFE_DB_SSL_ENABLED` | Optional escape hatch for local/self-hosted PostgreSQL without SSL. Set to `true` only when the database does not support SSL. Defaults to `false`, so hosted SaaS keeps SSL enabled without extra config. |
 
 Email/password registration is enabled for self-hosted deployments. The login page defaults to SSO plus Resend-backed email links; set `PASSWORD_LOGIN_ENABLED=true` only when you want to expose the password-login entry point. OAuth and Resend-backed magic-link login are optional add-ons. Password reset emails also use Resend; signed-in OAuth users can set a password from dashboard settings.
@@ -93,6 +95,17 @@ pnpm build
 
 `pnpm test` currently runs publication guardrails that check for private deployment markers and public credential defaults.
 
+## Database Migrations
+
+Dashboard auth/account data and newsletter subscription data have separate Drizzle migration configs:
+
+```bash
+pnpm db:migrate
+pnpm newsletter-db:migrate
+```
+
+Production newsletter storage requires the GitHub Actions secret `NEWSLETTER_DATABASE_URL`. If it is unset outside production, newsletter storage falls back to `DATABASE_URL`.
+
 ## Docker
 
 Build the image:
@@ -107,7 +120,7 @@ Run the dashboard:
 docker run --rm -p 3000:3000 --env-file .env.local knowhere-dashboard
 ```
 
-The container runs `pnpm db:generate` and `pnpm db:migrate` before starting the Next.js server. If either command fails, the app server is not started.
+The container runs `pnpm db:migrate` and `pnpm newsletter-db:migrate` before starting the Next.js server. If either command fails, the app server is not started.
 
 The image runs the standard Next.js Node server with `pnpm start`. Runtime configuration is injected through environment variables; the Docker build does not create or bake `.env.production`.
 
