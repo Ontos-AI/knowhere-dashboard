@@ -25,7 +25,7 @@ cp .env.example .env.local
 Fill in the required values in `.env.local`. For most local work, the important values are:
 
 - `DATABASE_URL`: PostgreSQL database used by the dashboard.
-- `NEWSLETTER_DATABASE_URL`: optional PostgreSQL database used by newsletter subscriptions. Defaults to `DATABASE_URL` when unset.
+- `NEWSLETTER_DATABASE_URL`: optional local PostgreSQL database used by newsletter subscriptions. Defaults to `DATABASE_URL` when unset.
 - `NEXT_PUBLIC_API_URL`: Knowhere API backend URL.
 - `NEXT_PUBLIC_APP_URL` and `BETTER_AUTH_URL`: usually `http://localhost:3000`.
 - `BETTER_AUTH_SECRET`: any random secret with at least 32 characters.
@@ -57,7 +57,7 @@ Required for startup:
 | `BETTER_AUTH_URL` | Base URL used by Better Auth callbacks. |
 | `BETTER_AUTH_SECRET` | Random secret with at least 32 characters. |
 | `DATABASE_URL` | PostgreSQL connection URL for dashboard auth/account data. |
-| `NEWSLETTER_DATABASE_URL` | Optional PostgreSQL connection URL for newsletter subscription data. Falls back to `DATABASE_URL` when unset. |
+| `NEWSLETTER_DATABASE_URL` | Optional local/self-hosted PostgreSQL connection URL for newsletter subscription data. Falls back to `DATABASE_URL` when unset. |
 | `UNSAFE_DB_SSL_ENABLED` | Optional escape hatch for local/self-hosted PostgreSQL without SSL. Set to `true` only when the database does not support SSL. Defaults to `false`, so hosted SaaS keeps SSL enabled without extra config. |
 
 Email/password registration is enabled for self-hosted deployments. The login page defaults to SSO plus Resend-backed email links; set `PASSWORD_LOGIN_ENABLED=true` only when you want to expose the password-login entry point. OAuth and Resend-backed magic-link login are optional add-ons. Password reset emails also use Resend; signed-in OAuth users can set a password from dashboard settings.
@@ -104,7 +104,7 @@ pnpm db:migrate
 pnpm newsletter-db:migrate
 ```
 
-Production newsletter storage requires the GitHub Actions secret `NEWSLETTER_DATABASE_URL`. If it is unset outside production, newsletter storage falls back to `DATABASE_URL`.
+AWS production newsletter storage reads `NEWSLETTER_DATABASE_URL` from a Kubernetes Secret managed outside this repository. AWS non-production deploys do not attach this env var.
 
 ## Docker
 
