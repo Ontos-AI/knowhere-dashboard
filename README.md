@@ -104,7 +104,7 @@ pnpm db:migrate
 pnpm newsletter-db:migrate
 ```
 
-Production newsletter storage requires the GitHub Actions secret `NEWSLETTER_DATABASE_URL`. If it is unset outside production, newsletter storage falls back to `DATABASE_URL`.
+Production newsletter storage reads `NEWSLETTER_DATABASE_URL` from the optional Kubernetes Secret key `knowhere-secrets/newsletter-database-url` when it exists. If it is unset, newsletter storage falls back to `DATABASE_URL`.
 
 ## Docker
 

@@ -30,8 +30,6 @@ env:
   DASHBOARD_AUTH_COOKIE_DOMAIN_STAGING: staging.knowhereto.ai
   DASHBOARD_AUTH_ALLOWED_CALLBACK_ORIGINS_PROD: https://notebook.knowhereto.ai
   DASHBOARD_AUTH_ALLOWED_CALLBACK_ORIGINS_STAGING: https://notebook.staging.knowhereto.ai
-  DASHBOARD_NEWSLETTER_DATABASE_URL_PROD: ${{ secrets.NEWSLETTER_DATABASE_URL }}
-  DASHBOARD_NEWSLETTER_DATABASE_URL_STAGING: ${{ secrets.NEWSLETTER_DATABASE_URL_STAGING }}
   DASHBOARD_POSTHOG_HOST: https://us.i.posthog.com
 
 jobs:
@@ -73,14 +71,12 @@ jobs:
             api_url="${DASHBOARD_API_URL_PROD}"
             auth_cookie_domain="${DASHBOARD_AUTH_COOKIE_DOMAIN_PROD}"
             auth_allowed_callback_origins="${DASHBOARD_AUTH_ALLOWED_CALLBACK_ORIGINS_PROD}"
-            newsletter_database_url="${DASHBOARD_NEWSLETTER_DATABASE_URL_PROD}"
           else
             kube_namespace="${DASHBOARD_KUBE_NAMESPACE_STAGING}"
             app_url="${DASHBOARD_APP_URL_STAGING}"
             api_url="${DASHBOARD_API_URL_STAGING}"
             auth_cookie_domain="${DASHBOARD_AUTH_COOKIE_DOMAIN_STAGING}"
             auth_allowed_callback_origins="${DASHBOARD_AUTH_ALLOWED_CALLBACK_ORIGINS_STAGING}"
-            newsletter_database_url="${DASHBOARD_NEWSLETTER_DATABASE_URL_STAGING}"
           fi
           auth_base_url="${DASHBOARD_AUTH_BASE_URL}"
 
@@ -103,10 +99,6 @@ jobs:
               missing+=("$variable_name")
             fi
           done
-          if [ "$environment" = "prod" ] && [ -z "${newsletter_database_url}" ]; then
-            missing+=("NEWSLETTER_DATABASE_URL")
-          fi
-
           if [ "${#missing[@]}" -gt 0 ]; then
             printf 'Missing deployment configuration: %s\n' "${missing[*]}" >&2
             exit 1
@@ -268,7 +260,6 @@ jobs:
           echo "DEPLOY_AUTH_COOKIE_DOMAIN=${auth_cookie_domain}" >> "$GITHUB_ENV"
           echo "DEPLOY_AUTH_ALLOWED_CALLBACK_ORIGINS=${auth_allowed_callback_origins}" >> "$GITHUB_ENV"
           echo "DEPLOY_AUTH_BASE_URL=${auth_base_url}" >> "$GITHUB_ENV"
-          echo "DEPLOY_NEWSLETTER_DATABASE_URL=${newsletter_database_url}" >> "$GITHUB_ENV"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -287,7 +278,7 @@ jobs:
             --name "${AWS_EKS_PROD_CLUSTER_NAME}" \
             --region "${AWS_EKS_PROD_REGION}"
 
-      - name: Roll out dashboard
+      - name: Configure deployment environment
         shell: bash
         run: |
           kubectl set env "deployment/${DEPLOY_KUBE_DEPLOYMENT}" \
@@ -296,9 +287,42 @@ jobs:
             "AUTH_COOKIE_DOMAIN=${DEPLOY_AUTH_COOKIE_DOMAIN}" \
             "NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS=${DEPLOY_AUTH_ALLOWED_CALLBACK_ORIGINS}" \
             "NEXT_PUBLIC_APP_URL=${DEPLOY_APP_URL}" \
-            "NEWSLETTER_DATABASE_URL=${DEPLOY_NEWSLETTER_DATABASE_URL}" \
             --namespace "${DEPLOY_KUBE_NAMESPACE}"
 
+      - name: Attach optional newsletter database secret
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          kubectl set env "deployment/${DEPLOY_KUBE_DEPLOYMENT}" \
+            NEWSLETTER_DATABASE_URL- \
+            --namespace "${DEPLOY_KUBE_NAMESPACE}"
+
+          newsletter_secret_patch="$(
+            cat <<PATCH
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: ${DEPLOY_KUBE_CONTAINER}
+                    env:
+                      - name: NEWSLETTER_DATABASE_URL
+                        valueFrom:
+                          secretKeyRef:
+                            name: knowhere-secrets
+                            key: newsletter-database-url
+                            optional: true
+          PATCH
+          )"
+
+          kubectl patch "deployment/${DEPLOY_KUBE_DEPLOYMENT}" \
+            --namespace "${DEPLOY_KUBE_NAMESPACE}" \
+            --type=strategic \
+            --patch "${newsletter_secret_patch}"
+
+      - name: Roll out dashboard image
+        shell: bash
+        run: |
           kubectl set image "deployment/${DEPLOY_KUBE_DEPLOYMENT}" \
             "${DEPLOY_KUBE_CONTAINER}=${DEPLOY_IMAGE_URI}" \
             --namespace "${DEPLOY_KUBE_NAMESPACE}"
