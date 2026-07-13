@@ -310,7 +310,13 @@
     "tooManyRequests": "Too many requests. Please try again later.",
     "alreadyVerified": "Your email is already verified.",
     "failedToSendEmail": "Failed to send verification email. Please try again.",
-    "emailManagedByProvider": "Managed by {provider}"
+    "emailManagedByProvider": "Managed by {provider}",
+    "about": "About",
+    "aboutTitle": "About this deployment",
+    "telemetryTitle": "Anonymous product telemetry",
+    "telemetryDescription": "This self-hosted Knowhere API sends anonymous product telemetry by default so Ontos can understand OSS adoption, version mix, and basic service health. Events use a random installation id and aggregate metrics only — not prompts, document content, filenames, user identity, IP addresses, or API keys.",
+    "telemetryOptOut": "To opt out, set TELEMETRY_ENABLED=false in the API environment (for example your self-hosted .env) and restart Knowhere.",
+    "telemetryDocsLink": "View what is collected"
   },
   "VerifyEmail": {
     "verifying": "Verifying your email...",

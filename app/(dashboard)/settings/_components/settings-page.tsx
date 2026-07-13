@@ -60,7 +60,11 @@ const SECTION_ELEMENT_IDS = {
   profile: "settings-profile",
   security: "settings-security",
   preferences: "settings-preferences",
+  about: "settings-about",
 } as const;
+
+const TELEMETRY_DOCS_URL =
+  "https://github.com/Ontos-AI/knowhere-self-hosted/blob/main/docs/configuration.md#anonymous-product-telemetry";
 
 type SettingsSectionId = keyof typeof SECTION_ELEMENT_IDS;
 
@@ -161,13 +165,14 @@ export const SettingsPage = () => {
   const router = useRouter();
   const t = useTranslations("Settings");
   const tTimezones = useTranslations("Timezones");
-  const { passwordLoginEnabled } = useAppConfigContext();
+  const { billingEnabled, passwordLoginEnabled } = useAppConfigContext();
   const [activeSection, setActiveSection] = useState<SettingsSectionId>("profile");
   const [isPasswordSaving, setIsPasswordSaving] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
   const hasUser = Boolean(user);
   const userEmail = user?.email ?? "";
   const userName = user?.name ?? "";
+  const showAboutSection = !billingEnabled;
 
   const profileForm = useForm<ProfileFormValues>({
     defaultValues: {
@@ -212,13 +217,17 @@ export const SettingsPage = () => {
 
   const isSaving = updateProfileMutation.isPending || updateEmailMutation.isPending;
   const isDarkTheme = resolvedTheme === "dark";
-  const visibleSectionIds = useMemo<SettingsSectionId[]>(
-    () =>
-      passwordLoginEnabled
-        ? (Object.keys(SECTION_ELEMENT_IDS) as SettingsSectionId[])
-        : ["profile", "preferences"],
-    [passwordLoginEnabled]
-  );
+  const visibleSectionIds = useMemo<SettingsSectionId[]>(() => {
+    const sections: SettingsSectionId[] = ["profile"];
+    if (passwordLoginEnabled) {
+      sections.push("security");
+    }
+    sections.push("preferences");
+    if (showAboutSection) {
+      sections.push("about");
+    }
+    return sections;
+  }, [passwordLoginEnabled, showAboutSection]);
 
   useEffect(() => {
     if (!hasUser) {
@@ -427,11 +436,13 @@ export const SettingsPage = () => {
       </p>
 
       <SettingsSectionTabs
+        aboutLabel={t("about")}
         activeSection={activeSection}
         onSectionSelect={handleSectionSelect}
         preferencesLabel={t("preferences")}
         profileLabel={t("profile")}
         securityLabel={t("security")}
+        showAbout={showAboutSection}
         showSecurity={passwordLoginEnabled}
       />
 
@@ -508,35 +519,54 @@ export const SettingsPage = () => {
         zhLabel={t("zhCN")}
         enLabel={t("enUS")}
       />
+
+      {showAboutSection ? (
+        <SettingsAboutSection
+          docsLinkLabel={t("telemetryDocsLink")}
+          id={SECTION_ELEMENT_IDS.about}
+          optOutLabel={t("telemetryOptOut")}
+          telemetryDescription={t("telemetryDescription")}
+          telemetryTitle={t("telemetryTitle")}
+          title={t("aboutTitle")}
+        />
+      ) : null}
     </div>
   );
 };
 
 const SettingsSectionTabs = ({
+  aboutLabel,
   activeSection,
   onSectionSelect,
   preferencesLabel,
   profileLabel,
   securityLabel,
+  showAbout,
   showSecurity,
 }: {
+  aboutLabel: string;
   activeSection: SettingsSectionId;
   onSectionSelect: (sectionId: SettingsSectionId) => void;
   preferencesLabel: string;
   profileLabel: string;
   securityLabel: string;
+  showAbout: boolean;
   showSecurity: boolean;
 }) => {
+  const tabClassName = (isActive: boolean, minWidthClassName: string) =>
+    cn(
+      "flex h-9 items-end justify-center px-[14px] pb-3 pt-[6px] font-mono-display text-xs leading-4 transition-colors lg:h-8 lg:px-4 lg:pb-2 lg:pt-2",
+      minWidthClassName,
+      isActive
+        ? "border-b-[3px] border-[#52525c] bg-[#71717b] font-bold text-white lg:border-b-4"
+        : "bg-[#e4e4e7] font-light text-[#09090b] dark:bg-[#3f3f46] dark:text-[#fafafa]"
+    );
+
   return (
-    <nav aria-label="Settings sections" className="flex items-center gap-px">
+    <nav aria-label="Settings sections" className="flex flex-wrap items-center gap-px">
       <button
         type="button"
-        className={cn(
-          "flex h-9 min-w-[83px] items-end justify-center px-[14px] pb-3 pt-[6px] font-mono-display text-xs leading-4 transition-colors lg:h-8 lg:min-w-[87px] lg:px-4 lg:pb-2 lg:pt-2",
-          activeSection === "profile"
-            ? "border-b-[3px] border-[#52525c] bg-[#71717b] font-bold text-white lg:border-b-4"
-            : "bg-[#e4e4e7] font-light text-[#09090b] dark:bg-[#3f3f46] dark:text-[#fafafa]"
-        )}
+        className={tabClassName(activeSection === "profile", "min-w-[83px] lg:min-w-[87px]")}
         aria-current={activeSection === "profile" ? "page" : undefined}
         onClick={() => onSectionSelect("profile")}
       >
@@ -545,12 +575,7 @@ const SettingsSectionTabs = ({
       {showSecurity ? (
         <button
           type="button"
-          className={cn(
-            "flex h-9 min-w-[83px] items-end justify-center px-[14px] pb-3 pt-[6px] font-mono-display text-xs leading-4 transition-colors lg:h-8 lg:min-w-[87px] lg:px-4 lg:pb-2 lg:pt-2",
-            activeSection === "security"
-              ? "border-b-[3px] border-[#52525c] bg-[#71717b] font-bold text-white lg:border-b-4"
-              : "bg-[#e4e4e7] font-light text-[#09090b] dark:bg-[#3f3f46] dark:text-[#fafafa]"
-          )}
+          className={tabClassName(activeSection === "security", "min-w-[83px] lg:min-w-[87px]")}
           aria-current={activeSection === "security" ? "page" : undefined}
           onClick={() => onSectionSelect("security")}
         >
@@ -559,17 +584,25 @@ const SettingsSectionTabs = ({
       ) : null}
       <button
         type="button"
-        className={cn(
-          "flex h-9 min-w-[114px] items-end justify-center px-[14px] pb-[10px] pt-[6px] font-mono-display text-xs leading-4 transition-colors lg:h-8 lg:min-w-[118px] lg:px-4 lg:pb-2 lg:pt-2",
-          activeSection === "preferences"
-            ? "border-b-[3px] border-[#52525c] bg-[#71717b] font-bold text-white lg:border-b-4"
-            : "bg-[#e4e4e7] font-light text-[#09090b] dark:bg-[#3f3f46] dark:text-[#fafafa]"
+        className={tabClassName(
+          activeSection === "preferences",
+          "min-w-[114px] pb-[10px] lg:min-w-[118px]"
         )}
         aria-current={activeSection === "preferences" ? "page" : undefined}
         onClick={() => onSectionSelect("preferences")}
       >
         {preferencesLabel}
       </button>
+      {showAbout ? (
+        <button
+          type="button"
+          className={tabClassName(activeSection === "about", "min-w-[83px] lg:min-w-[87px]")}
+          aria-current={activeSection === "about" ? "page" : undefined}
+          onClick={() => onSectionSelect("about")}
+        >
+          {aboutLabel}
+        </button>
+      ) : null}
     </nav>
   );
 };
@@ -1004,6 +1037,54 @@ const SettingsPreferencesSection = ({
           </SelectContent>
         </Select>
       </SettingsPreferenceRow>
+    </section>
+  );
+};
+
+const SettingsAboutSection = ({
+  docsLinkLabel,
+  id,
+  optOutLabel,
+  telemetryDescription,
+  telemetryTitle,
+  title,
+}: {
+  docsLinkLabel: string;
+  id: string;
+  optOutLabel: string;
+  telemetryDescription: string;
+  telemetryTitle: string;
+  title: string;
+}) => {
+  return (
+    <section
+      id={id}
+      className="scroll-mt-6 border border-[#e4e4e7] bg-[#fafafa] px-[38px] pb-[38px] pt-[30px] dark:border-[#3f3f46] dark:bg-[#18181b] sm:px-[26px] sm:pb-[26px] sm:pt-[22px] lg:px-10 lg:pb-10 lg:pt-8"
+    >
+      <div className="flex max-w-[640px] flex-col gap-4 lg:gap-5">
+        <h3 className="text-sm font-medium leading-5 text-[#09090b] dark:text-[#fafafa] lg:text-base lg:leading-6">
+          {title}
+        </h3>
+        <div className="flex flex-col gap-2 lg:gap-3">
+          <p className="text-xs font-medium leading-[18px] text-[#09090b] dark:text-[#fafafa] lg:text-sm lg:leading-5">
+            {telemetryTitle}
+          </p>
+          <p className="text-xs leading-[18px] text-[#52525c] dark:text-[#d4d4d8] lg:text-sm lg:leading-5">
+            {telemetryDescription}
+          </p>
+          <p className="text-xs leading-[18px] text-[#52525c] dark:text-[#d4d4d8] lg:text-sm lg:leading-5">
+            {optOutLabel}
+          </p>
+          <a
+            className="w-fit text-xs leading-[18px] text-[#7f22fe] underline-offset-2 hover:underline lg:text-sm lg:leading-5"
+            href={TELEMETRY_DOCS_URL}
+            rel="noreferrer"
+            target="_blank"
+          >
+            {docsLinkLabel}
+          </a>
+        </div>
+      </div>
     </section>
   );
 };

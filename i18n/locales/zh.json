@@ -311,7 +311,13 @@
     "tooManyRequests": "请求过于频繁,请稍后再试。",
     "alreadyVerified": "您的邮箱已经验证过了。",
     "failedToSendEmail": "发送验证邮件失败,请重试。",
-    "emailManagedByProvider": "由 {provider} 管理"
+    "emailManagedByProvider": "由 {provider} 管理",
+    "about": "关于",
+    "aboutTitle": "关于此部署",
+    "telemetryTitle": "匿名产品遥测",
+    "telemetryDescription": "此自托管 Knowhere API 默认会发送匿名产品遥测，用于了解开源采用情况、版本分布和基础服务健康。事件使用随机安装 ID 与聚合指标，不包含 prompt、文档内容、文件名、用户身份、IP 地址或 API Key。",
+    "telemetryOptOut": "如需关闭，请在 API 环境（例如自托管 .env）中设置 TELEMETRY_ENABLED=false，然后重启 Knowhere。",
+    "telemetryDocsLink": "查看采集内容"
   },
   "VerifyEmail": {
     "verifying": "正在验证邮箱...",

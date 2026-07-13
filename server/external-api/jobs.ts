@@ -1,3 +1,8 @@
+import {
+  DASHBOARD_DOCUMENT_METADATA_DEFAULTS,
+  type DocumentMetadata,
+  mergeDocumentMetadataDefaults,
+} from "@lib/document-metadata";
 import { jwtRequest } from "@server/external-api/request";
 
 // ============================================
@@ -16,6 +21,7 @@ export type JobCreate = {
   text?: string;
   data_id?: string;
   parsing_params?: ParsingParams;
+  document_metadata?: DocumentMetadata;
   webhook?: {
     url: string;
     secret: string;
@@ -99,8 +105,19 @@ export async function createJob({
   userId: string;
   data: JobCreate;
 }): Promise<JobResponse> {
-  const { file, ...jobData } = data;
-  return jwtRequest({ method: "POST", path: "/v1/jobs", userId, body: jobData });
+  const { file, document_metadata, ...jobData } = data;
+  return jwtRequest({
+    method: "POST",
+    path: "/v1/jobs",
+    userId,
+    body: {
+      ...jobData,
+      document_metadata: mergeDocumentMetadataDefaults(
+        DASHBOARD_DOCUMENT_METADATA_DEFAULTS,
+        document_metadata
+      ),
+    },
+  });
 }
 
 export async function confirmUpload({

@@ -14,6 +14,7 @@ export const jobsRouter = protectedProcedure.router({
         text: z.string().optional(),
         data_id: z.string().optional(),
         parsing_params: z.record(z.string(), z.any()).optional(),
+        document_metadata: z.record(z.string(), z.any()).optional(),
         webhook: z.object({ url: z.string(), secret: z.string() }).optional(),
         webhook_url: z.string().optional(),
         result_mode: z.enum(["auto", "inline", "url"]).optional(),
