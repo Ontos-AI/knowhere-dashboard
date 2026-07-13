@@ -300,19 +300,19 @@ jobs:
 
           newsletter_secret_patch="$(
             cat <<PATCH
-spec:
-  template:
-    spec:
-      containers:
-        - name: ${DEPLOY_KUBE_CONTAINER}
-          env:
-            - name: NEWSLETTER_DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: knowhere-secrets
-                  key: newsletter-database-url
-                  optional: true
-PATCH
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: ${DEPLOY_KUBE_CONTAINER}
+                    env:
+                      - name: NEWSLETTER_DATABASE_URL
+                        valueFrom:
+                          secretKeyRef:
+                            name: knowhere-secrets
+                            key: newsletter-database-url
+                            optional: true
+          PATCH
           )"
 
           kubectl patch "deployment/${DEPLOY_KUBE_DEPLOYMENT}" \
