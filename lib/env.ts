@@ -1,11 +1,22 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
+function normalizeOptionalUrl(value: unknown): unknown {
+  if (typeof value !== "string") {
+    return value;
+  }
+
+  const trimmedValue = value.trim();
+
+  return trimmedValue === "" ? undefined : trimmedValue;
+}
+
 export const env = createEnv({
   server: {
     BETTER_AUTH_SECRET: z.string().min(32),
     BETTER_AUTH_URL: z.url(),
     DATABASE_URL: z.url(),
+    NEWSLETTER_DATABASE_URL: z.preprocess(normalizeOptionalUrl, z.url().optional()),
     UNSAFE_DB_SSL_ENABLED: z.string().default("false"),
     GA_MEASUREMENT_ID: z
       .string()
@@ -64,6 +75,7 @@ export const env = createEnv({
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
     BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
     DATABASE_URL: process.env.DATABASE_URL,
+    NEWSLETTER_DATABASE_URL: process.env.NEWSLETTER_DATABASE_URL,
     UNSAFE_DB_SSL_ENABLED: process.env.UNSAFE_DB_SSL_ENABLED,
     GA_MEASUREMENT_ID: process.env.GA_MEASUREMENT_ID,
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,

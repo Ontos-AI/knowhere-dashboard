@@ -64,11 +64,13 @@ COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/i18n ./i18n
 COPY --from=builder --chown=nextjs:nodejs /app/drizzle.config.ts ./drizzle.config.ts
+COPY --from=builder --chown=nextjs:nodejs /app/drizzle.newsletter.config.ts ./drizzle.newsletter.config.ts
 COPY --from=builder --chown=nextjs:nodejs /app/drizzle ./drizzle
+COPY --from=builder --chown=nextjs:nodejs /app/drizzle-newsletter ./drizzle-newsletter
 COPY --from=builder --chown=nextjs:nodejs /app/lib/db ./lib/db
 
 USER nextjs
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "pnpm db:generate && pnpm db:migrate && exec pnpm start"]
+CMD ["sh", "-c", "pnpm db:migrate && pnpm newsletter-db:migrate && exec pnpm start"]
