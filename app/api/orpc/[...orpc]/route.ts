@@ -5,6 +5,7 @@ import { RPCHandler } from "@orpc/server/fetch";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { createContext } from "@server/context";
 import { appRouter } from "@server/routers";
+import { authCookies } from "@/lib/auth-cookie-config";
 
 // Export router type for client-side type inference
 export type { AppRouter } from "@server/routers";
@@ -18,6 +19,7 @@ const rpcHandler = new RPCHandler(appRouter);
 // Only enable Scalar UI documentation in non-production environments
 // This prevents exposing API documentation in production for security reasons
 const isProduction = env.NODE_ENV === "production";
+const sessionCookieName = authCookies.getSessionCookieNames()[0];
 const openAPIPlugins = isProduction
   ? [] // No documentation in production
   : [
@@ -59,7 +61,7 @@ const openAPIPlugins = isProduction
               cookieAuth: {
                 type: "apiKey",
                 in: "cookie",
-                name: "better-auth.session_token",
+                name: sessionCookieName,
                 description:
                   "🔐 **Session-based Authentication (Cookie)**\n\n" +
                   "This API uses session cookies for authentication. **You cannot login here directly.**\n\n" +
@@ -68,7 +70,7 @@ const openAPIPlugins = isProduction
                   "   - GitHub OAuth\n" +
                   "   - Google OAuth  \n" +
                   "   - Email Magic Link (passwordless)\n" +
-                  "2. **Session Cookie is Set**: After successful login, your browser receives a session cookie (`better-auth.session_token`)\n" +
+                  `2. **Session Cookie is Set**: After successful login, your browser receives a session cookie (\`${sessionCookieName}\`)\n` +
                   "3. **Cookie Auto-Included**: When you make API requests from this documentation, the browser automatically includes the cookie\n" +
                   "4. **No Manual Configuration**: You don't need to copy/paste any tokens or configure authentication in Scalar UI\n\n" +
                   "**Troubleshooting:**\n" +

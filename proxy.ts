@@ -1,14 +1,13 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { authCookies } from "@/lib/auth-cookie-config";
 import { authRedirect } from "@/lib/auth-redirect";
 
-export function proxy(request: NextRequest) {
+export function proxy(request: NextRequest): NextResponse {
   const { pathname, search } = request.nextUrl;
 
-  // Check the Better Auth session cookie before allowing access to protected pages.
-  const hasSession =
-    request.cookies.has("better-auth.session_token") ||
-    request.cookies.has("__Secure-better-auth.session_token");
+  // Check the configured Better Auth session cookie before allowing access to protected pages.
+  const hasSession = authCookies.hasSessionCookie(request.cookies);
 
   const isProtectedPath = authRedirect.isProtectedPath(pathname);
 
