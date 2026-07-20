@@ -28,6 +28,8 @@ env:
   DASHBOARD_AUTH_BASE_URL: /api/auth
   DASHBOARD_AUTH_COOKIE_DOMAIN_PROD: knowhereto.ai
   DASHBOARD_AUTH_COOKIE_DOMAIN_STAGING: staging.knowhereto.ai
+  DASHBOARD_AUTH_COOKIE_PREFIX_PROD: better-auth
+  DASHBOARD_AUTH_COOKIE_PREFIX_STAGING: better-auth-staging
   DASHBOARD_AUTH_ALLOWED_CALLBACK_ORIGINS_PROD: https://notebook.knowhereto.ai
   DASHBOARD_AUTH_ALLOWED_CALLBACK_ORIGINS_STAGING: https://notebook.staging.knowhereto.ai
   DASHBOARD_POSTHOG_HOST: https://us.i.posthog.com
@@ -70,12 +72,14 @@ jobs:
             app_url="${DASHBOARD_APP_URL_PROD}"
             api_url="${DASHBOARD_API_URL_PROD}"
             auth_cookie_domain="${DASHBOARD_AUTH_COOKIE_DOMAIN_PROD}"
+            auth_cookie_prefix="${DASHBOARD_AUTH_COOKIE_PREFIX_PROD}"
             auth_allowed_callback_origins="${DASHBOARD_AUTH_ALLOWED_CALLBACK_ORIGINS_PROD}"
           else
             kube_namespace="${DASHBOARD_KUBE_NAMESPACE_STAGING}"
             app_url="${DASHBOARD_APP_URL_STAGING}"
             api_url="${DASHBOARD_API_URL_STAGING}"
             auth_cookie_domain="${DASHBOARD_AUTH_COOKIE_DOMAIN_STAGING}"
+            auth_cookie_prefix="${DASHBOARD_AUTH_COOKIE_PREFIX_STAGING}"
             auth_allowed_callback_origins="${DASHBOARD_AUTH_ALLOWED_CALLBACK_ORIGINS_STAGING}"
           fi
           auth_base_url="${DASHBOARD_AUTH_BASE_URL}"
@@ -91,6 +95,7 @@ jobs:
             api_url \
             app_url \
             auth_cookie_domain \
+            auth_cookie_prefix \
             auth_allowed_callback_origins \
             auth_base_url \
             kube_namespace
@@ -121,6 +126,7 @@ jobs:
           echo "api_url=${api_url}" >> "$GITHUB_OUTPUT"
           echo "app_url=${app_url}" >> "$GITHUB_OUTPUT"
           echo "auth_cookie_domain=${auth_cookie_domain}" >> "$GITHUB_OUTPUT"
+          echo "auth_cookie_prefix=${auth_cookie_prefix}" >> "$GITHUB_OUTPUT"
           echo "auth_allowed_callback_origins=${auth_allowed_callback_origins}" >> "$GITHUB_OUTPUT"
           echo "auth_base_url=${auth_base_url}" >> "$GITHUB_OUTPUT"
           echo "kube_container=${DASHBOARD_KUBE_CONTAINER}" >> "$GITHUB_OUTPUT"
@@ -154,6 +160,7 @@ jobs:
             ${{ steps.context.outputs.latest_uri }}
           build-args: |
             NEXT_PUBLIC_API_URL=${{ steps.context.outputs.api_url }}
+            AUTH_COOKIE_PREFIX=${{ steps.context.outputs.auth_cookie_prefix }}
             NEXT_PUBLIC_AUTH_BASE_URL=${{ steps.context.outputs.auth_base_url }}
             NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS=${{ steps.context.outputs.auth_allowed_callback_origins }}
             NEXT_PUBLIC_APP_URL=${{ steps.context.outputs.app_url }}
@@ -170,6 +177,7 @@ jobs:
           echo "App URL: ${{ steps.context.outputs.app_url }}"
           echo "Auth Base URL: ${{ steps.context.outputs.auth_base_url }}"
           echo "Auth Cookie Domain: ${{ steps.context.outputs.auth_cookie_domain }}"
+          echo "Auth Cookie Prefix: ${{ steps.context.outputs.auth_cookie_prefix }}"
           echo "Auth Allowed Callback Origins: ${{ steps.context.outputs.auth_allowed_callback_origins }}"
           echo "Image: ${{ steps.context.outputs.image_uri }}"
           echo "Deployment: ${{ steps.context.outputs.kube_deployment }}"
@@ -206,12 +214,14 @@ jobs:
             app_url="${DASHBOARD_APP_URL_PROD}"
             api_url="${DASHBOARD_API_URL_PROD}"
             auth_cookie_domain="${DASHBOARD_AUTH_COOKIE_DOMAIN_PROD}"
+            auth_cookie_prefix="${DASHBOARD_AUTH_COOKIE_PREFIX_PROD}"
             auth_allowed_callback_origins="${DASHBOARD_AUTH_ALLOWED_CALLBACK_ORIGINS_PROD}"
           else
             kube_namespace="${DASHBOARD_KUBE_NAMESPACE_STAGING}"
             app_url="${DASHBOARD_APP_URL_STAGING}"
             api_url="${DASHBOARD_API_URL_STAGING}"
             auth_cookie_domain="${DASHBOARD_AUTH_COOKIE_DOMAIN_STAGING}"
+            auth_cookie_prefix="${DASHBOARD_AUTH_COOKIE_PREFIX_STAGING}"
             auth_allowed_callback_origins="${DASHBOARD_AUTH_ALLOWED_CALLBACK_ORIGINS_STAGING}"
           fi
           auth_base_url="${DASHBOARD_AUTH_BASE_URL}"
@@ -227,6 +237,7 @@ jobs:
             api_url \
             app_url \
             auth_cookie_domain \
+            auth_cookie_prefix \
             auth_allowed_callback_origins \
             auth_base_url \
             kube_namespace
@@ -258,6 +269,7 @@ jobs:
           echo "DEPLOY_API_URL=${api_url}" >> "$GITHUB_ENV"
           echo "DEPLOY_APP_URL=${app_url}" >> "$GITHUB_ENV"
           echo "DEPLOY_AUTH_COOKIE_DOMAIN=${auth_cookie_domain}" >> "$GITHUB_ENV"
+          echo "DEPLOY_AUTH_COOKIE_PREFIX=${auth_cookie_prefix}" >> "$GITHUB_ENV"
           echo "DEPLOY_AUTH_ALLOWED_CALLBACK_ORIGINS=${auth_allowed_callback_origins}" >> "$GITHUB_ENV"
           echo "DEPLOY_AUTH_BASE_URL=${auth_base_url}" >> "$GITHUB_ENV"
 
@@ -285,6 +297,7 @@ jobs:
             "NEXT_PUBLIC_API_URL=${DEPLOY_API_URL}" \
             "NEXT_PUBLIC_AUTH_BASE_URL=${DEPLOY_AUTH_BASE_URL}" \
             "AUTH_COOKIE_DOMAIN=${DEPLOY_AUTH_COOKIE_DOMAIN}" \
+            "AUTH_COOKIE_PREFIX=${DEPLOY_AUTH_COOKIE_PREFIX}" \
             "NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS=${DEPLOY_AUTH_ALLOWED_CALLBACK_ORIGINS}" \
             "NEXT_PUBLIC_APP_URL=${DEPLOY_APP_URL}" \
             --namespace "${DEPLOY_KUBE_NAMESPACE}"
@@ -343,6 +356,7 @@ jobs:
           echo "App URL: ${DEPLOY_APP_URL}"
           echo "Auth Base URL: ${DEPLOY_AUTH_BASE_URL}"
           echo "Auth Cookie Domain: ${DEPLOY_AUTH_COOKIE_DOMAIN}"
+          echo "Auth Cookie Prefix: ${DEPLOY_AUTH_COOKIE_PREFIX}"
           echo "Auth Allowed Callback Origins: ${DEPLOY_AUTH_ALLOWED_CALLBACK_ORIGINS}"
 
   attach-release-assets:

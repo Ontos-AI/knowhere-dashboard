@@ -5,6 +5,7 @@ import { nextCookies } from "better-auth/next-js";
 import { jwt, magicLink } from "better-auth/plugins";
 import { Resend } from "resend";
 import { ProxyAgent, setGlobalDispatcher } from "undici";
+import { authCookies } from "@/lib/auth-cookie-config";
 import { authRedirect } from "@/lib/auth-redirect";
 import { db } from "@/lib/db";
 import { env } from "@/lib/env";
@@ -131,19 +132,20 @@ export const auth = betterAuth({
     provider: "pg",
   }),
 
-  // When `AUTH_COOKIE_DOMAIN` is set, enable cross-subdomain session cookies
-  // so the Better Auth session token is sent to sibling apps hosted under
-  // the same parent domain. Unset → current host-only behavior.
-  ...(env.AUTH_COOKIE_DOMAIN
-    ? {
-        advanced: {
+  advanced: {
+    cookiePrefix: authCookies.getCookiePrefix(),
+    // When `AUTH_COOKIE_DOMAIN` is set, enable cross-subdomain session cookies
+    // so the Better Auth session token is sent to sibling apps hosted under
+    // the same parent domain. Unset → current host-only behavior.
+    ...(env.AUTH_COOKIE_DOMAIN
+      ? {
           crossSubDomainCookies: {
             enabled: true,
             domain: env.AUTH_COOKIE_DOMAIN,
           },
-        },
-      }
-    : {}),
+        }
+      : {}),
+  },
 
   // Enable performance optimization with joins (2-3x faster)
   experimental: {
@@ -165,6 +167,7 @@ export const auth = betterAuth({
     cookieCache: {
       enabled: true,
       maxAge: 30 * 24 * 60 * 60, // 30 days
+      version: authCookies.getCookieCacheVersion(),
     },
   },
 

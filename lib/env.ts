@@ -1,7 +1,7 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
-function normalizeOptionalUrl(value: unknown): unknown {
+function normalizeOptionalString(value: unknown): unknown {
   if (typeof value !== "string") {
     return value;
   }
@@ -9,6 +9,10 @@ function normalizeOptionalUrl(value: unknown): unknown {
   const trimmedValue = value.trim();
 
   return trimmedValue === "" ? undefined : trimmedValue;
+}
+
+function normalizeOptionalUrl(value: unknown): unknown {
+  return normalizeOptionalString(value);
 }
 
 export const env = createEnv({
@@ -43,6 +47,15 @@ export const env = createEnv({
      * Leave unset to preserve the host-only cookie behavior.
      */
     AUTH_COOKIE_DOMAIN: z.string().optional(),
+    AUTH_COOKIE_PREFIX: z
+      .preprocess(
+        normalizeOptionalString,
+        z
+          .string()
+          .regex(/^[A-Za-z0-9_-]+$/, "AUTH_COOKIE_PREFIX must be a cookie-safe prefix")
+          .default("better-auth")
+      )
+      .describe("Better Auth cookie prefix. Staging uses a distinct prefix to isolate cookies."),
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     DEV_EXTERNAL_API_AUTHORIZATION: z.string().optional(),
     HTTPS_PROXY: z.string().optional(),
@@ -87,6 +100,7 @@ export const env = createEnv({
     BILLING_ENABLED: process.env.BILLING_ENABLED,
     PASSWORD_LOGIN_ENABLED: process.env.PASSWORD_LOGIN_ENABLED,
     AUTH_COOKIE_DOMAIN: process.env.AUTH_COOKIE_DOMAIN,
+    AUTH_COOKIE_PREFIX: process.env.AUTH_COOKIE_PREFIX,
     NODE_ENV: process.env.NODE_ENV,
     DEV_EXTERNAL_API_AUTHORIZATION: process.env.DEV_EXTERNAL_API_AUTHORIZATION,
     HTTPS_PROXY: process.env.HTTPS_PROXY,
