@@ -78,6 +78,8 @@ Optional:
 | `GA_MEASUREMENT_ID` | Google Analytics measurement ID. |
 | `BILLING_ENABLED` | Set to `true` only when the API billing endpoints and payment configuration are available. Defaults to disabled for open-source self-hosted deployments. |
 | `PASSWORD_LOGIN_ENABLED` | Set to `true` to show the login page's password-login button. Defaults to hidden. |
+| `AUTH_COOKIE_DOMAIN` | Optional Better Auth parent cookie domain for cross-subdomain sessions. Leave unset for host-only cookies. |
+| `AUTH_COOKIE_PREFIX` | Optional Better Auth cookie prefix. Defaults to `better-auth`; staging should use a distinct prefix such as `better-auth-staging`. |
 | `COMPANY_NAME`, `SIMPLE_COMPANY_NAME` | Runtime branding text. |
 | `ICP_NUMBER`, `ICP_URL` | ICP footer metadata for deployments that need it. |
 | `HTTPS_PROXY`, `HTTP_PROXY` | Development proxy for outbound auth/email calls. |
