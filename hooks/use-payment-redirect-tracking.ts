@@ -1,7 +1,7 @@
 "use client";
 
 import { useCredits } from "@hooks/use-credits";
-import { trackPaymentRedirectFromSearchParams } from "@lib/posthog-checkout";
+import { trackPaymentRedirectFromSearchParams } from "@lib/analytics/payment-redirect";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { useAppConfigContext } from "@/providers/config-provider";

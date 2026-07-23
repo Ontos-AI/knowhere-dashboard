@@ -5,7 +5,7 @@ import {
   trackLandingInteraction,
 } from "@app/(landing)/_components/landing-tracked-link";
 import { Dialog, DialogContent, DialogTitle } from "@components/ui/dialog";
-import { mirrorPlaygroundParseStarted } from "@lib/google-analytics";
+import { trackAnalyticsEvent } from "@lib/analytics";
 import { cn } from "@lib/utils";
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
 import {
@@ -1663,7 +1663,11 @@ export const HeroPlayground = () => {
         file_name: sample.cardLabel,
         sample_id: sampleId,
       });
-      mirrorPlaygroundParseStarted(sample.cardLabel);
+      trackAnalyticsEvent({
+        fileName: sample.cardLabel,
+        name: "playground.parse_started",
+        timestamp: new Date().toISOString(),
+      });
 
       setActiveSampleId(sampleId);
       setParsedSampleId(sampleId);
