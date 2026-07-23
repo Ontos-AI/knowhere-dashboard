@@ -16,6 +16,12 @@ const MAX_TRACKED_PAYMENT_REDIRECTS = 50;
 
 const createTimestamp = (): string => new Date().toISOString();
 
+const isTrackedPaymentRedirectList = (value: unknown): value is readonly string[] => {
+  return (
+    Array.isArray(value) && value.every((entry: unknown): boolean => typeof entry === "string")
+  );
+};
+
 const loadTrackedPaymentRedirects = (): Set<string> => {
   if (typeof window === "undefined") {
     return new Set();
@@ -27,8 +33,8 @@ const loadTrackedPaymentRedirects = (): Set<string> => {
       return new Set();
     }
 
-    const parsed = JSON.parse(raw) as string[];
-    return new Set(Array.isArray(parsed) ? parsed : []);
+    const parsedRedirects: unknown = JSON.parse(raw);
+    return new Set(isTrackedPaymentRedirectList(parsedRedirects) ? parsedRedirects : []);
   } catch {
     return new Set();
   }

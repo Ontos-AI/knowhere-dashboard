@@ -7,19 +7,14 @@ type BindAcquisitionSessionRequest = {
   readonly userId: string;
 };
 
-const CAPTURE_PATH_PREFIXES = ["/claw", "/comparison", "/versus"] as const;
-const CAPTURE_AUTH_PATHS = new Set(["/forgot-password", "/login", "/register", "/reset-password"]);
+const CAPTURE_LANDING_PATH_PREFIXES = ["/claw", "/comparison", "/versus"] as const;
 
 export function shouldCaptureAcquisitionPath(pathname: string): boolean {
   if (pathname === "/") {
     return true;
   }
 
-  if (CAPTURE_AUTH_PATHS.has(pathname)) {
-    return true;
-  }
-
-  return CAPTURE_PATH_PREFIXES.some((prefix: string): boolean => {
+  return CAPTURE_LANDING_PATH_PREFIXES.some((prefix: string): boolean => {
     return pathname === prefix || pathname.startsWith(`${prefix}/`);
   });
 }

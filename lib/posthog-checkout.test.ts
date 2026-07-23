@@ -86,4 +86,22 @@ describe("payment redirect analytics tracking", () => {
       })
     );
   });
+
+  it("ignores malformed tracked redirect cache entries", () => {
+    localStorage.setItem(
+      "ph_tracked_payment_redirects",
+      JSON.stringify([123, "success:cs_old", null])
+    );
+    const searchParams = new URLSearchParams(
+      "success=true&type=credits_package&session_id=cs_new&amount=20"
+    );
+
+    expect(trackPaymentRedirectFromSearchParams(searchParams)).toEqual({
+      handled: true,
+      kind: "success",
+    });
+    expect(JSON.parse(localStorage.getItem("ph_tracked_payment_redirects") ?? "[]")).toEqual([
+      "success:cs_new",
+    ]);
+  });
 });

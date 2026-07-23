@@ -19,6 +19,33 @@ type SearchParamsLike = {
   readonly toString: () => string;
 };
 
+function isCheckoutType(value: unknown): value is PendingCheckout["checkout_type"] {
+  return value === "credits_package" || value === "subscription";
+}
+
+function isOptionalNumber(value: unknown): value is number | undefined {
+  return value === undefined || (typeof value === "number" && Number.isFinite(value));
+}
+
+function isOptionalString(value: unknown): value is string | undefined {
+  return value === undefined || typeof value === "string";
+}
+
+function isPendingCheckout(value: unknown): value is PendingCheckout {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return false;
+  }
+
+  const record = value as Record<string, unknown>;
+  return (
+    isCheckoutType(record.checkout_type) &&
+    typeof record.session_id === "string" &&
+    isOptionalNumber(record.amount) &&
+    isOptionalString(record.plan_id) &&
+    isOptionalString(record.price_id)
+  );
+}
+
 export function markAuthEventTracked(): void {
   if (typeof window === "undefined") {
     return;
@@ -150,7 +177,8 @@ export function peekPendingCheckout(): PendingCheckout | null {
   }
 
   try {
-    return JSON.parse(raw) as PendingCheckout;
+    const parsedCheckout: unknown = JSON.parse(raw);
+    return isPendingCheckout(parsedCheckout) ? parsedCheckout : null;
   } catch {
     return null;
   }
