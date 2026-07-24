@@ -1,5 +1,5 @@
 import { db } from "@lib/db";
-import { marketingAttributionSession } from "@lib/db/schema";
+import { marketingAttributionSession, marketingPageView } from "@lib/db/schema";
 import { createId } from "@paralleldrive/cuid2";
 import { and, eq, isNull } from "drizzle-orm";
 import {
@@ -11,6 +11,9 @@ import {
   type AcquisitionCaptureInput,
   type AcquisitionCaptureResult,
   createAcquisitionAttributionService,
+  type MarketingPageViewCaptureInput,
+  type MarketingPageViewCaptureResult,
+  type MarketingPageViewInsert,
 } from "@/lib/acquisition-attribution/core";
 
 const repository: AcquisitionAttributionRepository = {
@@ -47,6 +50,17 @@ const repository: AcquisitionAttributionRepository = {
 
     return session ?? null;
   },
+  insertPageView: async (pageView: MarketingPageViewInsert): Promise<boolean> => {
+    const [insertedPageView] = await db
+      .insert(marketingPageView)
+      .values(pageView)
+      .onConflictDoNothing()
+      .returning({
+        viewId: marketingPageView.viewId,
+      });
+
+    return Boolean(insertedPageView);
+  },
   insertSession: async (session: AcquisitionAttributionSessionInsert): Promise<boolean> => {
     const [insertedSession] = await db
       .insert(marketingAttributionSession)
@@ -62,6 +76,7 @@ const repository: AcquisitionAttributionRepository = {
 
 const service = createAcquisitionAttributionService({
   createSessionId: createId,
+  createViewId: createId,
   getNow: (): Date => new Date(),
   repository,
 });
@@ -76,4 +91,10 @@ export function bindAcquisitionSessionToUser(
   input: AcquisitionBindInput
 ): Promise<AcquisitionBindResult> {
   return service.bindAcquisitionSessionToUser(input);
+}
+
+export function captureMarketingPageView(
+  input: MarketingPageViewCaptureInput
+): Promise<MarketingPageViewCaptureResult> {
+  return service.captureMarketingPageView(input);
 }

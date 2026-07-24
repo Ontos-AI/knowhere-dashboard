@@ -17,6 +17,12 @@ export type AcquisitionBindInput = {
   readonly userId: string;
 };
 
+export type MarketingPageViewCaptureInput = {
+  readonly acquisitionSessionId?: string | null;
+  readonly landingUrl: string;
+  readonly referrer?: string | null;
+};
+
 export type AcquisitionAttributionSessionInsert = {
   readonly sessionId: string;
   readonly source: string;
@@ -30,6 +36,22 @@ export type AcquisitionAttributionSessionInsert = {
   readonly landingPath: string;
   readonly referrerHost: string | null;
   readonly capturedAt: Date;
+};
+
+export type MarketingPageViewInsert = {
+  readonly viewId: string;
+  readonly acquisitionSessionId: string | null;
+  readonly source: string;
+  readonly channel: string;
+  readonly utmSource: string | null;
+  readonly utmMedium: string | null;
+  readonly utmCampaign: string | null;
+  readonly utmContent: string | null;
+  readonly utmTerm: string | null;
+  readonly oppref: string | null;
+  readonly visitedPath: string;
+  readonly referrerHost: string | null;
+  readonly viewedAt: Date;
 };
 
 export type AcquisitionAttributionStoredSession = {
@@ -48,6 +70,7 @@ export type AcquisitionAttributionRepository = {
     sessionId: string
   ) => Promise<AcquisitionAttributionStoredSession | null>;
   readonly insertSession: (session: AcquisitionAttributionSessionInsert) => Promise<boolean>;
+  readonly insertPageView: (pageView: MarketingPageViewInsert) => Promise<boolean>;
 };
 
 export type AcquisitionCaptureResult =
@@ -77,6 +100,19 @@ export type AcquisitionBindResult =
       readonly sessionId: string;
     };
 
+export type MarketingPageViewCaptureResult =
+  | {
+      readonly captured: false;
+      readonly reason: "invalid_landing_url";
+      readonly viewId: null;
+      readonly acquisitionSessionId: null;
+    }
+  | {
+      readonly captured: true;
+      readonly viewId: string;
+      readonly acquisitionSessionId: string | null;
+    };
+
 export type AcquisitionAttributionService = {
   readonly bindAcquisitionSessionToUser: (
     input: AcquisitionBindInput
@@ -84,10 +120,14 @@ export type AcquisitionAttributionService = {
   readonly captureAcquisitionSession: (
     input: AcquisitionCaptureInput
   ) => Promise<AcquisitionCaptureResult>;
+  readonly captureMarketingPageView: (
+    input: MarketingPageViewCaptureInput
+  ) => Promise<MarketingPageViewCaptureResult>;
 };
 
 type AcquisitionAttributionServiceOptions = {
   readonly createSessionId: () => string;
+  readonly createViewId: () => string;
   readonly getNow: () => Date;
   readonly repository: AcquisitionAttributionRepository;
 };
@@ -207,7 +247,7 @@ function deriveChannel({
 }
 
 function normalizeCaptureInput(
-  input: AcquisitionCaptureInput
+  input: AcquisitionCaptureInput | MarketingPageViewCaptureInput
 ): NormalizedAcquisitionCapture | null {
   const parsedLandingUrl = parseHttpUrl(input.landingUrl);
   if (!parsedLandingUrl) {
@@ -241,6 +281,7 @@ function normalizeCaptureInput(
 
 export function createAcquisitionAttributionService({
   createSessionId,
+  createViewId,
   getNow,
   repository,
 }: AcquisitionAttributionServiceOptions): AcquisitionAttributionService {
@@ -328,6 +369,52 @@ export function createAcquisitionAttributionService({
             reason: "duplicate",
             sessionId,
           };
+    },
+    captureMarketingPageView: async (
+      input: MarketingPageViewCaptureInput
+    ): Promise<MarketingPageViewCaptureResult> => {
+      const capture = normalizeCaptureInput(input);
+      if (!capture) {
+        return {
+          captured: false,
+          reason: "invalid_landing_url",
+          viewId: null,
+          acquisitionSessionId: null,
+        };
+      }
+
+      const acquisitionSessionId = normalizeSessionId(input.acquisitionSessionId);
+      const viewId = createViewId();
+      const didInsert = await repository.insertPageView({
+        acquisitionSessionId,
+        channel: capture.channel,
+        oppref: capture.oppref,
+        referrerHost: capture.referrerHost,
+        source: capture.source,
+        utmCampaign: capture.utmCampaign,
+        utmContent: capture.utmContent,
+        utmMedium: capture.utmMedium,
+        utmSource: capture.utmSource,
+        utmTerm: capture.utmTerm,
+        viewId,
+        viewedAt: getNow(),
+        visitedPath: capture.landingPath,
+      });
+
+      if (!didInsert) {
+        return {
+          captured: false,
+          reason: "invalid_landing_url",
+          viewId: null,
+          acquisitionSessionId: null,
+        };
+      }
+
+      return {
+        captured: true,
+        viewId,
+        acquisitionSessionId,
+      };
     },
   };
 }
