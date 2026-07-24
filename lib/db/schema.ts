@@ -50,3 +50,33 @@ export const oauthRefreshToken = pgTable(
     userIdIndex: index("oauthRefreshToken_userId_idx").on(table.userId),
   })
 );
+
+export const marketingAttributionSession = pgTable(
+  "marketing_attribution_sessions",
+  {
+    sessionId: text("session_id")
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    source: text("source").notNull(),
+    channel: text("channel").notNull(),
+    utmSource: text("utm_source"),
+    utmMedium: text("utm_medium"),
+    utmCampaign: text("utm_campaign"),
+    utmContent: text("utm_content"),
+    utmTerm: text("utm_term"),
+    oppref: text("oppref"),
+    landingPath: text("landing_path").notNull(),
+    referrerHost: text("referrer_host"),
+    capturedAt: timestamp("captured_at", { withTimezone: true }).notNull().defaultNow(),
+    boundUserId: text("bound_user_id").references(() => user.id, { onDelete: "set null" }),
+    boundAt: timestamp("bound_at", { withTimezone: true }),
+  },
+  (table) => ({
+    boundUserIdIndex: index("marketingAttributionSession_boundUserId_idx").on(table.boundUserId),
+    capturedAtIndex: index("marketingAttributionSession_capturedAt_idx").on(table.capturedAt),
+    sourceCampaignIndex: index("marketingAttributionSession_sourceCampaign_idx").on(
+      table.source,
+      table.utmCampaign
+    ),
+  })
+);

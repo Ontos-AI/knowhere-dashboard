@@ -6,7 +6,7 @@ import { Button } from "@components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
 import { Skeleton } from "@components/ui/skeleton";
 import { useCredits } from "@hooks/use-credits";
-import { trackPaymentRedirectFromSearchParams } from "@lib/posthog-checkout";
+import { trackPaymentRedirectFromSearchParams } from "@lib/analytics/payment-redirect";
 import type { Subscription } from "@server/external-api/subscriptions";
 import { CheckCircle2, CreditCard, XCircle } from "lucide-react";
 import Link from "next/link";

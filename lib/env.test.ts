@@ -51,3 +51,25 @@ describe("env.AUTH_COOKIE_PREFIX", () => {
     expect(consoleError).toHaveBeenCalled();
   });
 });
+
+describe("env.OPENAI_ADS", () => {
+  it("normalizes blank OpenAI Ads values to undefined", async () => {
+    const { env } = await loadEnv({
+      OPENAI_ADS_CONVERSIONS_API_KEY: " ",
+      OPENAI_ADS_PIXEL_ID: "",
+    });
+
+    expect(env.OPENAI_ADS_PIXEL_ID).toBeUndefined();
+    expect(env.OPENAI_ADS_CONVERSIONS_API_KEY).toBeUndefined();
+  });
+
+  it("loads configured OpenAI Ads values", async () => {
+    const { env } = await loadEnv({
+      OPENAI_ADS_CONVERSIONS_API_KEY: "conversions_key",
+      OPENAI_ADS_PIXEL_ID: "JDvSf6KLL8Y3e8QJhCmFF3",
+    });
+
+    expect(env.OPENAI_ADS_PIXEL_ID).toBe("JDvSf6KLL8Y3e8QJhCmFF3");
+    expect(env.OPENAI_ADS_CONVERSIONS_API_KEY).toBe("conversions_key");
+  });
+});
