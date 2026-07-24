@@ -2,6 +2,7 @@
 
 import {
   requestAcquisitionSessionCapture,
+  requestMarketingPageViewCapture,
   shouldCaptureAcquisitionPath,
 } from "@lib/acquisition-attribution/client";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -18,7 +19,7 @@ export function AcquisitionAttributionProvider() {
       return;
     }
 
-    if (!shouldCaptureAcquisitionPath(pathname)) {
+    if (!shouldCaptureAcquisitionPath(pathname, search)) {
       return;
     }
 
@@ -28,13 +29,24 @@ export function AcquisitionAttributionProvider() {
     }
 
     capturedLandingUrlRef.current = landingUrl;
+    const referrer = document.referrer || undefined;
 
-    void requestAcquisitionSessionCapture({
-      landingUrl,
-      referrer: document.referrer || undefined,
-    }).catch((error: unknown): void => {
-      console.error("Failed to capture acquisition attribution session:", error);
-    });
+    void (async (): Promise<void> => {
+      try {
+        const sessionCapture = await requestAcquisitionSessionCapture({
+          landingUrl,
+          referrer,
+        });
+
+        await requestMarketingPageViewCapture({
+          acquisitionSessionId: sessionCapture.sessionId,
+          landingUrl,
+          referrer,
+        });
+      } catch (error: unknown) {
+        console.error("Failed to capture acquisition attribution:", error);
+      }
+    })();
   }, [pathname, search]);
 
   return null;

@@ -7,12 +7,15 @@ import { AuthenticatedJobAnalyticsSync } from "@providers/authenticated-job-anal
 import { QueryProvider } from "@providers/query-provider";
 import { TimezoneSync } from "@providers/timezone-sync";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { Suspense } from "react";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const content = (
     <NuqsAdapter>
       <QueryProvider>
-        <AcquisitionAttributionProvider />
+        <Suspense fallback={null}>
+          <AcquisitionAttributionProvider />
+        </Suspense>
         <TimezoneSync />
         <AuthenticatedJobAnalyticsSync />
         <ErrorBoundary>{children}</ErrorBoundary>

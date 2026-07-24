@@ -3,9 +3,11 @@ import {
   type AcquisitionAttributionRepository,
   type AcquisitionAttributionSessionInsert,
   createAcquisitionAttributionService,
+  type MarketingPageViewInsert,
 } from "@/lib/acquisition-attribution/core";
 
 function createMemoryRepository(): {
+  readonly pageViews: MarketingPageViewInsert[];
   readonly repository: AcquisitionAttributionRepository;
   readonly sessions: Map<
     string,
@@ -16,8 +18,10 @@ function createMemoryRepository(): {
     string,
     AcquisitionAttributionSessionInsert & { boundUserId: string | null }
   >();
+  const pageViews: MarketingPageViewInsert[] = [];
 
   return {
+    pageViews,
     repository: {
       bindSessionToUser: async ({ boundAt: _boundAt, sessionId, userId }): Promise<boolean> => {
         const session = sessions.get(sessionId);
@@ -43,6 +47,10 @@ function createMemoryRepository(): {
           sessionId: session.sessionId,
         };
       },
+      insertPageView: async (pageView: MarketingPageViewInsert): Promise<boolean> => {
+        pageViews.push(pageView);
+        return true;
+      },
       insertSession: async (session: AcquisitionAttributionSessionInsert): Promise<boolean> => {
         if (sessions.has(session.sessionId)) {
           return false;
@@ -64,6 +72,7 @@ describe("acquisition attribution", () => {
     const { repository, sessions } = createMemoryRepository();
     const service = createAcquisitionAttributionService({
       createSessionId: (): string => "session_first",
+      createViewId: (): string => "view_unused",
       getNow: (): Date => new Date("2026-07-23T00:00:00.000Z"),
       repository,
     });
@@ -102,6 +111,7 @@ describe("acquisition attribution", () => {
     const { repository, sessions } = createMemoryRepository();
     const service = createAcquisitionAttributionService({
       createSessionId: (): string => "session_signup",
+      createViewId: (): string => "view_unused",
       getNow: (): Date => new Date("2026-07-23T00:00:00.000Z"),
       repository,
     });
@@ -126,5 +136,52 @@ describe("acquisition attribution", () => {
       sessionId: "session_signup",
     });
     expect(sessions.get("session_signup")?.boundUserId).toBe("user_123");
+  });
+
+  it("records raw pageviews even when the first-touch session already exists", async () => {
+    const { pageViews, repository } = createMemoryRepository();
+    let viewCounter = 0;
+    const service = createAcquisitionAttributionService({
+      createSessionId: (): string => "session_first",
+      createViewId: (): string => `view_${++viewCounter}`,
+      getNow: (): Date => new Date("2026-07-23T00:00:00.000Z"),
+      repository,
+    });
+
+    await service.captureAcquisitionSession({
+      landingUrl: "https://knowhereto.ai/?utm_source=reddit",
+    });
+
+    const firstPageView = await service.captureMarketingPageView({
+      acquisitionSessionId: "session_first",
+      landingUrl: "https://knowhereto.ai/reddit?utm_source=reddit&utm_campaign=launch",
+      referrer: "https://reddit.com/r/something",
+    });
+    const secondPageView = await service.captureMarketingPageView({
+      acquisitionSessionId: "session_first",
+      landingUrl: "https://knowhereto.ai/reddit?utm_source=reddit&utm_campaign=launch",
+      referrer: "https://reddit.com/r/something",
+    });
+
+    expect(firstPageView).toEqual({
+      captured: true,
+      viewId: "view_1",
+      acquisitionSessionId: "session_first",
+    });
+    expect(secondPageView).toEqual({
+      captured: true,
+      viewId: "view_2",
+      acquisitionSessionId: "session_first",
+    });
+    expect(pageViews).toHaveLength(2);
+    expect(pageViews[0]).toMatchObject({
+      acquisitionSessionId: "session_first",
+      channel: "referral",
+      source: "reddit",
+      utmCampaign: "launch",
+      utmSource: "reddit",
+      visitedPath: "/reddit",
+      referrerHost: "reddit.com",
+    });
   });
 });
