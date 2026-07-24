@@ -6,9 +6,8 @@ import "./globals.css";
 import { ThemeProvider } from "@components/theme-provider";
 import { appMetadata } from "@lib/app-metadata";
 import { getDefaultConfig } from "@lib/config";
+import { AnalyticsProvider } from "@providers/analytics-provider";
 import { ConfigProvider } from "@providers/config-provider";
-import { GoogleAnalyticsProvider } from "@providers/google-analytics-provider";
-import PostHogProvider from "@providers/posthog-provider";
 import { Providers } from "@providers/providers";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
@@ -36,23 +35,22 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   // 在服务端读取环境变量（运行时配置，不带NEXT_PUBLIC_前缀）
   const appConfig = getDefaultConfig();
   const gaMeasurementId = appConfig.gaMeasurementId;
+  const openAIAdsPixelId = appConfig.openAIAdsPixelId;
 
   // 获取翻译消息
   const messages = await getMessages();
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body className={"font-sans antialiased"}>
+      <body className={`${geistSans.variable} ${anuphan.variable} font-sans antialiased`}>
         <NextIntlClientProvider messages={messages} locale={locale}>
           <ConfigProvider config={appConfig}>
             <ThemeProvider attribute="class" enableSystem={true} disableTransitionOnChange>
-              <GoogleAnalyticsProvider>
-                <PostHogProvider>
-                  <Providers>
-                    <div className="min-h-dvh">{children}</div>
-                  </Providers>
-                </PostHogProvider>
-              </GoogleAnalyticsProvider>
+              <AnalyticsProvider>
+                <Providers>
+                  <div className="min-h-dvh">{children}</div>
+                </Providers>
+              </AnalyticsProvider>
             </ThemeProvider>
           </ConfigProvider>
         </NextIntlClientProvider>
@@ -70,6 +68,23 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 gtag('config', '${gaMeasurementId}', { send_page_view: false });
               `}
             </Script>
+          </>
+        ) : null}
+        {openAIAdsPixelId ? (
+          <>
+            <Script id="openai-ads-pixel-init" strategy="afterInteractive">
+              {`
+                window.oaiq = window.oaiq || function () {
+                  (window.oaiq.q = window.oaiq.q || []).push(arguments);
+                };
+                window.oaiq("init", { pixelId: ${JSON.stringify(openAIAdsPixelId)} });
+              `}
+            </Script>
+            <Script
+              async={true}
+              src="https://bzrcdn.openai.com/sdk/oaiq.min.js"
+              strategy="afterInteractive"
+            />
           </>
         ) : null}
       </body>

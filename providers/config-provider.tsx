@@ -26,6 +26,7 @@ export function useAppConfigContext(): AppConfigType {
       copyrightYear: new Date().getFullYear(),
       showIcp: false,
       gaMeasurementId: "",
+      openAIAdsPixelId: "",
       googleClientId: "",
       githubClientId: "",
       appleClientId: "",

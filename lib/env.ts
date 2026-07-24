@@ -26,6 +26,8 @@ export const env = createEnv({
       .string()
       .regex(/^G-[A-Z0-9]+$/)
       .optional(),
+    OPENAI_ADS_PIXEL_ID: z.preprocess(normalizeOptionalString, z.string().optional()),
+    OPENAI_ADS_CONVERSIONS_API_KEY: z.preprocess(normalizeOptionalString, z.string().optional()),
     GITHUB_CLIENT_ID: z.string().optional(),
     GITHUB_CLIENT_SECRET: z.string().optional(),
     GOOGLE_CLIENT_ID: z.string().optional(),
@@ -91,6 +93,8 @@ export const env = createEnv({
     NEWSLETTER_DATABASE_URL: process.env.NEWSLETTER_DATABASE_URL,
     UNSAFE_DB_SSL_ENABLED: process.env.UNSAFE_DB_SSL_ENABLED,
     GA_MEASUREMENT_ID: process.env.GA_MEASUREMENT_ID,
+    OPENAI_ADS_PIXEL_ID: process.env.OPENAI_ADS_PIXEL_ID,
+    OPENAI_ADS_CONVERSIONS_API_KEY: process.env.OPENAI_ADS_CONVERSIONS_API_KEY,
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,

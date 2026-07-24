@@ -57,6 +57,13 @@
       "when": 1782446108466,
       "tag": "0007_add-newsletter-unsubscribe",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1784811344172,
+      "tag": "0008_noisy_chimera",
+      "breakpoints": true
     }
   ]
 }

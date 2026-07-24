@@ -76,6 +76,8 @@ Optional:
 | --- | --- |
 | `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_POSTHOG_HOST` | PostHog analytics. |
 | `GA_MEASUREMENT_ID` | Google Analytics measurement ID. |
+| `OPENAI_ADS_PIXEL_ID` | OpenAI Ads Measurement Pixel ID. Set to `JDvSf6KLL8Y3e8QJhCmFF3` for the current pixel. |
+| `OPENAI_ADS_CONVERSIONS_API_KEY` | Optional OpenAI Ads Conversions API key for server-side conversion delivery. |
 | `BILLING_ENABLED` | Set to `true` only when the API billing endpoints and payment configuration are available. Defaults to disabled for open-source self-hosted deployments. |
 | `PASSWORD_LOGIN_ENABLED` | Set to `true` to show the login page's password-login button. Defaults to hidden. |
 | `AUTH_COOKIE_DOMAIN` | Optional Better Auth parent cookie domain for cross-subdomain sessions. Leave unset for host-only cookies. |
