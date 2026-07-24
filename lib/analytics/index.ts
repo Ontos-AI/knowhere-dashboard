@@ -1,4 +1,5 @@
 import { createGoogleAnalyticsAdapter } from "@/lib/analytics/adapters/google-analytics";
+import { createOpenAIAdsAdapter } from "@/lib/analytics/adapters/openai-ads";
 import { createPostHogAnalyticsAdapter } from "@/lib/analytics/adapters/posthog";
 import { type AnalyticsConfig, createAnalyticsController } from "@/lib/analytics/core";
 import type { AnalyticsEvent, AnalyticsProperties } from "@/lib/analytics/types";
@@ -34,6 +35,7 @@ export type {
 const analyticsController = createAnalyticsController([
   createPostHogAnalyticsAdapter(),
   createGoogleAnalyticsAdapter(),
+  createOpenAIAdsAdapter(),
 ]);
 
 export function initializeAnalytics(config: AnalyticsConfig = {}): void {

@@ -35,6 +35,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   // 在服务端读取环境变量（运行时配置，不带NEXT_PUBLIC_前缀）
   const appConfig = getDefaultConfig();
   const gaMeasurementId = appConfig.gaMeasurementId;
+  const openAIAdsPixelId = appConfig.openAIAdsPixelId;
 
   // 获取翻译消息
   const messages = await getMessages();
@@ -67,6 +68,23 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 gtag('config', '${gaMeasurementId}', { send_page_view: false });
               `}
             </Script>
+          </>
+        ) : null}
+        {openAIAdsPixelId ? (
+          <>
+            <Script id="openai-ads-pixel-init" strategy="afterInteractive">
+              {`
+                window.oaiq = window.oaiq || function () {
+                  (window.oaiq.q = window.oaiq.q || []).push(arguments);
+                };
+                window.oaiq("init", { pixelId: ${JSON.stringify(openAIAdsPixelId)} });
+              `}
+            </Script>
+            <Script
+              async={true}
+              src="https://bzrcdn.openai.com/sdk/oaiq.min.js"
+              strategy="afterInteractive"
+            />
           </>
         ) : null}
       </body>

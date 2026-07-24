@@ -14,25 +14,25 @@ type AnalyticsProviderProps = {
 function AnalyticsPageViewTracker() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { gaMeasurementId } = useAppConfigContext();
+  const { gaMeasurementId, openAIAdsPixelId } = useAppConfigContext();
 
   useEffect(() => {
-    initializeAnalytics({ googleAnalyticsMeasurementId: gaMeasurementId });
+    initializeAnalytics({ googleAnalyticsMeasurementId: gaMeasurementId, openAIAdsPixelId });
 
     const query = searchParams.toString();
     const pagePath = query ? `${pathname}?${query}` : pathname;
     trackAnalyticsPageView(pagePath);
-  }, [gaMeasurementId, pathname, searchParams]);
+  }, [gaMeasurementId, openAIAdsPixelId, pathname, searchParams]);
 
   return null;
 }
 
 export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
-  const { gaMeasurementId } = useAppConfigContext();
+  const { gaMeasurementId, openAIAdsPixelId } = useAppConfigContext();
 
   useEffect(() => {
-    initializeAnalytics({ googleAnalyticsMeasurementId: gaMeasurementId });
-  }, [gaMeasurementId]);
+    initializeAnalytics({ googleAnalyticsMeasurementId: gaMeasurementId, openAIAdsPixelId });
+  }, [gaMeasurementId, openAIAdsPixelId]);
 
   return (
     <>

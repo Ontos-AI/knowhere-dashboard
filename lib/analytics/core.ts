@@ -2,6 +2,7 @@ import type { AnalyticsEvent, AnalyticsProperties } from "@/lib/analytics/types"
 
 export type AnalyticsConfig = {
   readonly googleAnalyticsMeasurementId?: string;
+  readonly openAIAdsPixelId?: string;
 };
 
 export type AnalyticsAdapter = {

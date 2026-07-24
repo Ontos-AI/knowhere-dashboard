@@ -31,6 +31,7 @@ export type AppConfigType = {
   copyrightYear: number;
   showIcp: boolean;
   gaMeasurementId: string;
+  openAIAdsPixelId: string;
   // OAuth配置（运行时配置，不带NEXT_PUBLIC_前缀）
   googleClientId: string;
   githubClientId: string;
@@ -53,6 +54,7 @@ export const getDefaultConfig = (): AppConfigType => {
   const icpNumber = getEnv("ICP_NUMBER", "");
   const icpUrl = getEnv("ICP_URL", "https://beian.miit.gov.cn/");
   const gaMeasurementId = env.GA_MEASUREMENT_ID ?? "";
+  const openAIAdsPixelId = env.OPENAI_ADS_PIXEL_ID ?? "";
 
   // OAuth配置（运行时配置，不带NEXT_PUBLIC_前缀）
   const googleClientId = getEnv("GOOGLE_CLIENT_ID", "");
@@ -80,6 +82,7 @@ export const getDefaultConfig = (): AppConfigType => {
 
     // Analytics配置（运行时配置）
     gaMeasurementId,
+    openAIAdsPixelId,
 
     // OAuth配置（运行时配置）
     googleClientId,
