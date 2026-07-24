@@ -80,3 +80,34 @@ export const marketingAttributionSession = pgTable(
     ),
   })
 );
+
+export const marketingPageView = pgTable(
+  "marketing_page_views",
+  {
+    viewId: text("view_id")
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    acquisitionSessionId: text("acquisition_session_id"),
+    source: text("source").notNull(),
+    channel: text("channel").notNull(),
+    utmSource: text("utm_source"),
+    utmMedium: text("utm_medium"),
+    utmCampaign: text("utm_campaign"),
+    utmContent: text("utm_content"),
+    utmTerm: text("utm_term"),
+    oppref: text("oppref"),
+    visitedPath: text("visited_path").notNull(),
+    referrerHost: text("referrer_host"),
+    viewedAt: timestamp("viewed_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    viewedAtIndex: index("marketingPageView_viewedAt_idx").on(table.viewedAt),
+    visitedPathViewedAtIndex: index("marketingPageView_visitedPath_viewedAt_idx").on(
+      table.visitedPath,
+      table.viewedAt
+    ),
+    acquisitionSessionIdIndex: index("marketingPageView_acquisitionSessionId_idx").on(
+      table.acquisitionSessionId
+    ),
+  })
+);

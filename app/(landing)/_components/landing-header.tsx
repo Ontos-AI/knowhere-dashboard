@@ -26,7 +26,7 @@ const landingNavItems: LandingNavItem[] = [
   { href: "https://notebook.knowhereto.ai", labelKey: "playground", external: true },
   { href: "#pricing", labelKey: "pricing" },
   { href: "https://docs.knowhereto.ai/", labelKey: "docs", external: true },
-  { href: "https://github.com/Ontos-AI/knowhere", labelKey: "github", external: true },
+  { href: "/github", labelKey: "github" },
 ];
 
 const localeLabels = {

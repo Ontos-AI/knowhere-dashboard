@@ -22,9 +22,7 @@ describe("landing contracts", () => {
     expect(landingHeaderSource).toContain(
       '{ href: "https://notebook.knowhereto.ai", labelKey: "playground", external: true }'
     );
-    expect(landingHeaderSource).toContain(
-      '{ href: "https://github.com/Ontos-AI/knowhere", labelKey: "github", external: true }'
-    );
+    expect(landingHeaderSource).toContain('{ href: "/github", labelKey: "github" }');
   });
 
   it("keeps the playground sample area annotated with the drag-to-parse cue", () => {
