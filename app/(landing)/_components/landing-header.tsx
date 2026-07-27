@@ -17,7 +17,7 @@ const monoDisplayClassName = "font-[family-name:var(--font-mono-display)]";
 
 type LandingNavItem = {
   href: string;
-  labelKey: "comparison" | "docs" | "github" | "playground" | "pricing";
+  labelKey: "comparison" | "docs" | "github" | "playground" | "pricing" | "blog";
   external?: boolean;
 };
 
@@ -27,6 +27,7 @@ const landingNavItems: LandingNavItem[] = [
   { href: "#pricing", labelKey: "pricing" },
   { href: "https://docs.knowhereto.ai/", labelKey: "docs", external: true },
   { href: "/github", labelKey: "github" },
+  { href: "https://blog.knowhereto.ai/", labelKey: "blog", external: true },
 ];
 
 const localeLabels = {
@@ -35,6 +36,7 @@ const localeLabels = {
 } as const;
 
 const landingNavCtaIds: Record<LandingNavItem["labelKey"], string> = {
+  blog: "blog_external",
   comparison: "comparison",
   docs: "docs",
   github: "github",

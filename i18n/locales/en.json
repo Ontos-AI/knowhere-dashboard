@@ -520,7 +520,8 @@
         "playground": "Playground",
         "pricing": "Pricing",
         "docs": "Docs",
-        "github": "GitHub"
+        "github": "GitHub",
+        "blog": "Blog"
       },
       "cta": "GET API KEY",
       "openNavigationMenu": "Open navigation menu"
