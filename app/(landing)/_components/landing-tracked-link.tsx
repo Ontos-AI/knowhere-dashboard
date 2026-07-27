@@ -36,6 +36,8 @@ type LandingTrackedButtonProps = {
 
 const isContactSalesCta = (ctaId: string) => ctaId === "contact_sales" || ctaId === "book_demo";
 
+const externalLinkRel = "noopener noreferrer";
+
 const trackCta = (ctaId: string, sourceSection: string, locale: string, href?: string) => {
   if (isContactSalesCta(ctaId)) {
     trackContactSalesClicked(sourceSection);
@@ -72,7 +74,7 @@ export const LandingTrackedLink = ({
       className={className}
       href={href}
       onClick={handleClick}
-      rel={external ? "noreferrer" : undefined}
+      rel={external ? externalLinkRel : undefined}
       target={external ? "_blank" : undefined}
     >
       {children}
@@ -101,7 +103,7 @@ export const LandingTrackedAnchor = ({
       className={className}
       href={href}
       onClick={handleClick}
-      rel={external ? "noreferrer" : undefined}
+      rel={external ? externalLinkRel : undefined}
       target={external ? "_blank" : undefined}
     >
       {children}

@@ -26,6 +26,11 @@ describe("landing contracts", () => {
     expect(landingHeaderSource).toContain(
       '{ href: "https://blog.knowhereto.ai/", labelKey: "blog", external: true }'
     );
+    expect(landingHeaderSource.indexOf('{ href: "/github", labelKey: "github" }')).toBeLessThan(
+      landingHeaderSource.indexOf(
+        '{ href: "https://blog.knowhereto.ai/", labelKey: "blog", external: true }'
+      )
+    );
   });
 
   it("keeps the playground sample area annotated with the drag-to-parse cue", () => {
