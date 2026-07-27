@@ -23,6 +23,9 @@ describe("landing contracts", () => {
       '{ href: "https://notebook.knowhereto.ai", labelKey: "playground", external: true }'
     );
     expect(landingHeaderSource).toContain('{ href: "/github", labelKey: "github" }');
+    expect(landingHeaderSource).toContain(
+      '{ href: "https://blog.knowhereto.ai/", labelKey: "blog", external: true }'
+    );
   });
 
   it("keeps the playground sample area annotated with the drag-to-parse cue", () => {
