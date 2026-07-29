@@ -521,7 +521,8 @@
         "playground": "在线体验",
         "pricing": "价格",
         "docs": "文档",
-        "github": "GitHub"
+        "github": "GitHub",
+        "blog": "博客"
       },
       "cta": "获取 API Key",
       "openNavigationMenu": "打开导航菜单"

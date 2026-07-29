@@ -19,9 +19,9 @@ export default function GithubRedirectPage() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-4 px-6 text-center">
-      <h1 className="text-2xl font-semibold tracking-tight">Redirecting to GitHub…</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">Taking you to GitHub…</h1>
       <p className="max-w-md text-sm text-muted-foreground">
-        Taking you to the Knowhere repository. If nothing happens, use the link below.
+        Knowhere is fully open source. Explore the code, contribute, or build on top of it.
       </p>
       <Link
         href={GITHUB_REPO_URL}
