@@ -1,8 +1,10 @@
 "use client";
 
+import { DashboardCopyIcon } from "@app/(dashboard)/_components/dashboard-modal-primitives";
+import { useToast } from "@hooks/use-toast";
 import { cn } from "@lib/utils";
 import type { APIKey } from "@server/external-api/api-keys";
-import { formatDate } from "@utils/format";
+import { copyToClipboard, formatDate } from "@utils/format";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
@@ -70,6 +72,41 @@ const ToggleButton = ({
   );
 };
 
+const CopyKeyButton = ({ apiKey }: { apiKey: APIKey }) => {
+  const t = useTranslations("ApiKeys");
+  const toast = useToast();
+
+  const handleCopy = async () => {
+    const copyValue = apiKey.api_key ?? apiKey.key_prefix ?? "";
+    if (!copyValue) {
+      return;
+    }
+
+    const isCopied = await copyToClipboard(copyValue);
+
+    if (isCopied) {
+      toast.success(t("copySuccess"));
+      return;
+    }
+
+    toast.error(t("copyFailed"));
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        void handleCopy();
+      }}
+      aria-label={`${t("copyKeyPrefix")} ${apiKey.name}`}
+      title={t("copyKeyPrefix")}
+      className="ml-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-sm text-[#71717b] transition-colors hover:bg-[#ede9fe] hover:text-[#7f22fe] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/25"
+    >
+      <DashboardCopyIcon className="size-4" />
+    </button>
+  );
+};
+
 export const ApiKeysTable = ({
   apiKeys,
   locale,
@@ -128,10 +165,13 @@ export const ApiKeysTable = ({
                     {key.name}
                   </td>
                   <td className="h-[52px] px-[14px] lg:px-4">
-                    <div className="inline-flex max-w-full items-center bg-[#f5f3ff] px-[6px] py-0.5 lg:px-2 lg:py-1">
-                      <code className="block truncate font-mono-readable text-xs leading-[18px] text-[#4d179a] lg:text-sm lg:leading-5">
-                        {apiKeyPreview}
-                      </code>
+                    <div className="flex max-w-full items-center">
+                      <div className="inline-flex min-w-0 items-center bg-[#f5f3ff] px-[6px] py-0.5 lg:px-2 lg:py-1">
+                        <code className="block truncate font-mono-readable text-xs leading-[18px] text-[#4d179a] lg:text-sm lg:leading-5">
+                          {apiKeyPreview}
+                        </code>
+                      </div>
+                      <CopyKeyButton apiKey={key} />
                     </div>
                   </td>
                   <td className="h-[52px] px-[14px] lg:px-4">

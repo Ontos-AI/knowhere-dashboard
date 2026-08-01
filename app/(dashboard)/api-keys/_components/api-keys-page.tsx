@@ -2,6 +2,7 @@
 
 import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
 import { ApiKeyCreatedDialog } from "@app/(dashboard)/api-keys/_components/api-key-created-dialog";
+import { ApiKeySampleCode } from "@app/(dashboard)/api-keys/_components/api-key-sample-code";
 import { ApiKeysEmptyState } from "@app/(dashboard)/api-keys/_components/api-keys-empty-state";
 import { ApiKeysTable } from "@app/(dashboard)/api-keys/_components/api-keys-table";
 import { CreateApiKeyDialog } from "@app/(dashboard)/api-keys/_components/create-api-key-dialog";
@@ -358,6 +359,8 @@ export const ApiKeysPage = () => {
             onToggle={handleToggleKey}
           />
         ) : null}
+
+        <ApiKeySampleCode />
       </div>
 
       <CreateApiKeyDialog

@@ -374,7 +374,13 @@
     "delete": "Delete",
     "toggleConfirmTitle": "Confirm Disable API Key?",
     "toggleConfirmDesc": "Disabling this key will prevent any applications using it from accessing the API. You can enable it again at any time.",
-    "confirmDisable": "Confirm Disable"
+    "confirmDisable": "Confirm Disable",
+    "copyKeyPrefix": "Copy key prefix",
+    "codeTitle": "Run this code to parse your first PDF:",
+    "codeTabs": "Sample code language",
+    "copyCode": "Copy",
+    "copyCodeSuccess": "Sample code copied",
+    "copyCodeFailed": "Failed to copy sample code"
   },
   "FileUpload": {
     "status": {

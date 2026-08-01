@@ -375,7 +375,13 @@
     "delete": "删除",
     "toggleConfirmTitle": "确认禁用 API Key？",
     "toggleConfirmDesc": "禁用后，使用此 Key 的应用将无法访问 API。您随时可以再次启用它。",
-    "confirmDisable": "确认禁用"
+    "confirmDisable": "确认禁用",
+    "copyKeyPrefix": "复制 Key 前缀",
+    "codeTitle": "运行以下代码解析您的第一个 PDF：",
+    "codeTabs": "示例代码语言",
+    "copyCode": "复制",
+    "copyCodeSuccess": "示例代码已复制",
+    "copyCodeFailed": "复制示例代码失败"
   },
   "FileUpload": {
     "status": {
