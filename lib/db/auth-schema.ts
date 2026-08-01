@@ -12,6 +12,8 @@ export const user = pgTable("user", {
   email: text("email").notNull().unique(),
   emailVerified: boolean("emailVerified").notNull().default(false),
   image: text("image"),
+  username: text("username").unique(),
+  displayUsername: text("displayUsername"),
   role: text("role").notNull().default("user"),
   usageWelcomeStatus: text("usageWelcomeStatus").notNull().default("pending"),
   usageWelcomeApiKey: text("usageWelcomeApiKey"),
@@ -57,7 +59,7 @@ export const account = pgTable("account", {
   updatedAt: timestamp("updatedAt", { withTimezone: true }).notNull().defaultNow(),
 });
 
-// Verification table - stores Magic Link tokens for passwordless login
+// Verification table - stores verification tokens (e.g. email verification)
 export const verification = pgTable("verification", {
   id: text("id")
     .primaryKey()

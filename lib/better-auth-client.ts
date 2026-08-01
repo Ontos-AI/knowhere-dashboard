@@ -1,10 +1,10 @@
 "use client";
 
-import { magicLinkClient } from "better-auth/client/plugins";
+import { usernameClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 import { env } from "@/lib/env";
 
-// Shared Better Auth client. Magic Link is optional; email/password is available by default.
+// Shared Better Auth client. Email/password is the only sign-in method.
 export const authClient = createAuthClient({
   baseURL:
     typeof window === "undefined"
@@ -12,5 +12,5 @@ export const authClient = createAuthClient({
         ? env.NEXT_PUBLIC_AUTH_BASE_URL
         : `${env.NEXT_PUBLIC_APP_URL}${env.NEXT_PUBLIC_AUTH_BASE_URL}`
       : `${window.location.origin}/api/auth`,
-  plugins: [magicLinkClient()],
+  plugins: [usernameClient()],
 });

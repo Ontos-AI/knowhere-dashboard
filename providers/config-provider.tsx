@@ -27,9 +27,6 @@ export function useAppConfigContext(): AppConfigType {
       showIcp: false,
       gaMeasurementId: "",
       openAIAdsPixelId: "",
-      googleClientId: "",
-      githubClientId: "",
-      appleClientId: "",
       billingEnabled: false,
       passwordLoginEnabled: false,
     };

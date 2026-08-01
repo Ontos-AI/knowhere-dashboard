@@ -32,10 +32,6 @@ export type AppConfigType = {
   showIcp: boolean;
   gaMeasurementId: string;
   openAIAdsPixelId: string;
-  // OAuth配置（运行时配置，不带NEXT_PUBLIC_前缀）
-  googleClientId: string;
-  githubClientId: string;
-  appleClientId: string;
   billingEnabled: boolean;
   passwordLoginEnabled: boolean;
 };
@@ -55,11 +51,6 @@ export const getDefaultConfig = (): AppConfigType => {
   const icpUrl = getEnv("ICP_URL", "https://beian.miit.gov.cn/");
   const gaMeasurementId = env.GA_MEASUREMENT_ID ?? "";
   const openAIAdsPixelId = env.OPENAI_ADS_PIXEL_ID ?? "";
-
-  // OAuth配置（运行时配置，不带NEXT_PUBLIC_前缀）
-  const googleClientId = getEnv("GOOGLE_CLIENT_ID", "");
-  const githubClientId = getEnv("GITHUB_CLIENT_ID", "");
-  const appleClientId = getEnv("APPLE_CLIENT_ID", "");
 
   return {
     // 公司名称（运行时配置，不带 NEXT_PUBLIC_ 前缀）
@@ -83,11 +74,6 @@ export const getDefaultConfig = (): AppConfigType => {
     // Analytics配置（运行时配置）
     gaMeasurementId,
     openAIAdsPixelId,
-
-    // OAuth配置（运行时配置）
-    googleClientId,
-    githubClientId,
-    appleClientId,
 
     billingEnabled: isBillingEnabled(),
     passwordLoginEnabled: getBooleanEnv(env.PASSWORD_LOGIN_ENABLED),
