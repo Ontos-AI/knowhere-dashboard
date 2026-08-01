@@ -2,7 +2,7 @@ import "./polyfill";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { jwt, magicLink } from "better-auth/plugins";
+import { jwt, username } from "better-auth/plugins";
 import { Resend } from "resend";
 import { ProxyAgent, setGlobalDispatcher } from "undici";
 import { authCookies } from "@/lib/auth-cookie-config";
@@ -192,27 +192,6 @@ export const auth = betterAuth({
     },
   },
 
-  // Email/password is the self-hosted baseline. OAuth and Magic Link remain optional add-ons.
-  socialProviders: {
-    ...(env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET
-      ? {
-          github: {
-            clientId: env.GITHUB_CLIENT_ID,
-            clientSecret: env.GITHUB_CLIENT_SECRET,
-            redirectURI: `${env.BETTER_AUTH_URL}/api/auth/callback/github`,
-          },
-        }
-      : {}),
-    ...(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
-      ? {
-          google: {
-            clientId: env.GOOGLE_CLIENT_ID,
-            clientSecret: env.GOOGLE_CLIENT_SECRET,
-            redirectURI: `${env.BETTER_AUTH_URL}/api/auth/callback/google`,
-          },
-        }
-      : {}),
-  },
   plugins: [
     jwt({
       jwt: {
@@ -222,19 +201,8 @@ export const auth = betterAuth({
         }),
       },
     }),
-    magicLink({
-      sendMagicLink: async ({ email, url }) => {
-        await sendAuthEmail({
-          to: email,
-          subject: "Knowhere Account Login Link",
-          title: "Log in to Knowhere",
-          intro: "You requested a login link. Click the button below to sign in:",
-          buttonText: "Sign In",
-          url,
-          fallbackLabel: "Magic link",
-          missingApiKeyMessage: "RESEND_API_KEY is required for magic-link email login",
-        });
-      },
+    username({
+      minUsernameLength: 2,
     }),
     nextCookies(),
   ],

@@ -72,10 +72,10 @@ const infoFieldLabelClassName = "text-xs leading-[14px] text-[#9f9fa9] lg:leadin
 const fieldValueClassName =
   "text-xs leading-[18px] text-[#18181b] dark:text-[#e4e4e7] lg:text-sm lg:leading-5";
 
-const createProfileSchema = (messages: { emailInvalid: string; usernameMinLength: string }) =>
+const createProfileSchema = (messages: { emailInvalid: string; displayNameMinLength: string }) =>
   z.object({
     email: z.string().email({ message: messages.emailInvalid }),
-    username: z.string().min(2, { message: messages.usernameMinLength }),
+    displayName: z.string().min(2, { message: messages.displayNameMinLength }),
   });
 
 type ProfileFormValues = z.infer<ReturnType<typeof createProfileSchema>>;
@@ -172,12 +172,12 @@ export const SettingsPage = () => {
   const profileForm = useForm<ProfileFormValues>({
     defaultValues: {
       email: "",
-      username: "",
+      displayName: "",
     },
     resolver: zodResolver(
       createProfileSchema({
         emailInvalid: t("emailInvalid"),
-        usernameMinLength: t("usernameMinLength"),
+        displayNameMinLength: t("displayNameMinLength"),
       })
     ),
   });
@@ -227,7 +227,7 @@ export const SettingsPage = () => {
 
     profileForm.reset({
       email: userEmail,
-      username: userName,
+      displayName: userName,
     });
   }, [hasUser, profileForm, userEmail, userName]);
 
@@ -293,16 +293,16 @@ export const SettingsPage = () => {
     }
 
     try {
-      const usernameChanged = values.username !== user.name;
+      const displayNameChanged = values.displayName !== user.name;
       const emailChanged = values.email !== user.email;
 
-      if (!usernameChanged && !emailChanged) {
+      if (!displayNameChanged && !emailChanged) {
         toast.error(t("noChanges"));
         return;
       }
 
-      if (usernameChanged) {
-        await updateProfileMutation.mutateAsync({ name: values.username });
+      if (displayNameChanged) {
+        await updateProfileMutation.mutateAsync({ name: values.displayName });
       }
 
       if (emailChanged && !hasOAuthAccount) {
@@ -468,7 +468,7 @@ export const SettingsPage = () => {
         unverifiedLabel={t("unverified")}
         user={user}
         userIdLabel={t("userId")}
-        usernameLabel={t("username")}
+        displayNameLabel={t("displayName")}
         verifiedLabel={t("verified")}
       />
 
@@ -601,7 +601,7 @@ const SettingsProfileSection = ({
   unverifiedLabel,
   user,
   userIdLabel,
-  usernameLabel,
+  displayNameLabel,
   verifiedLabel,
 }: {
   accountInformationLabel: string;
@@ -630,7 +630,7 @@ const SettingsProfileSection = ({
   unverifiedLabel: string;
   user: AuthUser;
   userIdLabel: string;
-  usernameLabel: string;
+  displayNameLabel: string;
   verifiedLabel: string;
 }) => {
   return (
@@ -645,17 +645,17 @@ const SettingsProfileSection = ({
         >
           <div className="flex flex-col gap-[6px] lg:gap-2">
             <label className={formFieldLabelClassName} htmlFor="settings-username">
-              {usernameLabel}
+              {displayNameLabel}
             </label>
             <input
               id="settings-username"
               className={cn(formInputClassName, "border-[#e4e4e7] dark:border-[#3f3f46]")}
               disabled={isSaving}
-              {...form.register("username")}
+              {...form.register("displayName")}
             />
-            {form.formState.errors.username ? (
+            {form.formState.errors.displayName ? (
               <p className="text-xs leading-4 text-[#dc2626]">
-                {form.formState.errors.username.message}
+                {form.formState.errors.displayName.message}
               </p>
             ) : null}
           </div>

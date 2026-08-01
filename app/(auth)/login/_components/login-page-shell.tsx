@@ -2,26 +2,14 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { EmailLoginForm } from "@/app/(auth)/login/_components/email-login-form";
 import { LoginBrand } from "@/app/(auth)/login/_components/login-brand";
-import { SocialLoginButtons } from "@/app/(auth)/login/_components/social-login-buttons";
+import { UsernameLoginForm } from "@/app/(auth)/login/_components/username-login-form";
 import { useLoginActions } from "@/app/(auth)/login/_hooks/use-login-actions";
-import { useAppConfigContext } from "@/providers/config-provider";
 
 export const LoginPageShell = () => {
   const t = useTranslations("Auth");
-  const { passwordLoginEnabled } = useAppConfigContext();
-  const {
-    activeOAuthProvider,
-    forgotPasswordPath,
-    registerPath,
-    isMagicLinkLoading,
-    isOAuthLoading,
-    isPasswordLoading,
-    signInWithMagicLink,
-    signInWithPassword,
-    signInWithProvider,
-  } = useLoginActions();
+  const { forgotPasswordPath, registerPath, isPasswordLoading, signInWithPassword } =
+    useLoginActions();
 
   return (
     <div className="min-h-screen bg-[#fafafa] text-[#09090b]">
@@ -46,30 +34,12 @@ export const LoginPageShell = () => {
               <h1 className="text-base font-bold leading-[26px] text-[#09090b] sm:text-lg lg:text-xl lg:leading-7">
                 {t("login")}
               </h1>
-              <SocialLoginButtons
-                activeProvider={activeOAuthProvider}
-                disabled={isMagicLinkLoading}
-                onSignIn={signInWithProvider}
-              />
             </div>
 
-            <div
-              aria-hidden="true"
-              className="flex items-center justify-center gap-[18px] text-xs font-normal leading-[18px] text-[#9f9fa9] lg:gap-5 lg:text-sm lg:leading-5"
-            >
-              <span className="h-px flex-1 bg-[#e4e4e7]" />
-              <span>or</span>
-              <span className="h-px flex-1 bg-[#e4e4e7]" />
-            </div>
-
-            <EmailLoginForm
-              disabled={isOAuthLoading}
+            <UsernameLoginForm
               forgotPasswordPath={forgotPasswordPath}
-              isMagicLinkLoading={isMagicLinkLoading}
               isPasswordLoading={isPasswordLoading}
-              onMagicLinkSubmit={signInWithMagicLink}
               onPasswordSubmit={signInWithPassword}
-              passwordLoginEnabled={passwordLoginEnabled}
               registerPath={registerPath}
             />
           </div>

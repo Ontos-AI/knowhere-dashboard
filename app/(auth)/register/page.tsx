@@ -12,7 +12,6 @@ import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { OAuthButtons } from "@/app/(auth)/_components/oauth-buttons";
 import { useToast } from "@/hooks/use-toast";
 import { authRedirect } from "@/lib/auth-redirect";
 import { authClient } from "@/lib/better-auth-client";
@@ -60,6 +59,7 @@ export default function RegisterPage() {
     try {
       const { error } = await authClient.signUp.email({
         name: data.username,
+        username: data.username,
         email: data.email,
         callbackURL,
         password: data.password,
@@ -85,10 +85,6 @@ export default function RegisterPage() {
     }
   };
 
-  const handleOAuthError = (error: string) => {
-    toast.error(t("oauthFailed"), error);
-  };
-
   return (
     <Card className="w-full border-border/80 bg-card/95 shadow-[0_14px_44px_-24px_rgba(146,64,14,0.35)]">
       <CardHeader className="space-y-1">
@@ -96,8 +92,6 @@ export default function RegisterPage() {
         <CardDescription className="text-center">{t("registerDesc")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <OAuthButtons onError={handleOAuthError} />
-
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="username">{t("username")}</Label>
@@ -105,7 +99,7 @@ export default function RegisterPage() {
               id="username"
               type="text"
               placeholder={t("usernamePlaceholder")}
-              autoComplete="name"
+              autoComplete="username"
               {...register("username")}
               disabled={isLoading}
             />
