@@ -12,22 +12,17 @@ import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useState } from "react";
 
 const landingHeaderCanvasWidthClassName =
-  "mx-auto grid h-12 w-full grid-cols-[148px_minmax(0,1fr)_88px] min-[640px]:grid-cols-[148px_minmax(0,1fr)_224px] min-[640px]:h-16 min-[768px]:max-w-[768px] min-[769px]:max-w-[1280px] min-[769px]:grid-cols-[152px_minmax(0,1fr)_224px]";
-const monoDisplayClassName = "font-[family-name:var(--font-mono-display)]";
+  "mx-auto grid h-12 w-full grid-cols-[148px_minmax(0,1fr)_88px] min-[640px]:grid-cols-[148px_minmax(0,1fr)_88px] min-[640px]:h-16 min-[768px]:max-w-[768px] min-[769px]:max-w-[1280px] min-[769px]:grid-cols-[152px_minmax(0,1fr)_88px]";
 
 type LandingNavItem = {
   href: string;
-  labelKey: "comparison" | "docs" | "github" | "playground" | "pricing" | "blog";
+  labelKey: "docs" | "github";
   external?: boolean;
 };
 
 const landingNavItems: LandingNavItem[] = [
-  { href: "#comparison", labelKey: "comparison" },
-  { href: "https://notebook.knowhereto.ai", labelKey: "playground", external: true },
-  { href: "#pricing", labelKey: "pricing" },
   { href: "https://docs.knowhereto.ai/", labelKey: "docs", external: true },
   { href: "/github", labelKey: "github" },
-  { href: "https://blog.knowhereto.ai/", labelKey: "blog", external: true },
 ];
 
 const localeLabels = {
@@ -36,12 +31,8 @@ const localeLabels = {
 } as const;
 
 const landingNavCtaIds: Record<LandingNavItem["labelKey"], string> = {
-  blog: "blog_external",
-  comparison: "comparison",
   docs: "docs",
   github: "github",
-  playground: "playground_external",
-  pricing: "pricing",
 };
 
 const LandingHeaderLink = ({
@@ -101,7 +92,7 @@ const LandingHeaderLink = ({
 
 export const LandingHeader = () => {
   const activeSection = useActiveSection({
-    ids: ["comparison", "pricing"],
+    ids: [],
   });
   const locale = useLocale();
   const t = useTranslations("Landing.header");
@@ -161,18 +152,6 @@ export const LandingHeader = () => {
           >
             <KnowhereIcon className="h-[14px] w-[14px] text-current" name="menu" />
           </button>
-          <LandingTrackedLink
-            className={cn(
-              "inline-flex items-center justify-center border-b-[6px] border-b-[#7f22fe] bg-[#8e51ff] pt-[4px] pb-[4px] px-6 text-[#f5f3ff] transition-all hover:border-b-[8px] hover:border-b-[#7008e7] hover:bg-[#7f22fe] hover:pb-[6px] active:border-b-0 active:bg-[#7008e7] active:pb-[6px]",
-              monoDisplayClassName,
-              "hidden h-full w-[152px] rounded-none text-sm font-semibold min-[640px]:inline-flex"
-            )}
-            ctaId="get_api_key"
-            href="/login"
-            sourceSection="header"
-          >
-            {t("cta")}
-          </LandingTrackedLink>
         </div>
 
         {mobileMenuOpen ? (
