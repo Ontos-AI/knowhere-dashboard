@@ -15,12 +15,18 @@ function normalizeOptionalUrl(value: unknown): unknown {
   return normalizeOptionalString(value);
 }
 
+const positiveInteger = z.coerce.number().int().positive();
+
 export const env = createEnv({
   server: {
     BETTER_AUTH_SECRET: z.string().min(32),
     BETTER_AUTH_URL: z.url(),
     DATABASE_URL: z.url(),
     NEWSLETTER_DATABASE_URL: z.preprocess(normalizeOptionalUrl, z.url().optional()),
+    DATABASE_POOL_MAX: positiveInteger.default(2),
+    NEWSLETTER_DATABASE_POOL_MAX: positiveInteger.default(1),
+    DATABASE_POOL_IDLE_TIMEOUT_MS: positiveInteger.default(10_000),
+    DATABASE_POOL_CONNECTION_TIMEOUT_MS: positiveInteger.default(5_000),
     UNSAFE_DB_SSL_ENABLED: z.string().default("false"),
     GA_MEASUREMENT_ID: z
       .string()
@@ -91,6 +97,10 @@ export const env = createEnv({
     BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
     DATABASE_URL: process.env.DATABASE_URL,
     NEWSLETTER_DATABASE_URL: process.env.NEWSLETTER_DATABASE_URL,
+    DATABASE_POOL_MAX: process.env.DATABASE_POOL_MAX,
+    NEWSLETTER_DATABASE_POOL_MAX: process.env.NEWSLETTER_DATABASE_POOL_MAX,
+    DATABASE_POOL_IDLE_TIMEOUT_MS: process.env.DATABASE_POOL_IDLE_TIMEOUT_MS,
+    DATABASE_POOL_CONNECTION_TIMEOUT_MS: process.env.DATABASE_POOL_CONNECTION_TIMEOUT_MS,
     UNSAFE_DB_SSL_ENABLED: process.env.UNSAFE_DB_SSL_ENABLED,
     GA_MEASUREMENT_ID: process.env.GA_MEASUREMENT_ID,
     OPENAI_ADS_PIXEL_ID: process.env.OPENAI_ADS_PIXEL_ID,

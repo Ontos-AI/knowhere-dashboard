@@ -52,6 +52,33 @@ describe("env.AUTH_COOKIE_PREFIX", () => {
   });
 });
 
+describe("env database pools", () => {
+  it("uses the bounded staging and Vercel pool defaults", async () => {
+    const { env } = await loadEnv({
+      DATABASE_POOL_CONNECTION_TIMEOUT_MS: undefined,
+      DATABASE_POOL_IDLE_TIMEOUT_MS: undefined,
+      DATABASE_POOL_MAX: undefined,
+      NEWSLETTER_DATABASE_POOL_MAX: undefined,
+    });
+
+    expect(env.DATABASE_POOL_MAX).toBe(2);
+    expect(env.NEWSLETTER_DATABASE_POOL_MAX).toBe(1);
+    expect(env.DATABASE_POOL_IDLE_TIMEOUT_MS).toBe(10_000);
+    expect(env.DATABASE_POOL_CONNECTION_TIMEOUT_MS).toBe(5_000);
+  });
+
+  it("rejects non-positive database pool values", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    await expect(
+      loadEnv({
+        DATABASE_POOL_MAX: "0",
+      })
+    ).rejects.toThrow("Invalid environment variables");
+    expect(consoleError).toHaveBeenCalled();
+  });
+});
+
 describe("env.OPENAI_ADS", () => {
   it("normalizes blank OpenAI Ads values to undefined", async () => {
     const { env } = await loadEnv({
