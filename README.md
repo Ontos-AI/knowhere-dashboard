@@ -110,6 +110,8 @@ pnpm newsletter-db:migrate
 
 Production newsletter storage reads `NEWSLETTER_DATABASE_URL` from the optional Kubernetes Secret key `knowhere-secrets/newsletter-database-url` when it exists. If it is unset, newsletter storage falls back to `DATABASE_URL`.
 
+The newsletter database migration is manual-only and is not run by container startup, deployment workflows, CI, or `workflow_dispatch`. Run `pnpm newsletter-db:migrate` only as an explicitly approved operator operation against the intended newsletter database.
+
 ## Docker
 
 Build the image:
@@ -124,7 +126,7 @@ Run the dashboard:
 docker run --rm -p 3000:3000 --env-file .env.local knowhere-dashboard
 ```
 
-The container runs `pnpm db:migrate` and `pnpm newsletter-db:migrate` before starting the Next.js server. If either command fails, the app server is not started.
+The container starts the Next.js server directly with `pnpm start`. Database migrations are release-gated operations and must run explicitly before the deployment is rolled out.
 
 The image runs the standard Next.js Node server with `pnpm start`. Runtime configuration is injected through environment variables; the Docker build does not create or bake `.env.production`.
 
