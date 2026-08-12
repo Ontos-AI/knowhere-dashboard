@@ -75,4 +75,4 @@ USER nextjs
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "pnpm db:migrate && pnpm newsletter-db:migrate && exec pnpm start"]
+CMD ["pnpm", "start"]
