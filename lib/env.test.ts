@@ -54,17 +54,17 @@ describe("env.AUTH_COOKIE_PREFIX", () => {
 
 describe("env database pools", (): void => {
   it("uses the bounded staging and Vercel pool defaults", async (): Promise<void> => {
-    const { env } = await loadEnv({
-      DATABASE_POOL_CONNECTION_TIMEOUT_MS: undefined,
-      DATABASE_POOL_IDLE_TIMEOUT_MS: undefined,
+    const envModule: EnvModule = await loadEnv({
+      DATABASE_POOL_CONNECTION_TIMEOUT_MILLISECONDS: undefined,
+      DATABASE_POOL_IDLE_TIMEOUT_MILLISECONDS: undefined,
       DATABASE_POOL_MAX: undefined,
       NEWSLETTER_DATABASE_POOL_MAX: undefined,
     });
 
-    expect(env.DATABASE_POOL_MAX).toBe(2);
-    expect(env.NEWSLETTER_DATABASE_POOL_MAX).toBe(1);
-    expect(env.DATABASE_POOL_IDLE_TIMEOUT_MS).toBe(10_000);
-    expect(env.DATABASE_POOL_CONNECTION_TIMEOUT_MS).toBe(5_000);
+    expect(envModule.env.DATABASE_POOL_MAX).toBe(2);
+    expect(envModule.env.NEWSLETTER_DATABASE_POOL_MAX).toBe(1);
+    expect(envModule.env.DATABASE_POOL_IDLE_TIMEOUT_MILLISECONDS).toBe(10_000);
+    expect(envModule.env.DATABASE_POOL_CONNECTION_TIMEOUT_MILLISECONDS).toBe(5_000);
   });
 
   it("rejects non-positive database pool values", async (): Promise<void> => {

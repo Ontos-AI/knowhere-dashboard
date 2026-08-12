@@ -10,8 +10,8 @@ function getNewsletterDatabaseUrl(): string {
 
 const newsletterPool: ReturnType<typeof createDatabasePool> = createDatabasePool({
   connectionString: getNewsletterDatabaseUrl(),
-  connectionTimeoutMillis: env.DATABASE_POOL_CONNECTION_TIMEOUT_MS,
-  idleTimeoutMillis: env.DATABASE_POOL_IDLE_TIMEOUT_MS,
+  connectionTimeoutMillis: env.DATABASE_POOL_CONNECTION_TIMEOUT_MILLISECONDS,
+  idleTimeoutMillis: env.DATABASE_POOL_IDLE_TIMEOUT_MILLISECONDS,
   max: env.NEWSLETTER_DATABASE_POOL_MAX,
   ssl: getDatabaseSslConfig(env.UNSAFE_DB_SSL_ENABLED),
 });

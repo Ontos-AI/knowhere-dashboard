@@ -22,8 +22,8 @@ vi.mock("@lib/db/schema", (): { account: string } => ({ account: "app-schema" })
 vi.mock("drizzle-orm/node-postgres", (): { drizzle: typeof drizzle } => ({ drizzle }));
 vi.mock("@lib/env", (): { env: Readonly<Record<string, number | string>> } => ({
   env: {
-    DATABASE_POOL_CONNECTION_TIMEOUT_MS: 5_000,
-    DATABASE_POOL_IDLE_TIMEOUT_MS: 10_000,
+    DATABASE_POOL_CONNECTION_TIMEOUT_MILLISECONDS: 5_000,
+    DATABASE_POOL_IDLE_TIMEOUT_MILLISECONDS: 10_000,
     DATABASE_POOL_MAX: 2,
     DATABASE_URL: "postgres://main.example/knowhere",
     UNSAFE_DB_SSL_ENABLED: "false",

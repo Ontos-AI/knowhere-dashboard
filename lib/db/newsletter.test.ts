@@ -23,8 +23,8 @@ vi.mock("@lib/db/newsletter-schema", (): { subscription: string } => ({
 vi.mock("drizzle-orm/node-postgres", (): { drizzle: typeof drizzle } => ({ drizzle }));
 vi.mock("@lib/env", (): { env: Readonly<Record<string, number | string>> } => ({
   env: {
-    DATABASE_POOL_CONNECTION_TIMEOUT_MS: 5_000,
-    DATABASE_POOL_IDLE_TIMEOUT_MS: 10_000,
+    DATABASE_POOL_CONNECTION_TIMEOUT_MILLISECONDS: 5_000,
+    DATABASE_POOL_IDLE_TIMEOUT_MILLISECONDS: 10_000,
     DATABASE_URL: "postgres://main.example/knowhere",
     NEWSLETTER_DATABASE_POOL_MAX: 1,
     NEWSLETTER_DATABASE_URL: "postgres://newsletter.example/knowhere",

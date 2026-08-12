@@ -8,8 +8,8 @@ import { drizzle } from "drizzle-orm/node-postgres";
 // Connection pool for dashboard auth/account data.
 const pool: ReturnType<typeof createDatabasePool> = createDatabasePool({
   connectionString: env.DATABASE_URL,
-  connectionTimeoutMillis: env.DATABASE_POOL_CONNECTION_TIMEOUT_MS,
-  idleTimeoutMillis: env.DATABASE_POOL_IDLE_TIMEOUT_MS,
+  connectionTimeoutMillis: env.DATABASE_POOL_CONNECTION_TIMEOUT_MILLISECONDS,
+  idleTimeoutMillis: env.DATABASE_POOL_IDLE_TIMEOUT_MILLISECONDS,
   max: env.DATABASE_POOL_MAX,
   ssl: getDatabaseSslConfig(env.UNSAFE_DB_SSL_ENABLED),
 });

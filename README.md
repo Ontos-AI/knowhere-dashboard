@@ -60,8 +60,8 @@ Required for startup:
 | `NEWSLETTER_DATABASE_URL` | Optional PostgreSQL connection URL for newsletter subscription data. Falls back to `DATABASE_URL` when unset. |
 | `DATABASE_POOL_MAX` | Maximum dashboard auth/account database connections per app instance. Defaults to `2`. |
 | `NEWSLETTER_DATABASE_POOL_MAX` | Maximum newsletter database connections per app instance. Defaults to `1`. |
-| `DATABASE_POOL_IDLE_TIMEOUT_MS` | Time before an idle database connection is closed. Defaults to `10000`. |
-| `DATABASE_POOL_CONNECTION_TIMEOUT_MS` | Time allowed to acquire a new database connection. Defaults to `5000`. |
+| `DATABASE_POOL_IDLE_TIMEOUT_MILLISECONDS` | Time before an idle database connection is closed. Defaults to `10000`. |
+| `DATABASE_POOL_CONNECTION_TIMEOUT_MILLISECONDS` | Time allowed to acquire a new database connection. Defaults to `5000`. |
 | `UNSAFE_DB_SSL_ENABLED` | Optional escape hatch for local/self-hosted PostgreSQL without SSL. Set to `true` only when the database does not support SSL. Defaults to `false`, so hosted SaaS keeps SSL enabled without extra config. |
 
 Email/password registration is enabled for self-hosted deployments. The login page defaults to SSO plus Resend-backed email links; set `PASSWORD_LOGIN_ENABLED=true` only when you want to expose the password-login entry point. OAuth and Resend-backed magic-link login are optional add-ons. Password reset emails also use Resend; signed-in OAuth users can set a password from dashboard settings.
