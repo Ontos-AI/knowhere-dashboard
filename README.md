@@ -58,6 +58,10 @@ Required for startup:
 | `BETTER_AUTH_SECRET` | Random secret with at least 32 characters. |
 | `DATABASE_URL` | PostgreSQL connection URL for dashboard auth/account data. |
 | `NEWSLETTER_DATABASE_URL` | Optional PostgreSQL connection URL for newsletter subscription data. Falls back to `DATABASE_URL` when unset. |
+| `DATABASE_POOL_MAX` | Maximum dashboard auth/account database connections per app instance. Defaults to `2`. |
+| `NEWSLETTER_DATABASE_POOL_MAX` | Maximum newsletter database connections per app instance. Defaults to `1`. |
+| `DATABASE_POOL_IDLE_TIMEOUT_MILLISECONDS` | Time before an idle database connection is closed. Defaults to `10000`. |
+| `DATABASE_POOL_CONNECTION_TIMEOUT_MILLISECONDS` | Time allowed to acquire a new database connection. Defaults to `5000`. |
 | `UNSAFE_DB_SSL_ENABLED` | Optional escape hatch for local/self-hosted PostgreSQL without SSL. Set to `true` only when the database does not support SSL. Defaults to `false`, so hosted SaaS keeps SSL enabled without extra config. |
 
 Email/password registration is enabled for self-hosted deployments. The login page defaults to SSO plus Resend-backed email links; set `PASSWORD_LOGIN_ENABLED=true` only when you want to expose the password-login entry point. OAuth and Resend-backed magic-link login are optional add-ons. Password reset emails also use Resend; signed-in OAuth users can set a password from dashboard settings.
@@ -87,6 +91,8 @@ Optional:
 | `HTTPS_PROXY`, `HTTP_PROXY` | Development proxy for outbound auth/email calls. |
 
 Do not commit `.env.local`, `.env.production`, or any other real environment file.
+
+Both database pools are bounded per application instance. On Vercel, the app registers each pool with the Vercel Functions lifecycle so idle connections can be released before a function instance is suspended.
 
 ## Quality Commands
 
