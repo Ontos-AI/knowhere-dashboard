@@ -27,4 +27,13 @@ describe("dashboard deploy workflow", (): void => {
     expect(deployWorkflow).toContain(`if [ -z "${EXPRESSION_START}{DATABASE_URL}" ]; then`);
     expect(deployWorkflow).toContain("Missing DATABASE_MIGRATION_URL");
   });
+
+  it("gates both staging pushes and production releases on migration success", (): void => {
+    const deployWorkflow: string = readDeployWorkflow();
+
+    expect(deployWorkflow).toContain(
+      `if: ${EXPRESSION_START}{{ github.event_name == 'release' || github.ref == 'refs/heads/staging' || github.event_name == 'workflow_dispatch' }}`
+    );
+    expect(deployWorkflow).toContain("needs: [build-and-publish, migrate]");
+  });
 });
