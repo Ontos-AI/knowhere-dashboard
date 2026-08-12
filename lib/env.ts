@@ -15,7 +15,7 @@ function normalizeOptionalUrl(value: unknown): unknown {
   return normalizeOptionalString(value);
 }
 
-const positiveInteger = z.coerce.number().int().positive();
+const POSITIVE_INTEGER: z.ZodCoercedNumber = z.coerce.number().int().positive();
 
 export const env = createEnv({
   server: {
@@ -23,10 +23,10 @@ export const env = createEnv({
     BETTER_AUTH_URL: z.url(),
     DATABASE_URL: z.url(),
     NEWSLETTER_DATABASE_URL: z.preprocess(normalizeOptionalUrl, z.url().optional()),
-    DATABASE_POOL_MAX: positiveInteger.default(2),
-    NEWSLETTER_DATABASE_POOL_MAX: positiveInteger.default(1),
-    DATABASE_POOL_IDLE_TIMEOUT_MS: positiveInteger.default(10_000),
-    DATABASE_POOL_CONNECTION_TIMEOUT_MS: positiveInteger.default(5_000),
+    DATABASE_POOL_MAX: POSITIVE_INTEGER.default(2),
+    NEWSLETTER_DATABASE_POOL_MAX: POSITIVE_INTEGER.default(1),
+    DATABASE_POOL_IDLE_TIMEOUT_MS: POSITIVE_INTEGER.default(10_000),
+    DATABASE_POOL_CONNECTION_TIMEOUT_MS: POSITIVE_INTEGER.default(5_000),
     UNSAFE_DB_SSL_ENABLED: z.string().default("false"),
     GA_MEASUREMENT_ID: z
       .string()

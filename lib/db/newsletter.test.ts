@@ -1,13 +1,27 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 
-const createDatabasePool = vi.fn(() => ({ pool: "newsletter" }));
-const drizzle = vi.fn(() => ({ database: "newsletter" }));
+interface PoolStub {
+  readonly pool: string;
+}
 
-vi.mock("@lib/db/database-pool", () => ({ createDatabasePool }));
-vi.mock("@lib/db/database-ssl", () => ({ getDatabaseSslConfig: () => false }));
-vi.mock("@lib/db/newsletter-schema", () => ({ subscription: "newsletter-schema" }));
-vi.mock("drizzle-orm/node-postgres", () => ({ drizzle }));
-vi.mock("@lib/env", () => ({
+interface DatabaseStub {
+  readonly database: string;
+}
+
+const createDatabasePool: Mock<() => PoolStub> = vi.fn((): PoolStub => ({ pool: "newsletter" }));
+const drizzle: Mock<() => DatabaseStub> = vi.fn((): DatabaseStub => ({ database: "newsletter" }));
+
+vi.mock("@lib/db/database-pool", (): { createDatabasePool: typeof createDatabasePool } => ({
+  createDatabasePool,
+}));
+vi.mock("@lib/db/database-ssl", (): { getDatabaseSslConfig: () => boolean } => ({
+  getDatabaseSslConfig: (): boolean => false,
+}));
+vi.mock("@lib/db/newsletter-schema", (): { subscription: string } => ({
+  subscription: "newsletter-schema",
+}));
+vi.mock("drizzle-orm/node-postgres", (): { drizzle: typeof drizzle } => ({ drizzle }));
+vi.mock("@lib/env", (): { env: Readonly<Record<string, number | string>> } => ({
   env: {
     DATABASE_POOL_CONNECTION_TIMEOUT_MS: 5_000,
     DATABASE_POOL_IDLE_TIMEOUT_MS: 10_000,
@@ -18,14 +32,16 @@ vi.mock("@lib/env", () => ({
   },
 }));
 
-beforeEach(() => {
+beforeEach((): void => {
   vi.clearAllMocks();
   vi.resetModules();
 });
 
-describe("newsletter database", () => {
-  it("uses the independent bounded newsletter pool", async () => {
-    const { newsletterDb } = await import("@lib/db/newsletter");
+describe("newsletter database", (): void => {
+  it("uses the independent bounded newsletter pool", async (): Promise<void> => {
+    const newsletterModule: typeof import("@lib/db/newsletter") = await import(
+      "@lib/db/newsletter"
+    );
 
     expect(createDatabasePool).toHaveBeenCalledWith({
       connectionString: "postgres://newsletter.example/knowhere",
@@ -40,6 +56,6 @@ describe("newsletter database", () => {
         subscription: "newsletter-schema",
       },
     });
-    expect(newsletterDb).toEqual({ database: "newsletter" });
+    expect(newsletterModule.newsletterDb).toEqual({ database: "newsletter" });
   });
 });

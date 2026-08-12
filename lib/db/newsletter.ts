@@ -8,7 +8,7 @@ function getNewsletterDatabaseUrl(): string {
   return env.NEWSLETTER_DATABASE_URL ?? env.DATABASE_URL;
 }
 
-const newsletterPool = createDatabasePool({
+const newsletterPool: ReturnType<typeof createDatabasePool> = createDatabasePool({
   connectionString: getNewsletterDatabaseUrl(),
   connectionTimeoutMillis: env.DATABASE_POOL_CONNECTION_TIMEOUT_MS,
   idleTimeoutMillis: env.DATABASE_POOL_IDLE_TIMEOUT_MS,
