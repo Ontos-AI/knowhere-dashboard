@@ -6,6 +6,7 @@ import { useUsageWelcome } from "@app/(dashboard)/usage/_hooks/use-usage-welcome
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@components/ui/dialog";
 import { useToast } from "@hooks/use-toast";
 import { trackFeatureUsage } from "@lib/posthog";
+import { buildCodeByTab, type SampleCodeTab, sampleCodeTabConfig } from "@lib/sample-code";
 import { cn } from "@lib/utils";
 import { copyToClipboard } from "@utils/format";
 import {
@@ -24,96 +25,7 @@ import { Highlight, themes } from "prism-react-renderer";
 import { useId, useState } from "react";
 import { env } from "@/lib/env";
 
-type WelcomeCodeTab = "curl" | "python" | "node" | "go";
-
-const SAMPLE_PDF_URL = "https://arxiv.org/pdf/1706.03762.pdf";
 const DOCUMENTATION_URL = "https://docs.knowhereto.ai/";
-
-const codeTabConfig: Array<{
-  id: WelcomeCodeTab;
-  label: string;
-  language: "bash" | "go" | "javascript" | "python";
-}> = [
-  { id: "python", label: "Python", language: "python" },
-  { id: "node", label: "Node.js", language: "javascript" },
-  { id: "curl", label: "cURL", language: "bash" },
-  { id: "go", label: "Go", language: "go" },
-];
-
-const buildCodeByTab = ({
-  apiBaseUrl,
-  apiKey,
-}: {
-  apiBaseUrl: string;
-  apiKey: string;
-}): Record<WelcomeCodeTab, string> => ({
-  curl: `curl -X POST ${apiBaseUrl}/v1/jobs \\
-  -H "Authorization: Bearer ${apiKey}" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "source_type": "url",
-    "source_url": "${SAMPLE_PDF_URL}",
-    "parsing_params": {
-      "model": "base",
-      "ocr_enabled": true
-    }
-  }'`,
-  python: `# pip install knowhere-python-sdk
-import knowhere
-
-client = knowhere.Knowhere(
-    api_key="${apiKey}",
-    base_url="${apiBaseUrl}",
-)
-
-result = client.parse(url="${SAMPLE_PDF_URL}")
-
-print(result.statistics.total_chunks)
-print(result.full_markdown[:200])`,
-  node: `// npm install @ontos-ai/knowhere-sdk
-import Knowhere from "@ontos-ai/knowhere-sdk";
-
-const client = new Knowhere({
-  apiKey: "${apiKey}",
-  baseURL: "${apiBaseUrl}",
-});
-
-const result = await client.parse({
-  url: "${SAMPLE_PDF_URL}",
-});
-
-console.log("Text chunks:", result.textChunks.length);
-console.log(result.textChunks[0]?.content);`,
-  go: `package main
-
-import (
-  "bytes"
-  "fmt"
-  "io"
-  "net/http"
-)
-
-func main() {
-  body := []byte(\`{
-    "source_type": "url",
-    "source_url": "${SAMPLE_PDF_URL}",
-    "parsing_params": {
-      "model": "base",
-      "ocr_enabled": true
-    }
-  }\`)
-
-  req, _ := http.NewRequest("POST", "${apiBaseUrl}/v1/jobs", bytes.NewBuffer(body))
-  req.Header.Set("Authorization", "Bearer ${apiKey}")
-  req.Header.Set("Content-Type", "application/json")
-
-  resp, _ := http.DefaultClient.Do(req)
-  defer resp.Body.Close()
-
-  result, _ := io.ReadAll(resp.Body)
-  fmt.Println(string(result))
-}`,
-});
 
 const FieldLabel = ({ children, icon }: { children: React.ReactNode; icon: React.ReactNode }) => {
   return (
@@ -130,7 +42,7 @@ export const UsageWelcomeModal = () => {
   const tabsId = useId();
   const { apiKey, dismiss, hasProvisionError, isDismissing, isOpen, isProvisioning } =
     useUsageWelcome();
-  const [activeTab, setActiveTab] = useState<WelcomeCodeTab>("python");
+  const [activeTab, setActiveTab] = useState<SampleCodeTab>("python");
   const apiBaseUrl = env.NEXT_PUBLIC_API_URL.replace(/\/$/, "");
   const canDismiss = Boolean(apiKey) || hasProvisionError;
   const codeByTab = apiKey
@@ -283,7 +195,7 @@ export const UsageWelcomeModal = () => {
                     role="tablist"
                     aria-label={t("codeTabs")}
                   >
-                    {codeTabConfig.map((tab) => {
+                    {sampleCodeTabConfig.map((tab) => {
                       const isActive = activeTab === tab.id;
 
                       return (
@@ -330,7 +242,7 @@ export const UsageWelcomeModal = () => {
                     <Highlight
                       code={currentCode}
                       language={
-                        codeTabConfig.find((tab) => tab.id === activeTab)?.language ?? "bash"
+                        sampleCodeTabConfig.find((tab) => tab.id === activeTab)?.language ?? "bash"
                       }
                       theme={themes.vsDark}
                     >
