@@ -12,8 +12,17 @@ on:
 permissions:
   contents: read
 
+# Keep production migrations and deployments serialized. Publishing another release
+# queues behind the active release instead of racing the same database migration.
+concurrency:
+  group: deploy-dashboard-${{ github.event_name == 'release' && 'production' || 'staging' }}
+  cancel-in-progress: false
+
 env:
   NODE_VERSION: "22"
+  VERCEL_CLI_VERSION: "59.1.3"
+  VERCEL_ORG_ID: team_gnjAuB4uPlXycod3xUNGhzem
+  VERCEL_PROJECT_ID: prj_vdlc45ZUPd8bWon6FxyIUq3Pxk8J
   AWS_EKS_PROD_CLUSTER_NAME: ${{ secrets.AWS_EKS_PROD_CLUSTER_NAME }}
   AWS_EKS_PROD_REGION: ${{ secrets.AWS_EKS_PROD_REGION }}
   DASHBOARD_IMAGE_REGISTRY: ${{ secrets.DASHBOARD_IMAGE_REGISTRY }}
@@ -61,7 +70,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run main database migration
+      - name: Run staging main database migration
+        if: ${{ github.event_name != 'release' }}
         env:
           DATABASE_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
         shell: bash
@@ -69,6 +79,21 @@ jobs:
           set -euo pipefail
           if [ -z "${DATABASE_URL}" ]; then
             echo "::error::Missing DATABASE_MIGRATION_URL repository secret"
+            exit 1
+          fi
+          pnpm db:migrate
+
+      # Production intentionally uses a separate migration credential. Falling
+      # back to staging here could migrate the wrong database during a release.
+      - name: Run production main database migration
+        if: ${{ github.event_name == 'release' }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_MIGRATION_URL_PROD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${DATABASE_URL}" ]; then
+            echo "::error::Missing DATABASE_MIGRATION_URL_PROD repository secret"
             exit 1
           fi
           pnpm db:migrate
@@ -94,6 +119,24 @@ jobs:
         with:
           persist-credentials: false
           ref: ${{ github.event_name == 'release' && github.event.release.tag_name || github.ref }}
+          fetch-depth: 0
+
+      # A release tag is the explicit production gate, while main remains the
+      # only accepted production source. Tags from other branches are rejected.
+      - name: Verify production release source
+        if: ${{ github.event_name == 'release' }}
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main --no-tags
+          release_commit="$(git rev-parse "${RELEASE_TAG}^{commit}")"
+
+          if ! git merge-base --is-ancestor "${release_commit}" origin/main; then
+            echo "::error::Release ${RELEASE_TAG} does not point to a commit on main"
+            exit 1
+          fi
 
       - name: Decide deployment context
         id: context
@@ -401,11 +444,83 @@ jobs:
           echo "Auth Cookie Prefix: ${DEPLOY_AUTH_COOKIE_PREFIX}"
           echo "Auth Allowed Callback Origins: ${DEPLOY_AUTH_ALLOWED_CALLBACK_ORIGINS}"
 
+  # The production project stays disconnected from Vercel Git auto-deployments.
+  # Only a published release can reach this job, and the migration must finish first.
+  deploy-vercel-production:
+    name: Deploy Production to Vercel
+    if: ${{ github.event_name == 'release' }}
+    runs-on: ubuntu-latest
+    needs: migrate
+    steps:
+      - name: Checkout released source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Enable pnpm
+        run: corepack enable
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Validate Vercel credentials
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=()
+          for variable_name in VERCEL_ORG_ID VERCEL_PROJECT_ID VERCEL_TOKEN; do
+            if [ -z "${!variable_name}" ]; then
+              missing+=("${variable_name}")
+            fi
+          done
+
+          if [ "${#missing[@]}" -gt 0 ]; then
+            printf 'Missing Vercel deployment configuration: %s\n' "${missing[*]}" >&2
+            exit 1
+          fi
+
+      - name: Pull production project settings
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: >-
+          pnpm dlx vercel@${VERCEL_CLI_VERSION} pull
+          --yes
+          --environment=production
+          --token="${VERCEL_TOKEN}"
+
+      - name: Build production deployment
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: >-
+          pnpm dlx vercel@${VERCEL_CLI_VERSION} build
+          --prod
+          --token="${VERCEL_TOKEN}"
+
+      - name: Deploy production build
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          deployment_url="$(
+            pnpm dlx "vercel@${VERCEL_CLI_VERSION}" deploy \
+              --prebuilt \
+              --prod \
+              --token="${VERCEL_TOKEN}"
+          )"
+          echo "Production deployment: ${deployment_url}"
+
   attach-release-assets:
     name: Attach Release Assets
     if: ${{ github.event_name == 'release' }}
     runs-on: ubuntu-latest
-    needs: deploy
+    needs: [deploy, deploy-vercel-production]
     permissions:
       contents: write
     steps:
