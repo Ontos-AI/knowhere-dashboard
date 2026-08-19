@@ -12,16 +12,17 @@ on:
 permissions:
   contents: read
 
+# Keep production migrations and deployments serialized. Publishing another release
+# queues behind the active release instead of racing the same database migration.
+concurrency:
+  group: deploy-dashboard-${{ github.event_name == 'release' && 'production' || 'staging' }}
+  cancel-in-progress: false
+
 env:
   NODE_VERSION: "22"
-  AWS_EKS_PROD_CLUSTER_NAME: ${{ secrets.AWS_EKS_PROD_CLUSTER_NAME }}
-  AWS_EKS_PROD_REGION: ${{ secrets.AWS_EKS_PROD_REGION }}
-  DASHBOARD_IMAGE_REGISTRY: ${{ secrets.DASHBOARD_IMAGE_REGISTRY }}
-  DASHBOARD_IMAGE_REPOSITORY: ${{ secrets.DASHBOARD_IMAGE_REPOSITORY }}
-  DASHBOARD_KUBE_CONTAINER: ${{ secrets.DASHBOARD_KUBE_CONTAINER }}
-  DASHBOARD_KUBE_DEPLOYMENT: ${{ secrets.DASHBOARD_KUBE_DEPLOYMENT }}
-  DASHBOARD_KUBE_NAMESPACE_PROD: ${{ secrets.DASHBOARD_KUBE_NAMESPACE_PROD }}
-  DASHBOARD_KUBE_NAMESPACE_STAGING: ${{ secrets.DASHBOARD_KUBE_NAMESPACE_STAGING }}
+  VERCEL_CLI_VERSION: "59.1.3"
+  VERCEL_ORG_ID: team_gnjAuB4uPlXycod3xUNGhzem
+  VERCEL_PROJECT_ID: prj_vdlc45ZUPd8bWon6FxyIUq3Pxk8J
   DASHBOARD_APP_URL_PROD: https://knowhereto.ai
   DASHBOARD_APP_URL_STAGING: https://staging.knowhereto.ai
   DASHBOARD_API_URL_PROD: https://api.knowhereto.ai
@@ -39,7 +40,7 @@ jobs:
   migrate:
     name: Run main database migration
     runs-on: ubuntu-latest
-    needs: build-and-publish
+    needs: validate-deployment-source
     if: ${{ github.event_name == 'release' || github.ref == 'refs/heads/staging' || github.event_name == 'workflow_dispatch' }}
     permissions:
       contents: read
@@ -61,7 +62,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run main database migration
+      - name: Run staging main database migration
+        if: ${{ github.event_name != 'release' }}
         env:
           DATABASE_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
         shell: bash
@@ -73,8 +75,23 @@ jobs:
           fi
           pnpm db:migrate
 
-  build-and-publish:
-    name: Build and Publish
+      # Production intentionally uses a separate migration credential. Falling
+      # back to staging here could migrate the wrong database during a release.
+      - name: Run production main database migration
+        if: ${{ github.event_name == 'release' }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_MIGRATION_URL_PROD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${DATABASE_URL}" ]; then
+            echo "::error::Missing DATABASE_MIGRATION_URL_PROD repository secret"
+            exit 1
+          fi
+          pnpm db:migrate
+
+  validate-deployment-source:
+    name: Validate deployment source
     runs-on: ubuntu-latest
     steps:
       - name: Validate semantic release tag
@@ -89,323 +106,85 @@ jobs:
             exit 1
           fi
 
-      - name: Checkout
+      - name: Checkout deployed source
         uses: actions/checkout@v4
         with:
           persist-credentials: false
           ref: ${{ github.event_name == 'release' && github.event.release.tag_name || github.ref }}
+          fetch-depth: 0
 
-      - name: Decide deployment context
-        id: context
-        shell: bash
-        run: |
-          if [ "${{ github.event_name }}" = "release" ]; then
-            environment="prod"
-          else
-            environment="staging"
-          fi
-
-          if [ "$environment" = "prod" ]; then
-            kube_namespace="${DASHBOARD_KUBE_NAMESPACE_PROD}"
-            app_url="${DASHBOARD_APP_URL_PROD}"
-            api_url="${DASHBOARD_API_URL_PROD}"
-            auth_cookie_domain="${DASHBOARD_AUTH_COOKIE_DOMAIN_PROD}"
-            auth_cookie_prefix="${DASHBOARD_AUTH_COOKIE_PREFIX_PROD}"
-            auth_allowed_callback_origins="${DASHBOARD_AUTH_ALLOWED_CALLBACK_ORIGINS_PROD}"
-          else
-            kube_namespace="${DASHBOARD_KUBE_NAMESPACE_STAGING}"
-            app_url="${DASHBOARD_APP_URL_STAGING}"
-            api_url="${DASHBOARD_API_URL_STAGING}"
-            auth_cookie_domain="${DASHBOARD_AUTH_COOKIE_DOMAIN_STAGING}"
-            auth_cookie_prefix="${DASHBOARD_AUTH_COOKIE_PREFIX_STAGING}"
-            auth_allowed_callback_origins="${DASHBOARD_AUTH_ALLOWED_CALLBACK_ORIGINS_STAGING}"
-          fi
-          auth_base_url="${DASHBOARD_AUTH_BASE_URL}"
-
-          missing=()
-          for variable_name in \
-            AWS_EKS_PROD_CLUSTER_NAME \
-            AWS_EKS_PROD_REGION \
-            DASHBOARD_IMAGE_REGISTRY \
-            DASHBOARD_IMAGE_REPOSITORY \
-            DASHBOARD_KUBE_CONTAINER \
-            DASHBOARD_KUBE_DEPLOYMENT \
-            api_url \
-            app_url \
-            auth_cookie_domain \
-            auth_cookie_prefix \
-            auth_allowed_callback_origins \
-            auth_base_url \
-            kube_namespace
-          do
-            if [ -z "${!variable_name}" ]; then
-              missing+=("$variable_name")
-            fi
-          done
-          if [ "${#missing[@]}" -gt 0 ]; then
-            printf 'Missing deployment configuration: %s\n' "${missing[*]}" >&2
-            exit 1
-          fi
-
-          short_sha="${GITHUB_SHA::8}"
-          if [ "${{ github.event_name }}" = "release" ]; then
-            release_tag="${{ github.event.release.tag_name }}"
-            image_tag="${release_tag}-${environment}"
-          else
-            image_tag="${environment}-${short_sha}"
-          fi
-          latest_tag="${environment}-latest"
-          image_uri="${DASHBOARD_IMAGE_REGISTRY}/${DASHBOARD_IMAGE_REPOSITORY}:${image_tag}"
-          latest_uri="${DASHBOARD_IMAGE_REGISTRY}/${DASHBOARD_IMAGE_REPOSITORY}:${latest_tag}"
-
-          echo "environment=${environment}" >> "$GITHUB_OUTPUT"
-          echo "image_tag=${image_tag}" >> "$GITHUB_OUTPUT"
-          echo "image_uri=${image_uri}" >> "$GITHUB_OUTPUT"
-          echo "api_url=${api_url}" >> "$GITHUB_OUTPUT"
-          echo "app_url=${app_url}" >> "$GITHUB_OUTPUT"
-          echo "auth_cookie_domain=${auth_cookie_domain}" >> "$GITHUB_OUTPUT"
-          echo "auth_cookie_prefix=${auth_cookie_prefix}" >> "$GITHUB_OUTPUT"
-          echo "auth_allowed_callback_origins=${auth_allowed_callback_origins}" >> "$GITHUB_OUTPUT"
-          echo "auth_base_url=${auth_base_url}" >> "$GITHUB_OUTPUT"
-          echo "kube_container=${DASHBOARD_KUBE_CONTAINER}" >> "$GITHUB_OUTPUT"
-          echo "kube_deployment=${DASHBOARD_KUBE_DEPLOYMENT}" >> "$GITHUB_OUTPUT"
-          echo "kube_namespace=${kube_namespace}" >> "$GITHUB_OUTPUT"
-          echo "latest_uri=${latest_uri}" >> "$GITHUB_OUTPUT"
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_EKS_PROD_REGION }}
-
-      - name: Login to AWS image registry
-        shell: bash
-        run: |
-          aws ecr get-login-password --region "${AWS_EKS_PROD_REGION}" \
-            | docker login --username AWS --password-stdin "${DASHBOARD_IMAGE_REGISTRY}"
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build and push image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: |
-            ${{ steps.context.outputs.image_uri }}
-            ${{ steps.context.outputs.latest_uri }}
-          build-args: |
-            NEXT_PUBLIC_API_URL=${{ steps.context.outputs.api_url }}
-            AUTH_COOKIE_PREFIX=${{ steps.context.outputs.auth_cookie_prefix }}
-            NEXT_PUBLIC_AUTH_BASE_URL=${{ steps.context.outputs.auth_base_url }}
-            NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS=${{ steps.context.outputs.auth_allowed_callback_origins }}
-            NEXT_PUBLIC_APP_URL=${{ steps.context.outputs.app_url }}
-            NEXT_PUBLIC_POSTHOG_KEY=${{ secrets.NEXT_PUBLIC_POSTHOG_KEY }}
-            NEXT_PUBLIC_POSTHOG_HOST=${{ env.DASHBOARD_POSTHOG_HOST }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Summarize image
-        shell: bash
-        run: |
-          echo "Environment: ${{ steps.context.outputs.environment }}"
-          echo "API URL: ${{ steps.context.outputs.api_url }}"
-          echo "App URL: ${{ steps.context.outputs.app_url }}"
-          echo "Auth Base URL: ${{ steps.context.outputs.auth_base_url }}"
-          echo "Auth Cookie Domain: ${{ steps.context.outputs.auth_cookie_domain }}"
-          echo "Auth Cookie Prefix: ${{ steps.context.outputs.auth_cookie_prefix }}"
-          echo "Auth Allowed Callback Origins: ${{ steps.context.outputs.auth_allowed_callback_origins }}"
-          echo "Image: ${{ steps.context.outputs.image_uri }}"
-          echo "Deployment: ${{ steps.context.outputs.kube_deployment }}"
-          echo "Namespace: ${{ steps.context.outputs.kube_namespace }}"
-
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    needs: [build-and-publish, migrate]
-    if: >-
-      ${{ always() &&
-      needs.build-and-publish.result == 'success' &&
-      (needs.migrate.result == 'success' || needs.migrate.result == 'skipped') }}
-    steps:
-      - name: Validate semantic release tag
+      - name: Verify production release source
         if: ${{ github.event_name == 'release' }}
-        shell: bash
-        run: |
-          release_tag="${{ github.event.release.tag_name }}"
-          semver_pattern='^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?$'
-
-          if [[ ! "$release_tag" =~ $semver_pattern ]]; then
-            echo "::error::Dashboard releases must use semantic version tags like v1.0.1. Date-based tags such as 2026.06.26.1 or v2026.06.26.1 are not supported."
-            exit 1
-          fi
-
-      - name: Decide deployment context
-        shell: bash
-        run: |
-          if [ "${{ github.event_name }}" = "release" ]; then
-            environment="prod"
-          else
-            environment="staging"
-          fi
-
-          if [ "$environment" = "prod" ]; then
-            kube_namespace="${DASHBOARD_KUBE_NAMESPACE_PROD}"
-            app_url="${DASHBOARD_APP_URL_PROD}"
-            api_url="${DASHBOARD_API_URL_PROD}"
-            auth_cookie_domain="${DASHBOARD_AUTH_COOKIE_DOMAIN_PROD}"
-            auth_cookie_prefix="${DASHBOARD_AUTH_COOKIE_PREFIX_PROD}"
-            auth_allowed_callback_origins="${DASHBOARD_AUTH_ALLOWED_CALLBACK_ORIGINS_PROD}"
-          else
-            kube_namespace="${DASHBOARD_KUBE_NAMESPACE_STAGING}"
-            app_url="${DASHBOARD_APP_URL_STAGING}"
-            api_url="${DASHBOARD_API_URL_STAGING}"
-            auth_cookie_domain="${DASHBOARD_AUTH_COOKIE_DOMAIN_STAGING}"
-            auth_cookie_prefix="${DASHBOARD_AUTH_COOKIE_PREFIX_STAGING}"
-            auth_allowed_callback_origins="${DASHBOARD_AUTH_ALLOWED_CALLBACK_ORIGINS_STAGING}"
-          fi
-          auth_base_url="${DASHBOARD_AUTH_BASE_URL}"
-
-          missing=()
-          for variable_name in \
-            AWS_EKS_PROD_CLUSTER_NAME \
-            AWS_EKS_PROD_REGION \
-            DASHBOARD_IMAGE_REGISTRY \
-            DASHBOARD_IMAGE_REPOSITORY \
-            DASHBOARD_KUBE_CONTAINER \
-            DASHBOARD_KUBE_DEPLOYMENT \
-            api_url \
-            app_url \
-            auth_cookie_domain \
-            auth_cookie_prefix \
-            auth_allowed_callback_origins \
-            auth_base_url \
-            kube_namespace
-          do
-            if [ -z "${!variable_name}" ]; then
-              missing+=("$variable_name")
-            fi
-          done
-
-          if [ "${#missing[@]}" -gt 0 ]; then
-            printf 'Missing deployment configuration: %s\n' "${missing[*]}" >&2
-            exit 1
-          fi
-
-          short_sha="${GITHUB_SHA::8}"
-          if [ "${{ github.event_name }}" = "release" ]; then
-            release_tag="${{ github.event.release.tag_name }}"
-            image_tag="${release_tag}-${environment}"
-          else
-            image_tag="${environment}-${short_sha}"
-          fi
-          image_uri="${DASHBOARD_IMAGE_REGISTRY}/${DASHBOARD_IMAGE_REPOSITORY}:${image_tag}"
-
-          echo "DEPLOY_ENVIRONMENT=${environment}" >> "$GITHUB_ENV"
-          echo "DEPLOY_IMAGE_URI=${image_uri}" >> "$GITHUB_ENV"
-          echo "DEPLOY_KUBE_CONTAINER=${DASHBOARD_KUBE_CONTAINER}" >> "$GITHUB_ENV"
-          echo "DEPLOY_KUBE_DEPLOYMENT=${DASHBOARD_KUBE_DEPLOYMENT}" >> "$GITHUB_ENV"
-          echo "DEPLOY_KUBE_NAMESPACE=${kube_namespace}" >> "$GITHUB_ENV"
-          echo "DEPLOY_API_URL=${api_url}" >> "$GITHUB_ENV"
-          echo "DEPLOY_APP_URL=${app_url}" >> "$GITHUB_ENV"
-          echo "DEPLOY_AUTH_COOKIE_DOMAIN=${auth_cookie_domain}" >> "$GITHUB_ENV"
-          echo "DEPLOY_AUTH_COOKIE_PREFIX=${auth_cookie_prefix}" >> "$GITHUB_ENV"
-          echo "DEPLOY_AUTH_ALLOWED_CALLBACK_ORIGINS=${auth_allowed_callback_origins}" >> "$GITHUB_ENV"
-          echo "DEPLOY_AUTH_BASE_URL=${auth_base_url}" >> "$GITHUB_ENV"
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_EKS_PROD_REGION }}
-
-      - name: Setup kubectl
-        uses: azure/setup-kubectl@v3
-
-      - name: Update kubeconfig
-        shell: bash
-        run: |
-          aws eks update-kubeconfig \
-            --name "${AWS_EKS_PROD_CLUSTER_NAME}" \
-            --region "${AWS_EKS_PROD_REGION}"
-
-      - name: Configure deployment environment
-        shell: bash
-        run: |
-          kubectl set env "deployment/${DEPLOY_KUBE_DEPLOYMENT}" \
-            "NEXT_PUBLIC_API_URL=${DEPLOY_API_URL}" \
-            "NEXT_PUBLIC_AUTH_BASE_URL=${DEPLOY_AUTH_BASE_URL}" \
-            "AUTH_COOKIE_DOMAIN=${DEPLOY_AUTH_COOKIE_DOMAIN}" \
-            "AUTH_COOKIE_PREFIX=${DEPLOY_AUTH_COOKIE_PREFIX}" \
-            "NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS=${DEPLOY_AUTH_ALLOWED_CALLBACK_ORIGINS}" \
-            "NEXT_PUBLIC_APP_URL=${DEPLOY_APP_URL}" \
-            --namespace "${DEPLOY_KUBE_NAMESPACE}"
-
-      - name: Attach optional newsletter database secret
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
         shell: bash
         run: |
           set -euo pipefail
+          git fetch origin main --no-tags
+          release_commit="$(git rev-parse "${RELEASE_TAG}^{commit}")"
+          if ! git merge-base --is-ancestor "${release_commit}" origin/main; then
+            echo "::error::Release ${RELEASE_TAG} does not point to a commit on main"
+            exit 1
+          fi
 
-          kubectl set env "deployment/${DEPLOY_KUBE_DEPLOYMENT}" \
-            NEWSLETTER_DATABASE_URL- \
-            --namespace "${DEPLOY_KUBE_NAMESPACE}"
+  # The production project stays disconnected from Vercel Git auto-deployments.
+  # Only a published release can reach this job, and the migration must finish first.
+  deploy-vercel-production:
+    name: Deploy Production to Vercel
+    if: ${{ github.event_name == 'release' }}
+    runs-on: ubuntu-latest
+    needs: migrate
+    steps:
+      - name: Checkout released source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.release.tag_name }}
 
-          newsletter_secret_patch="$(
-            cat <<PATCH
-          spec:
-            template:
-              spec:
-                containers:
-                  - name: ${DEPLOY_KUBE_CONTAINER}
-                    env:
-                      - name: NEWSLETTER_DATABASE_URL
-                        valueFrom:
-                          secretKeyRef:
-                            name: knowhere-secrets
-                            key: newsletter-database-url
-                            optional: true
-          PATCH
-          )"
+      - name: Enable pnpm
+        run: corepack enable
 
-          kubectl patch "deployment/${DEPLOY_KUBE_DEPLOYMENT}" \
-            --namespace "${DEPLOY_KUBE_NAMESPACE}" \
-            --type=strategic \
-            --patch "${newsletter_secret_patch}"
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
 
-      - name: Roll out dashboard image
+      - name: Validate Vercel credentials
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         shell: bash
         run: |
-          kubectl set image "deployment/${DEPLOY_KUBE_DEPLOYMENT}" \
-            "${DEPLOY_KUBE_CONTAINER}=${DEPLOY_IMAGE_URI}" \
-            --namespace "${DEPLOY_KUBE_NAMESPACE}"
+          set -euo pipefail
+          missing=()
+          for variable_name in VERCEL_ORG_ID VERCEL_PROJECT_ID VERCEL_TOKEN; do
+            if [ -z "${!variable_name}" ]; then
+              missing+=("${variable_name}")
+            fi
+          done
 
-          kubectl rollout status "deployment/${DEPLOY_KUBE_DEPLOYMENT}" \
-            --namespace "${DEPLOY_KUBE_NAMESPACE}" \
-            --timeout=300s
+          if [ "${#missing[@]}" -gt 0 ]; then
+            printf 'Missing Vercel deployment configuration: %s\n' "${missing[*]}" >&2
+            exit 1
+          fi
 
-      - name: Summarize deployment
-        shell: bash
-        run: |
-          echo "Environment: ${DEPLOY_ENVIRONMENT}"
-          echo "Image: ${DEPLOY_IMAGE_URI}"
-          echo "Deployment: ${DEPLOY_KUBE_DEPLOYMENT}"
-          echo "Container: ${DEPLOY_KUBE_CONTAINER}"
-          echo "Namespace: ${DEPLOY_KUBE_NAMESPACE}"
-          echo "API URL: ${DEPLOY_API_URL}"
-          echo "App URL: ${DEPLOY_APP_URL}"
-          echo "Auth Base URL: ${DEPLOY_AUTH_BASE_URL}"
-          echo "Auth Cookie Domain: ${DEPLOY_AUTH_COOKIE_DOMAIN}"
-          echo "Auth Cookie Prefix: ${DEPLOY_AUTH_COOKIE_PREFIX}"
-          echo "Auth Allowed Callback Origins: ${DEPLOY_AUTH_ALLOWED_CALLBACK_ORIGINS}"
+      # Build remotely on Vercel so sensitive production environment variables
+      # remain available to the Vercel build and are never pulled into CI.
+      - name: Deploy production to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: >-
+          pnpm dlx vercel@${VERCEL_CLI_VERSION} deploy
+          --project="${VERCEL_PROJECT_ID}"
+          --scope=ontos-ai
+          --prod
+          --token="${VERCEL_TOKEN}"
 
   attach-release-assets:
     name: Attach Release Assets
     if: ${{ github.event_name == 'release' }}
     runs-on: ubuntu-latest
-    needs: deploy
+    needs: deploy-vercel-production
     permissions:
       contents: write
     steps:

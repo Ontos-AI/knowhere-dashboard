@@ -33,7 +33,7 @@ type AmountOptionButtonProps = {
 };
 
 const amountOptionBaseClassName =
-  "flex h-9 w-[72px] items-center justify-center border px-6 text-[12px] leading-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25";
+  "flex h-9 min-w-[72px] shrink-0 items-center justify-center whitespace-nowrap border px-6 text-[12px] leading-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25";
 
 const AmountOptionButton = ({ isSelected, label, onClick }: AmountOptionButtonProps) => {
   return (
