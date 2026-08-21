@@ -13,24 +13,19 @@ describe("landing contracts", () => {
     expect(landingPageSource).not.toContain("ClawPage");
   });
 
-  it("keeps the landing header connected to the product playground and repository", () => {
+  it("keeps the landing header connected to the documentation and repository", () => {
     const landingHeaderSource: string = readFileSync(
       join(process.cwd(), "app/(landing)/_components/landing-header.tsx"),
       "utf8"
     );
 
     expect(landingHeaderSource).toContain(
-      '{ href: "https://notebook.knowhereto.ai", labelKey: "playground", external: true }'
+      '{ href: "https://docs.knowhereto.ai/", labelKey: "docs", external: true }'
     );
     expect(landingHeaderSource).toContain('{ href: "/github", labelKey: "github" }');
-    expect(landingHeaderSource).toContain(
-      '{ href: "https://blog.knowhereto.ai/", labelKey: "blog", external: true }'
-    );
-    expect(landingHeaderSource.indexOf('{ href: "/github", labelKey: "github" }')).toBeLessThan(
-      landingHeaderSource.indexOf(
-        '{ href: "https://blog.knowhereto.ai/", labelKey: "blog", external: true }'
-      )
-    );
+    expect(landingHeaderSource).not.toContain('labelKey: "playground"');
+    expect(landingHeaderSource).not.toContain('labelKey: "pricing"');
+    expect(landingHeaderSource).not.toContain('labelKey: "blog"');
   });
 
   it("keeps the playground sample area annotated with the drag-to-parse cue", () => {
