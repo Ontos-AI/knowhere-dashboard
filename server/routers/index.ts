@@ -2,6 +2,7 @@ import { base } from "@server/context";
 import { apiKeysRouter } from "@server/routers/api-keys";
 import { creditsRouter } from "@server/routers/credits";
 import { jobsRouter } from "@server/routers/jobs";
+import { knowhereServiceJwtRouter } from "@server/routers/knowhere-service-jwt";
 import { newsletterRouter } from "@server/routers/newsletter";
 import { subscriptionsRouter } from "@server/routers/subscriptions";
 import { usageRouter } from "@server/routers/usage";
@@ -12,6 +13,7 @@ import { webhookSecretsRouter } from "@server/routers/webhook-secrets";
 export const appRouter = base.router({
   apiKeys: apiKeysRouter,
   users: usersRouter,
+  knowhereServiceJwt: knowhereServiceJwtRouter,
   credits: creditsRouter,
   subscriptions: subscriptionsRouter,
   newsletter: newsletterRouter,
