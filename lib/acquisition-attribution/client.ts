@@ -22,8 +22,8 @@ type MarketingPageViewCaptureResponse = {
   readonly acquisitionSessionId: string | null;
 };
 
-const CAPTURE_LANDING_PATH_PREFIXES = ["/claw", "/comparison", "/versus"] as const;
-const CAPTURE_EXPLICIT_PATHS = new Set<string>(["/", "/github"]);
+const CAPTURE_LANDING_PATH_PREFIXES = ["/blog", "/claw", "/comparison", "/versus"] as const;
+const CAPTURE_EXPLICIT_PATHS = new Set<string>(["/", "/github", "/pricing"]);
 const CAMPAIGN_QUERY_KEYS = [
   "utm_source",
   "utm_medium",

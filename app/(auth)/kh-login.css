@@ -1,0 +1,818 @@
+/*
+  Login chrome family (Wave 4).
+  Scope every rule to `.kh-login` (and portaled `.kh-login-menu`) so later
+  Site / Dashboard waves do not inherit login layout, form controls, or type scale.
+  Tokens come from `.kh-site` (Wave 0). Do not remap shadcn --background/--primary here.
+*/
+
+.kh-login {
+  --login-error-color: var(--coral-signal-600, #dd3b00);
+  --login-background-color: var(--black-3);
+  --login-data-stream-color: var(--mineral-green-500);
+  --content-max: 1280px;
+  --layout-grid-edge: 80px;
+  --layout-grid-width: min(var(--content-max), calc(100vw - var(--layout-grid-edge) * 2));
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --type-heading-size: 40px;
+  --type-heading-line-height: 44px;
+  --type-heading-tracking: -0.7px;
+  --type-body-size: 18px;
+  --type-body-line-height: 27px;
+  --type-control-size: 15px;
+  --type-control-line-height: 24px;
+  --type-meta-size: 14px;
+  --type-meta-line-height: 20px;
+  --type-caption-size: 12px;
+  --type-caption-line-height: 18px;
+  --control-height: 46px;
+  --control-radius: 2px;
+  --control-border-width: 1px;
+  --control-padding-inline: 13px;
+  --control-motion-duration: 150ms;
+  --control-surface: var(--mist-white-50);
+  --control-ink: var(--mist-white-900);
+  --control-border: #dedfd9;
+  --control-border-hover: #b1b7a9;
+  --control-placeholder: #a2a49c;
+  --control-focus: var(--mineral-green-500);
+  --control-error: var(--login-error-color);
+  --control-surface-hover: #f7f8f4;
+  --control-surface-pressed: color-mix(in srgb, var(--control-surface-hover) 97%, #000);
+  --control-readonly-surface: var(--control-surface);
+  --control-disabled-surface: var(--black-6);
+  --control-disabled-ink: var(--mist-white-700);
+  --control-button-disabled-surface: var(--black-10);
+  --control-button-disabled-ink: var(--black-40);
+  --control-button-disabled-border: var(--black-3);
+  --control-disabled-icon-opacity: 0.5;
+  --control-black-surface: var(--mist-white-950);
+  --control-black-hover: #33483d;
+  --control-black-pressed: var(--deep-teal-900);
+
+  position: relative;
+  isolation: isolate;
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding-bottom: 24px;
+  font-family: var(--sans);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line-height);
+  font-weight: var(--font-weight-regular);
+  color: var(--ink);
+  background: var(--paper);
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.kh-login *,
+.kh-login *::before,
+.kh-login *::after {
+  box-sizing: border-box;
+}
+
+.kh-login button,
+.kh-login input {
+  font: inherit;
+  line-height: var(--type-body-line-height);
+}
+
+.kh-login button,
+.kh-login a,
+.kh-login input {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.kh-login button,
+.kh-login a {
+  touch-action: manipulation;
+}
+
+.kh-login button {
+  cursor: pointer;
+  transition:
+    background-color 150ms,
+    border-color 150ms;
+}
+
+.kh-login a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.kh-login a:hover {
+  color: var(--chrome-green, #12846c);
+}
+
+.kh-login :focus-visible {
+  outline: 2px solid var(--mineral-green-500);
+  outline-offset: 4px;
+}
+
+.kh-login .login-background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  color: var(--login-background-color);
+  background: var(--login-background-color);
+}
+
+.kh-login .login-background:has(.fluid-cover[data-ready="true"]) {
+  background: transparent;
+}
+
+.kh-login .fluid-cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.kh-login .fluid-cover[data-ready="true"] {
+  opacity: var(--fluid-opacity);
+}
+
+.kh-login .login-data-stream {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: -1;
+  width: 100%;
+  height: clamp(96px, 18svh, 216px);
+  color: var(--login-data-stream-color);
+  pointer-events: none;
+}
+
+.kh-login .login-data-stream canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.kh-login .login-header {
+  position: relative;
+  z-index: 2;
+  justify-self: center;
+  width: var(--layout-grid-width);
+  height: 68px;
+  padding-bottom: 1px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+
+.kh-login .brand {
+  width: fit-content;
+}
+
+.kh-login .brand img,
+.kh-login .login-brand {
+  display: block;
+  width: 112px;
+  height: auto;
+}
+
+.dark .kh-login .brand img,
+.dark .kh-login .login-brand,
+html[data-theme="dark"] .kh-login .brand img,
+html[data-theme="dark"] .kh-login .login-brand {
+  filter: invert(1) !important;
+}
+
+.kh-login .login-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.kh-login .login-theme-button {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--mist-white-900);
+  line-height: 0;
+}
+
+.kh-login .login-theme-button:hover {
+  background: var(--chrome-surface, #f7f8f9);
+}
+
+.kh-login .login-theme-button:focus-visible {
+  outline: 2px solid var(--mineral-green-500);
+  outline-offset: 5px;
+}
+
+.kh-login .login-theme-icon {
+  grid-area: 1 / 1;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.kh-login .login-theme-icon-sun,
+.dark .kh-login .login-theme-icon-moon,
+html[data-theme="dark"] .kh-login .login-theme-icon-moon {
+  display: none;
+}
+
+.dark .kh-login .login-theme-icon-sun,
+html[data-theme="dark"] .kh-login .login-theme-icon-sun {
+  display: block;
+}
+
+.dark .kh-login .login-theme-button:hover,
+html[data-theme="dark"] .kh-login .login-theme-button:hover {
+  border-color: rgb(249 250 245 / 1%);
+  background: #042626;
+}
+
+.kh-login .login-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  margin-inline: 40px;
+}
+
+.kh-login .login-language-menu {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.kh-login .language-button {
+  background: transparent;
+  border: 0;
+  border-radius: 2px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  color: var(--mist-white-900);
+  line-height: 0;
+}
+
+.kh-login .language-button svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+.kh-login .language-button:hover {
+  background: var(--black-2);
+}
+
+.kh-login .language-button:focus-visible {
+  outline: 2px solid var(--mist-white-900);
+  outline-offset: 2px;
+}
+
+.kh-login-menu {
+  width: 152px;
+  min-width: 152px;
+  padding: 6px;
+  border: 1px solid var(--black-10, rgb(0 0 0 / 10%));
+  border-radius: 8px;
+  background: var(--mist-white-50, #ffffff);
+  color: var(--mist-white-900, #2e2e2c);
+  box-shadow: 0 12px 28px var(--black-10, rgb(0 0 0 / 10%));
+}
+
+.kh-login-menu [role="menuitem"] {
+  min-height: 44px;
+  height: auto;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: transparent;
+  color: inherit;
+  font-size: var(--type-meta-size, 14px);
+  font-weight: var(--font-weight-regular, 400);
+  line-height: var(--type-meta-line-height, 20px);
+}
+
+.kh-login-menu [role="menuitem"][data-highlighted],
+.kh-login-menu [role="menuitem"]:focus-visible {
+  background: var(--black-3, rgb(0 0 0 / 3%));
+}
+
+.kh-login-menu [role="menuitem"][aria-checked="true"] {
+  background: var(--black-6, rgb(0 0 0 / 6%));
+  font-weight: var(--font-weight-medium, 500);
+}
+
+.kh-login-menu [role="menuitem"] img {
+  display: none;
+}
+
+.kh-login .form-area {
+  width: 100%;
+  max-width: 440px;
+  margin: auto;
+  padding: 24px 0;
+}
+
+.kh-login .form-heading .eyebrow {
+  justify-content: center;
+  color: #8a8e83;
+  font-size: var(--type-meta-size);
+  letter-spacing: 1.5px;
+  line-height: var(--type-meta-line-height);
+}
+
+.kh-login .eyebrow {
+  font-size: var(--type-meta-size);
+  letter-spacing: 1.65px;
+  font-weight: var(--font-weight-regular);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: var(--type-meta-line-height);
+}
+
+.kh-login .form-heading h1 {
+  font-size: var(--type-heading-size);
+  font-weight: var(--font-weight-regular);
+  letter-spacing: var(--type-heading-tracking);
+  margin: 16px 0 0;
+  line-height: var(--type-heading-line-height);
+}
+
+.kh-login .form-heading {
+  text-align: center;
+  margin-bottom: 31px;
+}
+
+.kh-login .form-heading-desc {
+  margin: 10px 0 0;
+  color: #91948b;
+  font-size: var(--type-meta-size);
+  line-height: var(--type-meta-line-height);
+}
+
+.kh-login .social-buttons {
+  display: grid;
+  gap: 10px;
+}
+
+.kh-login .divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 26px 0;
+  color: #91948b;
+  font-size: var(--type-meta-size);
+  line-height: var(--type-meta-line-height);
+}
+
+.kh-login .divider::before,
+.kh-login .divider::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: #e9eae5;
+}
+
+.kh-login .form-area label,
+.kh-login .auth-field label {
+  display: block;
+  font-size: var(--type-control-size);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: 9px;
+  line-height: var(--type-control-line-height);
+}
+
+.kh-login .auth-field {
+  margin-bottom: 14px;
+}
+
+.kh-login .auth-field-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 9px;
+}
+
+.kh-login .auth-field-header label {
+  margin-bottom: 0;
+}
+
+.kh-login .submit-button {
+  margin-top: 14px;
+}
+
+.kh-login .email-feedback,
+.kh-login .auth-feedback {
+  font-size: var(--type-meta-size);
+  margin: 8px 0 0;
+  color: var(--login-error-color);
+  line-height: var(--type-meta-line-height);
+}
+
+.kh-login .login-footer {
+  min-height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  color: #91958a;
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-line-height);
+}
+
+.kh-login .email-delivery {
+  position: absolute;
+  top: 16px;
+  left: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, max-content);
+  justify-content: center;
+  align-items: start;
+  gap: 8px;
+  color: var(--control-ink);
+  font-size: var(--type-meta-size);
+  line-height: var(--type-meta-line-height);
+}
+
+.kh-login .email-delivery-slot {
+  position: relative;
+  display: block;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.kh-login .email-delivery-icon {
+  color: var(--mineral-green-500);
+}
+
+.kh-login .email-delivery-title {
+  margin: 0;
+  text-align: center;
+  font-weight: var(--font-weight-medium);
+}
+
+.kh-login .auth-aux {
+  margin-top: 18px;
+  text-align: center;
+  color: #91948b;
+  font-size: var(--type-meta-size);
+  line-height: var(--type-meta-line-height);
+}
+
+.kh-login .auth-aux a,
+.kh-login .auth-text-link {
+  color: var(--mineral-green-500);
+  font-weight: var(--font-weight-medium);
+}
+
+.kh-login .auth-aux a:hover,
+.kh-login .auth-text-link:hover {
+  color: var(--chrome-green, #12846c);
+}
+
+.kh-login .login-status {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  padding: 32px 0;
+  color: var(--control-ink);
+  font-size: var(--type-meta-size);
+  line-height: var(--type-meta-line-height);
+  text-align: center;
+}
+
+.kh-login .login-status .control-spinner {
+  width: 24px;
+  height: 24px;
+  border-width: 2px;
+}
+
+.kh-login .control-input,
+.kh-login .control-button {
+  width: 100%;
+  height: var(--control-height);
+  border: var(--control-border-width) solid var(--control-border);
+  border-radius: var(--control-radius);
+  padding: 0 var(--control-padding-inline);
+  box-shadow: none;
+  transition:
+    background-color var(--control-motion-duration),
+    border-color var(--control-motion-duration),
+    color var(--control-motion-duration);
+}
+
+.kh-login .control-input {
+  background: var(--control-surface);
+  color: var(--control-ink);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line-height);
+}
+
+.kh-login .control-input::placeholder {
+  color: var(--control-placeholder);
+  opacity: 1;
+}
+
+.kh-login
+  .control-input:where(:not(:disabled):not([readonly]):not([aria-invalid="true"])):is(
+    :hover,
+    [data-preview-state="hover"]
+  ) {
+  border-color: var(--control-border-hover);
+}
+
+.kh-login .control-input[aria-invalid="true"] {
+  border-color: var(--control-error);
+}
+
+.kh-login .control-input:is(:focus, :focus-visible, [data-preview-state="focus"]) {
+  border-color: var(--control-focus);
+  outline: none;
+  box-shadow: none;
+}
+
+.kh-login .control-input[readonly] {
+  background: var(--control-readonly-surface);
+  cursor: text;
+}
+
+.kh-login .control-input:disabled {
+  background: var(--control-disabled-surface);
+  border-color: var(--control-border);
+  color: var(--control-disabled-ink);
+  -webkit-text-fill-color: var(--control-disabled-ink);
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+.kh-login .control-input:is(:autofill, :-webkit-autofill):not(:disabled) {
+  box-shadow: 0 0 0 1000px var(--control-surface) inset;
+  -webkit-text-fill-color: var(--control-ink);
+  caret-color: var(--control-ink);
+}
+
+.kh-login .control-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  font-size: var(--type-control-size);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--type-control-line-height);
+  background: var(--button-surface);
+  border-color: var(--button-border);
+  color: var(--button-ink);
+  text-decoration: none;
+}
+
+.kh-login .control-button--white {
+  --button-surface: var(--control-surface);
+  --button-border: var(--control-border);
+  --button-ink: var(--control-ink);
+  --button-hover-surface: var(--control-surface-hover);
+  --button-hover-border: var(--control-border-hover);
+  --button-pressed-surface: var(--control-surface-pressed);
+}
+
+.kh-login .control-button--black {
+  --button-surface: var(--control-black-surface);
+  --button-border: var(--control-black-surface);
+  --button-ink: var(--control-surface);
+  --button-hover-surface: var(--control-black-hover);
+  --button-hover-border: var(--control-black-hover);
+  --button-pressed-surface: var(--control-black-pressed);
+  gap: 13px;
+}
+
+.kh-login .control-button:not(:disabled):is(:hover, [data-preview-state="hover"]) {
+  background: var(--button-hover-surface);
+  border-color: var(--button-hover-border);
+  color: var(--button-ink);
+}
+
+.kh-login .control-button:not(:disabled):is(:active, [data-preview-state="pressed"]) {
+  background: var(--button-pressed-surface);
+  border-color: var(--button-hover-border);
+  transform: translateY(1px);
+}
+
+.kh-login .control-button:not(:disabled):is(:focus-visible, [data-preview-state="focus"]) {
+  outline: 2px solid var(--control-focus);
+  outline-offset: 4px;
+}
+
+.kh-login .control-button:disabled:not([aria-busy="true"]) {
+  background: var(--control-button-disabled-surface);
+  border-color: var(--control-button-disabled-border);
+  color: var(--control-button-disabled-ink);
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+.kh-login .control-button:disabled:not([aria-busy="true"]) .control-button-content > svg {
+  color: var(--control-ink);
+  opacity: var(--control-disabled-icon-opacity);
+}
+
+.kh-login .control-button[aria-busy="true"] {
+  cursor: progress;
+}
+
+.kh-login .control-button-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: inherit;
+}
+
+.kh-login .control-button-content > svg {
+  flex-shrink: 0;
+}
+
+.kh-login .control-button[aria-busy="true"] .control-button-content > svg {
+  display: none;
+}
+
+.kh-login .control-spinner {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: kh-login-control-spin 800ms linear infinite;
+}
+
+@keyframes kh-login-control-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-height: 800px) {
+  .kh-login {
+    padding-bottom: 16px;
+  }
+
+  .kh-login .form-area {
+    padding: 8px 0;
+  }
+
+  .kh-login .form-heading {
+    margin-bottom: 24px;
+  }
+
+  .kh-login .divider {
+    margin: 22px 0;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .kh-login {
+    --layout-grid-edge: 24px;
+  }
+
+  .kh-login .login-header {
+    height: 72px;
+    padding-bottom: 0;
+  }
+
+  .kh-login .brand img,
+  .kh-login .login-brand {
+    width: 120px;
+  }
+}
+
+@media (max-width: 1199px) {
+  .kh-login .language-button {
+    width: 44px;
+    height: 44px;
+    border-radius: 2px;
+  }
+
+  .kh-login .language-button:hover {
+    background: var(--mist-white-300);
+  }
+}
+
+@media (max-width: 767px) {
+  .kh-login {
+    --layout-grid-edge: 16px;
+  }
+
+  .kh-login .login-header {
+    width: calc(100% - var(--layout-grid-edge) * 2);
+    height: 64px;
+    padding-bottom: 0;
+  }
+
+  .kh-login .brand img,
+  .kh-login .login-brand {
+    width: 108px;
+  }
+}
+
+@media (max-width: 700px) {
+  .kh-login {
+    --type-heading-size: 32px;
+    --type-heading-line-height: 36px;
+    --type-body-size: 16px;
+    --type-body-line-height: 24px;
+    padding-bottom: 16px;
+  }
+
+  .kh-login .login-panel {
+    margin-inline: 24px;
+  }
+
+  .kh-login .form-area {
+    padding: 32px 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kh-login,
+  .kh-login *,
+  .kh-login *::before,
+  .kh-login *::after {
+    transition: none !important;
+  }
+
+  .kh-login .control-spinner {
+    animation: none;
+  }
+}
+
+.dark .kh-login,
+html[data-theme="dark"] .kh-login {
+  --login-error-color: #ffa79f;
+  --mist-white-50: #021d1d;
+  --mist-white-100: #011110;
+  --mist-white-200: #021d1d;
+  --mist-white-300: #042626;
+  --mist-white-500: #073231;
+  --mist-white-700: #bbbcb3;
+  --mist-white-900: #f9faf5;
+  --mist-white-950: #f9faf5;
+  --control-ink: #f9faf5;
+  --control-surface: #021d1d;
+  --control-border: #083b3a;
+  --control-border-hover: rgb(249 250 245 / 1%);
+  --control-placeholder: #888a82;
+  --control-surface-hover: #042626;
+  --control-surface-pressed: #073231;
+  --control-black-surface: #23d6b1;
+  --control-black-hover: color-mix(in srgb, #23d6b1 92%, #011711);
+  --control-black-pressed: color-mix(in srgb, #23d6b1 88%, #011711);
+}
+
+.dark .kh-login .control-button--black,
+html[data-theme="dark"] .kh-login .control-button--black {
+  --button-ink: #011711;
+}
+
+.dark .kh-login :is(.form-heading .eyebrow, .form-heading-desc, .divider, .login-footer, .auth-aux),
+html[data-theme="dark"]
+  .kh-login
+  :is(.form-heading .eyebrow, .form-heading-desc, .divider, .login-footer, .auth-aux) {
+  color: #bbbcb3;
+}
+
+.dark .kh-login .divider::before,
+.dark .kh-login .divider::after,
+html[data-theme="dark"] .kh-login .divider::before,
+html[data-theme="dark"] .kh-login .divider::after {
+  background: var(--black-10);
+}
+
+.dark .kh-login .github-mark,
+html[data-theme="dark"] .kh-login .github-mark {
+  filter: invert(1);
+}
+
+.dark .kh-login-menu,
+html[data-theme="dark"] .kh-login-menu {
+  border-color: rgb(255 255 255 / 14%);
+  background: #021d1d;
+  color: #f9faf5;
+  box-shadow: 0 12px 28px rgb(0 0 0 / 40%);
+}

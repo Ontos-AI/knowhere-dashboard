@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="38 37 244 276" fill="none">
+  <style>g &gt; * { vector-effect: non-scaling-stroke; }</style>
+  <g stroke="#747985" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" style="vector-effect:non-scaling-stroke">
+    <path d="M160 85 220 120 160 155 100 120 160 85ZM100 120v70l60 35 60-35v-70M160 155v70" />
+    <path d="M72 47 96 61 72 75 48 61 72 47ZM48 61v28l24 14 24-14V61M72 75v28" />
+    <path d="m248 47 24 14-24 14-24-14 24-14ZM224 61v28l24 14 24-14V61M248 75v28" />
+    <path d="m160 247 24 14-24 14-24-14 24-14ZM136 261v28l24 14 24-14v-28M160 275v28" />
+    <path d="m96 91 23 14M224 91l-23 14M160 225v22" stroke-dasharray="7 5" />
+  </g>
+</svg>

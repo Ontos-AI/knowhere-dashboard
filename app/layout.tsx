@@ -14,17 +14,24 @@ import { getMessages } from "next-intl/server";
 
 export const metadata: Metadata = appMetadata;
 
-const geistSans = localFont({
-  src: "../public/fonts/Geist-VariableFont_wght.ttf",
-  weight: "100 900",
-  variable: "--font-geist-sans",
+const poppins = localFont({
+  src: "../public/fonts/Poppins-Variable.woff2",
+  weight: "400 600",
+  variable: "--font-poppins",
   display: "swap",
 });
 
-const anuphan = localFont({
-  src: "../public/fonts/Anuphan-VariableFont_wght.ttf",
-  weight: "100 900",
-  variable: "--font-anuphan",
+const frexSans = localFont({
+  src: "../public/fonts/FrexSansGB-VF.woff2",
+  weight: "100 700",
+  variable: "--font-frex",
+  display: "swap",
+});
+
+const geistMono = localFont({
+  src: "../public/fonts/GeistMono-Regular.woff2",
+  weight: "400",
+  variable: "--font-geist-mono",
   display: "swap",
 });
 
@@ -42,10 +49,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${anuphan.variable} font-sans antialiased`}>
+      <body
+        className={`${poppins.variable} ${frexSans.variable} ${geistMono.variable} font-sans antialiased`}
+      >
         <NextIntlClientProvider messages={messages} locale={locale}>
           <ConfigProvider config={appConfig}>
-            <ThemeProvider attribute="class" enableSystem={true} disableTransitionOnChange>
+            <ThemeProvider>
               <AnalyticsProvider>
                 <Providers>
                   <div className="min-h-dvh">{children}</div>

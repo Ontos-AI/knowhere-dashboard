@@ -1,0 +1,241 @@
+/*
+  Wave 0 Site token foundation.
+  Later waves wrap Landing / Pricing / Blog / Login chrome in `.kh-site`
+  so prototype CSS can use these names without fighting Tailwind shadcn tokens.
+*/
+
+:root {
+  --kh-mist-white: #f0f2e6;
+  --kh-mineral-green: #19a88b;
+  --kh-deep-teal: #083b3a;
+  --kh-coral-signal: #ff634a;
+}
+
+.kh-site {
+  --mist-white-50: #ffffff;
+  --mist-white-100: #fcfcfa;
+  --mist-white-200: #f9faf5;
+  --mist-white-300: #f6f7ef;
+  --mist-white-400: #f3f5ea;
+  --mist-white-500: #f0f2e6;
+  --mist-white-600: #bbbcb3;
+  --mist-white-700: #888a82;
+  --mist-white-800: #595a55;
+  --mist-white-900: #2e2e2c;
+  --mist-white-950: #1b1c1a;
+
+  --mineral-green-50: #caffee;
+  --mineral-green-100: #7efedd;
+  --mineral-green-200: #27efc6;
+  --mineral-green-300: #23d6b1;
+  --mineral-green-400: #1dbe9d;
+  --mineral-green-500: #19a88b;
+  --mineral-green-600: #12846c;
+  --mineral-green-700: #0a6351;
+  --mineral-green-800: #054437;
+  --mineral-green-900: #01251d;
+  --mineral-green-950: #011711;
+
+  --coral-signal-50: #fff0ef;
+  --coral-signal-100: #ffe1df;
+  --coral-signal-200: #ffc7c3;
+  --coral-signal-300: #ffa79f;
+  --coral-signal-400: #ff897d;
+  --coral-signal-500: #ff634a;
+  --coral-signal-600: #dd3b00;
+  --coral-signal-700: #a42900;
+  --coral-signal-800: #731a00;
+  --coral-signal-900: #420b00;
+  --coral-signal-950: #2d0500;
+
+  --deep-teal-50: #6dfdfa;
+  --deep-teal-100: #3be8e4;
+  --deep-teal-200: #2fbab8;
+  --deep-teal-300: #208c8a;
+  --deep-teal-400: #156462;
+  --deep-teal-500: #083b3a;
+  --deep-teal-600: #073231;
+  --deep-teal-700: #042626;
+  --deep-teal-800: #021d1d;
+  --deep-teal-900: #011110;
+  --deep-teal-950: #010909;
+
+  --black: #000000;
+  --white: #ffffff;
+  --black-1: rgb(0 0 0 / 1%);
+  --black-2: rgb(0 0 0 / 2%);
+  --black-3: rgb(0 0 0 / 3%);
+  --black-6: rgb(0 0 0 / 6%);
+  --black-10: rgb(0 0 0 / 10%);
+  --black-20: rgb(0 0 0 / 20%);
+  --black-30: rgb(0 0 0 / 30%);
+  --black-40: rgb(0 0 0 / 40%);
+  --black-50: rgb(0 0 0 / 50%);
+  --black-60: rgb(0 0 0 / 60%);
+  --black-70: rgb(0 0 0 / 70%);
+  --black-80: rgb(0 0 0 / 80%);
+  --black-90: rgb(0 0 0 / 90%);
+  --black-100: rgb(0 0 0 / 100%);
+  --white-1: rgb(255 255 255 / 1%);
+  --white-2: rgb(255 255 255 / 2%);
+  --white-3: rgb(255 255 255 / 3%);
+  --white-6: rgb(255 255 255 / 6%);
+  --white-10: rgb(255 255 255 / 10%);
+  --white-20: rgb(255 255 255 / 20%);
+  --white-30: rgb(255 255 255 / 30%);
+  --white-40: rgb(255 255 255 / 40%);
+  --white-50: rgb(255 255 255 / 50%);
+  --white-60: rgb(255 255 255 / 60%);
+  --white-70: rgb(255 255 255 / 70%);
+  --white-80: rgb(255 255 255 / 80%);
+  --white-90: rgb(255 255 255 / 90%);
+  --white-100: rgb(255 255 255 / 100%);
+
+  --md-sys-color-primary: var(--mineral-green-300);
+  --md-sys-color-on-primary: var(--mineral-green-950);
+  --md-sys-color-primary-container: var(--mineral-green-800);
+  --md-sys-color-on-primary-container: var(--mineral-green-100);
+  --md-sys-color-inverse-primary: var(--mineral-green-600);
+  --md-sys-color-secondary: var(--deep-teal-200);
+  --md-sys-color-on-secondary: var(--deep-teal-950);
+  --md-sys-color-secondary-container: var(--deep-teal-700);
+  --md-sys-color-on-secondary-container: var(--deep-teal-50);
+  --md-sys-color-tertiary: var(--deep-teal-100);
+  --md-sys-color-on-tertiary: var(--deep-teal-950);
+  --md-sys-color-tertiary-container: var(--deep-teal-600);
+  --md-sys-color-on-tertiary-container: var(--deep-teal-50);
+  --md-sys-color-error: var(--coral-signal-300);
+  --md-sys-color-on-error: var(--coral-signal-950);
+  --md-sys-color-error-container: var(--coral-signal-800);
+  --md-sys-color-on-error-container: var(--coral-signal-100);
+  --md-sys-color-background: var(--deep-teal-950);
+  --md-sys-color-on-background: var(--mist-white-200);
+  --md-sys-color-surface: var(--deep-teal-950);
+  --md-sys-color-on-surface: var(--mist-white-200);
+  --md-sys-color-surface-variant: var(--deep-teal-700);
+  --md-sys-color-on-surface-variant: var(--mist-white-600);
+  --md-sys-color-outline: var(--mist-white-700);
+  --md-sys-color-outline-variant: var(--deep-teal-500);
+  --md-sys-color-shadow: var(--black);
+  --md-sys-color-scrim: var(--black);
+  --md-sys-color-inverse-surface: var(--mist-white-200);
+  --md-sys-color-inverse-on-surface: var(--deep-teal-900);
+  --md-sys-color-surface-tint: var(--mineral-green-300);
+  --md-sys-color-surface-dim: var(--deep-teal-950);
+  --md-sys-color-surface-bright: var(--deep-teal-700);
+  --md-sys-color-surface-container-lowest: var(--black);
+  --md-sys-color-surface-container-low: var(--deep-teal-900);
+  --md-sys-color-surface-container: var(--deep-teal-800);
+  --md-sys-color-surface-container-high: var(--deep-teal-700);
+  --md-sys-color-surface-container-highest: var(--deep-teal-600);
+  --md-sys-color-primary-fixed: var(--mineral-green-100);
+  --md-sys-color-primary-fixed-dim: var(--mineral-green-300);
+  --md-sys-color-on-primary-fixed: var(--mineral-green-950);
+  --md-sys-color-on-primary-fixed-variant: var(--mineral-green-800);
+  --md-sys-color-secondary-fixed: var(--deep-teal-50);
+  --md-sys-color-secondary-fixed-dim: var(--deep-teal-200);
+  --md-sys-color-on-secondary-fixed: var(--deep-teal-950);
+  --md-sys-color-on-secondary-fixed-variant: var(--deep-teal-700);
+  --md-sys-color-tertiary-fixed: var(--deep-teal-50);
+  --md-sys-color-tertiary-fixed-dim: var(--deep-teal-100);
+  --md-sys-color-on-tertiary-fixed: var(--deep-teal-950);
+  --md-sys-color-on-tertiary-fixed-variant: var(--deep-teal-700);
+
+  --paper: #ffffff;
+  --ink: #2e2e2c;
+  --muted: #888a82;
+  --soft: var(--mist-white-700);
+  --line: #bbbcb3;
+  --accent: var(--mineral-green-500);
+  --page-primary: var(--mineral-green-500);
+  --page-primary-foreground: #ffffff;
+
+  --sans:
+    var(--font-poppins), var(--font-frex), "Poppins", "Frex Sans GB", "Frex Sans GB VF", sans-serif;
+  --mono: var(--font-geist-mono), "Geist Mono", var(--font-frex), "Frex Sans GB", monospace;
+  --serif: var(--sans);
+  --figma-display: var(--sans);
+  --figma-mono: var(--mono);
+
+  --chrome-paper: #ffffff;
+  --chrome-ink: #1b1c1a;
+  --chrome-line: rgb(0 0 0 / 10%);
+  --chrome-surface: #f7f8f9;
+  --chrome-muted: #7d817c;
+  --chrome-green: #12846c;
+  --chrome-primary: #19a88b;
+  --chrome-on-primary: #011711;
+}
+
+.dark .kh-site,
+html[data-theme="dark"] .kh-site {
+  --mineral-green-500: #1dbe9d;
+  --coral-signal-500: #ff897d;
+  --mist-white-50: #000000;
+  --mist-white-100: #011110;
+  --mist-white-200: #021d1d;
+  --mist-white-300: #042626;
+  --mist-white-400: #042626;
+  --mist-white-500: #073231;
+  --mist-white-600: #083b3a;
+  --mist-white-700: #888a82;
+  --mist-white-800: #bbbcb3;
+  --mist-white-900: #f9faf5;
+  --mist-white-950: #f9faf5;
+
+  --md-sys-color-background: #010909;
+  --md-sys-color-surface: #010909;
+  --md-sys-color-on-background: #f9faf5;
+  --md-sys-color-on-surface: #f9faf5;
+  --md-sys-color-on-surface-variant: #bbbcb3;
+  --md-sys-color-outline: #888a82;
+  --md-sys-color-outline-variant: #083b3a;
+  --md-sys-color-inverse-surface: #f9faf5;
+
+  --paper: #010909;
+  --ink: #f9faf5;
+  --muted: #bbbcb3;
+  --soft: var(--mist-white-700);
+  --line: #083b3a;
+  --accent: var(--md-sys-color-primary);
+  --page-primary: var(--md-sys-color-primary);
+  --page-primary-foreground: var(--md-sys-color-on-primary);
+
+  --white: #010909;
+  --white-3: rgb(1 9 9 / 3%);
+  --white-6: rgb(1 9 9 / 6%);
+  --white-10: rgb(1 9 9 / 10%);
+  --white-20: rgb(1 9 9 / 20%);
+  --white-30: rgb(1 9 9 / 30%);
+  --white-40: rgb(1 9 9 / 40%);
+  --white-50: rgb(1 9 9 / 50%);
+  --white-60: rgb(1 9 9 / 60%);
+  --white-70: rgb(1 9 9 / 70%);
+  --white-80: rgb(1 9 9 / 80%);
+  --white-90: rgb(1 9 9 / 90%);
+  --white-100: #010909;
+
+  --black: #f9faf5;
+  --black-1: rgb(249 250 245 / 1%);
+  --black-2: rgb(249 250 245 / 2%);
+  --black-3: rgb(249 250 245 / 3%);
+  --black-6: rgb(249 250 245 / 6%);
+  --black-10: rgb(249 250 245 / 10%);
+  --black-20: rgb(249 250 245 / 20%);
+  --black-30: rgb(249 250 245 / 30%);
+  --black-40: rgb(249 250 245 / 40%);
+  --black-50: rgb(249 250 245 / 50%);
+  --black-60: rgb(249 250 245 / 60%);
+  --black-70: rgb(249 250 245 / 70%);
+  --black-80: rgb(249 250 245 / 80%);
+  --black-90: rgb(249 250 245 / 90%);
+  --black-100: #f9faf5;
+
+  --chrome-primary: #23d6b1;
+  --chrome-on-primary: #011711;
+  --chrome-paper: #010909;
+  --chrome-ink: #f2f5f5;
+  --chrome-line: rgb(255 255 255 / 14%);
+  --chrome-surface: #042626;
+  --chrome-muted: #9aaead;
+}

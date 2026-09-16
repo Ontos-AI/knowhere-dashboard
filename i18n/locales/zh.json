@@ -145,10 +145,16 @@
   "Auth": {
     "login": "登录",
     "loginDesc": "登录到您的 Knowhere 账户",
+    "signInTitle": "登录 Knowhere",
+    "eyebrow": "从这里，开始下一次创造",
+    "metaTitle": "登录 — Knowhere",
+    "metaDescription": "登录 Knowhere。把复杂文档变成智能体可用的上下文。",
+    "homeAriaLabel": "Knowhere 首页",
+    "chooseLanguage": "选择语言",
     "register": "注册",
     "registerDesc": "创建您的 Knowhere 账户",
-    "email": "邮箱",
-    "emailPlaceholder": "name@example.com",
+    "email": "邮箱地址",
+    "emailPlaceholder": "you@company.com",
     "password": "密码",
     "passwordPlaceholder": "请输入密码",
     "newPassword": "新密码",
@@ -157,8 +163,9 @@
     "confirmPasswordPlaceholder": "请再次输入密码",
     "username": "用户名",
     "usernamePlaceholder": "请输入用户名",
-    "sendMagicLink": "通过邮箱获取登录链接",
-    "sending": "发送中...",
+    "sendMagicLink": "使用邮箱登录",
+    "resendEmail": "重新发送邮件",
+    "sending": "发送中…",
     "signingIn": "登录中...",
     "signInWithPassword": "登录",
     "loginWithPassword": "使用密码登录",
@@ -171,7 +178,7 @@
     "registerNow": "立即注册",
     "emailInvalid": "请输入有效的邮箱地址",
     "magicLinkFailed": "魔法链接发送失败",
-    "magicLinkSent": "魔法链接已发送，请检查邮箱",
+    "magicLinkSent": "登录链接已发送，请查收邮件",
     "forgotPassword": "忘记密码？",
     "forgotPasswordTitle": "重置密码",
     "forgotPasswordDesc": "输入邮箱，我们会发送密码重置链接。",
@@ -205,7 +212,10 @@
     "processingGithubLogin": "正在处理GitHub登录...",
     "appleLoginSuccess": "Apple登录成功",
     "appleLoginFailed": "Apple登录失败",
-    "processingAppleLogin": "正在处理Apple登录..."
+    "processingAppleLogin": "正在处理Apple登录...",
+    "magicLinkLoginSuccess": "魔法链接登录成功",
+    "magicLinkLoginFailed": "魔法链接登录失败",
+    "processingMagicLink": "正在处理魔法链接..."
   },
   "Billing": {
     "title": "账单与套餐",
@@ -436,6 +446,146 @@
       "instruction": "您可以在此处查看您的充值记录、购买新的积分包以及管理订阅套餐。Knowhere 提供灵活的计费方式，助您高效解析文档。",
       "billingDisabledTitle": "计费已禁用",
       "billingDisabledDescription": "当前自托管控制台不启用付费计费。您可以直接管理 API 密钥并处理任务，无需购买积分。"
+    },
+    "seo": {
+      "title": "定价 — Knowhere",
+      "description": "以每 {packPages} 页 {packPrice} 的价格解析复杂文档。估算每月处理费用，免费开始解析。"
+    },
+    "skipToContent": "跳转到内容",
+    "hero": {
+      "titleLine1": "以每 {packPages} 页 {packPrice} 的价格",
+      "titleLine2": "解析复杂文档。",
+      "lede": "将 PDF、电子表格、演示文稿和图片转为适用于 AI 工作流的结构化数据。无需订阅，无最低消费。",
+      "noCard": "无需信用卡",
+      "noSubscription": "无需订阅",
+      "noMinimum": "无最低消费",
+      "cta": "免费开始解析"
+    },
+    "calculator": {
+      "sectionNo": "[ COST CALCULATOR ]",
+      "title": "估算每月处理费用",
+      "description": "估算以计费页数为准。",
+      "estimatedCost": "预估费用（每计费页 {pageRate}）",
+      "pageCountLabel": "计费页数",
+      "rangeAria": "待处理计费页数",
+      "rangeValue": "{pages} 计费页，预估费用 {cost}",
+      "minLabel": "100 计费页",
+      "maxLabel": "10,000 计费页",
+      "facts": {
+        "monthly": "预估月度费用",
+        "report": "一份 100 页的报告",
+        "contracts": "十份 50 页的合同",
+        "volume": "每月 10,000 页"
+      }
+    },
+    "how": {
+      "sectionNo": "[ HOW PRICING WORKS ]",
+      "title": "从页数到付款，清晰透明。",
+      "description": "无需猜测，了解如何计算页数，以及何时扣除额度。",
+      "planTitle": "随时按需购买处理额度。",
+      "planCopy": "无需订阅，无最低消费。",
+      "planUnit": "/ 100 计费页",
+      "planEquivalent": "即每计费页 {pageRate}。",
+      "customTitle": "适配你的团队工作方式。",
+      "customCopy": "定制限额、部署、支持与 SLA。",
+      "customCta": "联系我们的团队",
+      "rulesTitle": "计费规则",
+      "billableTitle": "从计费页数开始",
+      "billableCopy": "总费用取决于计费页数，而不是上传的文件数量。",
+      "billableUnit": "/ 计费页",
+      "completedTitle": "为完成的工作付费",
+      "completedCopy": "任务成功完成时扣除处理额度。",
+      "completedResult": "计费",
+      "failedTitle": "任务失败？不收费。",
+      "failedCopy": "失败任务不消耗处理额度。",
+      "failedPrice": "$0"
+    },
+    "limits": {
+      "sectionNo": "[ LIMITS & ENTERPRISE ]",
+      "title": "突破标准限额，灵活扩展。",
+      "description": "从标准文件限额开始。工作负载需要更高限额时，请联系我们。",
+      "tableTitle": "标准文件限额",
+      "formatColumn": "文件格式",
+      "sizeColumn": "最大大小",
+      "formats": {
+        "pdf": "PDF 文档",
+        "docx": "Word 文档",
+        "xlsx": "Excel 表格",
+        "pptx": "PowerPoint 演示文稿"
+      }
+    },
+    "enterprise": {
+      "title": "需要私有化部署或更高处理量？",
+      "description": "联系我们，了解私有化部署、专属基础设施和定制支持。",
+      "cta": "联系我们的团队",
+      "features": {
+        "volume": {
+          "title": "批量处理与定制限额",
+          "copy": "随流量扩展处理能力。"
+        },
+        "deployment": {
+          "title": "专属部署",
+          "copy": "按需选择部署方式。"
+        },
+        "priority": {
+          "title": "优先处理与支持",
+          "copy": "更快处理，直接支持。"
+        },
+        "sla": {
+          "title": "定制 SLA 与条款",
+          "copy": "按需定制服务条款。"
+        }
+      }
+    },
+    "faq": {
+      "sectionNo": "[ A FEW MORE DETAILS ]",
+      "title": "好问题，清晰解答。",
+      "items": {
+        "billingRules": {
+          "question": "计费页数如何计算？",
+          "answer": "计费方式取决于文件类型：PDF 按物理页数计算，演示文稿按幻灯片页数计算，图片逐张计算，Word、文本和 Markdown 文件按内容长度换算，电子表格按总行数换算。"
+        },
+        "creditTiming": {
+          "question": "何时扣除额度？",
+          "answer": "任务成功完成时扣除处理额度。"
+        },
+        "failedJobs": {
+          "question": "解析失败时如何计费？",
+          "answer": "失败任务不消耗处理额度。"
+        },
+        "creditExpiry": {
+          "question": "额度会过期吗？",
+          "answer": "处理额度在购买后 3 个月到期。请根据这段时间预计处理的文档量安排购买。"
+        },
+        "payment": {
+          "question": "支持哪些付款方式？",
+          "answer": "通过 Stripe 接受主要信用卡付款，包括 Visa、Mastercard 和 American Express。"
+        },
+        "refund": {
+          "question": "可以退款吗？",
+          "answer": "如需退款，请在购买后 14 天内联系 team@knowhereto.ai。"
+        },
+        "taxes": {
+          "question": "估算费用是否包含税费？",
+          "answer": "此计算器仅估算页面处理费用。购买前请联系我们确认适用税费与发票要求。"
+        },
+        "gettingStarted": {
+          "question": "如何开始使用？",
+          "answer": "开始免费试用 14 天，无需信用卡。获取 API Key，即可用自己的文档体验 Knowhere。"
+        }
+      }
+    },
+    "cta": {
+      "title": "让你的文档发挥价值。",
+      "description": "为智能体提供更好的上下文，为你提供清晰的价格。",
+      "primary": "免费开始解析",
+      "secondary": "阅读 API 文档",
+      "benefits": {
+        "trial": "免费试用 14 天",
+        "custom": "定制限额与部署",
+        "noCard": "无需信用卡",
+        "support": "团队直接支持"
+      }
     }
   },
   "CreditPayment": {
@@ -513,6 +663,65 @@
     "retry": "重试",
     "createFailed": "创建 webhook 密钥失败",
     "duplicateEndpointError": "该端点已存在密钥"
+  },
+  "SiteChrome": {
+    "nav": {
+      "comparison": "对比",
+      "pricing": "价格",
+      "docs": "文档",
+      "playground": "在线体验",
+      "blog": "博客",
+      "github": "GitHub"
+    },
+    "cta": "获取 API Key",
+    "home": "Knowhere 首页",
+    "backToTop": "Knowhere，回到顶部",
+    "chooseLanguage": "选择语言",
+    "chooseTheme": "选择主题",
+    "openMenu": "打开菜单",
+    "closeMenu": "关闭菜单",
+    "menu": "菜单",
+    "mainNavigation": "主导航",
+    "mobileNavigation": "移动导航",
+    "footerLinks": "页脚链接",
+    "copyright": "© {year} Knowhere API。保留所有权利。"
+  },
+  "Blog": {
+    "skipToContent": "跳到正文",
+    "title": "博客",
+    "description": "产品动态、研究，以及构建更好智能体的想法。",
+    "metaTitle": "博客 — Knowhere",
+    "metaDescription": "产品动态、研究，以及构建更好智能体的想法。",
+    "featuredEyebrow": "[ 精选 ]",
+    "featuredTitle": "精选文章",
+    "browseEyebrow": "[ 浏览 ]",
+    "allArticles": "全部文章",
+    "filterAll": "全部",
+    "filterAria": "筛选文章",
+    "read": "阅读",
+    "emptyTitle": "这里还没有文章。",
+    "emptyDescription": "试试其他主题。",
+    "paginationAria": "文章分页",
+    "previous": "上一页",
+    "next": "下一页",
+    "page": "第 {page} 页",
+    "back": "返回",
+    "backToBlog": "返回博客",
+    "share": "分享",
+    "shareOn": "分享到 {network}",
+    "articleInformation": "文章信息",
+    "author": "作者",
+    "bio": "简介",
+    "published": "发布于",
+    "category": "分类",
+    "readingTime": "阅读时间",
+    "readingTimeValue": "{minutes} 分钟阅读",
+    "recommended": "推荐文章",
+    "errorTitle": "文章加载失败。",
+    "errorDescription": "请检查网络后重试。",
+    "retry": "重试",
+    "notFoundTitle": "找不到这篇文章。",
+    "notFoundDescription": "它可能已下线，或链接已过期。"
   },
   "Landing": {
     "header": {
@@ -821,6 +1030,251 @@
       "replayDrop": "松开以重新解析示例",
       "samplePdf": "示例 PDF",
       "openRawPdf": "打开原始 PDF"
+    },
+    "skipToContent": "跳至正文",
+    "toastClose": "关闭通知",
+    "hero": {
+      "title": "将复杂文档转化为智能体可用的上下文。",
+      "lede": "Knowhere 保留结构、视觉上下文与来源链接，为智能体提供可导航、可检索、可验证的信息。",
+      "startFreeTrial": "免费试用",
+      "readDocs": "阅读文档",
+      "visualAria": "从原始文档到 RAG 结构的四阶段交互式文档处理流程"
+    },
+    "product": {
+      "sectionNo": "[ 产品 ]",
+      "title": "查看 Knowhere 如何将文档转化为结构化、可追溯的上下文。",
+      "description": "探索 PDF 页面溯源、Word 文本内容和 Excel 表格提取。",
+      "viewFormats": "查看全部支持格式"
+    },
+    "process": {
+      "sectionNo": "[ 处理流程 ]",
+      "title": "一条让上下文始终保持关联的文档处理流程。",
+      "description": "从接收文档到输出结构化结果，每一步都让内容与原始来源保持关联。",
+      "stories": {
+        "ingest": {
+          "title": "接收文档",
+          "summary": "上传 PDF、电子表格、演示文稿、扫描件及其他受支持格式。",
+          "mediaAria": "汇聚的文档流与文档上传队列"
+        },
+        "capture": {
+          "title": "捕获每一页",
+          "summary": "提取文本和视觉区域，同时保留原始页面版式。",
+          "mediaAria": "带有检测页面区域的投影页面捕获场"
+        },
+        "map": {
+          "title": "映射文档结构",
+          "summary": "识别文档中的标题、表格、公式、版式与关系。",
+          "mediaAria": "带有文档大纲的分层文档结构网格"
+        },
+        "return": {
+          "title": "返回可追溯上下文",
+          "summary": "为智能体返回结构化 JSON、可导航文档地图及关联来源的页面。",
+          "mediaAria": "带有结构化 JSON 和来源路径的可追溯来源关系场"
+        }
+      }
+    },
+    "formats": {
+      "sectionNo": "[ 能力 ]",
+      "title": "专为纯文本无法捕捉的文档而构建。",
+      "description": "在复杂文件格式中保留页面结构、视觉含义、公式与来源关系。",
+      "supportedIntro": "支持常见的文档、演示文稿、",
+      "supportedIntroLineTwo": "电子表格、图片与文本格式：",
+      "supportedList": "DOCX、PDF、JPG、PPTX、XLSX、CSV、PNG、MD、JSON 和 TXT。",
+      "orbitAria": "示意格式",
+      "comingSoonLineOne": "即将支持 EPUB、HTML、XML、MP4、",
+      "comingSoonLineTwo": "MP3 和 SKILL.md，",
+      "comingSoon": "敬请期待。",
+      "features": {
+        "pageNative": {
+          "title": "页面原生理解",
+          "description": "保留版式、图表与空间关系，以便智能体在纯文本不够用时检查原始页面。"
+        },
+        "agentReady": {
+          "title": "面向智能体的结构",
+          "description": "将扁平文本转为分层上下文，智能体可先浏览再按需展开。"
+        },
+        "formula": {
+          "title": "公式识别",
+          "description": "提取数学公式与化学结构，输出智能体和下游系统可用的格式。"
+        },
+        "tracing": {
+          "title": "来源级追溯",
+          "description": "将提取内容追溯回页面与来源区域，便于核验。"
+        },
+        "onPrem": {
+          "title": "本地部署",
+          "description": "在文档隐私、合规要求或基础设施管控需要时，将 Knowhere 部署在本地。"
+        },
+        "apiFirst": {
+          "title": "API 优先集成",
+          "description": "通过 REST API、Webhook、SDK 或 MCP，将 Knowhere 接入现有工作流。"
+        }
+      }
+    },
+    "comparison": {
+      "sectionNo": "[ 对比 ]",
+      "title": "从结构、准确性与可追溯性维度对比文档理解能力。",
+      "description": "比较 Knowhere 与其他文档处理工具在效率、准确性、结构和来源追溯方面的表现。",
+      "frameAria": "示意文档处理流程对比",
+      "performance": "性能对比",
+      "legendAria": "参与对比的文档处理工具",
+      "legend": {
+        "rawDocs": "原始文档",
+        "unstructured": "Unstructured",
+        "knowhere": "Knowhere",
+        "mineru": "MinerU",
+        "markitdown": "Markitdown"
+      },
+      "tokensUsed": "使用的 token",
+      "processingTime": "处理时间",
+      "processingTimeSeconds": "处理时间（秒）",
+      "agentIterations": "智能体迭代",
+      "firstPass": "首次准确率",
+      "afterFeedback": "反馈后准确率",
+      "recall": "召回率",
+      "matrix": "能力矩阵",
+      "matrixAria": "文档理解能力矩阵",
+      "feature": "功能",
+      "typicalParsers": "常见文档解析器",
+      "supported": "支持",
+      "limited": "有限",
+      "notSupported": "不支持",
+      "rows": {
+        "hierarchy": "文档层级",
+        "mergedCells": "复杂合并单元格",
+        "boundaries": "表格边界",
+        "tracing": "来源追溯",
+        "progressive": "渐进式上下文",
+        "visual": "视觉理解"
+      }
+    },
+    "integration": {
+      "sectionNo": "[ 集成 ]",
+      "title": "几分钟内为你的工作流加入文档理解能力。",
+      "description": "通过 API 提交文档、接收结构化结果，并将其接入现有的智能体工作流。",
+      "codeHead": "示意流程 · 接口细节待确认",
+      "copy": "复制",
+      "codeAria": "代码示例",
+      "mcpTitle": "通过 MCP 使用 Knowhere",
+      "mcpDescription": "将结构化文档上下文带入 Cursor、VS Code、Claude 或 Codex。",
+      "mcpLink": "阅读 MCP 文档",
+      "steps": {
+        "key": {
+          "title": "获取 API 密钥",
+          "description": "注册并从控制台生成 API 密钥。"
+        },
+        "submit": {
+          "title": "提交文档",
+          "description": "发送 URL 或将文件上传至处理队列。"
+        },
+        "results": {
+          "title": "接收结构化结果",
+          "description": "通过 Webhook 或轮询获取结构化 JSON。"
+        }
+      }
+    },
+    "pricing": {
+      "sectionNo": "[ 价格 ]",
+      "title": "简单、透明的定价。",
+      "description": "只为实际使用量付费，没有隐藏费用，也没有复杂套餐。",
+      "estimatedCost": "预估费用（每页 $0.015）",
+      "pageCount": "待处理页数",
+      "estimatedBudget": "预估预算",
+      "pdfs": "100 页 PDF",
+      "largeDocs": "500 页文档",
+      "commitment": "最低消费",
+      "noMinimum": "无最低消费",
+      "pagesToProcess": "处理页数",
+      "scaleStart": "100 页",
+      "fileLimitsTitle": "文件大小限制",
+      "fileLimitsContact": "需要更高限额？请联系",
+      "fileLimitsEnd": "以获取带有自定义限额的企业定价。"
+    },
+    "enterprise": {
+      "sectionNo": "[ 企业版 ]",
+      "title": "需要定制限额或部署支持？",
+      "lede": "自定义限额、部署、支持及 SLA。",
+      "talk": "联系我们的团队",
+      "metrics": {
+        "limits": {
+          "title": "自定义速率限制",
+          "description": "根据生产流量讨论合适的吞吐上限。"
+        },
+        "priority": {
+          "title": "优先处理",
+          "description": "规划时间敏感任务的优先处理方式。"
+        },
+        "deployment": {
+          "title": "部署选项",
+          "description": "评估托管、专属或私有化部署方案。"
+        },
+        "support": {
+          "title": "支持需求",
+          "description": "明确支持渠道与响应预期。"
+        },
+        "sla": {
+          "title": "SLA 需求",
+          "description": "明确可用性与服务等级需求。"
+        },
+        "commercial": {
+          "title": "商业条款",
+          "description": "根据使用规模讨论结算方式与条款。"
+        }
+      }
+    },
+    "faq": {
+      "sectionNo": "[ FAQ ]",
+      "title": "常见问题。",
+      "items": {
+        "charged": {
+          "question": "何时扣费？",
+          "answer": "任务成功完成后才会扣除页面额度。失败的任务不消耗额度。"
+        },
+        "rollover": {
+          "question": "未使用的页面额度会结转吗？",
+          "answer": "页面额度在购买后 3 个月过期。"
+        },
+        "refund": {
+          "question": "可以退款吗？",
+          "answer": "请在购买后 14 天内联系 team@knowhereto.ai 申请退款。"
+        },
+        "payment": {
+          "question": "接受哪些付款方式？",
+          "answer": "我们通过 Stripe 接受所有主流信用卡：Visa、Mastercard、American Express 等。"
+        }
+      }
+    },
+    "finalCta": {
+      "sectionNo": "[ 开始使用 ]",
+      "title": "准备好使用更好的文档上下文进行构建了吗？",
+      "lede": "连接你的智能体工作流，看看 Knowhere 如何处理纯文本管线容易遗漏的文档。",
+      "bookDemo": "预约演示",
+      "benefitsAria": "试用权益",
+      "trial": "14 天免费试用",
+      "noCard": "无需信用卡",
+      "cancel": "可随时取消"
     }
+  },
+  "Newsletter": {
+    "homeAriaLabel": "Knowhere 首页",
+    "chooseLanguage": "选择语言",
+    "backToKnowhere": "返回 Knowhere",
+    "email": "邮箱地址",
+    "emailPlaceholder": "you@example.com",
+    "confirmingTitle": "正在确认 Newsletter 订阅",
+    "confirmingDescription": "请保持此页面打开，我们正在确认你的邮箱地址。",
+    "confirmedTitle": "Newsletter 订阅已确认",
+    "confirmedDescription": "感谢订阅。你将通过此邮箱收到 Knowhere 产品更新。",
+    "expiredTitle": "确认链接已过期",
+    "expiredDescription": "请从 Knowhere 首页重新订阅，以获取新的确认链接。",
+    "invalidTitle": "确认链接无效",
+    "invalidDescription": "此链接已失效。请从 Knowhere 首页重新订阅。",
+    "unsubscribeTitle": "取消订阅 Knowhere Newsletter",
+    "unsubscribeDescription": "输入邮箱地址，我们将把它从后续 Knowhere Newsletter 邮件中移除。",
+    "unsubscribedTitle": "已取消 Newsletter 订阅",
+    "unsubscribedDescription": "如果此邮箱已订阅，将不再收到 Knowhere Newsletter 邮件。",
+    "unsubscribeSubmit": "取消订阅",
+    "unsubscribing": "正在取消订阅...",
+    "unsubscribeError": "无法取消此邮箱的订阅，请重试。"
   }
 }

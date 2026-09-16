@@ -127,10 +127,16 @@
   "Auth": {
     "login": "Sign in",
     "loginDesc": "Sign in to your Knowhere account",
+    "signInTitle": "Sign in to Knowhere",
+    "eyebrow": "YOUR NEXT BUILD STARTS HERE",
+    "metaTitle": "Sign in — Knowhere",
+    "metaDescription": "Sign in to Knowhere. Turn complex documents into context your agents can use.",
+    "homeAriaLabel": "Knowhere home",
+    "chooseLanguage": "Choose language",
     "register": "Sign up",
     "registerDesc": "Create your Knowhere account",
-    "email": "Email",
-    "emailPlaceholder": "name@example.com",
+    "email": "Email address",
+    "emailPlaceholder": "you@company.com",
     "password": "Password",
     "passwordPlaceholder": "Enter your password",
     "newPassword": "New password",
@@ -140,7 +146,8 @@
     "username": "Username",
     "usernamePlaceholder": "Enter your username",
     "sendMagicLink": "Sign in with Email",
-    "sending": "Sending...",
+    "resendEmail": "Resend email",
+    "sending": "Sending…",
     "signingIn": "Signing in...",
     "signInWithPassword": "Sign in",
     "loginWithPassword": "Sign in with password",
@@ -180,14 +187,17 @@
     "registerSuccess": "Registration successful",
     "registerFailed": "Registration failed",
     "continueWithGoogle": "Continue with Google",
-    "continueWithGithub": "Continue with Github",
-    "orContinueWithEmail": "OR CONTINUE WITH EMAIL",
+    "continueWithGithub": "Continue with GitHub",
+    "orContinueWithEmail": "or continue with email",
     "githubLoginSuccess": "GitHub login successful",
     "githubLoginFailed": "GitHub login failed",
     "processingGithubLogin": "Processing GitHub login...",
     "appleLoginSuccess": "Apple login successful",
     "appleLoginFailed": "Apple login failed",
-    "processingAppleLogin": "Processing Apple login..."
+    "processingAppleLogin": "Processing Apple login...",
+    "magicLinkLoginSuccess": "Signed in with magic link",
+    "magicLinkLoginFailed": "Magic link login failed",
+    "processingMagicLink": "Processing magic link..."
   },
   "BuyCredits": {
     "title": "Buy Knowhere API Credit",
@@ -198,6 +208,7 @@
     "minAmount": "Minimum amount is ${minAmount}",
     "minPurchaseError": "Minimum purchase is {amount} credits",
     "cancel": "Cancel",
+    "continueToPayment": "Continue to Payment",
     "purchase": "Continue to Payment",
     "processing": "Processing...",
     "purchaseFailed": "Failed to initiate purchase",
@@ -435,6 +446,146 @@
       "instruction": "Here you can view your recharge history, purchase new credit packages, and manage subscription plans. Knowhere offers flexible billing to help you parse documents efficiently.",
       "billingDisabledTitle": "Billing is disabled",
       "billingDisabledDescription": "This self-hosted dashboard runs without paid billing. You can manage API keys and process jobs without purchasing credits."
+    },
+    "seo": {
+      "title": "Pricing — Knowhere",
+      "description": "Parse complex documents for {packPrice} per {packPages} billable pages. Estimate your monthly processing cost and start parsing for free."
+    },
+    "skipToContent": "Skip to content",
+    "hero": {
+      "titleLine1": "Parse complex documents for",
+      "titleLine2": "{packPrice} per {packPages} pages.",
+      "lede": "Turn PDFs, spreadsheets, presentations, and images into structured data for AI workflows. No subscriptions, no minimum spend.",
+      "noCard": "No credit card required",
+      "noSubscription": "No subscription",
+      "noMinimum": "No minimum spend",
+      "cta": "Start parsing for free"
+    },
+    "calculator": {
+      "sectionNo": "[ COST CALCULATOR ]",
+      "title": "Estimate your monthly processing cost",
+      "description": "Your estimate is based on billable pages.",
+      "estimatedCost": "Estimated cost ({pageRate} per billable page)",
+      "pageCountLabel": "Number of billable pages",
+      "rangeAria": "Billable pages to process",
+      "rangeValue": "{pages} billable pages, estimated cost {cost}",
+      "minLabel": "100 billable pages",
+      "maxLabel": "10,000 billable pages",
+      "facts": {
+        "monthly": "Estimated monthly cost",
+        "report": "A 100-page report",
+        "contracts": "Ten 50-page contracts",
+        "volume": "10,000 pages per month"
+      }
+    },
+    "how": {
+      "sectionNo": "[ HOW PRICING WORKS ]",
+      "title": "Clear from page to payment.",
+      "description": "No guesswork. Here’s what counts, and when your credits are used.",
+      "planTitle": "Buy processing credits whenever you need them.",
+      "planCopy": "No subscription and no minimum spend.",
+      "planUnit": "/ 100 billable pages",
+      "planEquivalent": "That’s {pageRate} per billable page.",
+      "customTitle": "Built for the way your team works.",
+      "customCopy": "Custom limits, deployment, support, and SLAs.",
+      "customCta": "Talk to our team",
+      "rulesTitle": "Billing rules",
+      "billableTitle": "Start with billable pages",
+      "billableCopy": "Your total is based on billable pages, not the number of files you upload.",
+      "billableUnit": "/ billable page",
+      "completedTitle": "Pay for completed work",
+      "completedCopy": "Processing credits are deducted when a job completes successfully.",
+      "completedResult": "Charged",
+      "failedTitle": "Failed job? No charge.",
+      "failedCopy": "Failed jobs don’t consume processing credits.",
+      "failedPrice": "$0"
+    },
+    "limits": {
+      "sectionNo": "[ LIMITS & ENTERPRISE ]",
+      "title": "Scale beyond standard limits.",
+      "description": "Start with standard file limits. Talk to us when your workload needs more.",
+      "tableTitle": "Standard file limits",
+      "formatColumn": "File format",
+      "sizeColumn": "Maximum size",
+      "formats": {
+        "pdf": "PDF document",
+        "docx": "Word document",
+        "xlsx": "Excel spreadsheet",
+        "pptx": "PowerPoint presentation"
+      }
+    },
+    "enterprise": {
+      "title": "Need private deployment or higher-volume processing?",
+      "description": "Talk to our team about private deployment, dedicated infrastructure, and custom support.",
+      "cta": "Talk to our team",
+      "features": {
+        "volume": {
+          "title": "Volume & custom limits",
+          "copy": "Scale with your traffic."
+        },
+        "deployment": {
+          "title": "Dedicated deployment",
+          "copy": "Deploy your way."
+        },
+        "priority": {
+          "title": "Priority processing & support",
+          "copy": "Faster jobs. Direct support."
+        },
+        "sla": {
+          "title": "Custom SLAs & terms",
+          "copy": "Terms tailored to your needs."
+        }
+      }
+    },
+    "faq": {
+      "sectionNo": "[ A FEW MORE DETAILS ]",
+      "title": "Good questions. Straight answers.",
+      "items": {
+        "billingRules": {
+          "question": "How are billable pages calculated?",
+          "answer": "Billing depends on the file type. PDFs are counted by physical page. Presentations are counted by slide. Images are counted one image at a time. Word, text, and Markdown files are converted by content length. Spreadsheets are converted by total row count."
+        },
+        "creditTiming": {
+          "question": "When are credits deducted?",
+          "answer": "Processing credits are deducted when a job completes successfully."
+        },
+        "failedJobs": {
+          "question": "What happens if parsing fails?",
+          "answer": "Failed jobs don’t consume processing credits."
+        },
+        "creditExpiry": {
+          "question": "Do credits expire?",
+          "answer": "Processing credits expire 3 months after purchase. Plan your purchase around the documents you expect to process during that period."
+        },
+        "payment": {
+          "question": "What payment methods do you accept?",
+          "answer": "We accept all major credit cards through Stripe, including Visa, Mastercard, and American Express."
+        },
+        "refund": {
+          "question": "Can I get a refund?",
+          "answer": "Contact team@knowhereto.ai for refund requests within 14 days of purchase."
+        },
+        "taxes": {
+          "question": "Are taxes included in the estimate?",
+          "answer": "This calculator estimates page-processing costs only. Contact our team to confirm applicable taxes and invoice requirements before purchasing."
+        },
+        "gettingStarted": {
+          "question": "How do I get started?",
+          "answer": "Start a free 14-day trial. No credit card is required. Get your API key and try Knowhere with your own documents."
+        }
+      }
+    },
+    "cta": {
+      "title": "Put your documents to work.",
+      "description": "Better context for your agents. A clear price for you.",
+      "primary": "Start parsing for free",
+      "secondary": "Read the API documentation",
+      "benefits": {
+        "trial": "Free 14-day trial",
+        "custom": "Custom limits and deployment",
+        "noCard": "No credit card required",
+        "support": "Direct support from our team"
+      }
     }
   },
   "CreditPayment": {
@@ -512,6 +663,65 @@
     "retry": "Retry",
     "createFailed": "Failed to create webhook secret",
     "duplicateEndpointError": "A secret for this endpoint already exists"
+  },
+  "SiteChrome": {
+    "nav": {
+      "comparison": "Comparison",
+      "pricing": "Pricing",
+      "docs": "Docs",
+      "playground": "Playground",
+      "blog": "Blog",
+      "github": "GitHub"
+    },
+    "cta": "Get API Key",
+    "home": "Knowhere home",
+    "backToTop": "Knowhere, back to top",
+    "chooseLanguage": "Choose language",
+    "chooseTheme": "Choose theme",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "menu": "Menu",
+    "mainNavigation": "Main navigation",
+    "mobileNavigation": "Mobile navigation",
+    "footerLinks": "Footer links",
+    "copyright": "© {year} Knowhere API. All rights reserved."
+  },
+  "Blog": {
+    "skipToContent": "Skip to content",
+    "title": "Blog",
+    "description": "Product updates, research, and ideas for building better agents.",
+    "metaTitle": "Blog — Knowhere",
+    "metaDescription": "Product updates, research, and ideas for building better agents.",
+    "featuredEyebrow": "[ FEATURED ]",
+    "featuredTitle": "Featured articles",
+    "browseEyebrow": "[ BROWSE ]",
+    "allArticles": "All articles",
+    "filterAll": "All",
+    "filterAria": "Filter articles",
+    "read": "Read",
+    "emptyTitle": "No articles here just yet.",
+    "emptyDescription": "Try another topic.",
+    "paginationAria": "Article pages",
+    "previous": "previous",
+    "next": "next",
+    "page": "Page {page}",
+    "back": "Back",
+    "backToBlog": "Back to blog",
+    "share": "Share",
+    "shareOn": "Share on {network}",
+    "articleInformation": "Article information",
+    "author": "Author",
+    "bio": "Bio",
+    "published": "Published",
+    "category": "Category",
+    "readingTime": "Reading time",
+    "readingTimeValue": "{minutes} min read",
+    "recommended": "Recommended articles",
+    "errorTitle": "We could not load articles.",
+    "errorDescription": "Check your connection and try again.",
+    "retry": "Retry",
+    "notFoundTitle": "This article is not available.",
+    "notFoundDescription": "It may have been unpublished or the link is out of date."
   },
   "Landing": {
     "header": {
@@ -820,6 +1030,251 @@
       "replayDrop": "Drop to replay the sample parse",
       "samplePdf": "Sample PDF",
       "openRawPdf": "Open raw PDF"
+    },
+    "skipToContent": "Skip to content",
+    "toastClose": "Close notification",
+    "hero": {
+      "title": "Turn complex documents into context your agents can use.",
+      "lede": "Knowhere preserves structure, visual context, and source links, giving agents information they can navigate, retrieve, and verify.",
+      "startFreeTrial": "Start free trial",
+      "readDocs": "Read the docs",
+      "visualAria": "Interactive four-stage document processing pipeline from original document to RAG structure"
+    },
+    "product": {
+      "sectionNo": "[ PRODUCT ]",
+      "title": "See how Knowhere turns documents into structured, traceable context.",
+      "description": "Explore page-level evidence, text content, and spreadsheet tables across PDF, Word, and Excel.",
+      "viewFormats": "View all supported formats"
+    },
+    "process": {
+      "sectionNo": "[ PROCESS ]",
+      "title": "A document pipeline that keeps context connected.",
+      "description": "From ingestion to structured output, every step keeps the document connected to its original source.",
+      "stories": {
+        "ingest": {
+          "title": "Ingest documents",
+          "summary": "Upload PDFs, spreadsheets, presentations, scans, and other supported formats.",
+          "mediaAria": "Converging document streams with a document upload queue"
+        },
+        "capture": {
+          "title": "Capture every page",
+          "summary": "Extract text and visual regions while preserving the original page layout.",
+          "mediaAria": "Projected page capture field with detected page regions"
+        },
+        "map": {
+          "title": "Map document structure",
+          "summary": "Identify headings, tables, formulas, layouts, and relationships across the document.",
+          "mediaAria": "Layered document structure grid with a document outline"
+        },
+        "return": {
+          "title": "Return traceable context",
+          "summary": "Receive structured JSON, navigable document maps, and source-linked pages for agents.",
+          "mediaAria": "Traceable source relationship field with structured JSON and a source path"
+        }
+      }
+    },
+    "formats": {
+      "sectionNo": "[ CAPABILITIES ]",
+      "title": "Built for documents that plain text cannot capture.",
+      "description": "Preserve page structure, visual meaning, formulas, and source relationships across complex file formats.",
+      "supportedIntro": "Works with common document, presentation,",
+      "supportedIntroLineTwo": "spreadsheet, image, and text formats:",
+      "supportedList": "DOCX, PDF, JPG, PPTX, XLSX, CSV, PNG, MD, JSON, and TXT.",
+      "orbitAria": "Illustrative formats",
+      "comingSoonLineOne": "Support for EPUB, HTML, XML, MP4,",
+      "comingSoonLineTwo": "MP3, and SKILL.md is",
+      "comingSoon": "coming soon.",
+      "features": {
+        "pageNative": {
+          "title": "Page-native understanding",
+          "description": "Preserve layouts, diagrams, and spatial relationships so agents can inspect the original page when text is not enough."
+        },
+        "agentReady": {
+          "title": "Agent-ready structure",
+          "description": "Turn flat text into hierarchical context that agents can scan first and expand when needed."
+        },
+        "formula": {
+          "title": "Formula recognition",
+          "description": "Extract mathematical formulas and chemical structures in formats agents and downstream systems can use."
+        },
+        "tracing": {
+          "title": "Source-level tracing",
+          "description": "Trace extracted content back to its page and source region for easier verification."
+        },
+        "onPrem": {
+          "title": "On-premise deployment",
+          "description": "Deploy Knowhere locally when document privacy, compliance requirements, or infrastructure control matters."
+        },
+        "apiFirst": {
+          "title": "API-first integration",
+          "description": "Connect Knowhere to existing workflows through REST APIs, webhooks, SDKs, or MCP."
+        }
+      }
+    },
+    "comparison": {
+      "sectionNo": "[ COMPARISON ]",
+      "title": "Compare document understanding across structure, accuracy, and traceability.",
+      "description": "See how Knowhere and other document-processing tools compare across efficiency, accuracy, structure, and source tracing.",
+      "frameAria": "Illustrative document pipeline comparison",
+      "performance": "Performance comparison",
+      "legendAria": "Compared document processing tools",
+      "legend": {
+        "rawDocs": "Raw Docs",
+        "unstructured": "Unstructured",
+        "knowhere": "Knowhere",
+        "mineru": "MinerU",
+        "markitdown": "Markitdown"
+      },
+      "tokensUsed": "Tokens used",
+      "processingTime": "Processing time",
+      "processingTimeSeconds": "Processing time (s)",
+      "agentIterations": "Agent iterations",
+      "firstPass": "First-pass accuracy",
+      "afterFeedback": "Accuracy after feedback",
+      "recall": "Recall",
+      "matrix": "Capability matrix",
+      "matrixAria": "Document understanding capability matrix",
+      "feature": "Feature",
+      "typicalParsers": "Typical document parsers",
+      "supported": "Supported",
+      "limited": "Limited",
+      "notSupported": "Not supported",
+      "rows": {
+        "hierarchy": "Document hierarchy",
+        "mergedCells": "Complex merged cells",
+        "boundaries": "Table boundaries",
+        "tracing": "Source tracing",
+        "progressive": "Progressive context",
+        "visual": "Visual understanding"
+      }
+    },
+    "integration": {
+      "sectionNo": "[ INTEGRATION ]",
+      "title": "Add document understanding to your workflow in minutes.",
+      "description": "Submit a document through the API, receive structured results, and connect them to your existing agent workflow.",
+      "codeHead": "Illustrative flow · interface details unconfirmed",
+      "copy": "Copy",
+      "codeAria": "Code examples",
+      "mcpTitle": "Use Knowhere through MCP",
+      "mcpDescription": "Bring structured document context into Cursor, VS Code, Claude, or Codex.",
+      "mcpLink": "Read the MCP docs",
+      "steps": {
+        "key": {
+          "title": "Get an API key",
+          "description": "Sign up and generate your API key from the dashboard."
+        },
+        "submit": {
+          "title": "Submit a document",
+          "description": "Send a URL or upload a file to the processing queue."
+        },
+        "results": {
+          "title": "Receive structured results",
+          "description": "Get structured JSON through webhook or polling."
+        }
+      }
+    },
+    "pricing": {
+      "sectionNo": "[ PRICING ]",
+      "title": "Simple, transparent pricing.",
+      "description": "Pay only for what you use. No hidden fees, no complex tiers.",
+      "estimatedCost": "Estimated cost ($0.015 per page)",
+      "pageCount": "Number of pages",
+      "estimatedBudget": "Estimated budget",
+      "pdfs": "100-page PDFs",
+      "largeDocs": "500-page documents",
+      "commitment": "Commitment",
+      "noMinimum": "No minimum",
+      "pagesToProcess": "Pages to process",
+      "scaleStart": "100 pages",
+      "fileLimitsTitle": "File Size Limits",
+      "fileLimitsContact": "Need higher limits? Contact",
+      "fileLimitsEnd": "for enterprise pricing with custom limits."
+    },
+    "enterprise": {
+      "sectionNo": "[ ENTERPRISE ]",
+      "title": "Need custom limits or deployment support?",
+      "lede": "Custom limits, deployment, support, and SLAs.",
+      "talk": "Talk to our team",
+      "metrics": {
+        "limits": {
+          "title": "Custom rate limits",
+          "description": "Discuss throughput limits for your production traffic."
+        },
+        "priority": {
+          "title": "Priority processing",
+          "description": "Plan priority handling for time-sensitive workloads."
+        },
+        "deployment": {
+          "title": "Deployment options",
+          "description": "Review managed, dedicated, or self-hosted options."
+        },
+        "support": {
+          "title": "Support requirements",
+          "description": "Align support channels and response expectations."
+        },
+        "sla": {
+          "title": "SLA requirements",
+          "description": "Define your uptime and service-level needs."
+        },
+        "commercial": {
+          "title": "Commercial terms",
+          "description": "Discuss billing and terms for your usage."
+        }
+      }
+    },
+    "faq": {
+      "sectionNo": "[ FAQ ]",
+      "title": "Frequently asked questions.",
+      "items": {
+        "charged": {
+          "question": "When am I charged?",
+          "answer": "Page credits are deducted when a job completes successfully. Failed jobs do not consume credits."
+        },
+        "rollover": {
+          "question": "Do unused pages roll over?",
+          "answer": "Page credits expire 3 months after purchase."
+        },
+        "refund": {
+          "question": "Can I get a refund?",
+          "answer": "Contact team@knowhereto.ai for refund requests within 14 days of purchase."
+        },
+        "payment": {
+          "question": "What payment methods are accepted?",
+          "answer": "We accept all major credit cards through Stripe: Visa, Mastercard, American Express, and more."
+        }
+      }
+    },
+    "finalCta": {
+      "sectionNo": "[ GET STARTED ]",
+      "title": "Ready to build with better document context?",
+      "lede": "Connect your agent workflow and see how Knowhere handles documents that plain text pipelines miss.",
+      "bookDemo": "Book a demo",
+      "benefitsAria": "Trial benefits",
+      "trial": "Free 14-day trial",
+      "noCard": "No credit card required",
+      "cancel": "Cancel anytime"
     }
+  },
+  "Newsletter": {
+    "homeAriaLabel": "Knowhere home",
+    "chooseLanguage": "Choose language",
+    "backToKnowhere": "Back to Knowhere",
+    "email": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "confirmingTitle": "Confirming newsletter subscription",
+    "confirmingDescription": "Please keep this page open while we confirm your email address.",
+    "confirmedTitle": "Newsletter subscription confirmed",
+    "confirmedDescription": "Thanks for subscribing. You will receive Knowhere product updates at this email.",
+    "expiredTitle": "Confirmation link expired",
+    "expiredDescription": "Please subscribe again from the Knowhere landing page to receive a new link.",
+    "invalidTitle": "Confirmation link is invalid",
+    "invalidDescription": "This link is no longer valid. Please subscribe again from the Knowhere landing page.",
+    "unsubscribeTitle": "Unsubscribe from Knowhere newsletter",
+    "unsubscribeDescription": "Enter your email address and we will remove it from future Knowhere newsletter emails.",
+    "unsubscribedTitle": "Newsletter unsubscribed",
+    "unsubscribedDescription": "If this email was subscribed, it will no longer receive Knowhere newsletter emails.",
+    "unsubscribeSubmit": "Unsubscribe",
+    "unsubscribing": "Unsubscribing...",
+    "unsubscribeError": "We could not unsubscribe this email. Please try again."
   }
 }

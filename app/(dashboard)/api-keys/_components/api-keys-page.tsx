@@ -97,13 +97,13 @@ const getApiKeySearchValue = ({
 const ApiKeysPageSkeleton = () => {
   return (
     <div className="w-full space-y-5 sm:space-y-[18px] lg:space-y-5" aria-busy="true">
-      <div className="h-6 w-[240px] animate-pulse bg-[#f4f4f5]" />
+      <div className="h-6 w-[240px] animate-pulse bg-muted" />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="h-9 w-full max-w-[240px] animate-pulse bg-[#f4f4f5]" />
-        <div className="h-9 w-full max-w-[150px] animate-pulse bg-[#f4f4f5] sm:max-w-10 lg:max-w-[150px]" />
+        <div className="h-9 w-full max-w-[240px] animate-pulse bg-muted" />
+        <div className="h-9 w-full max-w-[150px] animate-pulse bg-muted sm:max-w-10 lg:max-w-[150px]" />
       </div>
-      <div className="h-[294px] animate-pulse border border-[#e4e4e7] bg-white sm:h-[280px] lg:h-[294px]" />
-      <div className="h-[156px] animate-pulse border border-[#e4e4e7] bg-white sm:h-[150px] lg:h-[156px]" />
+      <div className="h-[294px] animate-pulse border border-border bg-card sm:h-[280px] lg:h-[294px]" />
+      <div className="h-[156px] animate-pulse border border-border bg-card sm:h-[150px] lg:h-[156px]" />
       <span className="sr-only">Loading API keys</span>
     </div>
   );
@@ -119,9 +119,9 @@ const ApiKeysErrorState = ({
   title: string;
 }) => {
   return (
-    <section className="flex min-h-[220px] w-full flex-col items-center justify-center gap-5 border border-[#e4e4e7] bg-white px-6 py-12 text-center">
+    <section className="flex min-h-[220px] w-full flex-col items-center justify-center gap-5 border border-border bg-card px-6 py-12 text-center">
       <div className="space-y-2">
-        <h2 className="text-base font-semibold leading-6 text-[#09090b]">{title}</h2>
+        <h2 className="text-base font-semibold leading-6 text-foreground">{title}</h2>
       </div>
       <DashboardActionButton type="button" variant="secondary" size="page" onClick={onRetry}>
         {retryLabel}
@@ -296,20 +296,18 @@ export const ApiKeysPage = () => {
     <>
       <div className="flex w-full flex-col gap-3.5 sm:gap-[18px] lg:gap-5">
         <div className="flex flex-col gap-0.5 sm:hidden">
-          <h2 className="truncate text-sm font-bold leading-[22px] text-black dark:text-[#fafafa]">
+          <h2 className="truncate text-sm font-bold leading-[22px] text-foreground">
             {t("title")}
           </h2>
-          <p className="text-xs leading-[18px] text-[#52525c] dark:text-[#d4d4d8]">
-            {t("subtitle")}
-          </p>
+          <p className="text-xs leading-[18px] text-muted-foreground">{t("subtitle")}</p>
         </div>
 
-        <p className="hidden text-base leading-6 text-[#09090b] dark:text-[#fafafa] sm:block sm:text-[14px] sm:leading-[22px] lg:text-base lg:leading-6">
+        <p className="hidden text-base leading-6 text-foreground sm:block sm:text-[14px] sm:leading-[22px] lg:text-base lg:leading-6">
           {t("subtitle")}
         </p>
 
         <div className="flex items-start justify-between">
-          <label className="flex h-9 w-[240px] shrink-0 items-center gap-1 border border-[#e4e4e7] bg-white py-1.5 pl-[6px] pr-3 focus-within:ring-2 focus-within:ring-[#7f22fe]/20 dark:border-[#3f3f46] dark:bg-[#18181b] sm:gap-1 sm:pl-[6px] sm:pr-3 lg:gap-[6px] lg:pl-2 lg:pr-[14px]">
+          <label className="flex h-9 w-[240px] shrink-0 items-center gap-1 border border-border bg-card py-1.5 pl-[6px] pr-3 focus-within:ring-2 focus-within:ring-[#19a88b]/20 dark:border-border dark:bg-card sm:gap-1 sm:pl-[6px] sm:pr-3 lg:gap-[6px] lg:pl-2 lg:pr-[14px]">
             <span className="sr-only">{t("searchPlaceholder")}</span>
             <Image
               src="/icons/api-keys/search-box.svg"
@@ -323,7 +321,7 @@ export const ApiKeysPage = () => {
               value={searchTerm}
               onChange={(event) => handleSearchChange(event.target.value)}
               placeholder={t("searchPlaceholder")}
-              className="min-w-0 flex-1 bg-transparent text-xs leading-[14px] text-[#09090b] outline-none placeholder:text-[#9f9fa9] focus-visible:ring-0 dark:text-[#fafafa] sm:leading-[14px] lg:leading-4"
+              className="min-w-0 flex-1 bg-transparent text-xs leading-[14px] text-foreground outline-none placeholder:text-muted-foreground focus-visible:ring-0 dark:text-foreground sm:leading-[14px] lg:leading-4"
             />
           </label>
 
@@ -396,12 +394,12 @@ export const ApiKeysPage = () => {
           }
         }}
       >
-        <AlertDialogContent className="max-w-[440px] rounded-none border-[#e4e4e7] bg-white p-6">
+        <AlertDialogContent className="max-w-[440px] rounded-none border-border bg-card p-6">
           <AlertDialogHeader className="space-y-2 text-left">
-            <AlertDialogTitle className="text-lg font-semibold leading-7 text-[#09090b]">
+            <AlertDialogTitle className="text-lg font-semibold leading-7 text-foreground">
               {t("toggleConfirmTitle")}
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-sm leading-5 text-[#71717b]">
+            <AlertDialogDescription className="text-sm leading-5 text-muted-foreground">
               {t("toggleConfirmDesc")}
             </AlertDialogDescription>
           </AlertDialogHeader>

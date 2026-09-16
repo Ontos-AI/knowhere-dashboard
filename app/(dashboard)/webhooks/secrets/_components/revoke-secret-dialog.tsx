@@ -27,10 +27,10 @@ export function RevokeSecretDialog({
       <AlertDialogContent className={dashboardDesktopModalContentClassName}>
         <div className="flex flex-col items-end gap-[38px] px-[22px] pb-[38px] pt-[22px] sm:px-[46px] sm:py-[38px] lg:gap-10 lg:px-12 lg:py-10">
           <div className="flex w-full flex-col gap-3 lg:gap-[14px]">
-            <h2 className="text-[20px] font-bold leading-[26px] text-[#09090b] lg:leading-7">
+            <h2 className="text-[20px] font-bold leading-[26px] text-foreground lg:leading-7">
               {t("revokeSecretTitle")}
             </h2>
-            <p className="text-sm leading-[18px] text-[#71717b] lg:leading-5">
+            <p className="text-sm leading-[18px] text-muted-foreground lg:leading-5">
               {t("revokeSecretDescription")}
             </p>
           </div>

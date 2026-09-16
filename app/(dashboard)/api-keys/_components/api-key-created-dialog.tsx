@@ -48,11 +48,11 @@ export const ApiKeyCreatedDialog = ({ apiKey, onOpenChange }: ApiKeyCreatedDialo
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1">
                 <DashboardSuccessCircleIcon />
-                <h2 className="text-[20px] font-bold leading-[26px] text-[#09090b] lg:leading-7">
+                <h2 className="text-[20px] font-bold leading-[26px] text-foreground lg:leading-7">
                   {t("createSuccess")}
                 </h2>
               </div>
-              <p className="mt-0.5 text-sm leading-[18px] text-[#71717b] lg:mt-1 lg:leading-5">
+              <p className="mt-0.5 text-sm leading-[18px] text-muted-foreground lg:mt-1 lg:leading-5">
                 {t("copyAndSave")}
               </p>
             </div>
@@ -79,7 +79,7 @@ export const ApiKeyCreatedDialog = ({ apiKey, onOpenChange }: ApiKeyCreatedDialo
             </DashboardActionButton>
           </div>
 
-          <div className="flex w-full items-start gap-[6px] text-[#ff6900] lg:gap-2">
+          <div className="flex w-full items-start gap-[6px] text-[#ff634a] lg:gap-2">
             <DashboardWarningIcon />
             <p className="flex-1 text-sm font-medium leading-[18px] lg:leading-5">
               {t("securityWarning")}

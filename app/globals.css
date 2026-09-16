@@ -1,4 +1,5 @@
 @import "@fontsource-variable/caveat";
+@import "./kh-site.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,8 +8,8 @@
   :root {
     /* Offline-safe font tokens used by Tailwind font families. */
     --font-sans:
-      "Geist", "Inter", "Segoe UI", "Helvetica Neue", Arial, system-ui, -apple-system,
-      BlinkMacSystemFont, sans-serif;
+      var(--font-poppins), var(--font-frex), "Poppins", "Frex Sans GB", "Frex Sans GB VF",
+      sans-serif;
     --font-mono:
       "Azeret Mono", "JetBrains Mono", "SFMono-Regular", "SF Mono", "Cascadia Code", Menlo,
       Consolas, ui-monospace, monospace;
@@ -18,13 +19,16 @@
     --font-mono-readable:
       "Azeret Mono", "Atkinson Hyperlegible Mono", "JetBrains Mono", "SFMono-Regular", "SF Mono",
       "Cascadia Code", Menlo, Consolas, ui-monospace, monospace;
+    --font-kh-mono:
+      var(--font-geist-mono), "Geist Mono", var(--font-frex), "Frex Sans GB", ui-monospace,
+      monospace;
     --font-accent:
       "Anuphan", "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, system-ui, sans-serif;
     --font-handwriting-en:
       "Caveat Variable", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive;
     --font-brand:
-      "Geist", "Ysabeau", "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, ui-serif,
-      serif;
+      var(--font-poppins), var(--font-frex), "Poppins", "Frex Sans GB", "Frex Sans GB VF",
+      sans-serif;
     --font-pixel-primary: "Press Start 2P", "Courier New", "Lucida Console", monospace;
 
     /* Legacy landing page tokens */
@@ -63,77 +67,78 @@
     --space-6: 48px;
     --space-8: 64px;
 
-    /* Shared application theme aligned with the Figma system scale */
-    --background: 210 40% 98%;
-    --background-secondary: 210 40% 96.1%;
-    --background-tertiary: 214 32% 91%;
-    --foreground: 222.2 47.4% 11.2%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 47.4% 11.2%;
+    /* Dashboard / shadcn tokens toward Knowhere Brand 500s.
+       Mist White field, Deep Teal type, Mineral Green brand, Coral Signal destructive. */
+    --background: 70 32% 93%;
+    --background-secondary: 70 29% 95%;
+    --background-tertiary: 68 22% 91%;
+    --foreground: 179 76% 13%;
+    --card: 60 33% 99%;
+    --card-foreground: 179 76% 13%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 47.4% 11.2%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-light: 217.2 91.2% 59.8%;
-    --primary-dark: 224.3 76.3% 48%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-light: 210 40% 98%;
-    --accent-dark: 214 32% 91%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 221.2 83.2% 53.3%;
+    --popover-foreground: 179 76% 13%;
+    --primary: 168 74% 38%;
+    --primary-light: 168 73% 43%;
+    --primary-dark: 167 76% 29%;
+    --primary-foreground: 70 32% 93%;
+    --secondary: 70 22% 94%;
+    --secondary-foreground: 179 76% 13%;
+    --muted: 70 22% 94%;
+    --muted-foreground: 178 65% 24%;
+    --accent: 70 22% 94%;
+    --accent-light: 70 32% 96%;
+    --accent-dark: 68 12% 86%;
+    --accent-foreground: 179 76% 13%;
+    --destructive: 8 100% 65%;
+    --destructive-foreground: 70 32% 93%;
+    --border: 70 12% 82%;
+    --input: 70 12% 82%;
+    --ring: 168 74% 38%;
     --radius: 0.5rem;
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222.2 47.4% 11.2%;
-    --sidebar-primary: 221.2 83.2% 53.3%;
-    --sidebar-primary-foreground: 210 40% 98%;
-    --sidebar-accent: 210 40% 96.1%;
-    --sidebar-accent-foreground: 222.2 47.4% 11.2%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 221.2 83.2% 53.3%;
+    --sidebar-background: 60 33% 99%;
+    --sidebar-foreground: 179 76% 13%;
+    --sidebar-primary: 168 74% 38%;
+    --sidebar-primary-foreground: 70 32% 93%;
+    --sidebar-accent: 70 22% 94%;
+    --sidebar-accent-foreground: 179 76% 13%;
+    --sidebar-border: 70 12% 82%;
+    --sidebar-ring: 168 74% 38%;
   }
 
   .dark {
-    --background: 222.2 47.4% 11.2%;
-    --background-secondary: 217.2 32.6% 17.5%;
-    --background-tertiary: 215.3 25% 26.7%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 47.4% 11.2%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 47.4% 11.2%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-light: 213.1 93.9% 67.8%;
-    --primary-dark: 221.2 83.2% 53.3%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-light: 215.3 25% 26.7%;
-    --accent-dark: 222.2 47.4% 11.2%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 72.2% 50.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 215.3 19.3% 34.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 217.2 91.2% 59.8%;
-    --sidebar-background: 222.2 47.4% 11.2%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 217.2 91.2% 59.8%;
-    --sidebar-primary-foreground: 222.2 47.4% 11.2%;
-    --sidebar-accent: 217.2 32.6% 17.5%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 215.3 19.3% 34.5%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --background: 179 76% 13%;
+    --background-secondary: 176 76% 11%;
+    --background-tertiary: 180 80% 8%;
+    --foreground: 70 32% 93%;
+    --card: 176 76% 11%;
+    --card-foreground: 70 32% 93%;
+    --popover: 176 76% 11%;
+    --popover-foreground: 70 32% 93%;
+    --primary: 168 70% 45%;
+    --primary-light: 167 73% 52%;
+    --primary-dark: 168 74% 38%;
+    --primary-foreground: 179 76% 13%;
+    --secondary: 176 50% 18%;
+    --secondary-foreground: 70 32% 93%;
+    --muted: 176 50% 18%;
+    --muted-foreground: 70 12% 72%;
+    --accent: 176 50% 18%;
+    --accent-light: 176 40% 22%;
+    --accent-dark: 179 76% 13%;
+    --accent-foreground: 70 32% 93%;
+    --destructive: 8 100% 65%;
+    --destructive-foreground: 70 32% 93%;
+    --border: 176 40% 20%;
+    --input: 176 50% 18%;
+    --ring: 168 70% 45%;
+    --sidebar-background: 179 76% 11%;
+    --sidebar-foreground: 70 32% 93%;
+    --sidebar-primary: 168 70% 45%;
+    --sidebar-primary-foreground: 179 76% 13%;
+    --sidebar-accent: 176 50% 18%;
+    --sidebar-accent-foreground: 70 32% 93%;
+    --sidebar-border: 176 40% 20%;
+    --sidebar-ring: 168 70% 45%;
   }
 
   .landing-tone,
@@ -276,11 +281,6 @@
     font-family:
       "Geist", "Inter", "Segoe UI", "Helvetica Neue", Arial, system-ui, -apple-system,
       BlinkMacSystemFont, sans-serif;
-  }
-
-  .font-anuphan-var {
-    font-family:
-      "Anuphan", "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, system-ui, sans-serif;
   }
 }
 

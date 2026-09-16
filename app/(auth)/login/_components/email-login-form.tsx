@@ -1,14 +1,13 @@
 "use client";
 
-import { Input } from "@components/ui/input";
-import { Label } from "@components/ui/label";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { LoginButton } from "@/app/(auth)/login/_components/login-button";
+import { AuthButton, AuthInput } from "@/app/(auth)/_components/form-controls";
 
 type EmailLoginFormProps = {
   disabled?: boolean;
@@ -38,7 +37,9 @@ export const EmailLoginForm = ({
 }: EmailLoginFormProps) => {
   const t = useTranslations("Auth");
   const [isPasswordLoginEnabled, setIsPasswordLoginEnabled] = useState(false);
+  const [magicLinkSent, setMagicLinkSent] = useState(false);
   const isSubmitting = isMagicLinkLoading || isPasswordLoading;
+  const passwordMode = passwordLoginEnabled && isPasswordLoginEnabled;
 
   const loginSchema = useMemo(
     () =>
@@ -59,11 +60,12 @@ export const EmailLoginForm = ({
 
   const togglePasswordLogin = () => {
     setIsPasswordLoginEnabled((currentValue) => !currentValue);
+    setMagicLinkSent(false);
     form.clearErrors("password");
   };
 
   const handleSubmit = form.handleSubmit(async ({ email, password }) => {
-    if (passwordLoginEnabled && isPasswordLoginEnabled) {
+    if (passwordMode) {
       if (password.length < 8) {
         form.setError("password", {
           type: "manual",
@@ -76,54 +78,48 @@ export const EmailLoginForm = ({
       return;
     }
 
-    await onMagicLinkSubmit(email);
+    const sent = await onMagicLinkSubmit(email);
+    setMagicLinkSent(sent);
   });
 
   return (
-    <form className="space-y-[14px] lg:space-y-4" noValidate onSubmit={handleSubmit}>
-      <div className="space-y-1.5 lg:space-y-2">
-        <Label
-          className="text-xs font-bold leading-[18px] text-[#09090b] lg:text-sm lg:leading-5"
-          htmlFor="login-email"
-        >
-          {t("email")}
-        </Label>
-        <Input
+    <form noValidate onSubmit={handleSubmit}>
+      <div className="auth-field">
+        <label htmlFor="login-email">{t("email")}</label>
+        <AuthInput
           aria-invalid={form.formState.errors.email ? "true" : "false"}
-          className="h-10 border-[#e4e4e7] px-[10px] text-xs leading-[14px] text-[#09090b] placeholder:text-xs placeholder:leading-[14px] placeholder:text-[#9f9fa9] hover:border-[#d4d4d8] focus-visible:border-[#7f22fe] disabled:border-[#e4e4e7] disabled:bg-[#fafafa] lg:px-3 lg:leading-4 lg:placeholder:leading-4"
+          aria-describedby={form.formState.errors.email ? "login-email-feedback" : undefined}
+          autoComplete="email"
           disabled={disabled || isSubmitting}
           id="login-email"
           placeholder={t("emailPlaceholder")}
+          readOnly={isMagicLinkLoading}
+          spellCheck={false}
           type="email"
-          {...form.register("email")}
+          {...form.register("email", {
+            onChange: () => {
+              setMagicLinkSent(false);
+            },
+          })}
         />
         {form.formState.errors.email ? (
-          <p className="text-xs leading-4 text-destructive" role="alert">
+          <p className="email-feedback" id="login-email-feedback" role="alert">
             {form.formState.errors.email.message}
           </p>
         ) : null}
       </div>
 
-      {passwordLoginEnabled && isPasswordLoginEnabled ? (
-        <div className="space-y-1.5 lg:space-y-2">
-          <div className="flex items-center justify-between gap-3">
-            <Label
-              className="text-xs font-bold leading-[18px] text-[#09090b] lg:text-sm lg:leading-5"
-              htmlFor="login-password"
-            >
-              {t("password")}
-            </Label>
-            <Link
-              className="text-xs leading-4 text-[#7f22fe] transition-opacity hover:opacity-80"
-              href={forgotPasswordPath}
-            >
+      {passwordMode ? (
+        <div className="auth-field">
+          <div className="auth-field-header">
+            <label htmlFor="login-password">{t("password")}</label>
+            <Link className="auth-text-link" href={forgotPasswordPath}>
               {t("forgotPassword")}
             </Link>
           </div>
-          <Input
+          <AuthInput
             aria-invalid={form.formState.errors.password ? "true" : "false"}
             autoComplete="current-password"
-            className="h-10 border-[#e4e4e7] px-[10px] text-xs leading-[14px] text-[#09090b] placeholder:text-xs placeholder:leading-[14px] placeholder:text-[#9f9fa9] hover:border-[#d4d4d8] focus-visible:border-[#7f22fe] disabled:border-[#e4e4e7] disabled:bg-[#fafafa] lg:px-3 lg:leading-4 lg:placeholder:leading-4"
             disabled={disabled || isSubmitting}
             id="login-password"
             placeholder={t("passwordPlaceholder")}
@@ -131,45 +127,54 @@ export const EmailLoginForm = ({
             {...form.register("password")}
           />
           {form.formState.errors.password ? (
-            <p className="text-xs leading-4 text-destructive" role="alert">
+            <p className="auth-feedback" role="alert">
               {form.formState.errors.password.message}
             </p>
           ) : null}
         </div>
       ) : null}
 
-      <LoginButton
-        aria-busy={isSubmitting}
+      <AuthButton
+        className="submit-button"
         disabled={disabled || isSubmitting}
+        loading={isSubmitting}
         type="submit"
-        variant="primary"
       >
-        {passwordLoginEnabled && isPasswordLoginEnabled
+        {passwordMode
           ? t("signInWithPassword")
           : isMagicLinkLoading
             ? t("sending")
-            : t("sendMagicLink")}
-      </LoginButton>
+            : magicLinkSent
+              ? t("resendEmail")
+              : t("sendMagicLink")}
+        <ArrowRight size={17} aria-hidden="true" />
+      </AuthButton>
+
+      {passwordMode ? null : (
+        <output className="email-delivery-slot">
+          {magicLinkSent ? (
+            <div className="email-delivery">
+              <CheckCircle2 className="email-delivery-icon" size={20} aria-hidden="true" />
+              <p className="email-delivery-title">{t("magicLinkSent")}</p>
+            </div>
+          ) : null}
+        </output>
+      )}
 
       {passwordLoginEnabled ? (
         <>
-          <LoginButton
+          <AuthButton
+            className="submit-button"
             disabled={disabled || isSubmitting}
             onClick={togglePasswordLogin}
             type="button"
-            variant="secondary"
+            variant="white"
           >
             {isPasswordLoginEnabled ? t("useEmailLinkInstead") : t("loginWithPassword")}
-          </LoginButton>
+          </AuthButton>
 
-          <p className="text-center text-xs leading-[18px] text-[#71717a] lg:text-sm lg:leading-5">
-            {t("noAccount")}{" "}
-            <Link
-              className="font-medium text-[#7f22fe] transition-opacity hover:opacity-80"
-              href={registerPath}
-            >
-              {t("signUpWithPassword")}
-            </Link>
+          <p className="auth-aux">
+            {t("noAccount")} <Link href={registerPath}>{t("signUpWithPassword")}</Link>
           </p>
         </>
       ) : null}

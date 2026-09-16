@@ -7,6 +7,11 @@ import {
 describe("acquisition attribution client", () => {
   it("captures public landing routes", () => {
     expect(shouldCaptureAcquisitionPath("/")).toBe(true);
+    expect(shouldCaptureAcquisitionPath("/pricing")).toBe(true);
+    expect(shouldCaptureAcquisitionPath("/blog")).toBe(true);
+    expect(
+      shouldCaptureAcquisitionPath("/blog/2026/08/10/how-to-choose-a-pdf-parser-api-for-ai-agents/")
+    ).toBe(true);
     expect(shouldCaptureAcquisitionPath("/claw")).toBe(true);
     expect(shouldCaptureAcquisitionPath("/comparison/openai")).toBe(true);
     expect(shouldCaptureAcquisitionPath("/versus/chatgpt")).toBe(true);
