@@ -193,7 +193,7 @@ html:has(.kh-pricing) {
   display: grid;
   grid-template-columns: repeat(var(--layout-grid-columns), minmax(0, 1fr));
   column-gap: var(--layout-grid-gap);
-  padding-block: calc(110px - var(--header-height, 67px)) 60px;
+  padding-block: 110px 60px;
   padding-inline: max(var(--layout-grid-edge), calc((100% - var(--content-max)) / 2));
 }
 .kh-pricing .hero-data-stream {
@@ -1273,7 +1273,7 @@ html[data-theme="dark"] .kh-pricing .enterprise-card-action .button:hover {
   }
   .kh-pricing .overview {
     min-height: calc(100cqw + 32px);
-    padding-block: calc(104px - var(--header-height, 64px)) 32px;
+    padding-block: 104px 32px;
   }
   .kh-pricing .hero-copy {
     grid-column: 1 / -1;

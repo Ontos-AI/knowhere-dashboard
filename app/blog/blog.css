@@ -1264,7 +1264,7 @@
     display: flex;
     gap: 6px;
   }
-  .kb-standard .kb-hybrid .kb-filters button {
+  .kb-standard .kb-hybrid .kb-filters :is(button, a) {
     min-width: 0;
     flex: 1;
     padding-inline: 6px;
@@ -1341,7 +1341,7 @@
   .kb-filters {
     gap: 2px;
   }
-  .kb-filters button {
+  .kb-filters :is(button, a) {
     padding-inline: 10px;
   }
 }
@@ -1510,12 +1510,12 @@
     gap: 0;
     justify-content: space-between;
   }
-  .kb-filters button {
+  .kb-filters :is(button, a) {
     font-size: 12px;
     padding-inline: 9px;
     min-height: 44px;
   }
-  .kb-hybrid .kb-filters button {
+  .kb-hybrid .kb-filters :is(button, a) {
     font-size: 13px;
     padding-inline: 8px;
   }
@@ -1618,12 +1618,14 @@ html[data-theme="dark"] .kb-standard .kb-hybrid .kb-filters button[aria-pressed=
 html[data-theme="dark"] .kb-standard .kb-hybrid .kb-filters a[aria-current="page"]:hover {
   background: color-mix(in srgb, var(--kb-green) 92%, var(--kb-on-primary));
 }
-.dark .kb-standard .kb-hybrid .kb-filters button:active,
-html[data-theme="dark"] .kb-standard .kb-hybrid .kb-filters button:active {
+.dark .kb-standard .kb-hybrid .kb-filters :is(button, a):active,
+html[data-theme="dark"] .kb-standard .kb-hybrid .kb-filters :is(button, a):active {
   background: var(--black-6);
 }
 .dark .kb-standard .kb-hybrid .kb-filters button[aria-pressed="true"]:active,
-html[data-theme="dark"] .kb-standard .kb-hybrid .kb-filters button[aria-pressed="true"]:active {
+.dark .kb-standard .kb-hybrid .kb-filters a[aria-current="page"]:active,
+html[data-theme="dark"] .kb-standard .kb-hybrid .kb-filters button[aria-pressed="true"]:active,
+html[data-theme="dark"] .kb-standard .kb-hybrid .kb-filters a[aria-current="page"]:active {
   background: color-mix(in srgb, var(--kb-green) 88%, var(--kb-on-primary));
 }
 

@@ -54,6 +54,9 @@ describe("wave 1 site chrome", () => {
     expect(headerSource).toContain("LandingTrackedLink");
     expect(headerSource).toContain("kh-site-chrome-menu");
     expect(headerSource).not.toContain("knowhere-language");
+
+    const chromeSource = readWorkspaceFile("components/site-chrome/site-chrome.tsx");
+    expect(chromeSource).toContain('page === "landing" ? null : <SiteFooter page={page} />');
   });
 
   it("ports the prototype language and theme option-list chrome", () => {
@@ -66,5 +69,12 @@ describe("wave 1 site chrome", () => {
     expect(chromeCss).toContain(".skip-link");
     expect(chromeCss).toContain("clip-path: inset(50%)");
     expect(chromeCss).toContain("filter: invert(1) !important");
+    expect(chromeCss).toContain(".kh-site:has(.kh-pricing) .kh-site-main");
+    expect(chromeCss).toContain(".kh-site:has(.kb) .kh-site-main");
+    expect(chromeCss).toContain(".kh-site:has(.landing-page) .kh-site-main");
+
+    const pricingCss = readWorkspaceFile("app/(landing)/pricing/_components/pricing-page.css");
+    expect(pricingCss).toContain("padding-block: 110px 60px");
+    expect(pricingCss).not.toContain("110px - var(--header-height");
   });
 });
