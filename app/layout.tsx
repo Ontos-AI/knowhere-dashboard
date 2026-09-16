@@ -35,13 +35,6 @@ const geistMono = localFont({
   display: "swap",
 });
 
-const anuphan = localFont({
-  src: "../public/fonts/Anuphan-VariableFont_wght.ttf",
-  weight: "100 900",
-  variable: "--font-anuphan",
-  display: "swap",
-});
-
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
   const locale = cookieStore.get("NEXT_LOCALE")?.value || "en";
@@ -57,7 +50,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang={locale} suppressHydrationWarning>
       <body
-        className={`${poppins.variable} ${frexSans.variable} ${geistMono.variable} ${anuphan.variable} font-sans antialiased`}
+        className={`${poppins.variable} ${frexSans.variable} ${geistMono.variable} font-sans antialiased`}
       >
         <NextIntlClientProvider messages={messages} locale={locale}>
           <ConfigProvider config={appConfig}>

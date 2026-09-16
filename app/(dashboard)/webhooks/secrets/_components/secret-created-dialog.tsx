@@ -53,11 +53,11 @@ export const SecretCreatedDialog = ({ open, onOpenChange, secret }: SecretCreate
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1">
                 <DashboardSuccessCircleIcon />
-                <h2 className="text-[20px] font-bold leading-[26px] text-[#09090b] lg:leading-7">
+                <h2 className="text-[20px] font-bold leading-[26px] text-foreground lg:leading-7">
                   {t("secretCreatedTitle")}
                 </h2>
               </div>
-              <p className="mt-0.5 text-sm leading-[18px] text-[#71717b] lg:mt-1 lg:leading-5">
+              <p className="mt-0.5 text-sm leading-[18px] text-muted-foreground lg:mt-1 lg:leading-5">
                 {t("secretCreatedDescription")}
               </p>
             </div>

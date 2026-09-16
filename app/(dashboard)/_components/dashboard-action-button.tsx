@@ -20,9 +20,9 @@ const dashboardActionButtonVariants = cva(
       },
       variant: {
         primary:
-          "border-[#0a6351] bg-[#19a88b] text-[#f0f2e6] hover:bg-[#0a6351] disabled:border-[#d6d3d1] disabled:bg-[#d6d3d1] disabled:text-[#a8a29e]",
+          "border-[#0a6351] bg-[#19a88b] text-[#f0f2e6] hover:bg-[#0a6351] disabled:border-muted disabled:bg-muted disabled:text-muted-foreground",
         secondary:
-          "border-[#f4f4f5] bg-white text-[#27272a] hover:bg-[#fafafa] disabled:border-[#e7e5e4] disabled:bg-[#f4f4f5] disabled:text-[#a1a1a1] dark:border-[#3f3f46] dark:bg-[#18181b] dark:text-[#fafafa] dark:hover:bg-[#27272a]",
+          "border-border bg-card text-foreground hover:bg-muted disabled:border-border disabled:bg-muted disabled:text-muted-foreground",
       },
     },
     defaultVariants: {

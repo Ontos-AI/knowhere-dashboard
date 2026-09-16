@@ -282,11 +282,6 @@
       "Geist", "Inter", "Segoe UI", "Helvetica Neue", Arial, system-ui, -apple-system,
       BlinkMacSystemFont, sans-serif;
   }
-
-  .font-anuphan-var {
-    font-family:
-      "Anuphan", "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, system-ui, sans-serif;
-  }
 }
 
 @layer base {

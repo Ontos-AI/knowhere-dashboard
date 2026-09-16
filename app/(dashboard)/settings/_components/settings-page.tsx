@@ -64,12 +64,12 @@ const SECTION_ELEMENT_IDS = {
 type SettingsSectionId = keyof typeof SECTION_ELEMENT_IDS;
 
 const formInputClassName =
-  "h-10 w-full border bg-white px-[10px] text-xs leading-[14px] text-[#083b3a] outline-none transition-colors placeholder:text-[#9f9fa9] focus-visible:border-[#19a88b] focus-visible:ring-2 focus-visible:ring-[#19a88b]/15 dark:bg-[#083b3a] dark:text-[#f0f2e6] lg:px-3 lg:leading-4";
+  "h-10 w-full border bg-card px-[10px] text-xs leading-[14px] text-[#083b3a] outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-[#19a88b] focus-visible:ring-2 focus-visible:ring-[#19a88b]/15 dark:bg-[#083b3a] dark:text-[#f0f2e6] lg:px-3 lg:leading-4";
 
-const formFieldLabelClassName = "text-xs leading-[18px] text-[#9f9fa9] lg:text-sm lg:leading-5";
-const infoFieldLabelClassName = "text-xs leading-[14px] text-[#9f9fa9] lg:leading-4";
-const fieldValueClassName =
-  "text-xs leading-[18px] text-[#18181b] dark:text-[#e4e4e7] lg:text-sm lg:leading-5";
+const formFieldLabelClassName =
+  "text-xs leading-[18px] text-muted-foreground lg:text-sm lg:leading-5";
+const infoFieldLabelClassName = "text-xs leading-[14px] text-muted-foreground lg:leading-4";
+const fieldValueClassName = "text-xs leading-[18px] text-foreground lg:text-sm lg:leading-5";
 
 const createProfileSchema = (messages: { emailInvalid: string; usernameMinLength: string }) =>
   z.object({
@@ -137,10 +137,10 @@ async function setPasswordWithCurrentSession(newPassword: string): Promise<void>
 const SettingsPageSkeleton = () => {
   return (
     <div className="flex w-full flex-col gap-[22px] lg:gap-5" aria-busy="true">
-      <div className="h-[42px] w-full animate-pulse bg-[#f4f4f5] sm:h-[22px] sm:w-[420px] lg:h-6 lg:w-[360px]" />
-      <div className="h-9 w-[198px] animate-pulse bg-[#e4e4e7] lg:h-8 lg:w-[205px]" />
-      <div className="h-[622px] animate-pulse border border-[#e4e4e7] bg-[#fafafa] sm:h-[670px] lg:h-[624px]" />
-      <div className="h-[270px] animate-pulse border border-[#e4e4e7] bg-[#fafafa] lg:h-[230px]" />
+      <div className="h-[42px] w-full animate-pulse bg-muted sm:h-[22px] sm:w-[420px] lg:h-6 lg:w-[360px]" />
+      <div className="h-9 w-[198px] animate-pulse bg-border lg:h-8 lg:w-[205px]" />
+      <div className="h-[622px] animate-pulse border border-border bg-background sm:h-[670px] lg:h-[624px]" />
+      <div className="h-[270px] animate-pulse border border-border bg-background lg:h-[230px]" />
       <span className="sr-only">Loading settings</span>
     </div>
   );
@@ -420,10 +420,10 @@ export const SettingsPage = () => {
         <h2 className="truncate text-sm font-medium leading-[22px] text-[#083b3a] dark:text-[#f0f2e6]">
           {t("title")}
         </h2>
-        <p className="text-xs leading-[18px] text-black dark:text-[#d4d4d8]">{t("subtitle")}</p>
+        <p className="text-xs leading-[18px] text-muted-foreground">{t("subtitle")}</p>
       </div>
 
-      <p className="hidden text-[14px] leading-[22px] text-[#09090b] dark:text-[#fafafa] sm:block lg:text-base lg:leading-6">
+      <p className="hidden text-[14px] leading-[22px] text-foreground sm:block lg:text-base lg:leading-6">
         {t("subtitle")}
       </p>
 
@@ -640,7 +640,7 @@ const SettingsProfileSection = ({
   return (
     <section
       id={id}
-      className="scroll-mt-6 border border-[#e4e4e7] bg-[#fafafa] px-[38px] pb-[38px] pt-[30px] dark:border-[#3f3f46] dark:bg-[#18181b] sm:px-[26px] sm:pb-[26px] sm:pt-[22px] lg:px-10 lg:pb-10 lg:pt-8"
+      className="scroll-mt-6 border border-border bg-background px-[38px] pb-[38px] pt-[30px] dark:border-border dark:bg-card sm:px-[26px] sm:pb-[26px] sm:pt-[22px] lg:px-10 lg:pb-10 lg:pt-8"
     >
       <div className="flex flex-col gap-[46px] sm:gap-[62px] lg:gap-16">
         <form
@@ -653,7 +653,7 @@ const SettingsProfileSection = ({
             </label>
             <input
               id="settings-username"
-              className={cn(formInputClassName, "border-[#e4e4e7] dark:border-[#3f3f46]")}
+              className={cn(formInputClassName, "border-border")}
               disabled={isSaving}
               {...form.register("username")}
             />
@@ -673,15 +673,15 @@ const SettingsProfileSection = ({
               className={cn(
                 formInputClassName,
                 hasOAuthAccount
-                  ? "border-[#f4f4f5] text-[#9f9fa9] dark:border-[#27272a]"
-                  : "border-[#e4e4e7] text-[#09090b] dark:border-[#3f3f46] dark:text-[#fafafa]"
+                  ? "border-border text-muted-foreground dark:border-border"
+                  : "border-border text-foreground dark:border-border dark:text-foreground"
               )}
               readOnly={hasOAuthAccount}
               disabled={isSaving && !hasOAuthAccount}
               {...form.register("email")}
             />
             {emailManagedByProviderLabel ? (
-              <p className="flex items-center gap-0.5 text-xs leading-[14px] text-[#52525c] dark:text-[#d4d4d8] lg:gap-1 lg:leading-4">
+              <p className="flex items-center gap-0.5 text-xs leading-[14px] text-muted-foreground lg:gap-1 lg:leading-4">
                 <Lock className="size-3.5 shrink-0" />
                 <span>{emailManagedByProviderLabel}</span>
               </p>
@@ -705,7 +705,7 @@ const SettingsProfileSection = ({
         </form>
 
         <div className="flex flex-col gap-[22px] sm:gap-[38px] lg:gap-10">
-          <h2 className="text-xs font-bold leading-[18px] text-[#09090b] dark:text-[#fafafa] lg:text-sm lg:leading-5">
+          <h2 className="text-xs font-bold leading-[18px] text-foreground lg:text-sm lg:leading-5">
             {accountInformationLabel}
           </h2>
 
@@ -741,7 +741,7 @@ const SettingsProfileSection = ({
                     {resendPending ? <Loader2 className="size-3.5 animate-spin" /> : null}
                     <span>{resendPending ? sendingLabel : resendLabel}</span>
                   </DashboardActionButton>
-                  <p className="text-xs leading-4 text-[#52525c]">{checkSpamFolderLabel}</p>
+                  <p className="text-xs leading-4 text-muted-foreground">{checkSpamFolderLabel}</p>
                 </div>
               ) : null}
             </div>
@@ -810,12 +810,12 @@ const SettingsPasswordSection = ({
   return (
     <section
       id={id}
-      className="scroll-mt-6 border border-[#e4e4e7] bg-[#fafafa] px-6 py-8 sm:px-10 sm:py-8"
+      className="scroll-mt-6 border border-border bg-background px-6 py-8 sm:px-10 sm:py-8"
     >
       <div className="flex flex-col gap-6">
         <div className="space-y-2">
-          <h2 className="text-sm font-bold leading-5 text-[#09090b]">{title}</h2>
-          <p className="max-w-[520px] text-sm leading-5 text-[#52525c]">{description}</p>
+          <h2 className="text-sm font-bold leading-5 text-foreground">{title}</h2>
+          <p className="max-w-[520px] text-sm leading-5 text-muted-foreground">{description}</p>
         </div>
 
         {hasPasswordCredential ? (
@@ -864,7 +864,7 @@ const SettingsPasswordSection = ({
             className="flex w-full flex-col gap-5 lg:w-[420px]"
             onSubmit={setPasswordForm.handleSubmit(onSetPassword)}
           >
-            <div className="border border-[#e4e4e7] bg-white px-4 py-3 text-sm leading-5 text-[#52525c]">
+            <div className="border border-border bg-card px-4 py-3 text-sm leading-5 text-muted-foreground">
               {noPasswordCredentialDescription}
             </div>
             <SettingsPasswordField
@@ -923,7 +923,7 @@ const SettingsPasswordField = ({
       </label>
       <input
         autoComplete={autoComplete}
-        className={cn(formInputClassName, "border-[#e4e4e7]")}
+        className={cn(formInputClassName, "border-border")}
         disabled={isSaving}
         id={id}
         type="password"
@@ -970,15 +970,15 @@ const SettingsPreferencesSection = ({
   zhLabel: string;
 }) => {
   const triggerClassName =
-    "h-10 w-full rounded-none border-[#e4e4e7] bg-white pl-2 pr-[6px] text-xs leading-[14px] text-[#083b3a] shadow-none hover:border-[#d4d4d8] focus:border-[#19a88b] focus:ring-2 focus:ring-[#19a88b]/15 dark:border-[#156462] dark:bg-[#083b3a] dark:text-[#f0f2e6] lg:w-[340px] lg:pl-[10px] lg:pr-2 lg:leading-4 [&>svg]:h-4 [&>svg]:w-4";
+    "h-10 w-full rounded-none border-border bg-card pl-2 pr-[6px] text-xs leading-[14px] text-[#083b3a] shadow-none hover:border-muted-foreground/40 focus:border-[#19a88b] focus:ring-2 focus:ring-[#19a88b]/15 dark:border-[#156462] dark:bg-[#083b3a] dark:text-[#f0f2e6] lg:w-[340px] lg:pl-[10px] lg:pr-2 lg:leading-4 [&>svg]:h-4 [&>svg]:w-4";
 
-  const contentClassName = "rounded-none border-[#e4e4e7] shadow-none dark:border-[#156462]";
+  const contentClassName = "rounded-none border-border shadow-none dark:border-[#156462]";
   const itemClassName = "px-3 py-2 text-xs leading-4 text-[#083b3a] dark:text-[#f0f2e6]";
 
   return (
     <section
       id={id}
-      className="scroll-mt-6 border border-[#e4e4e7] bg-[#fafafa] dark:border-[#156462] dark:bg-[#083b3a]"
+      className="scroll-mt-6 border border-border bg-background dark:border-[#156462] dark:bg-[#083b3a]"
     >
       <SettingsPreferenceRow label={themeLabel} layout="stacked">
         <Select
@@ -1052,7 +1052,7 @@ const SettingsPreferenceRow = ({
   return (
     <div
       className={cn(
-        "border-t border-[#f4f4f5] px-[26px] py-[18px] first:border-t-0 dark:border-[#27272a] lg:px-10 lg:py-5",
+        "border-t border-border px-[26px] py-[18px] first:border-t-0 dark:border-border lg:px-10 lg:py-5",
         layout === "inline"
           ? "flex h-[66px] items-center gap-[30px] lg:h-[70px] lg:gap-8"
           : "flex h-[102px] flex-col items-start justify-center gap-2 lg:h-20 lg:flex-row lg:items-center lg:gap-8"

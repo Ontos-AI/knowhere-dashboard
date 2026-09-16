@@ -114,9 +114,9 @@ const UsageSummaryCard = ({
   icon,
 }: UsageSummaryCardProps) => {
   return (
-    <article className="flex h-[98px] flex-col gap-2 overflow-hidden border border-[#f4f4f5] px-[14px] pb-[14px] pt-3 dark:border-[#3f3f46] dark:bg-[#18181b] sm:h-[120px] sm:px-[18px] sm:pb-5 sm:pt-4 lg:h-[132px] lg:px-5">
+    <article className="flex h-[98px] flex-col gap-2 overflow-hidden border border-border px-[14px] pb-[14px] pt-3 dark:border-border dark:bg-card sm:h-[120px] sm:px-[18px] sm:pb-5 sm:pt-4 lg:h-[132px] lg:px-5">
       <div className="flex min-h-6 items-start justify-between gap-6 sm:min-h-[40px]">
-        <h2 className="text-[14px] font-medium leading-5 text-[#27272a] dark:text-[#fafafa] sm:text-base sm:leading-6">
+        <h2 className="text-[14px] font-medium leading-5 text-foreground sm:text-base sm:leading-6">
           {title}
         </h2>
         {icon}
@@ -124,13 +124,13 @@ const UsageSummaryCard = ({
       <div className="flex items-baseline gap-2 sm:gap-1.5">
         <span
           className={cn(
-            "font-accent text-[18px] font-extrabold leading-none sm:text-[22px] lg:text-2xl",
+            "font-sans text-[18px] font-extrabold leading-none sm:text-[22px] lg:text-2xl",
             valueClassName
           )}
         >
           {value}
         </span>
-        <span className="font-accent text-[12px] font-medium leading-none text-[#27272a] dark:text-[#fafafa] sm:text-[14px] lg:text-base">
+        <span className="font-sans text-[12px] font-medium leading-none text-foreground sm:text-[14px] lg:text-base">
           {unit}
         </span>
       </div>
@@ -142,25 +142,25 @@ const UsageSummaryCard = ({
 const UsagePageSkeleton = () => {
   return (
     <div className="w-full space-y-[18px] sm:space-y-[22px] lg:space-y-5">
-      <div className="h-6 w-[340px] animate-pulse bg-[#f4f4f5] dark:bg-[#27272a]" />
-      <div className="grid grid-cols-1 gap-0 border border-[#e4e4e7] dark:border-[#3f3f46] lg:grid-cols-3">
+      <div className="h-6 w-[340px] animate-pulse bg-muted" />
+      <div className="grid grid-cols-1 gap-0 border border-border lg:grid-cols-3">
         {["summary-1", "summary-2", "summary-3"].map((cardKey) => (
           <div
             key={cardKey}
-            className="flex h-[98px] flex-col gap-3 border border-[#f4f4f5] px-[14px] pb-[14px] pt-3 dark:border-[#3f3f46] dark:bg-[#18181b] sm:h-[120px] sm:px-[18px] sm:pb-5 sm:pt-4 lg:h-[132px] lg:px-5"
+            className="flex h-[98px] flex-col gap-3 border border-border px-[14px] pb-[14px] pt-3 dark:border-border dark:bg-card sm:h-[120px] sm:px-[18px] sm:pb-5 sm:pt-4 lg:h-[132px] lg:px-5"
           >
-            <div className="h-6 w-32 animate-pulse bg-[#f4f4f5] dark:bg-[#3f3f46]" />
-            <div className="h-8 w-24 animate-pulse bg-[#f4f4f5] dark:bg-[#3f3f46]" />
-            <div className="h-4 w-40 animate-pulse bg-[#f4f4f5] dark:bg-[#3f3f46]" />
+            <div className="h-6 w-32 animate-pulse bg-muted" />
+            <div className="h-8 w-24 animate-pulse bg-muted" />
+            <div className="h-4 w-40 animate-pulse bg-muted" />
           </div>
         ))}
       </div>
       <div className="flex flex-wrap gap-2">
-        <div className="h-8 w-[288px] animate-pulse bg-[#f4f4f5] dark:bg-[#27272a]" />
-        <div className="h-8 w-[220px] animate-pulse bg-[#f4f4f5] dark:bg-[#27272a]" />
-        <div className="ml-auto h-8 w-[128px] animate-pulse bg-[#f4f4f5] dark:bg-[#27272a]" />
+        <div className="h-8 w-[288px] animate-pulse bg-muted" />
+        <div className="h-8 w-[220px] animate-pulse bg-muted" />
+        <div className="ml-auto h-8 w-[128px] animate-pulse bg-muted" />
       </div>
-      <div className="h-[560px] animate-pulse border border-[#e4e4e7] bg-[#fafafa] dark:border-[#3f3f46] dark:bg-[#18181b]" />
+      <div className="h-[560px] animate-pulse border border-border bg-background dark:border-border dark:bg-card" />
     </div>
   );
 };
@@ -361,21 +361,21 @@ export default function UsagePage() {
       <UsageWelcomeModal />
       <div className="w-full space-y-[18px] sm:space-y-[22px] lg:space-y-5">
         <section className="space-y-1 sm:hidden">
-          <h1 className="text-base font-bold leading-6 text-black dark:text-[#fafafa]">
+          <h1 className="text-base font-bold leading-6 text-foreground dark:text-foreground">
             {billingEnabled ? t("title") : t("selfHostedTitle")}
           </h1>
-          <p className="text-[14px] leading-5 text-[#52525c] dark:text-[#d4d4d8]">
+          <p className="text-[14px] leading-5 text-muted-foreground">
             {billingEnabled ? t("description") : ""}
           </p>
         </section>
-        <p className="hidden text-base leading-6 text-[#52525c] dark:text-[#d4d4d8] sm:block">
+        <p className="hidden text-base leading-6 text-muted-foreground sm:block">
           {billingEnabled ? t("description") : ""}
         </p>
 
         <section
           className={cn(
-            "grid grid-cols-1 gap-0 border border-[#e4e4e7]",
-            "dark:border-[#3f3f46]",
+            "grid grid-cols-1 gap-0 border border-border",
+            "dark:border-border",
             billingEnabled ? "lg:grid-cols-3" : "lg:grid-cols-2"
           )}
         >
@@ -411,7 +411,7 @@ export default function UsagePage() {
             valueClassName="text-[#00a63e]"
             icon={<SummaryIcon src="/icons/usage/summary-used.svg" width={19} height={19} />}
             helper={
-              <span className="text-[#27272a] dark:text-[#d4d4d8]">
+              <span className="text-foreground dark:text-muted-foreground">
                 {billingEnabled ? t("estCost", { cost: `$${estimatedCostLabel}` }) : ""}
               </span>
             }
@@ -429,7 +429,7 @@ export default function UsagePage() {
               />
             }
             helper={
-              <span className="text-[#27272a] dark:text-[#d4d4d8]">
+              <span className="text-foreground dark:text-muted-foreground">
                 {t("avgProcessingTime", { time: `${averageDuration}s` })}
               </span>
             }

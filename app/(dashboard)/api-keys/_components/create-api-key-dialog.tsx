@@ -59,10 +59,10 @@ export const CreateApiKeyDialog = ({
         >
           <div className="flex items-start gap-6 sm:gap-8">
             <div className="min-w-0 flex-1">
-              <h2 className="text-[20px] font-bold leading-[26px] text-[#09090b] lg:leading-7">
+              <h2 className="text-[20px] font-bold leading-[26px] text-foreground lg:leading-7">
                 {t("createDialogTitle")}
               </h2>
-              <p className="mt-0.5 text-sm leading-[18px] text-[#71717b] lg:mt-1 lg:leading-5">
+              <p className="mt-0.5 text-sm leading-[18px] text-muted-foreground lg:mt-1 lg:leading-5">
                 {t("createDialogDesc")}
               </p>
             </div>
@@ -90,13 +90,13 @@ export const CreateApiKeyDialog = ({
                   id="api-key-expiration"
                   className={cn(
                     dashboardDesktopTextFieldClassName,
-                    "px-[10px] pr-2 text-left hover:border-[#e4e4e7] focus:border-[#e4e4e7] [&>span]:line-clamp-1 [&>svg]:size-4 [&>svg]:text-[#71717b]"
+                    "px-[10px] pr-2 text-left hover:border-border focus:border-border [&>span]:line-clamp-1 [&>svg]:size-4 [&>svg]:text-muted-foreground"
                   )}
                   disabled={isPending}
                 >
                   <SelectValue placeholder={t("selectExpiration")} />
                 </SelectTrigger>
-                <SelectContent className="w-[var(--radix-select-trigger-width)] rounded-none border-[#e4e4e7]">
+                <SelectContent className="w-[var(--radix-select-trigger-width)] rounded-none border-border">
                   {expirationOptions.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}

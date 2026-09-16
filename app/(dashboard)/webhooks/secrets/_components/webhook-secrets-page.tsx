@@ -35,16 +35,16 @@ const getSecretSearchValue = (secret: WebhookSecret) =>
 const WebhookSecretsPageSkeleton = () => {
   return (
     <div className="flex w-full flex-col gap-[18px] lg:gap-5" aria-busy="true">
-      <div className="h-[42px] w-full animate-pulse bg-[#f4f4f5] sm:h-[22px] sm:w-[420px] lg:h-6" />
+      <div className="h-[42px] w-full animate-pulse bg-muted sm:h-[22px] sm:w-[420px] lg:h-6" />
       <div className="flex items-start justify-between">
         <div className="flex gap-1.5">
-          <div className="h-9 w-[190px] animate-pulse bg-[#f4f4f5] sm:h-8 sm:w-[260px]" />
-          <div className="h-8 w-[72px] animate-pulse bg-[#f4f4f5]" />
+          <div className="h-9 w-[190px] animate-pulse bg-muted sm:h-8 sm:w-[260px]" />
+          <div className="h-8 w-[72px] animate-pulse bg-muted" />
         </div>
-        <div className="h-9 w-10 animate-pulse bg-[#f4f4f5] sm:h-8 lg:h-9 lg:w-[150px]" />
+        <div className="h-9 w-10 animate-pulse bg-muted sm:h-8 lg:h-9 lg:w-[150px]" />
       </div>
-      <div className="h-[272px] animate-pulse border border-[#e4e4e7] bg-white sm:h-[280px] lg:h-[294px]" />
-      <div className="h-[142px] animate-pulse border border-[#e4e4e7] bg-white sm:h-[142px] lg:h-[148px]" />
+      <div className="h-[272px] animate-pulse border border-border bg-card sm:h-[280px] lg:h-[294px]" />
+      <div className="h-[142px] animate-pulse border border-border bg-card sm:h-[142px] lg:h-[148px]" />
       <span className="sr-only">Loading webhook secrets</span>
     </div>
   );
@@ -60,8 +60,8 @@ const WebhookSecretsErrorState = ({
   title: string;
 }) => {
   return (
-    <section className="flex min-h-[220px] w-full flex-col items-center justify-center gap-5 border border-[#e4e4e7] bg-white px-6 py-12 text-center">
-      <h2 className="text-base font-semibold leading-6 text-[#09090b]">{title}</h2>
+    <section className="flex min-h-[220px] w-full flex-col items-center justify-center gap-5 border border-border bg-card px-6 py-12 text-center">
+      <h2 className="text-base font-semibold leading-6 text-foreground">{title}</h2>
       <DashboardActionButton type="button" variant="secondary" size="page" onClick={onRetry}>
         {retryLabel}
       </DashboardActionButton>
@@ -162,19 +162,19 @@ export const WebhookSecretsPage = () => {
     <>
       <div className="flex w-full flex-col gap-[18px] lg:gap-5">
         <div className="flex flex-col gap-0.5 sm:hidden">
-          <h2 className="truncate text-sm font-bold leading-[22px] text-black dark:text-[#fafafa]">
+          <h2 className="truncate text-sm font-bold leading-[22px] text-foreground">
             {t("title")}
           </h2>
-          <p className="text-xs leading-[18px] text-black dark:text-[#d4d4d8]">{t("subtitle")}</p>
+          <p className="text-xs leading-[18px] text-muted-foreground">{t("subtitle")}</p>
         </div>
 
-        <p className="hidden text-[14px] leading-[22px] text-[#09090b] dark:text-[#fafafa] sm:block lg:text-base lg:leading-6">
+        <p className="hidden text-[14px] leading-[22px] text-foreground sm:block lg:text-base lg:leading-6">
           {t("subtitle")}
         </p>
 
         <div className="flex items-start justify-between">
           <div className="flex gap-1.5">
-            <label className="flex h-9 w-[190px] shrink-0 items-center gap-1 border border-[#e4e4e7] bg-white py-1.5 pl-[6px] pr-3 focus-within:ring-2 focus-within:ring-[#19a88b]/20 dark:border-[#3f3f46] dark:bg-[#18181b] sm:h-8 sm:w-[260px] lg:gap-[6px] lg:pl-2 lg:pr-[14px]">
+            <label className="flex h-9 w-[190px] shrink-0 items-center gap-1 border border-border bg-card py-1.5 pl-[6px] pr-3 focus-within:ring-2 focus-within:ring-[#19a88b]/20 dark:border-border dark:bg-card sm:h-8 sm:w-[260px] lg:gap-[6px] lg:pl-2 lg:pr-[14px]">
               <span className="sr-only">{t("searchPlaceholder")}</span>
               <Image
                 src="/icons/api-keys/search-box.svg"
@@ -188,7 +188,7 @@ export const WebhookSecretsPage = () => {
                 value={searchTerm}
                 onChange={(event) => handleSearchChange(event.target.value)}
                 placeholder={t("searchPlaceholder")}
-                className="min-w-0 flex-1 bg-transparent text-xs leading-[14px] text-[#09090b] outline-none placeholder:text-[#9f9fa9] focus-visible:ring-0 dark:text-[#fafafa]"
+                className="min-w-0 flex-1 bg-transparent text-xs leading-[14px] text-foreground outline-none placeholder:text-muted-foreground focus-visible:ring-0 dark:text-foreground"
               />
             </label>
 
@@ -196,10 +196,10 @@ export const WebhookSecretsPage = () => {
               value={statusFilter}
               onValueChange={(value) => setStatusFilter(value as SecretStatusFilter)}
             >
-              <SelectTrigger className="h-9 w-[72px] rounded-none border-[#e4e4e7] bg-white pl-2 pr-[6px] text-xs leading-[14px] text-[#27272a] shadow-none ring-offset-white focus:ring-0 focus:ring-offset-0 focus-visible:ring-2 focus-visible:ring-[#19a88b]/20 dark:border-[#3f3f46] dark:bg-[#18181b] dark:text-[#fafafa] sm:h-8 [&>svg]:h-4 [&>svg]:w-4">
+              <SelectTrigger className="h-9 w-[72px] rounded-none border-border bg-card pl-2 pr-[6px] text-xs leading-[14px] text-foreground shadow-none ring-offset-background focus:ring-0 focus:ring-offset-0 focus-visible:ring-2 focus-visible:ring-[#19a88b]/20 dark:border-border dark:bg-card dark:text-foreground sm:h-8 [&>svg]:h-4 [&>svg]:w-4">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="rounded-none border-[#e4e4e7] dark:border-[#3f3f46]">
+              <SelectContent className="rounded-none border-border">
                 <SelectItem value="all">{t("filterAll")}</SelectItem>
                 <SelectItem value="active">{t("filterActive")}</SelectItem>
                 <SelectItem value="revoked">{t("filterRevoked")}</SelectItem>

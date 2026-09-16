@@ -257,7 +257,7 @@ const DashboardSidebarContent = ({
           align="end"
           side="top"
           sideOffset={8}
-          className="w-[236px] rounded-none border-[#bbbcb3] bg-white p-0 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)] dark:border-[#156462] dark:bg-[#083b3a]"
+          className="w-[236px] rounded-none border-[#bbbcb3] bg-card p-0 shadow-[0_10px_15px_-3px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)] dark:border-[#156462] dark:bg-[#083b3a]"
         >
           <DropdownMenuItem
             asChild

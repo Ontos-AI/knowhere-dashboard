@@ -22,6 +22,8 @@ describe("wave 0 site tokens", () => {
     expect(layoutSource).toContain('variable: "--font-geist-mono"');
     expect(layoutSource).not.toContain("Geist-VariableFont_wght.ttf");
     expect(layoutSource).not.toContain("--font-geist-sans");
+    expect(layoutSource).not.toContain("Anuphan-VariableFont_wght.ttf");
+    expect(layoutSource).not.toContain("--font-anuphan");
   });
 
   it("scopes prototype ramps and semantic tokens to .kh-site", () => {

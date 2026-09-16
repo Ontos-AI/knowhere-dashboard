@@ -82,4 +82,37 @@ describe("wave 6 dashboard brand restyle", () => {
     expect(uploadSource).toContain("text-primary");
     expect(uploadSource).not.toContain("text-blue-500");
   });
+
+  it("retargets dashboard tables and dialogs away from zinc hex", () => {
+    const zincHexes = [
+      "#e4e4e7",
+      "#09090b",
+      "#71717b",
+      "#18181b",
+      "#3f3f46",
+      "#fafafa",
+      "#27272a",
+      "#f4f4f5",
+      "#9f9fa9",
+      "#52525c",
+    ] as const;
+    const sources = [
+      "app/(dashboard)/_components/dashboard-modal-primitives.tsx",
+      "app/(dashboard)/_components/dashboard-action-button.tsx",
+      "app/(dashboard)/api-keys/_components/api-keys-table.tsx",
+      "app/(dashboard)/usage/_components/usage-table.tsx",
+      "app/(dashboard)/usage/_components/usage-welcome-modal.tsx",
+      "app/(dashboard)/webhooks/secrets/_components/secrets-table.tsx",
+      "app/(dashboard)/settings/_components/settings-page.tsx",
+      "app/(dashboard)/billing/_components/buy-credits-modal.tsx",
+      "components/ui/select.tsx",
+    ] as const;
+
+    for (const relativePath of sources) {
+      const source = readWorkspaceFile(relativePath);
+      for (const hex of zincHexes) {
+        expect(source, `${relativePath} still contains ${hex}`).not.toContain(hex);
+      }
+    }
+  });
 });

@@ -136,24 +136,24 @@ export function DatePickerWithRange({ className, date, setDate }: DatePickerWith
         <button
           type="button"
           className={cn(
-            "flex h-9 w-full max-w-[222px] items-center gap-1.5 border border-[#e4e4e7] bg-white pl-[10px] pr-3 text-left dark:border-[#3f3f46] dark:bg-[#18181b] sm:h-8 sm:max-w-[224px] lg:max-w-[238px]",
+            "flex h-9 w-full max-w-[222px] items-center gap-1.5 border border-border bg-card pl-[10px] pr-3 text-left dark:border-border dark:bg-card sm:h-8 sm:max-w-[224px] lg:max-w-[238px]",
             className
           )}
         >
           {date?.from ? (
             <>
-              <span className="truncate font-mono-display text-[12px] font-light leading-4 text-[#27272a] dark:text-[#fafafa]">
+              <span className="truncate font-mono-display text-[12px] font-light leading-4 text-foreground">
                 {format(date.from, "MMM dd,yyyy")}
               </span>
-              <span className="font-mono-display text-[14px] font-light leading-5 text-[#9f9fa9]">
+              <span className="font-mono-display text-[14px] font-light leading-5 text-muted-foreground">
                 -
               </span>
-              <span className="truncate font-mono-display text-[12px] font-light leading-4 text-[#27272a] dark:text-[#fafafa]">
+              <span className="truncate font-mono-display text-[12px] font-light leading-4 text-foreground">
                 {format(date.to ?? date.from, "MMM dd,yyyy")}
               </span>
             </>
           ) : (
-            <span className="truncate font-mono-display text-[12px] font-light leading-4 text-[#27272a] dark:text-[#fafafa]">
+            <span className="truncate font-mono-display text-[12px] font-light leading-4 text-foreground">
               {formatRangeLabel(date, t("pickDate"))}
             </span>
           )}
@@ -172,7 +172,7 @@ export function DatePickerWithRange({ className, date, setDate }: DatePickerWith
       <PopoverContent
         align="start"
         sideOffset={6}
-        className="w-[248px] rounded-none border-[#f4f4f5] bg-white p-3 text-[#09090b] shadow-[0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_0_rgba(0,0,0,0.06)] backdrop-blur-0 dark:border-[#3f3f46] dark:bg-[#18181b] dark:text-[#fafafa] sm:w-auto"
+        className="w-[248px] rounded-none border-border bg-card p-3 text-foreground shadow-[0_1px_3px_0_rgba(0,0,0,0.1),0_1px_2px_0_rgba(0,0,0,0.06)] backdrop-blur-0 dark:border-border dark:bg-card dark:text-foreground sm:w-auto"
       >
         <Calendar
           initialFocus
@@ -182,29 +182,29 @@ export function DatePickerWithRange({ className, date, setDate }: DatePickerWith
           selected={draftDate}
           onSelect={handleSelect}
           numberOfMonths={isCompactCalendar ? 1 : 2}
-          className="bg-white p-0 dark:bg-[#18181b] [--cell-size:32px]"
+          className="bg-card p-0 dark:bg-card [--cell-size:32px]"
           classNames={{
             root: "w-fit",
             months: "flex flex-col gap-4 md:flex-row",
             month: "flex w-full flex-col gap-4 sm:w-[224px]",
             nav: "absolute inset-x-0 top-0 flex w-full items-center justify-between",
             button_previous:
-              "flex size-8 items-center justify-center rounded-md border-0 p-0 text-[#09090b] hover:bg-transparent dark:text-[#fafafa]",
+              "flex size-8 items-center justify-center rounded-md border-0 p-0 text-foreground hover:bg-transparent dark:text-foreground",
             button_next:
-              "flex size-8 items-center justify-center rounded-md border-0 p-0 text-[#09090b] hover:bg-transparent dark:text-[#fafafa]",
+              "flex size-8 items-center justify-center rounded-md border-0 p-0 text-foreground hover:bg-transparent dark:text-foreground",
             month_caption: "relative flex h-8 w-full items-center justify-center px-8",
-            caption_label: "text-[14px] font-medium leading-5 text-[#09090b] dark:text-[#fafafa]",
+            caption_label: "text-[14px] font-medium leading-5 text-foreground",
             weekdays: "mt-4 flex",
             weekday:
-              "flex h-[21px] w-8 items-center justify-center rounded-md text-[12px] font-normal leading-4 text-[#9f9fa9]",
+              "flex h-[21px] w-8 items-center justify-center rounded-md text-[12px] font-normal leading-4 text-muted-foreground",
             week: "mt-2 flex w-full",
             day: "relative size-8 p-0 text-center",
             range_start: "rounded-l-[8px]",
             range_middle: "rounded-none",
             range_end: "rounded-r-[8px]",
-            today: "text-[#09090b] dark:text-[#fafafa]",
-            outside: "text-[#09090b] opacity-50 dark:text-[#fafafa]",
-            disabled: "text-[#9f9fa9] opacity-50",
+            today: "text-foreground",
+            outside: "text-foreground opacity-50 dark:text-foreground",
+            disabled: "text-muted-foreground opacity-50",
           }}
           components={{
             DayButton: RangeCalendarDayButton,

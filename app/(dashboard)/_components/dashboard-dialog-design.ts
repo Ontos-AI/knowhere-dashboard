@@ -60,6 +60,6 @@ export const dashboardDialogDesign: DashboardDialogDesign = {
     codeTitleFrame:
       "relative px-0 pb-4 pl-16 pr-4 pt-[14px] min-[375px]:pl-[78px] min-[375px]:pr-[46px] sm:border-b-0 sm:pb-4 sm:pl-20 sm:pr-12 sm:pt-4 lg:pb-4 lg:pl-20 lg:pr-12 lg:pt-4",
     codeTitleText:
-      "text-[14px] font-medium leading-[22px] text-[#09090b] sm:pl-0 sm:text-[14px] sm:leading-[22px] lg:pl-0 lg:text-[16px] lg:leading-6",
+      "text-[14px] font-medium leading-[22px] text-foreground sm:pl-0 sm:text-[14px] sm:leading-[22px] lg:pl-0 lg:text-[16px] lg:leading-6",
   },
 } as const;

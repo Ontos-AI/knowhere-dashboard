@@ -60,7 +60,7 @@ export function UsageFileUpload({ className }: UsageFileUploadProps) {
           }
         }}
       >
-        <DialogContent className="max-w-lg border-[#e4e4e7] bg-[#fafafa] p-0 sm:max-w-lg">
+        <DialogContent className="max-w-lg border-border bg-background p-0 sm:max-w-lg">
           {selectedFile ? (
             <FileUploadFlow
               file={selectedFile}
