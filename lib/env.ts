@@ -28,10 +28,13 @@ export const env = createEnv({
     DATABASE_POOL_IDLE_TIMEOUT_MILLISECONDS: POSITIVE_INTEGER.default(10_000),
     DATABASE_POOL_CONNECTION_TIMEOUT_MILLISECONDS: POSITIVE_INTEGER.default(5_000),
     UNSAFE_DB_SSL_ENABLED: z.string().default("false"),
-    GA_MEASUREMENT_ID: z
-      .string()
-      .regex(/^G-[A-Z0-9]+$/)
-      .optional(),
+    GA_MEASUREMENT_ID: z.preprocess(
+      normalizeOptionalString,
+      z
+        .string()
+        .regex(/^G-[A-Z0-9]+$/)
+        .optional()
+    ),
     OPENAI_ADS_PIXEL_ID: z.preprocess(normalizeOptionalString, z.string().optional()),
     OPENAI_ADS_CONVERSIONS_API_KEY: z.preprocess(normalizeOptionalString, z.string().optional()),
     GITHUB_CLIENT_ID: z.string().optional(),
@@ -137,5 +140,9 @@ export const env = createEnv({
     NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS:
       process.env.NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS,
   },
-  skipValidation: !!process.env.SKIP_ENV_VALIDATION,
+  emptyStringAsUndefined: true,
+  // Vercel Preview collects `/_not-found` during `next build` before runtime
+  // secrets are guaranteed. GitHub Quality already sets SKIP_ENV_VALIDATION.
+  skipValidation:
+    !!process.env.SKIP_ENV_VALIDATION || process.env.NEXT_PHASE === "phase-production-build",
 });

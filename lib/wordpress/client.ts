@@ -20,7 +20,7 @@ type FetchInit = RequestInit & {
 };
 
 function wordpressSite(): string {
-  return env.WORDPRESS_SITE;
+  return env.WORDPRESS_SITE || "knowheretoai.wordpress.com";
 }
 
 function wpUrl(path: string, search: URLSearchParams): string {
