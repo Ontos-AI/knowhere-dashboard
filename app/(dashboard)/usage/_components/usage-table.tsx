@@ -153,12 +153,12 @@ const fileTypeColorMap = {
     darkText: "#67e8f9",
   },
   png: {
-    background: "#f5f3ff",
-    border: "#ede9fe",
-    text: "#7008e7",
-    darkBackground: "#2e1065",
-    darkBorder: "#6d28d9",
-    darkText: "#c4b5fd",
+    background: "#caffee",
+    border: "#7efedd",
+    text: "#0a6351",
+    darkBackground: "#01251d",
+    darkBorder: "#054437",
+    darkText: "#27efc6",
   },
   md: {
     background: "#f7fee7",
@@ -550,7 +550,7 @@ export function UsageTable({
                 className={cn(
                   "flex h-8 w-8 items-center justify-center border border-[#e4e4e7] bg-white text-[12px] leading-[14px] text-[#3f3f46] transition-colors hover:bg-[#f4f4f5] dark:border-[#3f3f46] dark:bg-[#18181b] dark:text-[#e4e4e7] dark:hover:bg-[#27272a]",
                   isActive &&
-                    "font-bold text-[#7f22fe] underline decoration-solid underline-offset-4"
+                    "font-bold text-[#19a88b] underline decoration-solid underline-offset-4"
                 )}
                 onClick={() => onPageChange(item)}
               >
@@ -596,7 +596,7 @@ export function UsageTable({
           />
           <button
             type="submit"
-            className="flex h-8 w-10 items-center justify-center border border-[#e4e4e7] bg-[#f4f4f5] text-[12px] font-medium leading-[14px] text-[#7f22fe] transition-colors hover:bg-[#ede9fe] dark:border-[#3f3f46] dark:bg-[#27272a] dark:text-[#c4b5fd] dark:hover:bg-[#3f3f46]"
+            className="flex h-8 w-10 items-center justify-center border border-[#e4e4e7] bg-[#f4f4f5] text-[12px] font-medium leading-[14px] text-[#19a88b] transition-colors hover:bg-[#caffee] dark:border-[#3f3f46] dark:bg-[#27272a] dark:text-[#27efc6] dark:hover:bg-[#3f3f46]"
           >
             Go
           </button>

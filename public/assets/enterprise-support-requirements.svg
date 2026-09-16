@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="30 68 260 212" fill="none">
+  <style>g &gt; * { vector-effect: non-scaling-stroke; }</style>
+  <g stroke="#747985" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" style="vector-effect:non-scaling-stroke">
+    <circle cx="112" cy="140" r="62" />
+    <circle cx="208" cy="140" r="62" />
+    <circle cx="160" cy="140" r="10" />
+    <path d="M48 205c27 43 65 65 112 65s85-22 112-65" stroke-dasharray="7 5" />
+    <circle cx="46" cy="202" r="8" />
+    <circle cx="274" cy="202" r="8" />
+  </g>
+</svg>

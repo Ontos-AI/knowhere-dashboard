@@ -89,7 +89,6 @@ export const useLoginActions = () => {
         throw new Error(error.message || t("magicLinkFailed"));
       }
 
-      toast.success(t("magicLinkSent"));
       return true;
     } catch (error) {
       const message = error instanceof Error ? error.message : t("loginFailed");

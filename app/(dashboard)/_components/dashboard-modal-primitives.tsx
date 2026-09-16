@@ -12,7 +12,7 @@ export const dashboardDesktopFieldLabelClassName =
   "text-sm font-normal leading-[18px] text-[#09090b] lg:leading-5";
 
 export const dashboardDesktopTextFieldClassName =
-  "h-10 w-full rounded-none border border-[#e4e4e7] bg-white px-3 text-xs leading-4 text-[#27272a] shadow-none outline-none placeholder:text-[#9f9fa9] focus-visible:ring-2 focus-visible:ring-[#7f22fe]/20";
+  "h-10 w-full rounded-none border border-[#e4e4e7] bg-white px-3 text-xs leading-4 text-[#27272a] shadow-none outline-none placeholder:text-[#9f9fa9] focus-visible:ring-2 focus-visible:ring-[#19a88b]/20";
 
 export const dashboardDesktopSecretFieldClassName =
   "min-h-[58px] w-full rounded-none border border-[#e4e4e7] bg-white px-3 py-2.5 text-xs leading-4 text-[#09090b] lg:min-h-[68px]";
@@ -22,7 +22,7 @@ export const DashboardDesktopDialogCloseButton = () => {
     <DialogClose asChild>
       <button
         type="button"
-        className="flex size-6 shrink-0 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/20"
+        className="flex size-6 shrink-0 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19a88b]/20"
       >
         <Image src="/icons/common/close-dialog.svg" alt="" aria-hidden width={9} height={9} />
         <span className="sr-only">Close</span>
@@ -75,7 +75,7 @@ export const DashboardWarningIcon = (props: SVGProps<SVGSVGElement>) => {
       {...props}
     >
       <path
-        fill="#FF6900"
+        fill="#ff634a"
         d="M11.1808 15.104C11.3373 14.9475 11.4155 14.7564 11.4155 14.5307C11.4155 14.3051 11.3373 14.1141 11.1808 13.9578C11.0244 13.8014 10.8334 13.7233 10.6077 13.7233C10.3821 13.7233 10.1911 13.8014 10.0347 13.9578C9.87825 14.1141 9.8 14.3051 9.8 14.5307C9.8 14.7564 9.87825 14.9475 10.0347 15.104C10.1911 15.2603 10.3821 15.3385 10.6077 15.3385C10.8334 15.3385 11.0244 15.2603 11.1808 15.104ZM9.85775 11.6847H11.3577V5.68475H9.85775V11.6847ZM10.6077 21.2155L7.46725 18.1077H3.10775V13.7483L0 10.6077L3.10775 7.46725V3.10775H7.46725L10.6077 0L13.7483 3.10775H18.1077V7.46725L21.2155 10.6077L18.1077 13.7483V18.1077H13.7483L10.6077 21.2155ZM10.6077 19.1077L13.1077 16.6077H16.6077V13.1077L19.1077 10.6077L16.6077 8.10775V4.60775H13.1077L10.6077 2.10775L8.10775 4.60775H4.60775V8.10775L2.10775 10.6077L4.60775 13.1077V16.6077H8.10775L10.6077 19.1077Z"
       />
     </svg>

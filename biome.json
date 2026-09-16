@@ -67,6 +67,9 @@
       "!.junie",
       "!.trae",
       "!public/comparison/**/*.html",
+      "!app/(landing)/_components/landing.css",
+      "!app/(landing)/_components/landing",
+      "!app/(landing)/_components/landing-home.tsx",
       "!!node_modules",
       "!!.next",
       "!!out",
@@ -83,6 +86,22 @@
         "rules": {
           "style": {
             "noRestrictedImports": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "app/(landing)/_components/landing/**",
+        "app/(landing)/_components/landing-home.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": "off"
+          },
+          "suspicious": {
+            "noExplicitAny": "off"
           }
         }
       }

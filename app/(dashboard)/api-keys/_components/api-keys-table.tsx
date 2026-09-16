@@ -56,7 +56,7 @@ const ToggleButton = ({
       aria-label={label}
       onClick={onPressedChange}
       className={cn(
-        "relative h-6 w-9 rounded-full p-[3px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/25 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+        "relative h-6 w-9 rounded-full p-[3px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19a88b]/25 focus-visible:ring-offset-2 focus-visible:ring-offset-white",
         checked ? "bg-[#00bc7d]" : "bg-[#9f9fa9]"
       )}
     >
@@ -128,7 +128,7 @@ export const ApiKeysTable = ({
                     {key.name}
                   </td>
                   <td className="h-[52px] px-[14px] lg:px-4">
-                    <div className="inline-flex max-w-full items-center bg-[#f5f3ff] px-[6px] py-0.5 lg:px-2 lg:py-1">
+                    <div className="inline-flex max-w-full items-center bg-[#caffee] px-[6px] py-0.5 lg:px-2 lg:py-1">
                       <code className="block truncate font-mono-readable text-xs leading-[18px] text-[#4d179a] lg:text-sm lg:leading-5">
                         {apiKeyPreview}
                       </code>
@@ -183,7 +183,7 @@ export const ApiKeysTable = ({
                     <button
                       type="button"
                       onClick={() => onDelete(key.id)}
-                      className="flex h-[52px] w-12 items-center justify-center bg-white transition-colors hover:bg-[#fafafa] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/25 focus-visible:ring-inset dark:bg-[#18181b] dark:hover:bg-[#27272a]"
+                      className="flex h-[52px] w-12 items-center justify-center bg-white transition-colors hover:bg-[#fafafa] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19a88b]/25 focus-visible:ring-inset dark:bg-[#18181b] dark:hover:bg-[#27272a]"
                       aria-label={`${t("delete")} ${key.name}`}
                     >
                       <Image

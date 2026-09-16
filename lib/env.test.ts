@@ -81,6 +81,24 @@ describe("env database pools", (): void => {
   });
 });
 
+describe("env.WORDPRESS_SITE", () => {
+  it("defaults to the public Knowhere WordPress.com site id", async () => {
+    const { env } = await loadEnv({
+      WORDPRESS_SITE: undefined,
+    });
+
+    expect(env.WORDPRESS_SITE).toBe("knowheretoai.wordpress.com");
+  });
+
+  it("loads a configured WordPress.com site id", async () => {
+    const { env } = await loadEnv({
+      WORDPRESS_SITE: "example.wordpress.com",
+    });
+
+    expect(env.WORDPRESS_SITE).toBe("example.wordpress.com");
+  });
+});
+
 describe("env.OPENAI_ADS", () => {
   it("normalizes blank OpenAI Ads values to undefined", async () => {
     const { env } = await loadEnv({

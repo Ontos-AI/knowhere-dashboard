@@ -33,7 +33,7 @@ type AmountOptionButtonProps = {
 };
 
 const amountOptionBaseClassName =
-  "flex h-9 min-w-[72px] shrink-0 items-center justify-center whitespace-nowrap border px-6 text-[12px] leading-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25";
+  "flex h-9 min-w-[72px] shrink-0 items-center justify-center whitespace-nowrap border px-6 text-[12px] leading-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19a88b]/25";
 
 const AmountOptionButton = ({ isSelected, label, onClick }: AmountOptionButtonProps) => {
   return (
@@ -42,7 +42,7 @@ const AmountOptionButton = ({ isSelected, label, onClick }: AmountOptionButtonPr
       className={cn(
         amountOptionBaseClassName,
         isSelected
-          ? "border-[#5d0ec0] bg-[#7f22fe] font-bold text-[#f5f3ff]"
+          ? "border-[#054437] bg-[#19a88b] font-bold text-[#f0f2e6]"
           : "border-[#e4e4e7] bg-white font-normal text-[#3f3f46] hover:bg-[#fafafa]"
       )}
       onClick={onClick}
@@ -261,7 +261,7 @@ export function BuyCreditsModal() {
                     onChange={handleCustomInputChange}
                     placeholder={t("amountPlaceholder")}
                     aria-invalid={customAmountStr !== "" && !isValidSelection}
-                    className="h-10 w-full border border-[#a684ff] bg-white px-3 pl-8 text-[12px] leading-4 text-[#18181b] placeholder:text-[#9f9fa9] focus:outline-none"
+                    className="h-10 w-full border border-[#1dbe9d] bg-white px-3 pl-8 text-[12px] leading-4 text-[#18181b] placeholder:text-[#9f9fa9] focus:outline-none"
                   />
                 </div>
               </div>

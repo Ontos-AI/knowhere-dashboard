@@ -56,7 +56,7 @@ export const WebhookSecretsTable = ({
                 className="border-b border-[#f4f4f5] last:border-b-0 dark:border-[#27272a]"
               >
                 <td className="h-[52px] px-[14px] lg:px-4">
-                  <div className="inline-flex max-w-full items-center bg-[#f5f3ff] px-[6px] py-0.5 lg:px-2 lg:py-1">
+                  <div className="inline-flex max-w-full items-center bg-[#caffee] px-[6px] py-0.5 lg:px-2 lg:py-1">
                     <code className="block truncate font-mono-readable text-xs leading-[18px] text-[#4d179a] lg:text-sm lg:leading-5">
                       {secret.secret_masked}
                     </code>
@@ -87,7 +87,7 @@ export const WebhookSecretsTable = ({
                   <button
                     type="button"
                     onClick={() => onRevoke(secret.id)}
-                    className="flex h-[52px] w-12 items-center justify-center transition-colors hover:bg-[#fafafa] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/25 focus-visible:ring-inset dark:hover:bg-[#27272a]"
+                    className="flex h-[52px] w-12 items-center justify-center transition-colors hover:bg-[#fafafa] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19a88b]/25 focus-visible:ring-inset dark:hover:bg-[#27272a]"
                     aria-label={t("revokeSecret")}
                   >
                     <Image

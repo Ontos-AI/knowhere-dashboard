@@ -79,7 +79,7 @@ export const ApiKeyCreatedDialog = ({ apiKey, onOpenChange }: ApiKeyCreatedDialo
             </DashboardActionButton>
           </div>
 
-          <div className="flex w-full items-start gap-[6px] text-[#ff6900] lg:gap-2">
+          <div className="flex w-full items-start gap-[6px] text-[#ff634a] lg:gap-2">
             <DashboardWarningIcon />
             <p className="flex-1 text-sm font-medium leading-[18px] lg:leading-5">
               {t("securityWarning")}

@@ -71,7 +71,7 @@ const RangeCalendarDayButton = ({
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
       className={cn(
-        "flex size-8 items-center justify-center rounded-[8px] border-0 bg-transparent p-0 text-[14px] font-normal leading-5 tracking-normal text-[#09090b] outline-none transition-colors hover:bg-[#f4f4f5] focus-visible:ring-0 data-[selected-single=true]:bg-[#7008e7] data-[selected-single=true]:text-white data-[range-start=true]:bg-[#7008e7] data-[range-start=true]:text-white data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-[#f5f3ff] data-[range-middle=true]:text-[#2f0d68] data-[range-end=true]:bg-[#7008e7] data-[range-end=true]:text-white dark:text-[#fafafa] dark:hover:bg-[#27272a] dark:data-[range-middle=true]:bg-[#3f2a5f] dark:data-[range-middle=true]:text-[#ddd6fe]",
+        "flex size-8 items-center justify-center rounded-[8px] border-0 bg-transparent p-0 text-[14px] font-normal leading-5 tracking-normal text-[#083b3a] outline-none transition-colors hover:bg-[#f3f5ea] focus-visible:ring-0 data-[selected-single=true]:bg-[#19a88b] data-[selected-single=true]:text-[#f0f2e6] data-[range-start=true]:bg-[#19a88b] data-[range-start=true]:text-[#f0f2e6] data-[range-middle=true]:rounded-none data-[range-middle=true]:bg-[#caffee] data-[range-middle=true]:text-[#01251d] data-[range-end=true]:bg-[#19a88b] data-[range-end=true]:text-[#f0f2e6] dark:text-[#f0f2e6] dark:hover:bg-[#073231] dark:data-[range-middle=true]:bg-[#054437] dark:data-[range-middle=true]:text-[#7efedd]",
         className
       )}
       {...props}

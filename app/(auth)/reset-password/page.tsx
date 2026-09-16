@@ -1,9 +1,5 @@
 "use client";
 
-import { Button } from "@components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
-import { Input } from "@components/ui/input";
-import { Label } from "@components/ui/label";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -11,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { AuthButton, AuthInput } from "@/app/(auth)/_components/form-controls";
 import { useToast } from "@/hooks/use-toast";
 import { authRedirect } from "@/lib/auth-redirect";
 import { authClient } from "@/lib/better-auth-client";
@@ -84,68 +81,68 @@ export default function ResetPasswordPage() {
 
   if (!token || resetError) {
     return (
-      <Card className="w-full border-border/80 bg-card/95 shadow-[0_14px_44px_-24px_rgba(146,64,14,0.35)]">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl text-center">{t("invalidResetLinkTitle")}</CardTitle>
-          <CardDescription className="text-center">{t("invalidResetLinkDesc")}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Button asChild className="w-full">
-            <Link href={forgotPasswordPath}>{t("requestNewResetLink")}</Link>
-          </Button>
-          <div className="text-center text-sm">
-            <Link href={loginPath} className="text-primary hover:underline">
-              {t("backToLogin")}
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
+      <>
+        <div className="form-heading">
+          <h1>{t("invalidResetLinkTitle")}</h1>
+          <p className="form-heading-desc">{t("invalidResetLinkDesc")}</p>
+        </div>
+        <Link className="control-button control-button--black" href={forgotPasswordPath}>
+          <span className="control-button-content">{t("requestNewResetLink")}</span>
+        </Link>
+        <p className="auth-aux">
+          <Link href={loginPath}>{t("backToLogin")}</Link>
+        </p>
+      </>
     );
   }
 
   return (
-    <Card className="w-full border-border/80 bg-card/95 shadow-[0_14px_44px_-24px_rgba(146,64,14,0.35)]">
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl text-center">{t("resetPasswordTitle")}</CardTitle>
-        <CardDescription className="text-center">{t("resetPasswordDesc")}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="password">{t("newPassword")}</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder={t("newPasswordPlaceholder")}
-              autoComplete="new-password"
-              {...register("password")}
-              disabled={isSaving}
-            />
-            {errors.password && (
-              <p className="text-sm text-destructive">{errors.password.message}</p>
-            )}
-          </div>
+    <>
+      <div className="form-heading">
+        <h1>{t("resetPasswordTitle")}</h1>
+        <p className="form-heading-desc">{t("resetPasswordDesc")}</p>
+      </div>
+      <form noValidate onSubmit={handleSubmit(onSubmit)}>
+        <div className="auth-field">
+          <label htmlFor="password">{t("newPassword")}</label>
+          <AuthInput
+            id="password"
+            type="password"
+            placeholder={t("newPasswordPlaceholder")}
+            autoComplete="new-password"
+            aria-invalid={errors.password ? "true" : "false"}
+            {...register("password")}
+            disabled={isSaving}
+          />
+          {errors.password ? (
+            <p className="auth-feedback" role="alert">
+              {errors.password.message}
+            </p>
+          ) : null}
+        </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword">{t("confirmPassword")}</Label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              placeholder={t("confirmPasswordPlaceholder")}
-              autoComplete="new-password"
-              {...register("confirmPassword")}
-              disabled={isSaving}
-            />
-            {errors.confirmPassword && (
-              <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>
-            )}
-          </div>
+        <div className="auth-field">
+          <label htmlFor="confirmPassword">{t("confirmPassword")}</label>
+          <AuthInput
+            id="confirmPassword"
+            type="password"
+            placeholder={t("confirmPasswordPlaceholder")}
+            autoComplete="new-password"
+            aria-invalid={errors.confirmPassword ? "true" : "false"}
+            {...register("confirmPassword")}
+            disabled={isSaving}
+          />
+          {errors.confirmPassword ? (
+            <p className="auth-feedback" role="alert">
+              {errors.confirmPassword.message}
+            </p>
+          ) : null}
+        </div>
 
-          <Button type="submit" className="w-full" disabled={isSaving}>
-            {isSaving ? t("updatingPassword") : t("resetPassword")}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+        <AuthButton className="submit-button" type="submit" disabled={isSaving} loading={isSaving}>
+          {isSaving ? t("updatingPassword") : t("resetPassword")}
+        </AuthButton>
+      </form>
+    </>
   );
 }

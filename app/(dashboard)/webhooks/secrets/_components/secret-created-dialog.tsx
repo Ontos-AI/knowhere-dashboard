@@ -84,7 +84,7 @@ export const SecretCreatedDialog = ({ open, onOpenChange, secret }: SecretCreate
             </DashboardActionButton>
           </div>
 
-          <div className="flex w-full flex-col gap-2 text-[#ff6900]">
+          <div className="flex w-full flex-col gap-2 text-[#ff634a]">
             <div className="flex items-center gap-[6px] lg:gap-2">
               <DashboardWarningIcon />
               <p className="text-sm font-bold leading-[18px] lg:leading-5">

@@ -7,7 +7,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 
 const dashboardActionButtonVariants = cva(
-  "inline-flex items-center rounded-none border font-mono-display text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7f22fe]/25 disabled:cursor-not-allowed [&_svg]:shrink-0",
+  "inline-flex items-center rounded-none border font-mono-display text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19a88b]/25 disabled:cursor-not-allowed [&_svg]:shrink-0",
   {
     variants: {
       size: {
@@ -20,7 +20,7 @@ const dashboardActionButtonVariants = cva(
       },
       variant: {
         primary:
-          "border-[#7008e7] bg-[#7f22fe] text-[#f5f3ff] hover:bg-[#7008e7] disabled:border-[#d6d3d1] disabled:bg-[#d6d3d1] disabled:text-[#a8a29e]",
+          "border-[#0a6351] bg-[#19a88b] text-[#f0f2e6] hover:bg-[#0a6351] disabled:border-[#d6d3d1] disabled:bg-[#d6d3d1] disabled:text-[#a8a29e]",
         secondary:
           "border-[#f4f4f5] bg-white text-[#27272a] hover:bg-[#fafafa] disabled:border-[#e7e5e4] disabled:bg-[#f4f4f5] disabled:text-[#a1a1a1] dark:border-[#3f3f46] dark:bg-[#18181b] dark:text-[#fafafa] dark:hover:bg-[#27272a]",
       },

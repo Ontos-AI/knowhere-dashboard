@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="32 47 268 204" fill="none">
+  <style>g &gt; * { vector-effect: non-scaling-stroke; }</style>
+  <g stroke="#747985" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" style="vector-effect:non-scaling-stroke">
+    <ellipse cx="120" cy="88" rx="78" ry="31" />
+    <path d="M42 88v122c0 17 35 31 78 31s78-14 78-31V88M42 130c0 17 35 31 78 31s78-14 78-31M42 171c0 17 35 31 78 31s78-14 78-31" />
+    <ellipse cx="250" cy="163" rx="40" ry="18" stroke-dasharray="7 5" />
+    <path d="M210 163v48c0 10 18 18 40 18s40-8 40-18v-48" stroke-dasharray="7 5" />
+  </g>
+</svg>

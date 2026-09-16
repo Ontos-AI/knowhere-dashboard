@@ -192,14 +192,14 @@ export const UsageWelcomeModal = () => {
                 </DialogTitle>
                 <DialogDescription className="mt-0.5 max-w-[34rem] text-[12px] leading-[18px] text-[#71717b] sm:mt-1 sm:max-w-[408px] sm:text-[12px] sm:leading-[18px] lg:mt-1.5 lg:max-w-[34rem] lg:text-[14px] lg:leading-5">
                   {t("descriptionPrefix")}{" "}
-                  <span className="font-medium text-[#7f22fe]">{t("freeCredits")}</span>{" "}
+                  <span className="font-medium text-[#19a88b]">{t("freeCredits")}</span>{" "}
                   {t("descriptionSuffix")}
                 </DialogDescription>
               </div>
 
               <button
                 type="button"
-                className="flex size-6 shrink-0 items-center justify-center rounded-full text-[#52525c] transition-colors hover:bg-[#f4f4f5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25 disabled:cursor-not-allowed disabled:opacity-40"
+                className="flex size-6 shrink-0 items-center justify-center rounded-full text-[#52525c] transition-colors hover:bg-[#f4f4f5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19a88b]/25 disabled:cursor-not-allowed disabled:opacity-40"
                 onClick={() => {
                   if (canDismiss) {
                     dismiss();
@@ -264,11 +264,11 @@ export const UsageWelcomeModal = () => {
             </div>
           </div>
 
-          <div className="border-y border-[#e6defe] bg-[#f5f3ff]">
+          <div className="border-y border-[#caffee] bg-[#caffee]">
             <div className={dashboardDialogDesign.usageWelcome.codeTitleFrame}>
               <div className={dashboardDialogDesign.usageWelcome.codeIconTag}>
                 <TerminalSquare
-                  className="h-3 w-3 text-[#7f22fe] sm:h-5 sm:w-5 lg:h-4 lg:w-4"
+                  className="h-3 w-3 text-[#19a88b] sm:h-5 sm:w-5 lg:h-4 lg:w-4"
                   strokeWidth={1.8}
                 />
               </div>
@@ -296,7 +296,7 @@ export const UsageWelcomeModal = () => {
                           aria-selected={isActive}
                           tabIndex={isActive ? 0 : -1}
                           className={cn(
-                            "min-h-[26px] shrink-0 px-[10px] py-[6px] font-mono-display text-[12px] leading-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a684ff] sm:min-h-9 sm:px-3 sm:py-2 sm:text-[14px] sm:leading-5 lg:min-h-8 lg:text-[12px] lg:leading-4",
+                            "min-h-[26px] shrink-0 px-[10px] py-[6px] font-mono-display text-[12px] leading-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1dbe9d] sm:min-h-9 sm:px-3 sm:py-2 sm:text-[14px] sm:leading-5 lg:min-h-8 lg:text-[12px] lg:leading-4",
                             isActive ? "bg-[#fafafa] text-[#09090b]" : "bg-[#3f3f46] text-[#fafafa]"
                           )}
                           onClick={() => setActiveTab(tab.id)}
@@ -309,7 +309,7 @@ export const UsageWelcomeModal = () => {
 
                   <button
                     type="button"
-                    className="absolute right-[14px] top-1/2 inline-flex -translate-y-1/2 items-center rounded-full bg-[#27272a] px-[14px] py-[6px] font-mono-display text-[12px] leading-4 text-[#a684ff] transition-colors hover:bg-[#3f3f46] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a684ff] sm:static sm:ml-auto sm:h-9 sm:translate-y-0 sm:px-4 sm:py-2 sm:text-[14px] sm:leading-5 lg:h-auto lg:px-4 lg:py-2 lg:text-[12px] lg:leading-4"
+                    className="absolute right-[14px] top-1/2 inline-flex -translate-y-1/2 items-center rounded-full bg-[#27272a] px-[14px] py-[6px] font-mono-display text-[12px] leading-4 text-[#1dbe9d] transition-colors hover:bg-[#3f3f46] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1dbe9d] sm:static sm:ml-auto sm:h-9 sm:translate-y-0 sm:px-4 sm:py-2 sm:text-[14px] sm:leading-5 lg:h-auto lg:px-4 lg:py-2 lg:text-[12px] lg:leading-4"
                     onClick={() => {
                       void handleCopyCode();
                     }}

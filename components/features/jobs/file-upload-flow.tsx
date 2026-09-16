@@ -170,11 +170,11 @@ export default function FileUploadFlow({
   const getStepIcon = () => {
     switch (step) {
       case "idle":
-        return <Upload className="h-8 w-8 text-blue-500" />;
+        return <Upload className="h-8 w-8 text-primary" />;
       case "creating":
-        return <RefreshCw className="h-8 w-8 text-blue-500 animate-spin" />;
+        return <RefreshCw className="h-8 w-8 text-primary animate-spin" />;
       case "uploading":
-        return <Upload className="h-8 w-8 text-blue-500" />;
+        return <Upload className="h-8 w-8 text-primary" />;
       case "confirming":
         return <Clock className="h-8 w-8 text-orange-500" />;
       case "success":
@@ -231,7 +231,7 @@ export default function FileUploadFlow({
       <CardContent className="p-6 space-y-4">
         {/* 文件信息 */}
         <div className="flex items-center space-x-3">
-          <FileText className="h-10 w-10 text-blue-500" />
+          <FileText className="h-10 w-10 text-primary" />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
             <p className="text-sm text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>

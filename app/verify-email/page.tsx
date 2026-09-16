@@ -1,12 +1,21 @@
 "use client";
 
 import { useVerifyEmail } from "@app/(dashboard)/settings/_hooks/use-verification";
-import { Button } from "@components/ui/button";
 import { authClient } from "@lib/better-auth-client";
-import { CheckCircle, Loader2, XCircle } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Suspense, useEffect, useRef, useState } from "react";
+
+function VerifyEmailFallback() {
+  const t = useTranslations("Common");
+
+  return (
+    <div className="login-status">
+      <span className="control-spinner" aria-hidden="true" />
+      <p>{t("loading")}</p>
+    </div>
+  );
+}
 
 function VerifyEmailContent() {
   const searchParams = useSearchParams();
@@ -57,54 +66,43 @@ function VerifyEmailContent() {
 
   if (status === "loading") {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary" />
-          <p className="mt-4 text-muted-foreground">{t("verifying")}</p>
-        </div>
+      <div className="login-status">
+        <span className="control-spinner" aria-hidden="true" />
+        <p>{t("verifying")}</p>
       </div>
     );
   }
 
   if (status === "success") {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center max-w-md px-4">
-          <CheckCircle className="mx-auto h-16 w-16 text-green-500" />
-          <h1 className="mt-4 text-2xl font-bold">{t("success")}</h1>
-          <p className="mt-2 text-muted-foreground">{t("successMessage")}</p>
-          <p className="mt-2 text-sm text-muted-foreground">{t("redirecting")}</p>
-        </div>
+      <div className="form-heading">
+        <h1>{t("success")}</h1>
+        <p className="form-heading-desc">{t("successMessage")}</p>
+        <p className="form-heading-desc">{t("redirecting")}</p>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="text-center max-w-md px-4">
-        <XCircle className="mx-auto h-16 w-16 text-red-500" />
-        <h1 className="mt-4 text-2xl font-bold">{t("error")}</h1>
-        <p className="mt-2 text-muted-foreground">{t("errorMessage")}</p>
-        <Button className="mt-4" onClick={() => router.push("/settings")}>
-          {t("goToSettings")}
-        </Button>
+    <>
+      <div className="form-heading">
+        <h1>{t("error")}</h1>
+        <p className="form-heading-desc">{t("errorMessage")}</p>
       </div>
-    </div>
+      <button
+        className="control-button control-button--black"
+        type="button"
+        onClick={() => router.push("/settings")}
+      >
+        <span className="control-button-content">{t("goToSettings")}</span>
+      </button>
+    </>
   );
 }
 
 export default function VerifyEmailPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex min-h-screen items-center justify-center">
-          <div className="text-center">
-            <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary" />
-            <p className="mt-4 text-muted-foreground">Loading...</p>
-          </div>
-        </div>
-      }
-    >
+    <Suspense fallback={<VerifyEmailFallback />}>
       <VerifyEmailContent />
     </Suspense>
   );

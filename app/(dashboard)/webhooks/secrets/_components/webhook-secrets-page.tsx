@@ -174,7 +174,7 @@ export const WebhookSecretsPage = () => {
 
         <div className="flex items-start justify-between">
           <div className="flex gap-1.5">
-            <label className="flex h-9 w-[190px] shrink-0 items-center gap-1 border border-[#e4e4e7] bg-white py-1.5 pl-[6px] pr-3 focus-within:ring-2 focus-within:ring-[#7f22fe]/20 dark:border-[#3f3f46] dark:bg-[#18181b] sm:h-8 sm:w-[260px] lg:gap-[6px] lg:pl-2 lg:pr-[14px]">
+            <label className="flex h-9 w-[190px] shrink-0 items-center gap-1 border border-[#e4e4e7] bg-white py-1.5 pl-[6px] pr-3 focus-within:ring-2 focus-within:ring-[#19a88b]/20 dark:border-[#3f3f46] dark:bg-[#18181b] sm:h-8 sm:w-[260px] lg:gap-[6px] lg:pl-2 lg:pr-[14px]">
               <span className="sr-only">{t("searchPlaceholder")}</span>
               <Image
                 src="/icons/api-keys/search-box.svg"
@@ -196,7 +196,7 @@ export const WebhookSecretsPage = () => {
               value={statusFilter}
               onValueChange={(value) => setStatusFilter(value as SecretStatusFilter)}
             >
-              <SelectTrigger className="h-9 w-[72px] rounded-none border-[#e4e4e7] bg-white pl-2 pr-[6px] text-xs leading-[14px] text-[#27272a] shadow-none ring-offset-white focus:ring-0 focus:ring-offset-0 focus-visible:ring-2 focus-visible:ring-[#7f22fe]/20 dark:border-[#3f3f46] dark:bg-[#18181b] dark:text-[#fafafa] sm:h-8 [&>svg]:h-4 [&>svg]:w-4">
+              <SelectTrigger className="h-9 w-[72px] rounded-none border-[#e4e4e7] bg-white pl-2 pr-[6px] text-xs leading-[14px] text-[#27272a] shadow-none ring-offset-white focus:ring-0 focus:ring-offset-0 focus-visible:ring-2 focus-visible:ring-[#19a88b]/20 dark:border-[#3f3f46] dark:bg-[#18181b] dark:text-[#fafafa] sm:h-8 [&>svg]:h-4 [&>svg]:w-4">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="rounded-none border-[#e4e4e7] dark:border-[#3f3f46]">

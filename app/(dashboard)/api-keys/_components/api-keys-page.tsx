@@ -309,7 +309,7 @@ export const ApiKeysPage = () => {
         </p>
 
         <div className="flex items-start justify-between">
-          <label className="flex h-9 w-[240px] shrink-0 items-center gap-1 border border-[#e4e4e7] bg-white py-1.5 pl-[6px] pr-3 focus-within:ring-2 focus-within:ring-[#7f22fe]/20 dark:border-[#3f3f46] dark:bg-[#18181b] sm:gap-1 sm:pl-[6px] sm:pr-3 lg:gap-[6px] lg:pl-2 lg:pr-[14px]">
+          <label className="flex h-9 w-[240px] shrink-0 items-center gap-1 border border-[#e4e4e7] bg-white py-1.5 pl-[6px] pr-3 focus-within:ring-2 focus-within:ring-[#19a88b]/20 dark:border-[#3f3f46] dark:bg-[#18181b] sm:gap-1 sm:pl-[6px] sm:pr-3 lg:gap-[6px] lg:pl-2 lg:pr-[14px]">
             <span className="sr-only">{t("searchPlaceholder")}</span>
             <Image
               src="/icons/api-keys/search-box.svg"

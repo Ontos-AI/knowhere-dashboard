@@ -17,6 +17,7 @@ const config: Config = {
 				mono: ['var(--font-mono)', 'ui-monospace', 'SFMono-Regular', 'monospace'],
 				'mono-display': ['var(--font-mono-display)', 'ui-monospace', 'SFMono-Regular', 'monospace'],
 				'mono-readable': ['var(--font-mono-readable)', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+				'kh-mono': ['var(--font-kh-mono)', 'ui-monospace', 'SFMono-Regular', 'monospace'],
 				accent: ['var(--font-accent)', 'system-ui', 'sans-serif'],
 				heading: ['var(--font-sans)', 'system-ui', 'sans-serif'],
 				pixel: ['var(--font-pixel-primary)', 'Courier New', 'monospace']

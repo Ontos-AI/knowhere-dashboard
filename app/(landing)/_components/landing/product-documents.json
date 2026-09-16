@@ -1,0 +1,544 @@
+[
+  {
+    "id": "nvidia",
+    "label": "NVIDIA reports",
+    "documents": [
+      {
+        "name": "CFO Commentary on First Quarter Fiscal 2027 Results.pdf",
+        "title": "CFO Commentary on First Quarter Fiscal 2027 Results",
+        "sources": [
+          {
+            "id": "nvidia-financials",
+            "page": 1,
+            "type": "table",
+            "title": "Q1 Fiscal 2027 Summary",
+            "excerpt": "",
+            "crop": [
+              0.065,
+              0.215,
+              0.935,
+              0.66
+            ],
+            "pageSize": [
+              612,
+              792
+            ],
+            "pageImage": "/assets/product-documents/nvidia-financials-page.webp",
+            "regionImage": "/assets/product-documents/nvidia-financials-region.webp",
+            "imageSize": [
+              1700,
+              2200
+            ],
+            "regionSize": [
+              1480,
+              979
+            ],
+            "summary": "NVIDIA's Q1 FY2027 revenue reached $81.615B, up 85% year over year, with a GAAP gross margin of 74.9%.",
+            "tables": [
+              {
+                "title": "GAAP",
+                "units": "$ in millions, except earnings per share",
+                "columns": [
+                  "Q1 FY27",
+                  "Q4 FY26",
+                  "Q1 FY26",
+                  "Q/Q",
+                  "Y/Y"
+                ],
+                "rows": [
+                  {
+                    "label": "Revenue",
+                    "values": [
+                      "$81,615",
+                      "$68,127",
+                      "$44,062",
+                      "20 %",
+                      "85 %"
+                    ]
+                  },
+                  {
+                    "label": "Gross margin",
+                    "values": [
+                      "74.9 %",
+                      "75.0 %",
+                      "60.5 %",
+                      "(0.1) pts",
+                      "14.4 pts"
+                    ]
+                  },
+                  {
+                    "label": "Operating expenses",
+                    "values": [
+                      "$7,621",
+                      "$6,794",
+                      "$5,030",
+                      "12 %",
+                      "52 %"
+                    ]
+                  },
+                  {
+                    "label": "Operating income",
+                    "values": [
+                      "$53,536",
+                      "$44,299",
+                      "$21,638",
+                      "21 %",
+                      "147 %"
+                    ]
+                  },
+                  {
+                    "label": "Net income",
+                    "values": [
+                      "$58,321",
+                      "$42,960",
+                      "$18,775",
+                      "36 %",
+                      "211 %"
+                    ]
+                  },
+                  {
+                    "label": "Diluted earnings per share",
+                    "values": [
+                      "$2.39",
+                      "$1.76",
+                      "$0.76",
+                      "36 %",
+                      "214 %"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "nvidia-revenue",
+            "page": 2,
+            "type": "table",
+            "title": "Revenue by Market Platform",
+            "excerpt": "",
+            "crop": [
+              0.065,
+              0.055,
+              0.935,
+              0.24
+            ],
+            "pageSize": [
+              612,
+              792
+            ],
+            "pageImage": "/assets/product-documents/nvidia-revenue-page.webp",
+            "regionImage": "/assets/product-documents/nvidia-revenue-region.webp",
+            "imageSize": [
+              1700,
+              2200
+            ],
+            "regionSize": [
+              1480,
+              407
+            ],
+            "summary": "Data Center contributed $75.246B of revenue, led by hyperscale at $37.869B and AI clouds, industrial and enterprise at $37.377B; Edge Computing added $6.369B.",
+            "tables": [
+              {
+                "title": "Revenue by Market Platform",
+                "units": "$ in millions",
+                "columns": [
+                  "Q1 FY27",
+                  "Q4 FY26",
+                  "Q1 FY26",
+                  "Q/Q",
+                  "Y/Y"
+                ],
+                "rows": [
+                  {
+                    "label": "Data Center",
+                    "values": [
+                      "$75,246",
+                      "$62,314",
+                      "$39,112",
+                      "21 %",
+                      "92 %"
+                    ]
+                  },
+                  {
+                    "label": "Hyperscale",
+                    "values": [
+                      "37,869",
+                      "33,814",
+                      "17,599",
+                      "12 %",
+                      "115 %"
+                    ],
+                    "indent": true
+                  },
+                  {
+                    "label": "AI Clouds, Industrial, & Enterprise",
+                    "values": [
+                      "37,377",
+                      "28,500",
+                      "21,513",
+                      "31 %",
+                      "74 %"
+                    ],
+                    "indent": true
+                  },
+                  {
+                    "label": "Edge Computing",
+                    "values": [
+                      "6,369",
+                      "5,813",
+                      "4,950",
+                      "10 %",
+                      "29 %"
+                    ]
+                  },
+                  {
+                    "label": "Total",
+                    "values": [
+                      "$81,615",
+                      "$68,127",
+                      "$44,062",
+                      "20 %",
+                      "85 %"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "sha256": "3289ba8ba2049a9203bec461d44de0b0d7ea2b08e0a0b1a1edd31c9b6011e87e",
+        "sourceFile": "英伟达 2.pdf"
+      },
+      {
+        "name": "2026 NVIDIA Corporation Annual Review.pdf",
+        "title": "2026 NVIDIA Corporation Annual Review",
+        "sources": [
+          {
+            "id": "nvidia-graphics",
+            "page": 10,
+            "type": "image",
+            "title": "AI Reinvents Computer Graphics",
+            "excerpt": "With neural rendering and DLSS, AI predicts pixels instead of computing them directly.",
+            "crop": [
+              0,
+              0,
+              1,
+              1
+            ],
+            "pageSize": [
+              1188.0,
+              774.0
+            ],
+            "pageImage": "/assets/product-documents/nvidia-graphics-page.webp",
+            "regionImage": "/assets/product-documents/nvidia-graphics-region.webp",
+            "imageSize": [
+              2200,
+              1434
+            ],
+            "regionSize": [
+              2200,
+              1434
+            ],
+            "pageText": [
+              "GeForce brought AI to the world. Now AI has come home to GeForce.",
+              "Computer graphics is no longer limited by traditional rendering.",
+              "With neural rendering and DLSS, AI predicts pixels instead of computing them directly.",
+              "For every pixel we render, AI generates the rest in real time.",
+              "Neural networks now run alongside shaders and ray tracing cores. AI does not replace graphics. It enhances it.",
+              "In the era of neural rendering, graphics is learned."
+            ],
+            "summary": "The Annual Review's graphics example illustrates a separate application of AI: neural rendering and DLSS predict pixels alongside traditional rendering."
+          }
+        ],
+        "sha256": "0e725ba048221539dca3eb1a4e70febfcbb785e9afb96cd3ff0b035d7d734e5c",
+        "sourceFile": "英伟达 4.pdf"
+      }
+    ],
+    "format": "PDF",
+    "extension": "pdf",
+    "icon": "/assets/product-documents/pdf-official.svg",
+    "mode": "page-based"
+  },
+  {
+    "id": "word",
+    "label": "Microsoft 2025 Annual Report",
+    "format": "Word",
+    "extension": "docx",
+    "icon": "/assets/product-documents/word-official.svg",
+    "mode": "text-based",
+    "documents": [
+      {
+        "name": "2025_AnnualReport.docx",
+        "title": "Microsoft 2025 Annual Report",
+        "sources": [
+          {
+            "id": "microsoft-text-1",
+            "type": "text",
+            "title": "Microsoft 365 Commercial",
+            "content": "Microsoft 365 Commercial is an AI-powered business and productivity solutions platform that brings together Office, Windows, Microsoft 365 Copilot, and Enterprise Mobility + Security to help organizations empower their employees. Growth depends on our ability to reach new users in new markets such as frontline workers, small and medium businesses, and growth markets, as well as add AI-enabled tools, features, and agentic scenarios to our core product and service offerings across communication, collaboration, analytics, security, compliance, and other AI business productivity categories. Microsoft 365 Commercial revenue is mainly affected by a combination of continued installed base growth and average revenue per user expansion, as well as the continued shift from Office licensed on-premises to Microsoft 365.",
+            "summary": "Microsoft 365 Commercial revenue is mainly affected by a combination of continued installed base growth and average revenue per user expansion, as well as the continued shift from Office licensed on-premises to Microsoft 365.",
+            "location": "PAGE 11",
+            "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/2025_AnnualReport.docx",
+            "regionSize": [
+              600,
+              320
+            ],
+            "extractedContent": "Microsoft 365 Commercial revenue is mainly affected by a combination of continued installed base growth and average revenue per user expansion, as well as the continued shift from Office licensed on-premises to Microsoft 365.",
+            "extractedTitle": "Revenue drivers",
+            "documentPageImage": "/assets/product-documents/microsoft-annual-report-page-11.webp",
+            "documentPageNumber": 11
+          },
+          {
+            "id": "microsoft-text-2",
+            "type": "text",
+            "title": "Azure",
+            "content": "Azure is a comprehensive set of cloud services that offer developers, IT professionals, and enterprises freedom to build, deploy, and manage applications on any platform or device. Customers can use Azure through our global network of datacenters for computing, networking, storage, mobile and web application services, AI, Internet of Things, cognitive services, and machine learning. Azure enables customers to devote more resources to development and use of applications that benefit their organizations, rather than managing on-premises hardware and software. Azure revenue is mainly affected by infrastructure-as-a-service and platform-as-a-service consumption-based services.",
+            "summary": "Azure revenue is mainly affected by infrastructure-as-a-service and platform-as-a-service consumption-based services.",
+            "location": "PAGE 13",
+            "sourceUrl": "https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/2025_AnnualReport.docx",
+            "regionSize": [
+              600,
+              320
+            ],
+            "extractedContent": "Azure revenue is mainly affected by infrastructure-as-a-service and platform-as-a-service consumption-based services.",
+            "extractedTitle": "Consumption-based revenue",
+            "documentPageImage": "/assets/product-documents/microsoft-annual-report-page-13.webp",
+            "documentPageNumber": 13
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "excel",
+    "label": "NVIDIA quarterly results",
+    "format": "Excel",
+    "extension": "xlsx",
+    "icon": "/assets/product-documents/excel-official.svg",
+    "mode": "sheet-based",
+    "note": "Demo workbook assembled from NVIDIA financial reports.",
+    "documents": [
+      {
+        "name": "nvidia-quarterly-demo.xlsx",
+        "title": "NVIDIA quarterly results — demo workbook",
+        "sources": [
+          {
+            "id": "excel-results",
+            "type": "table",
+            "title": "GAAP financial results",
+            "sheetName": "Financials",
+            "cellRange": "A5:D11",
+            "location": "Financials · A5:D11",
+            "sourceUrl": "/assets/product-documents/nvidia-quarterly-demo.xlsx",
+            "regionSize": [
+              600,
+              320
+            ],
+            "tables": [
+              {
+                "title": "GAAP financial results",
+                "units": "$ in millions, except earnings per share",
+                "columns": [
+                  "Q1 FY27",
+                  "Q4 FY26",
+                  "Q1 FY26"
+                ],
+                "rows": [
+                  {
+                    "label": "Revenue",
+                    "values": [
+                      "$81,615",
+                      "$68,127",
+                      "$44,062"
+                    ]
+                  },
+                  {
+                    "label": "Gross margin",
+                    "values": [
+                      "74.9 %",
+                      "75.0 %",
+                      "60.5 %"
+                    ]
+                  },
+                  {
+                    "label": "Operating expenses",
+                    "values": [
+                      "$7,621",
+                      "$6,794",
+                      "$5,030"
+                    ]
+                  },
+                  {
+                    "label": "Operating income",
+                    "values": [
+                      "$53,536",
+                      "$44,299",
+                      "$21,638"
+                    ]
+                  },
+                  {
+                    "label": "Net income",
+                    "values": [
+                      "$58,321",
+                      "$42,960",
+                      "$18,775"
+                    ]
+                  },
+                  {
+                    "label": "Diluted earnings per share",
+                    "values": [
+                      "$2.39",
+                      "$1.76",
+                      "$0.76"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "summary": "GAAP financial results extracted from Financials!A5:D11."
+          },
+          {
+            "id": "excel-margin",
+            "type": "table",
+            "title": "Quarterly and annual growth",
+            "sheetName": "Growth",
+            "cellRange": "A5:C11",
+            "location": "Growth · A5:C11",
+            "sourceUrl": "/assets/product-documents/nvidia-quarterly-demo.xlsx",
+            "regionSize": [
+              600,
+              320
+            ],
+            "tables": [
+              {
+                "title": "Quarterly and annual growth",
+                "units": "Change from the prior quarter and prior year",
+                "columns": [
+                  "Q/Q",
+                  "Y/Y"
+                ],
+                "rows": [
+                  {
+                    "label": "Revenue",
+                    "values": [
+                      "20 %",
+                      "85 %"
+                    ]
+                  },
+                  {
+                    "label": "Gross margin",
+                    "values": [
+                      "(0.1) pts",
+                      "14.4 pts"
+                    ]
+                  },
+                  {
+                    "label": "Operating expenses",
+                    "values": [
+                      "12 %",
+                      "52 %"
+                    ]
+                  },
+                  {
+                    "label": "Operating income",
+                    "values": [
+                      "21 %",
+                      "147 %"
+                    ]
+                  },
+                  {
+                    "label": "Net income",
+                    "values": [
+                      "36 %",
+                      "211 %"
+                    ]
+                  },
+                  {
+                    "label": "Diluted earnings per share",
+                    "values": [
+                      "36 %",
+                      "214 %"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "summary": "Quarterly and annual growth extracted from Financials!A15:C21."
+          },
+          {
+            "id": "excel-platforms",
+            "type": "table",
+            "title": "Revenue by market platform",
+            "sheetName": "Platforms",
+            "cellRange": "A5:D10",
+            "location": "Platforms · A5:D10",
+            "sourceUrl": "/assets/product-documents/nvidia-quarterly-demo.xlsx",
+            "regionSize": [
+              600,
+              320
+            ],
+            "tables": [
+              {
+                "title": "Revenue by Market Platform",
+                "units": "$ in millions",
+                "columns": [
+                  "Q1 FY27",
+                  "Q4 FY26",
+                  "Q1 FY26"
+                ],
+                "rows": [
+                  {
+                    "label": "Data Center",
+                    "values": [
+                      "$75,246",
+                      "$62,314",
+                      "$39,112"
+                    ],
+                    "indent": false
+                  },
+                  {
+                    "label": "Hyperscale",
+                    "values": [
+                      "37,869",
+                      "33,814",
+                      "17,599"
+                    ],
+                    "indent": true
+                  },
+                  {
+                    "label": "AI Clouds, Industrial, & Enterprise",
+                    "values": [
+                      "37,377",
+                      "28,500",
+                      "21,513"
+                    ],
+                    "indent": true
+                  },
+                  {
+                    "label": "Edge Computing",
+                    "values": [
+                      "6,369",
+                      "5,813",
+                      "4,950"
+                    ],
+                    "indent": false
+                  },
+                  {
+                    "label": "Total",
+                    "values": [
+                      "$81,615",
+                      "$68,127",
+                      "$44,062"
+                    ],
+                    "indent": false
+                  }
+                ]
+              }
+            ],
+            "summary": "Revenue by market platform extracted from Platforms!A5:D10."
+          }
+        ]
+      }
+    ]
+  }
+]

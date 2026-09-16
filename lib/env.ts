@@ -68,6 +68,14 @@ export const env = createEnv({
     DEV_EXTERNAL_API_AUTHORIZATION: z.string().optional(),
     HTTPS_PROXY: z.string().optional(),
     HTTP_PROXY: z.string().optional(),
+    /**
+     * WordPress.com site id for public Blog REST reads. Not a secret.
+     * Example: knowheretoai.wordpress.com
+     */
+    WORDPRESS_SITE: z.preprocess(
+      normalizeOptionalString,
+      z.string().default("knowheretoai.wordpress.com")
+    ),
   },
   client: {
     NEXT_PUBLIC_API_URL: z.url(),
@@ -120,6 +128,7 @@ export const env = createEnv({
     DEV_EXTERNAL_API_AUTHORIZATION: process.env.DEV_EXTERNAL_API_AUTHORIZATION,
     HTTPS_PROXY: process.env.HTTPS_PROXY,
     HTTP_PROXY: process.env.HTTP_PROXY,
+    WORDPRESS_SITE: process.env.WORDPRESS_SITE,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_AUTH_BASE_URL: process.env.NEXT_PUBLIC_AUTH_BASE_URL,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,

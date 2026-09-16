@@ -384,7 +384,7 @@ export default function UsagePage() {
               title={t("remainingCredits")}
               value={formatMetricNumber(credits ?? 0)}
               unit={tTable("pts")}
-              valueClassName="text-[#ff6900]"
+              valueClassName="text-[#ff634a]"
               icon={
                 <SummaryIcon
                   src="/icons/usage/summary-remaining.svg"
@@ -397,7 +397,7 @@ export default function UsagePage() {
                 <Link
                   href={buyCreditsHref}
                   onClick={() => trackBuyCreditsClicked("usage_summary")}
-                  className="text-[#ff6900] transition-opacity hover:opacity-80"
+                  className="text-[#ff634a] transition-opacity hover:opacity-80"
                 >
                   Buy Knowhere API Credit &gt;&gt;
                 </Link>
@@ -420,7 +420,7 @@ export default function UsagePage() {
             title={t("successRate")}
             value={formatMetricNumber(Number(successRate), 2)}
             unit="%"
-            valueClassName="text-[#2b7fff]"
+            valueClassName="text-[#19a88b]"
             icon={
               <SummaryIcon
                 src="/icons/usage/summary-success-fill.svg"
@@ -459,9 +459,9 @@ export default function UsagePage() {
                     key={`range-${range}`}
                     type="button"
                     className={cn(
-                      "flex h-9 w-[68px] items-center justify-center overflow-hidden bg-[#e4e4e7] px-4 pb-[10px] pt-2 font-mono-display text-[12px] font-light leading-4 tracking-normal whitespace-nowrap text-[#09090b] dark:bg-[#3f3f46] dark:text-[#fafafa] sm:h-8 sm:pb-[10px]",
+                      "flex h-9 w-[68px] items-center justify-center overflow-hidden bg-muted px-4 pb-[10px] pt-2 font-mono-display text-[12px] font-light leading-4 tracking-normal whitespace-nowrap text-foreground sm:h-8 sm:pb-[10px]",
                       isActive &&
-                        "border-b-4 border-[#52525c] bg-[#71717b] font-bold text-white max-[639px]:pb-3 dark:border-[#a78bfa] dark:bg-[#7f22fe]"
+                        "border-b-4 border-primary bg-primary font-bold text-primary-foreground max-[639px]:pb-3"
                     )}
                     onClick={() => {
                       setActiveRange(range as TimeRangePreset);
