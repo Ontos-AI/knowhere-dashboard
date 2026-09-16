@@ -44,6 +44,12 @@
   padding-top: var(--header-height);
 }
 
+.kh-site:has(.kh-pricing) .kh-site-main,
+.kh-site:has(.kb) .kh-site-main,
+.kh-site:has(.landing-page) .kh-site-main {
+  padding-top: 0;
+}
+
 .kh-site-header {
   position: fixed;
   inset: 0 0 auto;
