@@ -917,11 +917,22 @@ html[data-theme="dark"] .kh-pricing .enterprise-card-action .button:hover {
   font-size: 13px;
   line-height: 20px;
 }
-.kh-pricing .faq-section {
+.kh-pricing .faq-section,
+.kh-pricing #faq {
+  display: block;
+  width: auto;
+  max-width: none;
+  margin-inline: 0;
   padding-block: var(--space-section);
+  padding-inline: 0;
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+  clip-path: none;
 }
 .kh-pricing .faq-layout {
   display: grid;
+  width: 100%;
   grid-template-columns: repeat(var(--layout-grid-columns), minmax(0, 1fr));
   gap: var(--layout-grid-gap);
 }
