@@ -40,10 +40,15 @@ describe("landing contracts", () => {
     expect(landingHomeSource).toContain('id="pricing"');
     expect(landingHomeSource).toContain('id="comparison"');
     expect(landingHomeSource).toContain("LandingTrackedLink");
+    expect(landingHomeSource).toContain('className="footer"');
+    expect(landingHomeSource).toContain("footer-wordmark");
     expect(landingHomeSource).not.toContain("NewsletterSubscribePrompt");
     expect(landingHomeSource).not.toContain("SiteHeader");
     expect(landingHomeSource).not.toMatch(/['"]knowhere-language['"]/);
     expect(existsSync(join(process.cwd(), "public/assets/section-one-grid.svg"))).toBe(true);
+    expect(existsSync(join(process.cwd(), "public/assets/knowhere-footer-wordmark.svg"))).toBe(
+      true
+    );
 
     const landingCss = readFileSync(
       join(process.cwd(), "app/(landing)/_components/landing.css"),
@@ -52,6 +57,12 @@ describe("landing contracts", () => {
     expect(landingCss).toContain(".landing-page .skip-link");
     expect(landingCss).toContain("transform: translateY(-150%)");
     expect(landingCss).toContain("clip-path: inset(50%)");
+    expect(landingCss).toMatch(/\.hero\s*\{[^}]*display:\s*grid/);
+    expect(landingCss).toMatch(/#top\.hero-b-layout\s*\{[^}]*display:\s*grid/);
+    expect(landingCss).toContain("display: inline-flex !important");
+    expect(landingCss).toMatch(
+      /\.landing-page #main #final-cta #final-cta-actions\s*\{[^}]*display:\s*grid\s*!important/
+    );
   });
 
   it("keeps the shared language switcher from shifting the page when opened", () => {

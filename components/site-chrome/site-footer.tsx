@@ -8,7 +8,11 @@ import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import "@components/site-chrome/site-chrome.css";
 
-const FooterGrid = () => {
+type FooterGridProps = {
+  className?: string;
+};
+
+export const FooterGrid = ({ className = "kh-footer-flickering-grid" }: FooterGridProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -97,7 +101,7 @@ const FooterGrid = () => {
   }, []);
 
   return (
-    <div className="kh-footer-flickering-grid" aria-hidden="true">
+    <div className={className} aria-hidden="true">
       <canvas ref={canvasRef} />
     </div>
   );

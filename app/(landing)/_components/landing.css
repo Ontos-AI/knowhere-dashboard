@@ -66,7 +66,7 @@
     .site-header.over-dark .language-toggle,
     .site-header.over-dark .github-link { color: var(--white); }
     .site-header.over-dark .nav-actions .button { border-color: var(--white); background: var(--white); color: var(--mist-white-950); }
-    .hero { width: 100%; max-width: calc(var(--content-max) + var(--gutter) + var(--gutter)); margin-inline: auto; box-sizing: border-box; height: auto; min-height: 0; padding: clamp(128px, 13vh, 176px) var(--gutter) 128px; grid-template-columns: 1fr; gap: 48px; align-items: stretch; overflow: visible; }
+    .hero { display: grid; width: 100%; max-width: calc(var(--content-max) + var(--gutter) + var(--gutter)); margin-inline: auto; box-sizing: border-box; height: auto; min-height: 0; padding: clamp(128px, 13vh, 176px) var(--gutter) 128px; grid-template-columns: 1fr; gap: 48px; align-items: stretch; overflow: visible; }
     .hero-copy, .hero-visual { position: relative; width: 100%; min-width: 0; align-self: stretch; padding-inline: 0; }
     .hero-copy::before, .hero-copy::after, .hero-visual::before, .hero-visual::after { display: none; }
     .hero-copy { display: flex; flex-direction: column; justify-content: flex-start; gap: 18px; padding: 0; }
@@ -926,7 +926,7 @@
       background-image: none;
       box-shadow: none;
     }
-    #top.hero-b-layout { --hero-grid-tail: clamp(128px, 10vw, 148px); --hero-scan-extension: clamp(360px, 28vw, 430px); position: relative; isolation: isolate; align-items: start; overflow: visible; background: var(--mist-white-50); }
+    #top.hero-b-layout { display: grid; --hero-grid-tail: clamp(128px, 10vw, 148px); --hero-scan-extension: clamp(360px, 28vw, 430px); position: relative; isolation: isolate; align-items: start; overflow: visible; background: var(--mist-white-50); }
     #top.hero-b-layout::before { position: absolute; z-index: 3; top: 0; right: 50%; bottom: calc(-1 * var(--hero-grid-tail) - var(--hero-scan-extension)); left: 50%; width: 100vw; background-color: var(--mist-white-50); background-image: linear-gradient(var(--black-3) 1px, transparent 1px), linear-gradient(90deg, var(--black-3) 1px, transparent 1px), radial-gradient(circle, var(--black-3) 0 .7px, transparent .8px); background-position: 0 0; background-size: 6px 6px, 6px 6px, 18px 18px; content: ""; pointer-events: none; transform: translateX(-50%); will-change: clip-path; clip-path: inset(var(--hero-scan-edge, 0px) 0 0 0); }
     #top.hero-b-layout::after {
       position: absolute;
@@ -980,7 +980,7 @@
     .hero-b-pixel-tooltip { position: fixed; z-index: 120; width: max-content; max-width: calc(100vw - 24px); padding: 6px 10px; border: 1px solid var(--mist-white-600); background: var(--white); color: var(--black-40); font: 500 12px/16px var(--mono); white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(12px,12px); transition: opacity .12s ease; }
     .hero-b-pixel-tooltip.is-visible { opacity: 1; }
     @media (min-width: 1100px) {
-      #top.hero-b-layout { min-height: 0; padding-top: 110px; padding-bottom: 124px; grid-template-columns: minmax(0, .78fr) minmax(660px, 1.22fr); gap: clamp(24px, 2.5vw, 44px); }
+      #top.hero-b-layout { display: grid; min-height: 0; padding-top: 110px; padding-bottom: 124px; grid-template-columns: minmax(0, .78fr) minmax(660px, 1.22fr); gap: clamp(24px, 2.5vw, 44px); }
       #top.hero-b-layout .hero-copy h1 { max-width: 590px; }
       #top.hero-b-layout .hero-copy .lede { max-width: 590px; }
       #top.hero-b-layout .hero-visual { align-self: start; }
@@ -5943,6 +5943,7 @@
     /* Align simple section headings to the shared 12-column grid. */
     @media (min-width: 1200px) {
       #top.hero-b-layout {
+        display: grid;
         grid-template-columns: repeat(12, minmax(0, 1fr));
         column-gap: var(--layout-grid-gap);
       }
@@ -12986,12 +12987,16 @@ html[data-theme="dark"] .landing-page #main #final-cta .converging-helix-pair {
   inset: 0;
   width: 100%;
   height: 100%;
+  display: block;
+  color: var(--mist-white-700);
   pointer-events: none;
   -webkit-mask-image: linear-gradient(to bottom, var(--black-100), transparent);
   mask-image: linear-gradient(to bottom, var(--black-100), transparent);
 }
 
 .landing-page .footer .footer-flickering-grid canvas {
+  width: 100%;
+  height: 100%;
   display: block;
 }
 
@@ -16067,10 +16072,34 @@ html[data-theme="dark"] .landing-page #final-cta .button:not(.button-secondary) 
   --button-pressed-surface: color-mix(in srgb, var(--final-action) 85%, transparent);
 }
 
+.landing-page .hero-copy .button-row,
+.landing-page #main #final-cta #final-cta-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 12px;
+}
+
+.landing-page .hero-copy .button-row {
+  justify-content: flex-start;
+}
+
+.landing-page #main #final-cta #final-cta-actions {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  justify-content: center;
+  justify-self: center;
+  width: min(360px, 100%);
+}
+
 .landing-page .button,
 .landing-page .site-header .nav-actions .button,
 #top.hero-b-layout .hero-copy .button-row .button,
 .landing-page #main #final-cta #final-cta-actions .button {
+  box-sizing: border-box;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
   height: var(--button-height) !important;
   min-height: var(--button-height) !important;
   padding: 0 var(--button-padding-inline) !important;
@@ -16080,6 +16109,8 @@ html[data-theme="dark"] .landing-page #final-cta .button:not(.button-secondary) 
   color: var(--button-ink) !important;
   font: 500 15px/24px var(--sans) !important;
   letter-spacing: normal;
+  text-decoration: none;
+  white-space: nowrap;
   box-shadow: none;
   transform: none;
   transition: background-color var(--control-motion-duration), border-color var(--control-motion-duration), color var(--control-motion-duration), transform var(--control-motion-duration);
@@ -16108,6 +16139,17 @@ html[data-theme="dark"] .landing-page #final-cta .button:not(.button-secondary) 
     opacity: 1;
     transform: none;
     cursor: not-allowed;
+  }
+}
+
+.landing-page #main #final-cta #final-cta-actions .button {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+@media (max-width: 479px) {
+  .landing-page #main #final-cta #final-cta-actions {
+    grid-template-columns: 1fr;
   }
 }
 
