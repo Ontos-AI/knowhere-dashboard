@@ -1,0 +1,1 @@
+Renderer copied from https://github.com/zolplay-labs/fluid-gradient-studio at 0f4b4eaa5dfe6314699f213a4dccad99e3d1b4b6. MIT license included. The login cover uses liquid-marble, phase 0.23, speed 0.03; its pigment and opacity are resolved from --login-background-color, bound to --black-3 (black at 3% opacity). The local import path uses this app's `@/` alias.

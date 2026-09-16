@@ -117,8 +117,8 @@ func main() {
 
 const FieldLabel = ({ children, icon }: { children: React.ReactNode; icon: React.ReactNode }) => {
   return (
-    <div className="flex items-center gap-1.5 text-[12px] leading-[18px] text-[#09090b] lg:gap-2 lg:text-[14px] lg:leading-5">
-      <span className="text-[#71717b] [&_svg]:size-[14px] lg:[&_svg]:size-4">{icon}</span>
+    <div className="flex items-center gap-1.5 text-[12px] leading-[18px] text-foreground lg:gap-2 lg:text-[14px] lg:leading-5">
+      <span className="text-muted-foreground [&_svg]:size-[14px] lg:[&_svg]:size-4">{icon}</span>
       <span>{children}</span>
     </div>
   );
@@ -182,24 +182,24 @@ export const UsageWelcomeModal = () => {
         }
       }}
     >
-      <DialogContent className="w-screen max-w-none gap-0 rounded-none border-[#e4e4e7] bg-[#fafafa] p-0 shadow-none [&>button]:hidden sm:w-[560px] sm:max-w-[560px] lg:max-w-[724px]">
+      <DialogContent className="w-screen max-w-none gap-0 rounded-none border-border bg-background p-0 shadow-none [&>button]:hidden sm:w-[560px] sm:max-w-[560px] lg:max-w-[724px]">
         <div className="max-h-[100dvh] overflow-y-auto">
           <div className="px-4 pb-8 pt-5 min-[375px]:px-[46px] min-[375px]:pb-[38px] min-[375px]:pt-[38px] sm:px-12 sm:pb-10 sm:pt-10 lg:px-12 lg:py-10">
             <div className="flex items-start justify-between gap-6 sm:gap-[30px]">
               <div className="min-w-0 flex-1 sm:max-w-[408px] lg:max-w-none">
-                <DialogTitle className="text-[18px] font-bold leading-[26px] text-[#09090b] sm:text-[18px] sm:leading-[26px] sm:tracking-normal lg:text-[20px] lg:leading-7">
+                <DialogTitle className="text-[18px] font-bold leading-[26px] text-foreground sm:text-[18px] sm:leading-[26px] sm:tracking-normal lg:text-[20px] lg:leading-7">
                   {t("title")}
                 </DialogTitle>
-                <DialogDescription className="mt-0.5 max-w-[34rem] text-[12px] leading-[18px] text-[#71717b] sm:mt-1 sm:max-w-[408px] sm:text-[12px] sm:leading-[18px] lg:mt-1.5 lg:max-w-[34rem] lg:text-[14px] lg:leading-5">
+                <DialogDescription className="mt-0.5 max-w-[34rem] text-[12px] leading-[18px] text-muted-foreground sm:mt-1 sm:max-w-[408px] sm:text-[12px] sm:leading-[18px] lg:mt-1.5 lg:max-w-[34rem] lg:text-[14px] lg:leading-5">
                   {t("descriptionPrefix")}{" "}
-                  <span className="font-medium text-[#7f22fe]">{t("freeCredits")}</span>{" "}
+                  <span className="font-medium text-[#19a88b]">{t("freeCredits")}</span>{" "}
                   {t("descriptionSuffix")}
                 </DialogDescription>
               </div>
 
               <button
                 type="button"
-                className="flex size-6 shrink-0 items-center justify-center rounded-full text-[#52525c] transition-colors hover:bg-[#f4f4f5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25 disabled:cursor-not-allowed disabled:opacity-40"
+                className="flex size-6 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19a88b]/25 disabled:cursor-not-allowed disabled:opacity-40"
                 onClick={() => {
                   if (canDismiss) {
                     dismiss();
@@ -217,7 +217,7 @@ export const UsageWelcomeModal = () => {
                 <FieldLabel icon={<Link2 className="h-4 w-4" strokeWidth={1.85} />}>
                   {t("baseUrl")}
                 </FieldLabel>
-                <div className="flex h-10 items-center border border-[#e4e4e7] bg-white px-[10px] font-mono-readable text-[12px] leading-[14px] text-[#9f9fa9] sm:h-10 sm:px-[10px] sm:py-0 sm:text-[12px] sm:leading-[14px] lg:text-[14px] lg:leading-5">
+                <div className="flex h-10 items-center border border-border bg-card px-[10px] font-mono-readable text-[12px] leading-[14px] text-muted-foreground sm:h-10 sm:px-[10px] sm:py-0 sm:text-[12px] sm:leading-[14px] lg:text-[14px] lg:leading-5">
                   {apiBaseUrl}
                 </div>
               </div>
@@ -226,16 +226,16 @@ export const UsageWelcomeModal = () => {
                 <FieldLabel icon={<KeyRound className="h-4 w-4" strokeWidth={1.85} />}>
                   {t("apiKey")}
                 </FieldLabel>
-                <div className="border border-[#e4e4e7] bg-white px-[10px] py-[10px] font-mono-readable text-[12px] leading-[14px] text-[#09090b] min-[375px]:min-h-[34px] sm:min-h-10 sm:px-[10px] sm:py-3 sm:text-[12px] sm:leading-[14px] lg:text-[14px] lg:leading-5">
+                <div className="border border-border bg-card px-[10px] py-[10px] font-mono-readable text-[12px] leading-[14px] text-foreground min-[375px]:min-h-[34px] sm:min-h-10 sm:px-[10px] sm:py-3 sm:text-[12px] sm:leading-[14px] lg:text-[14px] lg:leading-5">
                   {apiKey ? (
                     <span className="break-all">{apiKey}</span>
                   ) : isProvisioning ? (
-                    <span className="inline-flex items-center gap-2 text-[#71717b]">
+                    <span className="inline-flex items-center gap-2 text-muted-foreground">
                       <Loader2 className="h-4 w-4 animate-spin" />
                       {t("creatingKey")}
                     </span>
                   ) : (
-                    <span className="text-[#71717b]">{t("apiKeyUnavailable")}</span>
+                    <span className="text-muted-foreground">{t("apiKeyUnavailable")}</span>
                   )}
                 </div>
 
@@ -264,11 +264,11 @@ export const UsageWelcomeModal = () => {
             </div>
           </div>
 
-          <div className="border-y border-[#e6defe] bg-[#f5f3ff]">
+          <div className="border-y border-[#caffee] bg-[#caffee]">
             <div className={dashboardDialogDesign.usageWelcome.codeTitleFrame}>
               <div className={dashboardDialogDesign.usageWelcome.codeIconTag}>
                 <TerminalSquare
-                  className="h-3 w-3 text-[#7f22fe] sm:h-5 sm:w-5 lg:h-4 lg:w-4"
+                  className="h-3 w-3 text-[#19a88b] sm:h-5 sm:w-5 lg:h-4 lg:w-4"
                   strokeWidth={1.8}
                 />
               </div>
@@ -276,8 +276,8 @@ export const UsageWelcomeModal = () => {
             </div>
 
             <div className={dashboardDialogDesign.usageWelcome.codePanelFrame}>
-              <div className="overflow-hidden bg-[#27272a]">
-                <div className="relative flex items-start gap-[10px] border-b border-[#3f3f46] px-[14px] py-[14px] sm:flex-wrap sm:items-center sm:gap-3 sm:px-4 sm:py-4 lg:gap-2">
+              <div className="overflow-hidden bg-[#021d1d]">
+                <div className="relative flex items-start gap-[10px] border-b border-[#156462] px-[14px] py-[14px] sm:flex-wrap sm:items-center sm:gap-3 sm:px-4 sm:py-4 lg:gap-2">
                   <div
                     className="flex min-w-0 flex-nowrap items-center gap-[6px] overflow-x-auto pr-16 sm:flex-wrap sm:pr-0"
                     role="tablist"
@@ -296,8 +296,10 @@ export const UsageWelcomeModal = () => {
                           aria-selected={isActive}
                           tabIndex={isActive ? 0 : -1}
                           className={cn(
-                            "min-h-[26px] shrink-0 px-[10px] py-[6px] font-mono-display text-[12px] leading-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a684ff] sm:min-h-9 sm:px-3 sm:py-2 sm:text-[14px] sm:leading-5 lg:min-h-8 lg:text-[12px] lg:leading-4",
-                            isActive ? "bg-[#fafafa] text-[#09090b]" : "bg-[#3f3f46] text-[#fafafa]"
+                            "min-h-[26px] shrink-0 px-[10px] py-[6px] font-mono-display text-[12px] leading-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1dbe9d] sm:min-h-9 sm:px-3 sm:py-2 sm:text-[14px] sm:leading-5 lg:min-h-8 lg:text-[12px] lg:leading-4",
+                            isActive
+                              ? "bg-background text-foreground"
+                              : "bg-[#073231] text-[#f0f2e6]"
                           )}
                           onClick={() => setActiveTab(tab.id)}
                         >
@@ -309,7 +311,7 @@ export const UsageWelcomeModal = () => {
 
                   <button
                     type="button"
-                    className="absolute right-[14px] top-1/2 inline-flex -translate-y-1/2 items-center rounded-full bg-[#27272a] px-[14px] py-[6px] font-mono-display text-[12px] leading-4 text-[#a684ff] transition-colors hover:bg-[#3f3f46] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a684ff] sm:static sm:ml-auto sm:h-9 sm:translate-y-0 sm:px-4 sm:py-2 sm:text-[14px] sm:leading-5 lg:h-auto lg:px-4 lg:py-2 lg:text-[12px] lg:leading-4"
+                    className="absolute right-[14px] top-1/2 inline-flex -translate-y-1/2 items-center rounded-full bg-[#021d1d] px-[14px] py-[6px] font-mono-display text-[12px] leading-4 text-[#1dbe9d] transition-colors hover:bg-[#073231] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1dbe9d] sm:static sm:ml-auto sm:h-9 sm:translate-y-0 sm:px-4 sm:py-2 sm:text-[14px] sm:leading-5 lg:h-auto lg:px-4 lg:py-2 lg:text-[12px] lg:leading-4"
                     onClick={() => {
                       void handleCopyCode();
                     }}
@@ -338,7 +340,7 @@ export const UsageWelcomeModal = () => {
                         <pre
                           className={cn(
                             className,
-                            "min-w-max bg-transparent p-0 font-mono-readable text-[12px] leading-[18px] text-[#fafafa] sm:text-[14px] sm:leading-5 lg:text-[13px]"
+                            "min-w-max bg-transparent p-0 font-mono-readable text-[12px] leading-[18px] text-[#f0f2e6] sm:text-[14px] sm:leading-5 lg:text-[13px]"
                           )}
                         >
                           {tokens.map((line, lineIndex) => (
@@ -355,7 +357,7 @@ export const UsageWelcomeModal = () => {
                       )}
                     </Highlight>
                   ) : (
-                    <div className="flex min-h-[220px] items-center justify-center text-center text-[13px] leading-5 text-[#a1a1aa]">
+                    <div className="flex min-h-[220px] items-center justify-center text-center text-[13px] leading-5 text-muted-foreground">
                       {isProvisioning ? (
                         <Loader2 className="h-5 w-5 animate-spin" />
                       ) : (

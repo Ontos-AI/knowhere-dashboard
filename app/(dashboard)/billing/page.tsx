@@ -1,8 +1,8 @@
 "use client";
 
+import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
 import { SubscriptionCard } from "@app/(dashboard)/billing/_components/subscription-card";
 import { usePriceConfigs, useSubscription } from "@app/(dashboard)/billing/_hooks/use-subscription";
-import { Button } from "@components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
 import { Skeleton } from "@components/ui/skeleton";
 import { useCredits } from "@hooks/use-credits";
@@ -102,12 +102,12 @@ function BillingContent() {
             <CardDescription>{t("page.billingDisabledDescription")}</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col justify-center gap-3 sm:flex-row">
-            <Button asChild>
+            <DashboardActionButton asChild>
               <Link href="/usage">{t("buttons.returnToConsole")}</Link>
-            </Button>
-            <Button asChild variant="outline">
+            </DashboardActionButton>
+            <DashboardActionButton asChild variant="secondary">
               <Link href="/api-keys">{t("buttons.manageApiKeys")}</Link>
-            </Button>
+            </DashboardActionButton>
           </CardContent>
         </Card>
       </div>
@@ -122,16 +122,16 @@ function BillingContent() {
       <div className="flex min-h-[60vh] items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100/80">
-              <CheckCircle2 className="h-6 w-6 text-amber-700" />
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/15">
+              <CheckCircle2 className="h-6 w-6 text-primary" />
             </div>
             <CardTitle className="text-2xl">{t("success.title")}</CardTitle>
             <CardDescription>{t("success.description")}</CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center">
-            <Button asChild>
+            <DashboardActionButton asChild>
               <Link href="/usage">{t("buttons.returnToConsole")}</Link>
-            </Button>
+            </DashboardActionButton>
           </CardContent>
         </Card>
       </div>
@@ -143,16 +143,16 @@ function BillingContent() {
       <div className="flex min-h-[60vh] items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-rose-100/80">
-              <XCircle className="h-6 w-6 text-rose-700" />
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-destructive/15">
+              <XCircle className="h-6 w-6 text-destructive" />
             </div>
             <CardTitle className="text-2xl">{t("canceled.title")}</CardTitle>
             <CardDescription>{t("canceled.description")}</CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center">
-            <Button asChild variant="outline">
+            <DashboardActionButton asChild variant="secondary">
               <Link href="/usage">{t("buttons.returnToConsole")}</Link>
-            </Button>
+            </DashboardActionButton>
           </CardContent>
         </Card>
       </div>

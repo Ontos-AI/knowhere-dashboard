@@ -1,8 +1,7 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { LoginButton } from "@/app/(auth)/login/_components/login-button";
+import { AuthButton } from "@/app/(auth)/_components/form-controls";
 import type { OAuthProvider } from "@/app/(auth)/login/_hooks/use-login-actions";
 
 type SocialLoginButtonsProps = {
@@ -12,31 +11,35 @@ type SocialLoginButtonsProps = {
 };
 
 const GoogleIcon = () => (
-  <svg aria-hidden="true" className="size-5" viewBox="0 0 24 24">
+  <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
     <path
-      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
       fill="#4285F4"
+      d="M21.6 12.23c0-.71-.06-1.39-.18-2.05H12v3.88h5.38a4.6 4.6 0 0 1-2 3.01v2.51h3.24c1.9-1.75 2.98-4.33 2.98-7.35Z"
     />
     <path
-      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
       fill="#34A853"
+      d="M12 22c2.7 0 4.96-.9 6.62-2.42l-3.24-2.51c-.9.6-2.05.97-3.38.97-2.6 0-4.81-1.76-5.6-4.12H3.05v2.59A10 10 0 0 0 12 22Z"
     />
+    <path fill="#FBBC05" d="M6.4 13.92a6 6 0 0 1 0-3.84V7.49H3.05a10 10 0 0 0 0 9.02l3.35-2.59Z" />
     <path
-      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-      fill="#FBBC05"
-    />
-    <path
-      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
       fill="#EA4335"
+      d="M12 5.96c1.47 0 2.79.51 3.82 1.51l2.87-2.87A9.62 9.62 0 0 0 12 2a10 10 0 0 0-8.95 5.49l3.35 2.59C7.19 7.72 9.4 5.96 12 5.96Z"
     />
   </svg>
 );
 
 const GitHubIcon = () => (
-  <svg aria-hidden="true" className="h-[18px] w-[18px]" viewBox="0 0 16 16">
+  <svg
+    className="github-mark"
+    width="21"
+    height="21"
+    viewBox="0 0 128 128"
+    fill="none"
+    aria-hidden="true"
+  >
     <path
-      fill="currentColor"
-      d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8Z"
+      d="M56.7937 84.9688C44.4187 83.4688 35.7 74.5625 35.7 63.0313C35.7 58.3438 37.3875 53.2813 40.2 49.9063C38.9812 46.8125 39.1687 40.25 40.575 37.5313C44.325 37.0625 49.3875 39.0313 52.3875 41.75C55.95 40.625 59.7 40.0625 64.2937 40.0625C68.8875 40.0625 72.6375 40.625 76.0125 41.6563C78.9187 39.0313 84.075 37.0625 87.825 37.5313C89.1375 40.0625 89.325 46.625 88.1062 49.8125C91.1062 53.375 92.7 58.1563 92.7 63.0313C92.7 74.5625 83.9812 83.2813 71.4187 84.875C74.6062 86.9375 76.7625 91.4375 76.7625 96.5938L76.7625 106.344C76.7625 109.156 79.1062 110.75 81.9187 109.625C98.8875 103.156 112.2 86.1875 112.2 65.1875C112.2 38.6563 90.6375 17 64.1062 17C37.575 17 16.2 38.6562 16.2 65.1875C16.2 86 29.4187 103.25 47.2312 109.719C49.7625 110.656 52.2 108.969 52.2 106.438L52.2 98.9375C50.8875 99.5 49.2 99.875 47.7 99.875C41.5125 99.875 37.8562 96.5 35.2312 90.2188C34.2 87.6875 33.075 86.1875 30.9187 85.9063C29.7937 85.8125 29.4187 85.3438 29.4187 84.7813C29.4187 83.6563 31.2937 82.8125 33.1687 82.8125C35.8875 82.8125 38.2312 84.5 40.6687 87.9688C42.5437 90.6875 44.5125 91.9063 46.8562 91.9063C49.2 91.9063 50.7 91.0625 52.8562 88.9063C54.45 87.3125 55.6687 85.9063 56.7937 84.9688Z"
+      fill="black"
     />
   </svg>
 );
@@ -49,30 +52,28 @@ export const SocialLoginButtons = ({
   const t = useTranslations("Auth");
 
   return (
-    <div className="space-y-1.5 lg:space-y-2">
-      <LoginButton
+    <div className="social-buttons">
+      <AuthButton
         aria-busy={activeProvider === "google"}
         disabled={disabled || activeProvider !== null}
-        icon={
-          activeProvider === "google" ? <Loader2 className="size-4 animate-spin" /> : <GoogleIcon />
-        }
+        loading={activeProvider === "google"}
         onClick={() => onSignIn("google")}
-        variant="secondary"
+        variant="white"
       >
+        <GoogleIcon />
         {t("continueWithGoogle")}
-      </LoginButton>
+      </AuthButton>
 
-      <LoginButton
+      <AuthButton
         aria-busy={activeProvider === "github"}
         disabled={disabled || activeProvider !== null}
-        icon={
-          activeProvider === "github" ? <Loader2 className="size-4 animate-spin" /> : <GitHubIcon />
-        }
+        loading={activeProvider === "github"}
         onClick={() => onSignIn("github")}
-        variant="secondary"
+        variant="white"
       >
+        <GitHubIcon />
         {t("continueWithGithub")}
-      </LoginButton>
+      </AuthButton>
     </div>
   );
 };

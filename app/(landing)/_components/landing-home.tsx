@@ -1,1029 +1,540 @@
 "use client";
 
-import { ComparisonShowcase } from "@app/(landing)/_components/comparison-showcase";
-import { HeroPlayground } from "@app/(landing)/_components/hero-playground";
-import { IntegrateCodePanel } from "@app/(landing)/_components/integrate-code-panel";
-import { LandingBrand } from "@app/(landing)/_components/landing-brand";
-import { LandingHeader } from "@app/(landing)/_components/landing-header";
+import { CatenoidFieldTuner } from "@app/(landing)/_components/landing/catenoid-field-embed";
+import { ProductStage } from "@app/(landing)/_components/landing/document-map";
+import { EnterpriseIllustration } from "@app/(landing)/_components/landing/enterprise-illustrations";
 import {
-  type ChallengeCard,
-  comingSoonFormats,
-  type FormatChip,
-  fileLimits,
-  getChallengeCards,
-  getEnterpriseItems,
-  getFaqItems,
-  getIntegrationSteps,
-  getPricingExamples,
-  getTransformMetrics,
-  getTransformSteps,
-  type MetricCard,
-  supportedFormats,
-  type TransformStep,
-} from "@app/(landing)/_components/landing-home-data";
+  CTA_HELIX_FALLBACK,
+  ConvergingHelixEmbed,
+} from "@app/(landing)/_components/landing/converging-helix-embed";
+import { initializeLandingCanvases } from "@app/(landing)/_components/landing/landing-canvas";
+import { initializeLandingInteractions } from "@app/(landing)/_components/landing/landing-interactions";
+import ShinyText from "@app/(landing)/_components/landing/shiny-text";
 import {
   LandingTrackedAnchor,
   LandingTrackedLink,
 } from "@app/(landing)/_components/landing-tracked-link";
-import { NewsletterSubscribePrompt } from "@app/(landing)/_components/newsletter-subscribe-prompt";
-import { KnowhereIcon } from "@components/ui/knowhere-icon";
-import { cn } from "@lib/utils";
-import Image from "next/image";
-import { useTranslations } from "next-intl";
-import type { CSSProperties, ReactNode } from "react";
+import { useTheme } from "next-themes";
+import { useLocale, useTranslations } from "next-intl";
+import { useEffect, useRef } from "react";
+import "@app/(landing)/_components/landing.css";
+import "remixicon/fonts/remixicon.css";
 
-const sectionFrameClassName =
-  "overflow-hidden border-b border-l border-r border-zinc-200 bg-white dark:border-[#3f3f46] dark:bg-[#18181b]";
-const sectionPaddingClassName = "px-[48px] max-[639px]:px-[18px] min-[640px]:max-[767px]:px-[46px]";
-const heroSectionPaddingClassName = "px-16 max-[639px]:px-5";
-const landingCanvasWidthClassName =
-  "mx-auto flex w-full flex-col min-[768px]:max-w-[768px] min-[769px]:max-w-[976px] [&>*+*]:-mt-px";
-const footerPaddingClassName =
-  "px-12 py-6 max-[639px]:px-[18px] max-[639px]:py-[18px] min-[640px]:max-[767px]:px-[46px] min-[640px]:max-[767px]:py-6";
-const monoDisplayClassName = "font-[family-name:var(--font-mono-display)]";
-const monoReadableClassName = "font-[family-name:var(--font-mono-readable)]";
-const accentClassName = "font-[family-name:var(--font-accent)]";
-// const geistSansClassName = "font-[family-name:var(--font-geist-sans)]";
-// const anuphanClassName = "font-[family-name:var(--font-anuphan)]";
-const mobileActionLinkClassName = "h-[52px] px-7 text-[18px] leading-6";
+function SectionShinyText({ text }: { text: string }) {
+  return (
+    <ShinyText
+      text={text}
+      speed={2}
+      delay={0}
+      color="currentColor"
+      shineColor="var(--figma-primary)"
+      spread={120}
+      direction="left"
+      yoyo={false}
+      pauseOnHover={false}
+    />
+  )
+}
 
-const stripePattern = (color: string, thickness = 1, size = 8): CSSProperties => ({
-  backgroundImage: `repeating-linear-gradient(-45deg, transparent 0 ${size - thickness}px, ${color} ${size - thickness}px ${size}px)`,
-});
+function TokenIcon({ src, className = '' }: { src: string; className?: string }) {
+  return (
+    <span
+      className={`token-icon ${className}`.trim()}
+      style={{ ['--token-icon-source' as string]: `url("${src}")` }}
+      aria-hidden="true"
+    />
+  )
+}
 
-const cardStripePattern = (color: string): CSSProperties => ({
-  backgroundImage: `repeating-linear-gradient(-45deg, ${color} 0 1px, transparent 1px 7px)`,
-});
+const structureTreeRows = [
+  { label: 'Document map', level: 0, open: false },
+  { label: 'Headings', level: 0, open: false },
+  { label: 'Structure map', level: 0, open: true },
+  { label: 'Annual report', level: 1, open: true },
+  { label: 'Executive summary', level: 2, open: true },
+  { label: 'Market findings', level: 3, leaf: true },
+  { label: 'Revenue by region', level: 3, leaf: true },
+  { label: 'Forecast formulas', level: 2, open: false },
+  { label: 'Page relationships', level: 1, open: false },
+  { label: 'Tables', level: 0, open: false },
+  { label: 'Visual regions', level: 0, open: false },
+]
 
-type ActionLinkProps = {
-  children: ReactNode;
-  href: string;
-  ctaId: string;
-  sourceSection: string;
-  variant?: "primary" | "secondary";
-  size?: "sm" | "md";
-  className?: string;
-  external?: boolean;
-};
+function CapabilityTree({ className = '', rows }: { className?: string; rows: typeof structureTreeRows }) {
+  return (
+    <div className={`capability-figma-tree ${className}`.trim()}>
+      {rows.map((row, rowIndex) => (
+        <div className="capability-tree-row" data-level={row.level} key={row.label}>
+          {Array.from({ length: row.level }, (_, depth) => (
+            <span
+              className="capability-tree-trail"
+              style={{ ['--tree-depth' as string]: depth, ['--tree-bottom' as string]: (rows[rowIndex + 1]?.level ?? 0) > depth ? '-50%' : '50%' }}
+              aria-hidden="true"
+              key={depth}
+            />
+          ))}
+          {row.level > 0 ? (
+            <span
+              className="capability-tree-branch"
+              style={{ ['--tree-depth' as string]: row.level - 1 }}
+              aria-hidden="true"
+            />
+          ) : null}
+          <span className="capability-tree-leading"><TokenIcon src={row.leaf ? '/assets/process-checkbox.svg' : row.open ? '/assets/process-arrow-down.svg' : '/assets/process-arrow-right.svg'} /></span>
+          <span className="capability-tree-label">{row.label}</span>
+          <span className="capability-tree-actions"><TokenIcon src="/assets/process-check.svg" /><TokenIcon src="/assets/process-more.svg" /><TokenIcon src="/assets/process-action-arrow.svg" /></span>
+        </div>
+      ))}
+    </div>
+  )
+}
 
-const ActionLink = ({
-  children,
-  href,
-  ctaId,
-  sourceSection,
-  variant = "primary",
-  size = "md",
-  className,
-  external = false,
-}: ActionLinkProps) => {
-  const sizeClassName = size === "sm" ? "h-16 px-7 text-base" : "h-[72px] px-9 text-xl";
-
-  const variantClassName =
-    variant === "primary"
-      ? "border border-b-[6px] border-[#7f22fe] bg-[#8e51ff] text-[#f5f3ff] [--btn-bottom:6px] hover:border-[#7008e7] hover:bg-[#7f22fe] hover:border-b-[8px] hover:[--btn-bottom:8px] active:border-[#7008e7] active:bg-[#7008e7] active:border-b-[6px] active:[--btn-bottom:6px]"
-      : "border-x-2 border-t-2 border-b-[6px] border-zinc-200 bg-[#fafaf9] text-zinc-800 [--btn-bottom:6px] hover:border-zinc-200 hover:bg-[#f5f5f4] hover:border-b-[8px] hover:[--btn-bottom:8px] active:border-[#e7e5e4] active:bg-[#e7e5e4] active:border-b-[6px] active:[--btn-bottom:6px] dark:border-[#3f3f46] dark:bg-[#27272a] dark:text-[#fafafa] dark:hover:border-[#52525b] dark:hover:bg-[#3f3f46] dark:active:border-[#3f3f46] dark:active:bg-[#27272a]";
-
-  const linkClassName = cn(
-    "group inline-flex items-center justify-center rounded-full transition-[background-color,border-color,border-bottom-width]",
-    monoDisplayClassName,
-    sizeClassName,
-    variantClassName,
-    className
-  );
-
-  const linkChildren = (
-    <span className="inline-flex h-full translate-y-1 items-center pb-[var(--btn-bottom)] font-semibold transition-[padding-bottom,transform] duration-150 ease-out">
-      {children}
-    </span>
-  );
-
-  if (href.startsWith("mailto:")) {
-    return (
-      <LandingTrackedAnchor
-        className={linkClassName}
-        ctaId={ctaId}
-        href={href}
-        sourceSection={sourceSection}
-      >
-        {linkChildren}
-      </LandingTrackedAnchor>
-    );
+function CapabilityCodeCard({ variant }: { variant: 'left' | 'center' | 'right' }) {
+  const snippets = {
+    left: [
+      '// preserve page provenance',
+      'const page = document.pages[12]',
+      'const region = page.regions.revenue',
+      'const source = region.source',
+      'const bounds = region.boundingBox',
+      'const content = region.content',
+      'return { source, bounds, content }',
+    ],
+    center: [
+      '// traceable document context',
+      'const context = {',
+      "  type: 'structured',",
+      '  page: 12,',
+      "  region: 'revenue',",
+      "  source: 'annual-report.pdf',",
+      "  path: 'tables/revenue-by-region'",
+      '}',
+      'return context.source',
+    ],
+    right: [
+      '// return agent-ready context',
+      'export function getContext(result) {',
+      '  return {',
+      '    content: result.content,',
+      '    citations: result.sources,',
+      '    documentMap: result.map',
+      '  }',
+      '}',
+    ],
   }
 
   return (
-    <LandingTrackedLink
-      className={linkClassName}
-      ctaId={ctaId}
-      external={external}
-      href={href}
-      sourceSection={sourceSection}
-    >
-      {linkChildren}
-    </LandingTrackedLink>
-  );
-};
-
-type HeroAnnouncementNoticeProps = {
-  children: ReactNode;
-  ctaId: string;
-  href: string;
-  linkLabel: ReactNode;
-  sourceSection: string;
-  ariaLabel?: string;
-  external?: boolean;
-};
-
-const HeroAnnouncementNotice = ({
-  children,
-  ctaId,
-  href,
-  linkLabel,
-  sourceSection,
-  ariaLabel,
-  external = false,
-}: HeroAnnouncementNoticeProps) => (
-  <div className="flex w-full flex-row items-stretch overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-[#3f3f46] dark:bg-[#18181b] max-[639px]:flex-col max-[639px]:items-center max-[639px]:gap-2 max-[639px]:px-5 max-[639px]:py-3">
-    <div className="flex flex-1 flex-wrap items-center gap-x-2 gap-y-1 px-7 py-5 text-left max-[639px]:justify-center max-[639px]:px-0 max-[639px]:py-0 max-[639px]:text-center">
-      {children}
+    <div className={`capability-code-card capability-code-card--${variant}`}>
+      <span className="capability-code-corner capability-code-corner--tl" />
+      <span className="capability-code-corner capability-code-corner--tr" />
+      <span className="capability-code-corner capability-code-corner--bl" />
+      <span className="capability-code-corner capability-code-corner--br" />
+      <code>
+        {snippets[variant].map((line, index) => <span key={`${variant}-${index}`}>{line}</span>)}
+      </code>
     </div>
-    <div className="w-px shrink-0 bg-zinc-200 dark:bg-[#3f3f46] max-[639px]:hidden" />
-    <LandingTrackedLink
-      aria-label={ariaLabel}
-      className="flex min-w-[129px] items-center justify-center px-5 py-4 text-[#7008e7] transition-colors hover:bg-[#f5f3ff] min-[769px]:min-w-[168px] max-[639px]:min-w-0 max-[639px]:justify-center max-[639px]:rounded-full max-[639px]:px-4 max-[639px]:py-1.5"
-      ctaId={ctaId}
-      external={external}
-      href={href}
-      sourceSection={sourceSection}
-    >
-      <span className="flex items-center gap-2">
-        <span className={cn("text-[16px] font-[600] leading-7", monoDisplayClassName)}>
-          {linkLabel}
-        </span>
-        <KnowhereIcon className="size-3 text-current" name="arrow-outward" />
-      </span>
-    </LandingTrackedLink>
-  </div>
-);
+  )
+}
 
-const SectionTitle = ({
-  title,
-  description,
-  className,
-  descriptionClassName,
-}: {
-  title: ReactNode;
-  description?: ReactNode;
-  className?: string;
-  descriptionClassName?: string;
-}) => (
-  <div
-    className={cn(
-      "flex flex-col items-start gap-2 px-[48px] max-[639px]:px-[18px] min-[640px]:max-[767px]:px-[46px]",
-      className
-    )}
-  >
-    <h2 className="text-left text-[30px] font-bold leading-9 text-zinc-950 dark:text-[#fafafa] max-[639px]:text-[22px] max-[639px]:leading-8">
-      {title}
-    </h2>
-    {description ? (
-      <p
-        className={cn(
-          "max-w-[1080px] text-base leading-6 text-zinc-500 dark:text-[#a1a1a1]",
-          descriptionClassName
-        )}
-      >
-        {description}
-      </p>
-    ) : null}
-  </div>
-);
+function CapabilityProductPreview({ story }: { story: string }) {
+  if (story === 'structure') {
+    return (
+      <div className="capability-product-preview capability-product-preview--ingest" aria-hidden="true">
+        <div className="capability-figma-upload">
+          <span className="capability-corner capability-corner--top" />
+          <div className="capability-upload-header"><div><strong>Ingest documents</strong><small>Add supported formats securely.</small></div><TokenIcon src="/assets/process-close.svg" /></div>
+          <div className="capability-upload-drop"><img className="capability-upload-icon" src="/assets/process-upload-file.svg" alt="" /><div className="capability-upload-drop-copy"><strong>Drag and drop documents</strong><small>PDF, XLSX, PPTX, scans, and more</small></div><button type="button" tabIndex={-1}>Select file</button></div>
+          <div className="capability-upload-files"><strong>Ingested files</strong><div><img className="capability-file-icon" src="/assets/process-upload-file.svg" alt="" /><span><b>Annual report.pdf</b><small>48 pages · Processing</small></span><button type="button" tabIndex={-1}>×</button></div><div><img className="capability-file-icon" src="/assets/process-upload-file.svg" alt="" /><span><b>Forecast.xlsx</b><small>6 sheets · Ready</small></span><button type="button" tabIndex={-1}>×</button></div></div>
+          <div className="capability-upload-actions"><button type="button" tabIndex={-1}>Cancel</button><button type="button" tabIndex={-1}>Attach file</button></div>
+        </div>
+      </div>
+    )
+  }
 
-const StatsItem = ({
-  icon,
-  leading,
-  trailing,
-  leadingClassName,
-}: {
-  icon: ReactNode;
-  leading: string;
-  trailing: string;
-  leadingClassName?: string;
-}) => (
-  <div className="flex h-20 items-center justify-center gap-3 px-4 text-center max-[639px]:h-16 max-[639px]:gap-[14px] min-[769px]:gap-4 min-[769px]:px-6">
-    <div className="flex size-5 items-center justify-center text-[#8e51ff] min-[769px]:size-6">
-      {icon}
-    </div>
-    <div
-      className={cn(
-        "flex items-center gap-2 text-[14px] leading-5 max-[639px]:gap-[10px] max-[639px]:text-base max-[639px]:leading-6 min-[769px]:gap-3 min-[769px]:text-[16px] min-[769px]:leading-6",
-        monoDisplayClassName
-      )}
-    >
-      <span className={cn("font-medium text-zinc-800 dark:text-[#fafafa]", leadingClassName)}>
-        {leading}
-      </span>
-      <span className="font-light text-zinc-700 dark:text-[#d4d4d8]">{trailing}</span>
-    </div>
-  </div>
-);
+  if (story === 'visual') {
+    return (
+      <div className="capability-product-preview capability-product-preview--capture" aria-hidden="true">
+        <div className="capability-capture-stack">
+          <article className="capability-capture-card capability-capture-card--table">
+            <span className="capability-capture-corner capability-capture-corner--tl" /><span className="capability-capture-corner capability-capture-corner--tr" /><span className="capability-capture-corner capability-capture-corner--bl" /><span className="capability-capture-corner capability-capture-corner--br" />
+            <header className="capability-capture-card-header"><strong>Tables</strong><p>Rows, columns, and headers stay connected to the page.</p></header>
+            <div className="capability-capture-table">
+              <div className="capability-capture-table-row capability-capture-table-row--head"><span>Region</span><span>Captured</span></div>
+              <div className="capability-capture-table-row"><span>NA</span><span>48%</span></div>
+              <div className="capability-capture-table-row"><span>EU</span><span>34%</span></div>
+              <div className="capability-capture-table-row"><span>APAC</span><span>29%</span></div>
+            </div>
+          </article>
 
-const CornerLines = ({ color }: { color: string }) => (
-  <>
-    <span
-      className="pointer-events-none absolute left-0 top-0 size-[9px] border-l-2 border-t-2"
-      style={{ borderColor: color }}
-    />
-    <span
-      className="pointer-events-none absolute right-0 top-0 size-[9px] -scale-x-100 border-l-2 border-t-2"
-      style={{ borderColor: color }}
-    />
-    <span
-      className="pointer-events-none absolute bottom-0 left-0 size-[9px] -scale-y-100 border-l-2 border-t-2"
-      style={{ borderColor: color }}
-    />
-    <span
-      className="pointer-events-none absolute bottom-0 right-0 size-[9px] -scale-x-100 -scale-y-100 border-l-2 border-t-2"
-      style={{ borderColor: color }}
-    />
-  </>
-);
+          <article className="capability-capture-card capability-capture-card--chart">
+            <span className="capability-capture-corner capability-capture-corner--tl" /><span className="capability-capture-corner capability-capture-corner--tr" /><span className="capability-capture-corner capability-capture-corner--bl" /><span className="capability-capture-corner capability-capture-corner--br" />
+            <header className="capability-capture-card-header"><strong>Charts</strong><p>Labels, legends, and visual relationships are preserved.</p></header>
+            <div className="capability-capture-chart-title"><strong>Revenue by region</strong><span><i /> 2025</span></div>
+            <div className="capability-capture-chart">
+              <span style={{ ['--bar-height' as string]: '44%' }} /><span style={{ ['--bar-height' as string]: '62%' }} />
+              <span style={{ ['--bar-height' as string]: '53%' }} /><span style={{ ['--bar-height' as string]: '76%' }} />
+              <span style={{ ['--bar-height' as string]: '68%' }} /><span style={{ ['--bar-height' as string]: '84%' }} />
+              <span style={{ ['--bar-height' as string]: '71%' }} /><span style={{ ['--bar-height' as string]: '92%' }} />
+              <span style={{ ['--bar-height' as string]: '79%' }} /><span style={{ ['--bar-height' as string]: '88%' }} />
+              <span style={{ ['--bar-height' as string]: '73%' }} /><span style={{ ['--bar-height' as string]: '96%' }} />
+            </div>
+          </article>
 
-const FormatBadge = ({
-  chip,
-  muted = false,
-  value,
-}: {
-  chip: FormatChip;
-  muted?: boolean;
-  value?: string;
-}) => (
-  <div className="flex flex-col items-center gap-4">
-    <div
-      className="relative overflow-hidden border px-3 py-2 max-[639px]:px-[10px] max-[639px]:py-1 min-[640px]:max-[767px]:px-[10px] min-[640px]:max-[767px]:py-1.5"
-      style={{
-        backgroundColor: chip.tone.background,
-        borderColor: chip.tone.border,
-      }}
-    >
-      <div className="absolute inset-0 opacity-40" style={stripePattern(chip.tone.border, 1, 10)} />
-      <span
-        className={cn("relative text-[18px] leading-6", monoDisplayClassName)}
-        style={{ color: chip.tone.text }}
-      >
-        {chip.label}
-      </span>
-      <CornerLines color={muted ? "#d4d4d8" : chip.tone.border} />
-    </div>
-    {value ? <span className="text-[18px] leading-7 text-[#7f22fe] font-sans">{value}</span> : null}
-  </div>
-);
+          <article className="capability-capture-card capability-capture-card--layout">
+            <span className="capability-capture-corner capability-capture-corner--tl" /><span className="capability-capture-corner capability-capture-corner--tr" /><span className="capability-capture-corner capability-capture-corner--bl" /><span className="capability-capture-corner capability-capture-corner--br" />
+            <header className="capability-capture-card-header"><strong>Layouts</strong><p>Text and visual regions retain their original positions.</p></header>
+            <div className="capability-capture-layout-page">
+              <span className="capability-capture-layout-heading" />
+              <span className="capability-capture-layout-line capability-capture-layout-line--long" />
+              <span className="capability-capture-layout-line" />
+              <div className="capability-capture-layout-columns"><span /><span><i /><i /><i /></span></div>
+              <span className="capability-capture-layout-line capability-capture-layout-line--long" />
+              <span className="capability-capture-layout-line" />
+            </div>
+          </article>
+        </div>
+      </div>
+    )
+  }
 
-const NumberBadge = ({ number }: { number: string }) => (
-  <div className="flex size-10 items-center justify-center border-b border-l border-r-4 border-t border-[#ddd6ff] bg-[#ede9fe] text-[#a684ff]">
-    <span className={cn("text-[18px] font-bold leading-7", monoDisplayClassName)}>{number}</span>
-  </div>
-);
-
-const ChallengeIcon = ({ card }: { card: ChallengeCard }) => {
-  const iconPathByType: Record<ChallengeCard["icon"], string> = {
-    agentic: "/icons/landing/challenges/1.svg",
-    adaptive: "/icons/landing/challenges/2.svg",
-    format: "/icons/landing/challenges/3.svg",
-    trace: "/icons/landing/challenges/4.svg",
-    deploy: "/icons/landing/challenges/5.svg",
-    api: "/icons/landing/challenges/6.svg",
-  };
+  if (story === 'source') {
+    return (
+      <div className="capability-product-preview capability-product-preview--outline" aria-hidden="true">
+        <CapabilityTree className="capability-figma-tree--focus" rows={structureTreeRows} />
+      </div>
+    )
+  }
 
   return (
-    <Image
-      alt=""
-      aria-hidden="true"
-      className="size-5"
-      height={20}
-      src={iconPathByType[card.icon]}
-      width={20}
-    />
-  );
-};
-
-const TransformStepCard = ({ step }: { step: TransformStep }) => (
-  <div
-    className="relative flex w-full flex-col overflow-hidden border"
-    style={{ borderColor: step.tone.border, backgroundColor: step.tone.background }}
-  >
-    <div
-      className="absolute left-0 top-0 flex h-[48px] w-[48px] items-center justify-center max-[639px]:h-9 max-[639px]:w-9"
-      style={{ backgroundColor: step.tone.numberBg }}
-    >
-      <span
-        className={cn(
-          "text-[16px] font-bold leading-none max-[767px]:text-[14px]",
-          monoDisplayClassName
-        )}
-        style={{ color: "#ffffff" }}
-      >
-        {step.number}
-      </span>
-    </div>
-    <div className="flex items-center gap-5 bg-white px-5 py-[14px] pl-[80px] dark:bg-[#18181b] max-[639px]:gap-4 max-[639px]:px-4 max-[639px]:pl-[48px]">
-      <div className="flex flex-col gap-1">
-        <span
-          className="text-base font-bold leading-6 text-zinc-950 font-sans"
-          style={{ color: step.tone.text }}
-        >
-          {step.title}
-        </span>
-        <span className="text-sm leading-5 text-zinc-500 dark:text-[#a1a1a1] font-sans">
-          {step.description}
-        </span>
+    <div className="capability-product-preview capability-product-preview--trace" aria-hidden="true">
+      <div className="capability-code-cascade">
+        <CapabilityCodeCard variant="left" />
+        <span className="capability-code-connector capability-code-connector--left" />
+        <CapabilityCodeCard variant="center" />
+        <span className="capability-code-connector capability-code-connector--right" />
+        <CapabilityCodeCard variant="right" />
       </div>
     </div>
-    <div
-      className="relative h-3 overflow-hidden border-t"
-      style={{ borderColor: step.tone.border }}
-    >
-      <div className="absolute inset-0 opacity-40" style={stripePattern(step.tone.border, 1, 8)} />
-    </div>
-  </div>
-);
+  )
+}
 
-const MetricPanel = ({ card }: { card: MetricCard }) => (
-  <div
-    className="flex min-h-full flex-col items-center justify-center border px-6 py-6 text-center"
-    style={{
-      backgroundColor: card.tone.background,
-      borderColor: card.tone.border,
-      ...(card.stripe ? cardStripePattern(card.tone.border) : {}),
-    }}
-  >
-    <span
-      className={cn(
-        "text-[36px] font-semibold leading-10 max-[639px]:text-[20px] max-[639px]:leading-8",
-        monoReadableClassName
-      )}
-      style={{ color: card.tone.text }}
-    >
-      {card.value}
-    </span>
-    <span
-      className={cn("mt-4 text-sm leading-5 max-[639px]:text-xs max-[639px]:leading-4 font-sans")}
-      style={{ color: card.tone.text }}
-    >
-      {card.label}
-    </span>
-  </div>
-);
+function FinalCtaHelix({ theme }: { theme: string }) {
+  const accentColor = theme === 'dark' ? 'var(--mineral-green-600)' : 'var(--mineral-green-300)'
+  const embedProps = { ...CTA_HELIX_FALLBACK, accentColor }
 
-const PricingBurst = ({ label }: { label: string }) => (
-  <div className="relative flex h-[180px] w-[259px] items-center justify-center overflow-hidden border border-[#7008e7] bg-[#7f22fe] max-[639px]:h-[140px] max-[639px]:w-[210px]">
-    <div className="absolute inset-0 opacity-40" style={stripePattern("#8e51ff", 1, 8)} />
-    <div className="relative text-center text-[#f5f3ff]">
-      <div
-        className={cn(
-          "text-[65px] font-extrabold leading-[65px] min-[769px]:text-[72px] min-[769px]:leading-[72px] max-[639px]:text-[52px] max-[639px]:leading-[52px]",
-          accentClassName
-          // anuphanClassName
-        )}
-      >
-        $1.5
+  return (
+    <>
+      <div className="converging-helix-pair" aria-hidden="true" style={{ ['--converging-helix-y' as string]: `${CTA_HELIX_FALLBACK.yPosition}px` }}>
+        <ConvergingHelixEmbed {...embedProps} className="converging-helix-embed--left" />
+        <ConvergingHelixEmbed {...embedProps} className="converging-helix-embed--right" mirror />
       </div>
-      <div
-        className={cn(
-          "mt-3 text-sm font-light leading-[18px] min-[769px]:text-base min-[769px]:leading-5 max-[639px]:text-sm"
-          // geistSansClassName
-        )}
-      >
-        {label}
-      </div>
-    </div>
-  </div>
-);
+    </>
+  )
+}
 
-const EnterpriseCheckItem = ({ label }: { label: string }) => (
-  <div className="flex items-center gap-3 self-start py-2 pr-4">
-    <div
-      className="flex items-center justify-center rounded-full border border-[#009966] border-r-4 bg-[#00bc7d] text-white max-[639px]:w-[32px] max-[639px]:h-[32px] min-[640px]:max-[767px]:w-[36px] min-[640px]:max-[767px]:h-[36px] min-[769px]:w-[40px] min-[769px]:h-[40px]"
-      style={{ flexShrink: 0 }}
-    >
-      <KnowhereIcon
-        className="text-current max-[639px]:size-4 min-[640px]:max-[767px]:size-4.5 min-[769px]:size-5"
-        name="check-pix"
-      />
-    </div>
-    <span className="text-base font-semibold leading-6 text-zinc-950 dark:text-[#fafafa]">
-      {label}
-    </span>
-  </div>
-);
-
-const FaqRow = ({ question, answer }: { question: string; answer: string }) => (
-  <div className="flex items-center gap-6 border-b border-zinc-100 px-12 py-5 first:border-t dark:border-[#27272a] max-[639px]:items-start max-[639px]:gap-4 max-[639px]:px-4 max-[639px]:py-6">
-    <div className="flex size-10 flex-none items-center justify-center border-b border-l border-r-4 border-t border-[#ddd6ff] bg-[#ede9fe] text-[#a684ff]">
-      <span className={cn("text-[18px] font-black leading-7", monoDisplayClassName)}>?</span>
-    </div>
-    <div className="flex flex-col gap-1">
-      <h3 className="text-base font-semibold leading-6 text-zinc-950 dark:text-[#fafafa] min-[769px]:text-xl min-[769px]:leading-7">
-        {question}
-      </h3>
-      <p className="text-xs leading-4 text-zinc-700 dark:text-[#d4d4d8] max-[639px]:text-sm max-[639px]:leading-6">
-        {answer}
-      </p>
-    </div>
-  </div>
-);
-
-const FooterChip = ({ color, children }: { color: string; children: string }) => (
-  <p
-    className={cn(
-      "text-sm leading-6 text-zinc-950 dark:text-[#fafafa] min-[769px]:text-[18px] min-[769px]:leading-8",
-      monoDisplayClassName
-    )}
-  >
-    <span style={{ color }}>{`{ `}</span>
-    {children}
-    <span style={{ color }}>{` }`}</span>
-  </p>
-);
 
 export const LandingHome = () => {
-  const t = useTranslations("Landing.home");
-  const tData = useTranslations("Landing.data");
-  const challengeCards = getChallengeCards(tData);
-  const enterpriseItems = getEnterpriseItems(tData);
-  const faqItems = getFaqItems(tData);
-  const integrationSteps = getIntegrationSteps(tData);
-  const pricingExamples = getPricingExamples(tData);
-  const transformMetrics = getTransformMetrics(tData);
-  const transformSteps = getTransformSteps(tData);
+  const t = useTranslations("Landing");
+  const locale = useLocale();
+  const { resolvedTheme } = useTheme();
+  const rootRef = useRef<HTMLDivElement>(null);
+  const theme = resolvedTheme === "dark" ? "dark" : "light";
+
+  useEffect(() => {
+    document.documentElement.classList.add("js");
+    document.documentElement.classList.remove("no-js");
+  }, []);
+
+  useEffect(() => {
+    const language = locale === "zh" ? "zh" : "en";
+    document.body.dataset.language = language;
+    window.dispatchEvent(new CustomEvent("knowhere-language-change", { detail: { language } }));
+  }, [locale]);
+
+  useEffect(() => {
+    const navigation = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+    if (navigation?.type === "reload" || navigation?.type === "back_forward") return undefined;
+    const hash = window.location.hash;
+    if (!hash) return undefined;
+    let cancelled = false;
+    let frame = 0;
+    void document.fonts.ready.then(() => {
+      if (cancelled) return;
+      frame = requestAnimationFrame(() => {
+        if (window.location.hash === hash) {
+          document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: "instant" });
+        }
+      });
+    });
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return undefined;
+    const cleanupCanvases = initializeLandingCanvases(root);
+    const cleanupInteractions = initializeLandingInteractions(root);
+    return () => {
+      cleanupCanvases();
+      cleanupInteractions();
+    };
+  }, [locale]);
 
   return (
-    <div className="min-h-dvh bg-white text-[#09090b] dark:bg-[#18181b] dark:text-[#fafafa]">
-      <LandingHeader />
-
-      <main className={cn(landingCanvasWidthClassName, "min-w-[375px]")}>
-        <section className={sectionFrameClassName}>
-          <div className="relative border-b border-[#ede9fe] bg-[#f5f3ff] pb-14 pt-12 dark:border-[#3f3f46] dark:bg-[#111113] max-[639px]:pb-11 max-[639px]:pt-4 min-[769px]:pb-[56px] min-[769px]:pt-[48px]">
-            <div
-              className="absolute inset-0 opacity-30"
-              style={{
-                backgroundImage: "radial-gradient(circle, #ddd6ff 1px, transparent 1px)",
-                backgroundSize: "20px 20px",
-              }}
-            />
-            <div
-              className={cn(
-                "relative flex flex-col items-center gap-9 max-[639px]:gap-7",
-                heroSectionPaddingClassName
-              )}
-            >
-              <div className="flex w-full max-w-[934px] flex-col gap-3">
-                <HeroAnnouncementNotice
-                  ariaLabel={t("mcpAnnouncement.ariaLabel")}
-                  ctaId="view_mcp_docs"
-                  external
-                  href="https://docs.knowhereto.ai/mcp"
-                  linkLabel={t("mcpAnnouncement.link")}
-                  sourceSection="hero_announcement"
-                >
-                  <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 max-[639px]:max-w-[260px]">
-                    <span className="text-[14px] font-bold leading-[22px] tracking-[-1px] text-zinc-950 dark:text-[#fafafa] min-[769px]:text-base min-[769px]:leading-6">
-                      {t("mcpAnnouncement.title")}
-                    </span>
-                    <span
-                      className={cn(
-                        "text-[14px] font-normal leading-[22px] tracking-[-0.5px] text-zinc-600 dark:text-[#d4d4d8] min-[769px]:text-base min-[769px]:leading-6 font-sans"
-                      )}
-                    >
-                      {t("mcpAnnouncement.description")}
-                    </span>
-                  </div>
-                </HeroAnnouncementNotice>
-              </div>
-
-              <div className="flex flex-col items-center gap-8">
-                <div className="flex flex-col items-center gap-4 pt-6 text-center max-[639px]:gap-5 max-[639px]:pt-0">
-                  <h1
-                    className={cn(
-                      "max-w-[640px] text-[32px] font-bold leading-[1.2] tracking-[-1px] text-zinc-950 dark:text-[#fafafa] max-[639px]:max-w-[335px] max-[639px]:text-[22px] max-[639px]:leading-[1.2] min-[769px]:max-w-[880px] min-[769px]:text-[36px]",
-                      monoDisplayClassName
-                    )}
-                  >
-                    {t("hero.titleStart")} <span className="text-[#4f39f6]">{t("hero.clean")}</span>
-                    , <span className="text-[#a800b7]">{t("hero.structured")}</span>{" "}
-                    {t("hero.titleEnd")}
-                  </h1>
-                  <p
-                    className={cn(
-                      "max-w-[640px] text-base font-normal leading-[1.5] tracking-[-0.5px] text-zinc-600 dark:text-[#d4d4d8] max-[639px]:max-w-[320px] max-[639px]:leading-[1.5] min-[769px]:max-w-[780px] min-[769px]:text-[18px] font-sans"
-                    )}
-                  >
-                    {t("hero.description")}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex flex-row items-center justify-center gap-2 max-[639px]:flex-col max-[639px]:gap-3">
-                <ActionLink
-                  ctaId="start_free_trial"
-                  href="/login"
-                  sourceSection="hero"
-                  className={cn(mobileActionLinkClassName, "w-fit")}
-                >
-                  {t("actions.startFreeTrial")}
-                </ActionLink>
-                <ActionLink
-                  ctaId="view_docs"
-                  external
-                  href="https://docs.knowhereto.ai/"
-                  sourceSection="hero"
-                  variant="secondary"
-                  className={cn(mobileActionLinkClassName, "w-fit")}
-                >
-                  {t("actions.viewDocs")}
-                </ActionLink>
-              </div>
+<div className="landing-page" ref={rootRef}>
+  <a className="skip-link" href="#main">{t("skipToContent")}</a>
+  <main id="main" tabIndex={-1}>
+    <section className="hero shell hero-b-layout" id="top" aria-labelledby="hero-title">
+      <canvas id="hero-b-pixel-field" aria-hidden="true" />
+      <div className="hero-copy">
+        <h1 id="hero-title" data-heading-primary="agents can use">{t("hero.title")}</h1>
+        <p className="lede">{t("hero.lede")}</p>
+        <div className="button-row">
+          <LandingTrackedLink className="button" ctaId="start_free_trial" href="/login" sourceSection="hero">{t("hero.startFreeTrial")}</LandingTrackedLink>
+          <LandingTrackedLink className="button button-secondary" ctaId="view_docs" external href="https://docs.knowhereto.ai/" sourceSection="hero">{t("hero.readDocs")}</LandingTrackedLink>
+        </div>
+      </div>
+      <div className="hero-visual" aria-label={t("hero.visualAria")}>
+        <article className="hero-b-chart">
+          <div className="hero-b-chart-shell" aria-hidden="true" />
+        </article>
+      </div>
+    </section>
+    <canvas className="hero-scan-overlay" aria-hidden="true" />
+    <div className="hero-b-pixel-tooltip" id="hero-b-pixel-tooltip" role="status" aria-live="polite" />
+    <section className="section shell" id="playground" aria-labelledby="playground-title">
+      <ProductStage heading={(
+        <div className="section-heading"><p className="section-no"><SectionShinyText text={t("product.sectionNo")} /></p><h2 id="playground-title"><SectionShinyText text={t("product.title")} /></h2><p>{t("product.description")}<a className="product-formats-link" href="#formats">{t("product.viewFormats")}</a></p></div>
+      )} />
+    </section>
+    <div className="capabilities-scroll-track">
+      <section className="section shell narrative reveal" id="capabilities" aria-labelledby="capabilities-title">
+        <div className="capabilities-sticky">
+          <div className="section-heading"><p className="section-no"><SectionShinyText text={t("process.sectionNo")} /></p><h2 id="capabilities-title"><SectionShinyText text={t("process.title")} /></h2><p>{t("process.description")}</p></div>
+          <div className="narrative-grid">
+            <div className="story-card-stack">
+              <article className="story-canvas story-card" id="story-panel-structure" data-story="structure">
+                <div className="capability-frame"><div className="capability-media" role="img" aria-label={t("process.stories.ingest.mediaAria")}><CapabilityProductPreview story="structure" /></div></div>
+                <div className="capability-copy"><div className="capability-copy-main"><div className="capability-copy-title"><span className="capability-copy-index">01</span><h3 data-story-heading>{t("process.stories.ingest.title")}</h3></div><p data-story-summary>{t("process.stories.ingest.summary")}</p></div></div>
+              </article>
+              <article className="story-canvas story-card" id="story-panel-visual" data-story="visual">
+                <div className="capability-frame"><div className="capability-media" role="img" aria-label={t("process.stories.capture.mediaAria")}><CapabilityProductPreview story="visual" /></div></div>
+                <div className="capability-copy"><div className="capability-copy-main"><div className="capability-copy-title"><span className="capability-copy-index">02</span><h3 data-story-heading>{t("process.stories.capture.title")}</h3></div><p data-story-summary>{t("process.stories.capture.summary")}</p></div></div>
+              </article>
+              <article className="story-canvas story-card" id="story-panel-source" data-story="source">
+                <div className="capability-frame"><div className="capability-media" role="img" aria-label={t("process.stories.map.mediaAria")}><CapabilityProductPreview story="source" /></div></div>
+                <div className="capability-copy"><div className="capability-copy-main"><div className="capability-copy-title"><span className="capability-copy-index">03</span><h3 data-story-heading>{t("process.stories.map.title")}</h3></div><p data-story-summary>{t("process.stories.map.summary")}</p></div></div>
+              </article>
+              <article className="story-canvas story-card" id="story-panel-relations" data-story="relations">
+                <div className="capability-frame"><div className="capability-media" role="img" aria-label={t("process.stories.return.mediaAria")}><CapabilityProductPreview story="relations" /></div></div>
+                <div className="capability-copy"><div className="capability-copy-main"><div className="capability-copy-title"><span className="capability-copy-index">04</span><h3 data-story-heading>{t("process.stories.return.title")}</h3></div><p data-story-summary>{t("process.stories.return.summary")}</p></div></div>
+              </article>
             </div>
           </div>
-
-          <div className="flex justify-center border-t border-zinc-200 dark:border-[#3f3f46]">
-            <StatsItem
-              icon={
-                <Image
-                  alt=""
-                  aria-hidden
-                  className="size-5"
-                  height={20}
-                  src="/icons/landing/stats/1.svg"
-                  width={20}
-                />
-              }
-              trailing={t("stats.noCardRequiredTrailing")}
-              leading={t("stats.noCardRequiredLeading")}
-              leadingClassName="font-bold"
-            />
-          </div>
-
-          <div className="flex flex-col gap-9 border-t border-zinc-200 pt-14 dark:border-[#3f3f46] max-[639px]:gap-[30px] max-[639px]:pt-[38px] min-[640px]:max-[767px]:gap-[34px] min-[640px]:max-[767px]:pt-[54px]">
-            <SectionTitle
-              description={t("playgroundSection.description")}
-              title={t("playgroundSection.title")}
-            />
-            <HeroPlayground />
-          </div>
-        </section>
-
-        <section
-          className={cn(
-            sectionFrameClassName,
-            "grid grid-cols-2 gap-x-[46px] gap-y-[18px] pb-[56px] pt-[56px] max-[639px]:grid-cols-1 max-[639px]:gap-6 max-[639px]:pb-[38px] max-[639px]:pt-[38px] min-[640px]:max-[767px]:grid-cols-1 min-[640px]:max-[767px]:gap-y-8 min-[640px]:max-[767px]:pb-[54px] min-[640px]:max-[767px]:pt-[54px] min-[769px]:gap-x-12 min-[769px]:gap-y-5",
-            sectionPaddingClassName,
-            "border-y border-zinc-200 dark:border-[#3f3f46]"
-          )}
-        >
-          <div className="flex flex-col items-start gap-8 max-[639px]:gap-6">
-            <SectionTitle title={t("formats.title")} className="px-0" />
-            <div className="flex flex-wrap gap-x-1.5 gap-y-1 min-[769px]:gap-1.5">
-              {supportedFormats.map((chip) => (
-                <div
-                  key={chip.label}
-                  className="relative overflow-hidden border px-3 py-2 max-[639px]:px-[10px] max-[639px]:py-1 min-[640px]:max-[767px]:px-[10px] min-[640px]:max-[767px]:py-1.5"
-                  style={{ backgroundColor: chip.tone.background, borderColor: chip.tone.border }}
-                >
-                  <div
-                    className="absolute inset-0 opacity-50"
-                    style={stripePattern(chip.tone.border, 1, 10)}
-                  />
-                  <span
-                    className={cn("relative text-[18px] leading-6", monoDisplayClassName)}
-                    style={{ color: chip.tone.text }}
-                  >
-                    {chip.label}
-                  </span>
-                  <CornerLines color={chip.tone.border} />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-8 pt-1 max-[639px]:gap-6 max-[639px]:pt-0 min-[640px]:max-[767px]:pt-0">
-            <h3 className="text-base font-normal leading-6 text-zinc-950 dark:text-[#fafafa]">
-              {t("formats.comingSoon")}
-            </h3>
-            <div className="flex flex-wrap gap-x-1.5 gap-y-1 min-[769px]:gap-1.5">
-              {comingSoonFormats.map((chip) => (
-                <div
-                  key={chip.label}
-                  className="relative overflow-hidden border px-3 py-2 max-[639px]:px-[10px] max-[639px]:py-1 min-[640px]:max-[767px]:px-[10px] min-[640px]:max-[767px]:py-1.5"
-                  style={{ backgroundColor: chip.tone.background, borderColor: chip.tone.border }}
-                >
-                  <div
-                    className="absolute inset-0 opacity-35"
-                    style={stripePattern("#e4e4e7", 1, 10)}
-                  />
-                  <span
-                    className={cn("relative text-[18px] leading-6", monoDisplayClassName)}
-                    style={{ color: chip.tone.text }}
-                  >
-                    {chip.label}
-                  </span>
-                  <CornerLines color="#d4d4d8" />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section
-          className={cn(sectionFrameClassName, "border-t border-zinc-200 dark:border-[#3f3f46]")}
-        >
-          <div
-            className={cn(
-              "flex flex-col gap-9 pt-14 max-[639px]:gap-6 max-[639px]:pt-9 border-b border-zinc-200 dark:border-[#3f3f46]"
-            )}
-          >
-            <SectionTitle
-              description={t("integration.description")}
-              title={t("integration.title")}
-            />
-
-            <div className="grid grid-cols-2 gap-0 border-t border-zinc-100 dark:border-[#27272a] max-[639px]:grid-cols-1 max-[639px]:gap-4 max-[639px]:pl-[18px] max-[639px]:pr-[18px] min-[640px]:max-[767px]:grid-cols-1 min-[640px]:max-[767px]:gap-6 min-[640px]:max-[767px]:pl-[46px] min-[640px]:max-[767px]:pr-[46px] min-[769px]:pl-[48px] min-[769px]:pr-0">
-              <div className="flex min-w-0 flex-col justify-center py-6 pr-12 max-[639px]:pr-0 min-[640px]:max-[767px]:pr-0">
-                {integrationSteps.map((step) => (
-                  <div key={step.number} className="flex w-full min-w-0 items-start gap-5 py-4">
-                    <NumberBadge number={step.number} />
-                    <div className="flex min-w-0 flex-1 flex-col gap-1 pr-1">
-                      <h3 className="text-base font-bold leading-6 text-zinc-950 dark:text-[#fafafa]">
-                        {step.title}
-                      </h3>
-                      <p className="w-full max-w-full text-sm leading-5 text-zinc-500 dark:text-[#a1a1a1]">
-                        {step.description}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <IntegrateCodePanel />
-            </div>
-          </div>
-        </section>
-
-        <section
-          className={cn(sectionFrameClassName, "scroll-mt-20 bg-white p-0 dark:bg-[#18181b]")}
-          id="comparison"
-        >
-          <div className="flex flex-col gap-[36px] pb-[56px] pl-[48px] pr-[48px] pt-[56px] max-[639px]:gap-[30px] max-[639px]:pb-[38px] max-[639px]:pl-[18px] max-[639px]:pr-[18px] max-[639px]:pt-[38px] min-[640px]:max-[767px]:gap-[34px] min-[640px]:max-[767px]:pb-[54px] min-[640px]:max-[767px]:pl-[46px] min-[640px]:max-[767px]:pr-[46px] min-[640px]:max-[767px]:pt-[54px] min-[769px]:gap-[36px] min-[769px]:pl-[48px] min-[769px]:pr-[48px] min-[769px]:pt-[56px]">
-            <SectionTitle
-              description={t("comparison.description")}
-              descriptionClassName="max-w-[900px] text-zinc-500"
-              title={t("comparison.title")}
-              className="px-0 max-[639px]:px-0 min-[640px]:max-[767px]:px-0"
-            />
-
-            <ComparisonShowcase />
-          </div>
-        </section>
-
-        <section
-          className={cn(sectionFrameClassName, "border-y border-zinc-200 dark:border-[#3f3f46]")}
-        >
-          <div className="flex flex-col pt-[56px] gap-[36px] min-[640px]:max-[767px]:pt-[54px] min-[640px]:max-[767px]:gap-[34px] max-[639px]:pt-[38px] max-[639px]:gap-[30px]">
-            <SectionTitle
-              description={t("challenges.description")}
-              title={
-                <>
-                  {t("challenges.titleStart")}{" "}
-                  <span className="text-[#7f22fe]">{t("challenges.titleHighlight")}</span>
-                </>
-              }
-            />
-          </div>
-
-          <div className="mt-9 grid grid-cols-2 border-y border-zinc-100 dark:border-[#27272a] max-[639px]:mt-6 max-[639px]:grid-cols-1">
-            {challengeCards.map((card, index) => (
-              <div
-                key={card.title}
-                className={cn(
-                  "relative border-b border-l border-zinc-100 px-12 py-8 dark:border-[#27272a] min-[769px]:px-12 min-[769px]:py-10 max-[639px]:px-4",
-                  index % 2 === 1 && "border-r border-zinc-100 dark:border-r-[#27272a]"
-                )}
-              >
-                <div
-                  className="absolute inset-0 opacity-35 dark:opacity-[0.06]"
-                  style={stripePattern("#f4f4f5", 1, 8)}
-                />
-                <div className="relative flex h-full flex-col gap-[20px] max-[639px]:gap-[12px] min-[640px]:max-[767px]:gap-[18px]">
-                  <div
-                    className="flex size-10 items-center justify-center border"
-                    style={{
-                      backgroundColor: card.tone.background,
-                      borderColor: card.tone.border,
-                    }}
-                  >
-                    <ChallengeIcon card={card} />
-                  </div>
-                  <div className="flex max-w-[360px] flex-col gap-[6px] max-[639px]:gap-[4px] min-[640px]:max-[767px]:gap-[4px]">
-                    <h3 className="text-base font-bold leading-6 text-zinc-950 dark:text-[#fafafa]">
-                      {card.title}
-                    </h3>
-                    <p className="text-sm leading-5 text-zinc-500 dark:text-[#a1a1a1]">
-                      {card.description}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className={sectionFrameClassName}>
-          <div className="flex flex-col gap-12 pb-[56px] pt-[56px] max-[639px]:gap-9 max-[639px]:pb-[38px] max-[639px]:pt-[38px] min-[640px]:max-[767px]:gap-9 min-[640px]:max-[767px]:pb-[54px] min-[640px]:max-[767px]:pt-[54px] min-[769px]:pb-[56px] min-[769px]:pt-[56px]">
-            <SectionTitle
-              description={t("transform.description")}
-              descriptionClassName="text-zinc-600"
-              title={
-                <>
-                  {t("transform.titleStart")}{" "}
-                  <span className="text-[#7f22fe]">{t("transform.titleHighlight")}</span>
-                </>
-              }
-            />
-
-            <div className="grid grid-cols-2 gap-12 border-y border-zinc-100 dark:border-[#27272a] max-[639px]:grid-cols-1 max-[639px]:gap-8 max-[639px]:pl-[18px] max-[639px]:pr-[18px] min-[640px]:max-[767px]:grid-cols-1 min-[640px]:max-[767px]:gap-8 min-[640px]:max-[767px]:pl-[46px] min-[640px]:max-[767px]:pr-[46px] min-[769px]:gap-16 min-[769px]:pl-[48px] min-[769px]:pr-[48px]">
-              <div className="relative flex flex-col gap-[24px]">
-                {transformSteps.map((step, index) => (
-                  <div key={step.number} className="relative">
-                    <TransformStepCard step={step} />
-                    {index < transformSteps.length - 1 ? (
-                      <span className="absolute left-5 top-full flex h-[24px] w-2 items-center justify-center text-sm text-[#a684ff]">
-                        :
-                      </span>
-                    ) : null}
-                  </div>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-2 gap-px">
-                {transformMetrics.map((metric) => (
-                  <MetricPanel key={metric.label} card={metric} />
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section
-          className={cn(
-            sectionFrameClassName,
-            "scroll-mt-20 bg-[#f5f3ff] m-0 p-0 dark:bg-[#111113]"
-          )}
-          id="pricing"
-        >
-          <div className="flex flex-col gap-[36px] pb-0 pt-[56px] max-[639px]:gap-[30px] max-[639px]:pt-[38px] min-[640px]:max-[767px]:gap-[34px] min-[640px]:max-[767px]:pt-[54px] min-[769px]:gap-[36px] min-[769px]:pt-[56px] border-y border-zinc-200 dark:border-[#3f3f46]">
-            <div
-              className={cn(
-                "flex flex-col items-center gap-3 text-center",
-                sectionPaddingClassName
-              )}
-            >
-              <h2 className="text-left text-[30px] font-bold leading-9 text-zinc-950 dark:text-[#fafafa] max-[639px]:text-[22px] max-[639px]:leading-8">
-                <span className="text-zinc-950 dark:text-[#fafafa]">
-                  {t("pricing.titleStart")}{" "}
-                </span>
-                <span className="text-[#7f22fe]">{t("pricing.titleHighlight")}</span>
-              </h2>
-              <p className="text-base leading-6 text-[#5d0ec0] dark:text-[#c4b5fd]">
-                {t("pricing.description")}
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-0">
-              <div
-                className={cn(
-                  "grid grid-cols-[298px_1fr] items-center gap-14 pb-12 max-[639px]:grid-cols-1 max-[639px]:justify-items-center max-[639px]:gap-8 max-[639px]:pb-9 min-[769px]:grid-cols-[298px_1fr] min-[769px]:gap-20 min-[769px]:pb-16",
-                  sectionPaddingClassName
-                )}
-              >
-                <div className="flex justify-center min-[769px]:justify-start">
-                  <PricingBurst label={t("pricing.burstLabel")} />
-                </div>
-                <div
-                  className={cn(
-                    "text-left text-[26px] leading-[34px] text-[#5d0ec0] dark:text-[#c4b5fd] max-[639px]:max-w-[260px] max-[639px]:text-center max-[639px]:text-[18px] max-[639px]:leading-7 min-[769px]:text-left min-[769px]:text-[30px] min-[769px]:leading-9 font-sans"
-                  )}
-                >
-                  <p>{t("pricing.bodyLineOne")}</p>
-                  <p className="mt-8 max-[639px]:mt-6">{t("pricing.bodyLineTwo")}</p>
-                </div>
-              </div>
-
-              <div className="flex flex-col">
-                <div className="grid grid-cols-3 border-y border-[#ddd6ff] dark:border-[#3f3f46] max-[639px]:grid-cols-1 min-[769px]:grid-cols-[320px_1fr_1fr]">
-                  {pricingExamples.map((example, index) => (
-                    <div
-                      key={example.label}
-                      className={cn(
-                        "relative min-h-[100px] border-[#ddd6ff] px-6 py-6 dark:border-[#3f3f46] min-[769px]:px-12",
-                        index < pricingExamples.length - 1
-                          ? "min-[640px]:border-r max-[639px]:border-b"
-                          : ""
-                      )}
-                    >
-                      <div
-                        className="absolute inset-0 opacity-40 dark:opacity-[0.08]"
-                        style={stripePattern("#ddd6ff", 1, 8)}
-                      />
-                      <div className="relative flex h-full flex-col items-start justify-center gap-1.5 text-left max-[639px]:items-center max-[639px]:text-center">
-                        <span
-                          className={cn(
-                            "text-[20px] font-semibold leading-7 text-[#7f22fe]",
-                            accentClassName
-                            // anuphanClassName
-                          )}
-                        >
-                          {example.value}
-                        </span>
-                        <p className="text-sm leading-5 text-[#5d0ec0] font-sans">
-                          {example.label}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="grid grid-cols-[256px_1fr] max-[639px]:grid-cols-1 min-[640px]:max-[767px]:grid-cols-1 min-[769px]:grid-cols-[320px_1fr]">
-                  <div className="border-r border-[#ddd6ff] px-6 py-8 dark:border-[#3f3f46] max-[639px]:border-b max-[639px]:border-r-0 max-[639px]:px-4 max-[639px]:py-6 min-[640px]:max-[767px]:border-b min-[640px]:max-[767px]:border-r-0 min-[640px]:max-[767px]:px-12 min-[640px]:max-[767px]:py-6 min-[769px]:border-b-0 min-[769px]:border-r min-[769px]:px-12 min-[769px]:py-7">
-                    <div className="flex flex-col gap-4 items-start max-[639px]:items-center min-[640px]:max-[767px]:items-center">
-                      <h3 className="text-[24px] font-bold leading-8 text-[#2e1065] dark:text-[#fafafa] max-[639px]:text-[22px] max-[639px]:leading-8 text-left min-[640px]:max-[767px]:text-left">
-                        {t("fileLimits.title")}
-                      </h3>
-                      <p className="max-w-[228px] text-sm leading-5 text-[#7f22fe] dark:text-[#c4b5fd] max-[639px]:max-w-[320px] max-[639px]:text-center min-[640px]:max-[767px]:max-w-none min-[640px]:max-[767px]:text-center">
-                        {t("fileLimits.contactStart")}{" "}
-                        <LandingTrackedAnchor
-                          className="text-[#7f22fe] dark:text-[#c4b5fd]"
-                          ctaId="contact_sales"
-                          href="mailto:team@knowhereto.ai"
-                          sourceSection="pricing"
-                        >
-                          @knowhereto.ai
-                        </LandingTrackedAnchor>{" "}
-                        {t("fileLimits.contactEnd")}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-4 max-[639px]:grid-cols-2">
-                    {fileLimits.map((limit, index) => (
-                      <div
-                        key={limit.format}
-                        className={cn(
-                          "border-[#ddd6ff] px-6 py-10 text-center flex flex-col items-center justify-center dark:border-[#3f3f46] min-[769px]:min-h-full min-[769px]:gap-[14px] min-[640px]:max-[767px]:h-[120px] min-[640px]:max-[767px]:gap-[12px] max-[639px]:h-[110px] max-[639px]:gap-[10px]",
-                          index < fileLimits.length - 1 && "min-[640px]:border-r",
-                          index % 2 === 0 && "max-[639px]:border-r",
-                          index < 2 && "max-[639px]:border-b"
-                        )}
-                      >
-                        <FormatBadge
-                          chip={{ label: limit.format, tone: limit.tone }}
-                          value={limit.size}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className={sectionFrameClassName}>
-          <div
-            className={cn(
-              "flex flex-col items-start gap-5 pt-20 text-left max-[639px]:items-center max-[639px]:gap-6 max-[639px]:pt-9 max-[639px]:text-center",
-              sectionPaddingClassName
-            )}
-          >
-            <div className="flex flex-col items-start gap-2 max-[639px]:items-center">
-              <div className="flex flex-wrap items-center gap-4 max-[639px]:flex-col max-[639px]:justify-center max-[639px]:gap-3">
-                <div className="relative overflow-hidden rounded-[4px] border border-b-[6px] border-[#ddd6ff] bg-[#ede9fe] px-3 pb-2 pt-2">
-                  <div
-                    className="absolute inset-0 opacity-40 dark:opacity-[0.08]"
-                    style={stripePattern("#ddd6ff", 1, 8)}
-                  />
-                  <span className="relative text-[30px] font-bold leading-9 text-[#5d0ec0]">
-                    {t("enterprise.badge")}
-                  </span>
-                </div>
-                <h2 className="text-left text-[30px] font-bold leading-9 text-zinc-950 dark:text-[#fafafa] max-[639px]:text-[22px] max-[639px]:leading-8">
-                  {t("enterprise.titleStart")}{" "}
-                  <span className="text-[#7f22fe]">{t("enterprise.titleHighlight")}</span>?
-                </h2>
-              </div>
-              <p className="text-base leading-6 text-zinc-600 dark:text-[#d4d4d8] max-[639px]:max-w-[330px]">
-                {t("enterprise.description")}
-              </p>
-            </div>
-            <div className="flex justify-center min-[769px]:justify-start">
-              <ActionLink
-                ctaId="contact_sales"
-                href="mailto:team@knowhereto.ai"
-                sourceSection="enterprise"
-                className={mobileActionLinkClassName}
-                external
-              >
-                {t("actions.contactSales")}
-              </ActionLink>
-            </div>
-          </div>
-
-          <div className="mt-12 grid grid-cols-2 border-t border-zinc-100 px-12 py-7 dark:border-[#27272a] max-[639px]:mt-5 max-[639px]:px-5 max-[639px]:py-2.5">
-            {enterpriseItems.map((item) => (
-              <EnterpriseCheckItem key={item} label={item} />
-            ))}
-          </div>
-        </section>
-
-        <section className={sectionFrameClassName}>
-          <div className="flex flex-col gap-9 py-14 max-[639px]:gap-6 max-[639px]:py-9 border-y border-zinc-200 dark:border-[#3f3f46]">
-            <SectionTitle
-              title={
-                <>
-                  {t("faq.titleStart")}{" "}
-                  <span className="text-[#7f22fe]">{t("faq.titleHighlight")}</span>
-                </>
-              }
-            />
-            <div className="flex flex-col border-x border-zinc-100 dark:border-[#27272a] max-[639px]:border-x-0">
-              {faqItems.map((faq) => (
-                <FaqRow key={faq.question} answer={faq.answer} question={faq.question} />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section
-          className={cn(
-            sectionFrameClassName,
-            "py-[56px] text-center min-[640px]:max-[767px]:py-[54px] max-[639px]:py-[38px]"
-          )}
-        >
-          <div
-            className={cn(
-              "flex flex-col items-center gap-[36px] min-[640px]:max-[767px]:gap-[34px] max-[639px]:gap-[30px]",
-              sectionPaddingClassName
-            )}
-          >
-            <SectionTitle
-              className="items-center"
-              description={t("finalCta.description")}
-              descriptionClassName="max-w-[980px] text-center text-base leading-6 text-zinc-600 max-[639px]:max-w-[320px]"
-              title={
-                <>
-                  {t("finalCta.titleStart")}{" "}
-                  <span className="text-[#7f22fe]">{t("finalCta.titleHighlight")}</span>?
-                </>
-              }
-            />
-
-            <div className="flex flex-row items-center justify-center gap-2 max-[639px]:flex-col max-[639px]:gap-3">
-              <ActionLink
-                ctaId="start_free_trial"
-                href="/login"
-                sourceSection="final_cta"
-                className={cn(mobileActionLinkClassName, "w-fit")}
-              >
-                {t("actions.startFreeTrial")}
-              </ActionLink>
-              <ActionLink
-                ctaId="book_demo"
-                href="mailto:team@knowhereto.ai"
-                sourceSection="final_cta"
-                variant="secondary"
-                className={cn(mobileActionLinkClassName, "w-fit")}
-                external
-              >
-                {t("actions.bookDemo")}
-              </ActionLink>
-            </div>
-
-            <div className="flex w-full flex-col items-center gap-[8px] pb-[8px]">
-              <FooterChip color="#fb2c36">{t("finalCta.noCreditCard")}</FooterChip>
-              <FooterChip color="#efb100">{t("finalCta.freeTrial")}</FooterChip>
-              <FooterChip color="#00c951">{t("finalCta.cancelAnytime")}</FooterChip>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer
-        className={cn(
-          "mx-auto flex w-full flex-row items-center justify-between gap-3 border border-zinc-200 bg-white text-left dark:border-[#3f3f46] dark:bg-[#18181b] max-[639px]:flex-col max-[639px]:text-center min-[768px]:max-w-[768px] min-[769px]:max-w-[976px]",
-          footerPaddingClassName
-        )}
-      >
-        <LandingBrand size="header" />
-        <p className="text-xs leading-4 text-zinc-400">{t("footer.copyright")}</p>
-      </footer>
-      <NewsletterSubscribePrompt />
+        </div>
+      </section>
     </div>
+    <div className="formats-scroll-track">
+      <section className="section shell reveal" id="formats" aria-labelledby="formats-title">
+        <div className="section-heading"><p className="section-no"><SectionShinyText text={t("formats.sectionNo")} /></p><h2 id="formats-title"><SectionShinyText text={t("formats.title")} /></h2><p>{t("formats.description")}</p></div>
+        <div className="formats-grid">
+          <article className="format-feature format-feature--formats">
+            <div className="format-orbit-layout format-intro-ready">
+              <span className="format-orbit-halo format-orbit-halo--supported" aria-hidden="true" />
+              <span className="format-orbit-halo format-orbit-halo--coming" aria-hidden="true" />
+              <div className="format-orbit-copy format-orbit-copy--supported">
+                <p>{t("formats.supportedIntro")}<br /> {t("formats.supportedIntroLineTwo")}</p>
+                <p>{t("formats.supportedList")}</p>
+              </div>
+              <div className="format-orbit-stage format-orbit-stage--thread-globe" aria-label={t("formats.orbitAria")}>
+                <canvas className="format-globe-canvas" data-format-globe aria-hidden="true" />
+                <span className="format-orbit-ring format-orbit-ring--inner" aria-hidden="true" />
+                <span className="format-orbit-ring format-orbit-ring--middle" aria-hidden="true" />
+                <span className="format-orbit-ring format-orbit-ring--outer" aria-hidden="true" />
+                <span className="format-orbit-center" aria-hidden="true">KNOWHERE</span>
+                <div className="format-orbit-shell format-orbit-shell--inner">
+                  <div className="format-chips format-orbit-track">
+                    <span className="format-orbit-item" style={{['--orbit-x' as string]: '100%', ['--orbit-y' as string]: '50%'}}><span className="format-orbit-counter"><button type="button" className="format-orbit-chip" data-format="documents">PDF</button></span></span>
+                    <span className="format-orbit-item" style={{['--orbit-x' as string]: '0%', ['--orbit-y' as string]: '50%'}}><span className="format-orbit-counter"><button type="button" className="format-orbit-chip" data-format="documents">DOCX</button></span></span>
+                  </div>
+                </div>
+                <div className="format-orbit-shell format-orbit-shell--middle">
+                  <div className="format-chips format-orbit-track">
+                    <span className="format-orbit-item" style={{['--orbit-x' as string]: '100%', ['--orbit-y' as string]: '50%'}}><span className="format-orbit-counter"><button type="button" className="format-orbit-chip" data-format="presentations">PPTX</button></span></span>
+                    <span className="format-orbit-item" style={{['--orbit-x' as string]: '25%', ['--orbit-y' as string]: '93.3%'}}><span className="format-orbit-counter"><button type="button" className="format-orbit-chip" data-format="data">XLSX</button></span></span>
+                    <span className="format-orbit-item" style={{['--orbit-x' as string]: '25%', ['--orbit-y' as string]: '6.7%'}}><span className="format-orbit-counter"><button type="button" className="format-orbit-chip" data-format="data">CSV</button></span></span>
+                  </div>
+                </div>
+                <div className="format-orbit-shell format-orbit-shell--outer">
+                  <div className="format-chips format-orbit-track">
+                    <span className="format-orbit-item" style={{['--orbit-x' as string]: '100%', ['--orbit-y' as string]: '50%'}}><span className="format-orbit-counter"><button type="button" className="format-orbit-chip" data-format="documents">Markdown</button></span></span>
+                    <span className="format-orbit-item" style={{['--orbit-x' as string]: '25%', ['--orbit-y' as string]: '93.3%'}}><span className="format-orbit-counter"><button type="button" className="format-orbit-chip" data-format="visual">JPG / PNG</button></span></span>
+                    <span className="format-orbit-item" style={{['--orbit-x' as string]: '25%', ['--orbit-y' as string]: '6.7%'}}><span className="format-orbit-counter"><button type="button" className="format-orbit-chip" data-format="data">TXT / JSON</button></span></span>
+                  </div>
+                </div>
+              </div>
+              <div className="format-orbit-copy format-orbit-copy--coming">
+                <p>{t("formats.comingSoonLineOne")}<br />{t("formats.comingSoonLineTwo")} <span>{t("formats.comingSoon")}</span></p>
+              </div>
+            </div>
+          </article>
+          <div className="formats-secondary-scroll">
+            <div className="formats-secondary-sticky">
+              <div className="formats-secondary-viewport">
+                <div className="formats-secondary-grid">
+                  <article className="format-feature"><div className="format-feature-icon" aria-hidden="true"><i className="ri-file-search-line" /></div><div><h3>{t("formats.features.pageNative.title")}</h3><p>{t("formats.features.pageNative.description")}</p></div></article>
+                  <article className="format-feature"><div className="format-feature-icon" aria-hidden="true"><i className="ri-node-tree" /></div><div><h3>{t("formats.features.agentReady.title")}</h3><p>{t("formats.features.agentReady.description")}</p></div></article>
+                  <article className="format-feature"><div className="format-feature-icon" aria-hidden="true"><i className="ri-flask-line" /></div><div><h3>{t("formats.features.formula.title")}</h3><p>{t("formats.features.formula.description")}</p></div></article>
+                  <article className="format-feature"><div className="format-feature-icon" aria-hidden="true"><i className="ri-route-line" /></div><div><h3>{t("formats.features.tracing.title")}</h3><p>{t("formats.features.tracing.description")}</p></div></article>
+                  <article className="format-feature"><div className="format-feature-icon" aria-hidden="true"><i className="ri-server-line" /></div><div><h3>{t("formats.features.onPrem.title")}</h3><p>{t("formats.features.onPrem.description")}</p></div></article>
+                  <article className="format-feature"><div className="format-feature-icon" aria-hidden="true"><i className="ri-code-s-slash-line" /></div><div><h3>{t("formats.features.apiFirst.title")}</h3><p>{t("formats.features.apiFirst.description")}</p></div></article>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <section className="section shell reveal" id="comparison" aria-labelledby="comparison-title">
+      <div className="section-heading">
+        <p className="section-no"><SectionShinyText text={t("comparison.sectionNo")} /></p>
+        <h2 id="comparison-title"><SectionShinyText text={t("comparison.title")} /></h2>
+        <p>{t("comparison.description")}</p>
+      </div>
+      <div className="comparison-frame" aria-label={t("comparison.frameAria")}>
+        <div className="comparison-dashboard">
+          <div className="comparison-chart">
+            <div className="comparison-chart-header">
+              <p className="comparison-chart-note">{t("comparison.performance")}</p>
+              <div className="comparison-legend" aria-label={t("comparison.legendAria")}><span><i />{t("comparison.legend.rawDocs")}</span><span><i className="unstructured-key" />{t("comparison.legend.unstructured")}</span><span><i className="knowhere-key" />{t("comparison.legend.knowhere")}</span><span><i className="mineru-key" />{t("comparison.legend.mineru")}</span><span><i className="markitdown-key" />{t("comparison.legend.markitdown")}</span></div>
+            </div>
+            <div className="comparison-plot">
+              <div className="comparison-axis-y comparison-axis-y--left" aria-hidden="true"><strong>{t("comparison.tokensUsed")}</strong><div className="comparison-axis-ticks"><span>2000</span><span>1500</span><span>1000</span><span>500</span><span>0</span></div></div>
+              <div className="comparison-plot-body">
+                <div className="comparison-metrics" aria-hidden="true">
+                  <div className="comparison-metric"><i data-value={1630} style={{height: '81.5%'}} /><i data-value={1886} style={{height: '94.3%'}} /><i data-value={1574} style={{height: '78.7%'}} /><i data-value={1670} style={{height: '83.5%'}} /><i data-value={1503} style={{height: '75.15%'}} /></div>
+                  <div className="comparison-metric"><i data-value="20.57" style={{height: '82.28%'}} /><i data-value="16.61" style={{height: '66.44%'}} /><i data-value="15.25" style={{height: '61%'}} /><i data-value="17.48" style={{height: '69.92%'}} /><i data-value="15.2" style={{height: '60.8%'}} /></div>
+                  <div className="comparison-metric"><i data-value="2.61" style={{height: '52.2%'}} /><i data-value="2.34" style={{height: '46.8%'}} /><i data-value="2.14" style={{height: '42.8%'}} /><i data-value="2.20" style={{height: '44%'}} /><i data-value="2.18" style={{height: '43.6%'}} /></div>
+                  <div className="comparison-metric"><i data-value="0.50" style={{height: '50%'}} /><i data-value="0.61" style={{height: '61%'}} /><i data-value="0.68" style={{height: '68%'}} /><i data-value="0.66" style={{height: '66%'}} /><i data-value="0.59" style={{height: '59%'}} /></div>
+                  <div className="comparison-metric"><i data-value="0.53" style={{height: '53%'}} /><i data-value="0.69" style={{height: '69%'}} /><i data-value="0.79" style={{height: '79%'}} /><i data-value="0.64" style={{height: '64%'}} /><i data-value="0.54" style={{height: '54%'}} /></div>
+                  <div className="comparison-metric"><i data-value="0.74" style={{height: '74%'}} /><i data-value="0.77" style={{height: '77%'}} /><i data-value="0.82" style={{height: '82%'}} /><i data-value="0.78" style={{height: '78%'}} /><i data-value="0.76" style={{height: '76%'}} /></div>
+                </div>
+                <div className="comparison-metric-labels"><span>{t("comparison.tokensUsed")}</span><span>{t("comparison.processingTime")}</span><span>{t("comparison.agentIterations")}</span><span>{t("comparison.firstPass")}</span><span>{t("comparison.afterFeedback")}</span><span>{t("comparison.recall")}</span></div>
+              </div>
+              <div className="comparison-axis-y comparison-axis-y--right" aria-hidden="true"><div className="comparison-axis-ticks"><span>25</span><span>20</span><span>15</span><span>10</span><span>5</span><span>0</span></div><strong>{t("comparison.processingTimeSeconds")}</strong></div>
+              <div className="comparison-axis-y comparison-axis-y--right comparison-axis-y--outer" aria-hidden="true"><div className="comparison-axis-ticks"><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span><span>0</span></div><strong>{t("comparison.agentIterations")}</strong></div>
+            </div>
+          </div>
+        </div>
+        <div className="comparison-scoreboard is-expanded" role="group" aria-label={t("comparison.matrixAria")}>
+          <div className="comparison-scoreboard-head"><strong>{t("comparison.matrix")}</strong></div>
+          <div className="comparison-scoreboard-body" id="comparison-table" aria-hidden="false"><div className="comparison-scoreboard-grid">
+              <div className="scoreboard-cell scoreboard-head-cell">{t("comparison.feature")}</div><div className="scoreboard-cell scoreboard-head-cell scoreboard-knowhere">{t("comparison.legend.knowhere")}</div><div className="scoreboard-cell scoreboard-head-cell">{t("comparison.typicalParsers")}</div>
+              <div className="scoreboard-cell scoreboard-feature">{t("comparison.rows.hierarchy")}</div><div className="scoreboard-cell scoreboard-knowhere"><span className="scoreboard-mark scoreboard-mark--yes"><i className="ri-checkbox-circle-fill" aria-hidden="true" />{t("comparison.supported")}</span></div><div className="scoreboard-cell"><span className="scoreboard-mark scoreboard-mark--bad"><i className="ri-error-warning-fill" aria-hidden="true" />{t("comparison.limited")}</span></div>
+              <div className="scoreboard-cell scoreboard-feature">{t("comparison.rows.mergedCells")}</div><div className="scoreboard-cell scoreboard-knowhere"><span className="scoreboard-mark scoreboard-mark--yes"><i className="ri-checkbox-circle-fill" aria-hidden="true" />{t("comparison.supported")}</span></div><div className="scoreboard-cell"><span className="scoreboard-mark scoreboard-mark--bad"><i className="ri-error-warning-fill" aria-hidden="true" />{t("comparison.limited")}</span></div>
+              <div className="scoreboard-cell scoreboard-feature">{t("comparison.rows.boundaries")}</div><div className="scoreboard-cell scoreboard-knowhere"><span className="scoreboard-mark scoreboard-mark--yes"><i className="ri-checkbox-circle-fill" aria-hidden="true" />{t("comparison.supported")}</span></div><div className="scoreboard-cell"><span className="scoreboard-mark scoreboard-mark--no"><i className="ri-close-circle-fill" aria-hidden="true" />{t("comparison.notSupported")}</span></div>
+              <div className="scoreboard-cell scoreboard-feature">{t("comparison.rows.tracing")}</div><div className="scoreboard-cell scoreboard-knowhere"><span className="scoreboard-mark scoreboard-mark--yes"><i className="ri-checkbox-circle-fill" aria-hidden="true" />{t("comparison.supported")}</span></div><div className="scoreboard-cell"><span className="scoreboard-mark scoreboard-mark--bad"><i className="ri-error-warning-fill" aria-hidden="true" />{t("comparison.limited")}</span></div>
+              <div className="scoreboard-cell scoreboard-feature">{t("comparison.rows.progressive")}</div><div className="scoreboard-cell scoreboard-knowhere"><span className="scoreboard-mark scoreboard-mark--yes"><i className="ri-checkbox-circle-fill" aria-hidden="true" />{t("comparison.supported")}</span></div><div className="scoreboard-cell"><span className="scoreboard-mark scoreboard-mark--no"><i className="ri-close-circle-fill" aria-hidden="true" />{t("comparison.notSupported")}</span></div>
+              <div className="scoreboard-cell scoreboard-feature">{t("comparison.rows.visual")}</div><div className="scoreboard-cell scoreboard-knowhere"><span className="scoreboard-mark scoreboard-mark--yes"><i className="ri-checkbox-circle-fill" aria-hidden="true" />{t("comparison.supported")}</span></div><div className="scoreboard-cell"><span className="scoreboard-mark scoreboard-mark--limited"><i className="ri-subtract-fill" aria-hidden="true" />{t("comparison.limited")}</span></div>
+            </div></div>
+        </div>
+      </div>
+    </section>
+    <section className="section shell reveal" id="integration" aria-labelledby="integration-title">
+      <div className="section-heading"><p className="section-no"><SectionShinyText text={t("integration.sectionNo")} /></p><h2 id="integration-title"><SectionShinyText text={t("integration.title")} /></h2><p>{t("integration.description")}</p></div>
+      <div className="integration-grid">
+        <ol className="steps"><li><div><h3><span className="integration-step-number">01</span>{t("integration.steps.key.title")}</h3><p>{t("integration.steps.key.description")}</p></div></li><li><div><h3><span className="integration-step-number">02</span>{t("integration.steps.submit.title")}</h3><p>{t("integration.steps.submit.description")}</p></div></li><li><div><h3><span className="integration-step-number">03</span>{t("integration.steps.results.title")}</h3><p>{t("integration.steps.results.description")}</p></div></li></ol>
+        <div className="integration-plinth">
+          <CatenoidFieldTuner />
+        </div>
+        <div className="code-card"><div className="code-head"><span>{t("integration.codeHead")}</span><button type="button" className="copy-code">{t("integration.copy")}</button></div><div className="tabs compact" role="tablist" aria-label={t("integration.codeAria")}><button role="tab" id="code-python" aria-selected="true" aria-controls="code-panel-python">Python</button><button role="tab" id="code-node" aria-selected="false" aria-controls="code-panel-node" tabIndex={-1}>Node.js</button><button role="tab" id="code-curl" aria-selected="false" aria-controls="code-panel-curl" tabIndex={-1}>cURL</button></div><div className="code-panels"><pre role="tabpanel" tabIndex={0} id="code-panel-python" aria-labelledby="code-python"><code>{`# Illustrative only — no real endpoint
+result = knowhere.process("sample.pdf")
+print(result.structure)`}</code></pre><pre role="tabpanel" tabIndex={0} id="code-panel-node" aria-labelledby="code-node"><code>{`// Illustrative only — no real endpoint
+const result = await knowhere.process("sample.pdf")
+console.log(result.structure)`}</code></pre><pre role="tabpanel" tabIndex={0} id="code-panel-curl" aria-labelledby="code-curl"><code>{`# Illustrative only — no real endpoint
+curl -X POST "[endpoint-to-be-confirmed]" \\
+  -F "file=@sample.pdf"`}</code></pre></div><p className="sr-only" aria-live="polite" data-copy-live /></div>
+        <div className="mcp"><div className="mcp-copy"><h3>{t("integration.mcpTitle")}</h3><p>{t("integration.mcpDescription")}</p></div><LandingTrackedLink href="https://docs.knowhereto.ai/mcp" className="text-link" ctaId="view_mcp_docs" external sourceSection="integration">{t("integration.mcpLink")} <i className="ri-arrow-right-s-line" aria-hidden="true" /></LandingTrackedLink></div>
+      </div>
+    </section>
+    <section className="section shell reveal" id="pricing" aria-labelledby="pricing-title">
+      <div className="pricing-card">
+        <div className="pricing-heading"><p className="section-no"><SectionShinyText text={t("pricing.sectionNo")} /></p><h2 id="pricing-title"><SectionShinyText text={t("pricing.title")} /></h2><p>{t("pricing.description")}</p></div>
+        <div className="pricing-calculator">
+          <div className="pricing-result-card">
+            <div className="pricing-result-value">
+              <div className="pricing-result-estimate">
+                <span>{t("pricing.estimatedCost")}</span>
+                <output data-pricing-price aria-live="polite">$9.00</output>
+              </div>
+              <div className="pricing-result-config">
+                <label htmlFor="pricing-page-count">{t("pricing.pageCount")}</label>
+                <div className="pricing-result-pages"><input id="pricing-page-count" type="number" min={100} max={10000} step={100} defaultValue={600} /></div>
+              </div>
+            </div>
+          </div>
+          <dl className="pricing-facts"><div><dt>{t("pricing.estimatedBudget")}</dt><dd data-pricing-price>$9.00</dd></div><div><dt>{t("pricing.pdfs")}</dt><dd data-pricing-pdf>6 documents</dd></div><div><dt>{t("pricing.largeDocs")}</dt><dd data-pricing-large>1 document</dd></div><div><dt>{t("pricing.commitment")}</dt><dd>{t("pricing.noMinimum")}</dd></div></dl>
+          <div className="pricing-control-card"><label className="sr-only" htmlFor="pricing-pages">{t("pricing.pagesToProcess")}</label><div className="pricing-range-control" style={{['--pricing-progress' as string]: '5.0505%'}}>
+            <div className="pricing-range-ticks" aria-hidden="true">
+              {Array.from({ length: 81 }, (_, index) => <span key={index} className={`pricing-range-tick${index % 20 === 0 ? ' is-major' : index % 4 === 0 ? ' is-medium' : ''}`} style={{ left: `${index * 1.25}%` }} />)}
+            </div>
+            <span className="pricing-range-selection" aria-hidden="true" /><span className="pricing-range-handle" data-pricing-range-handle style={{['--pricing-progress' as string]: '5.0505%'}} aria-hidden="true"><span className="pricing-range-handle-visual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12H21M7 8L3 12L7 16M17 8L21 12L17 16" /></svg></span></span><span className="pricing-range-budget" data-pricing-range-budget style={{['--pricing-progress' as string]: '5.0505%'}}><strong data-pricing-price>$9.00</strong></span><input className="pricing-range" id="pricing-pages" type="range" min={100} max={10000} step={100} defaultValue={600} aria-label={t("pricing.pagesToProcess")} /></div>
+            <div className="pricing-range-labels"><span>{t("pricing.scaleStart")}</span><span>2,500</span><span>5,000</span><span>7,500</span><span>10,000</span></div>
+          </div>
+        </div>
+        <section className="pricing-file-limits" aria-labelledby="pricing-file-limits-title">
+          <div className="pricing-file-limits-head"><h3 id="pricing-file-limits-title">{t("pricing.fileLimitsTitle")}</h3><p>{t("pricing.fileLimitsContact")} <LandingTrackedAnchor href="mailto:team@knowhereto.ai" ctaId="contact_sales" sourceSection="pricing">team@knowhereto.ai</LandingTrackedAnchor><br />{t("pricing.fileLimitsEnd")}</p></div>
+          <dl><div><dt>.pdf</dt><dd>100M</dd></div><div><dt>.docx</dt><dd>50M</dd></div><div><dt>.xlsx</dt><dd>100M</dd></div><div><dt>.pptx</dt><dd>100M</dd></div></dl>
+        </section>
+      </div>
+    </section>
+    <section className="section shell reveal" id="enterprise" aria-labelledby="enterprise-title">
+      <div className="enterprise-content">
+        <p className="section-no enterprise-label"><SectionShinyText text={t("enterprise.sectionNo")} /></p>
+        <div className="enterprise-copy"><h2 id="enterprise-title"><SectionShinyText text={t("enterprise.title")} /></h2><div className="enterprise-copy-detail"><p className="lede">{t("enterprise.lede")}</p><LandingTrackedAnchor className="button sales-link" href="mailto:team@knowhereto.ai" ctaId="contact_sales" sourceSection="enterprise">{t("enterprise.talk")}</LandingTrackedAnchor></div></div>
+        <ul className="enterprise-metrics">
+          <li className="enterprise-metric"><div className="enterprise-metric-visual" aria-hidden="true"><EnterpriseIllustration type="limits" /></div><div className="enterprise-metric-copy"><strong>{t("enterprise.metrics.limits.title")}</strong><p>{t("enterprise.metrics.limits.description")}</p></div></li>
+          <li className="enterprise-metric"><div className="enterprise-metric-visual" aria-hidden="true"><EnterpriseIllustration type="priority" /></div><div className="enterprise-metric-copy"><strong>{t("enterprise.metrics.priority.title")}</strong><p>{t("enterprise.metrics.priority.description")}</p></div></li>
+          <li className="enterprise-metric"><div className="enterprise-metric-visual" aria-hidden="true"><EnterpriseIllustration type="deployment" /></div><div className="enterprise-metric-copy"><strong>{t("enterprise.metrics.deployment.title")}</strong><p>{t("enterprise.metrics.deployment.description")}</p></div></li>
+          <li className="enterprise-metric"><div className="enterprise-metric-visual" aria-hidden="true"><EnterpriseIllustration type="support" /></div><div className="enterprise-metric-copy"><strong>{t("enterprise.metrics.support.title")}</strong><p>{t("enterprise.metrics.support.description")}</p></div></li>
+          <li className="enterprise-metric"><div className="enterprise-metric-visual" aria-hidden="true"><EnterpriseIllustration type="sla" /></div><div className="enterprise-metric-copy"><strong>{t("enterprise.metrics.sla.title")}</strong><p>{t("enterprise.metrics.sla.description")}</p></div></li>
+          <li className="enterprise-metric"><div className="enterprise-metric-visual" aria-hidden="true"><EnterpriseIllustration type="commercial" /></div><div className="enterprise-metric-copy"><strong>{t("enterprise.metrics.commercial.title")}</strong><p>{t("enterprise.metrics.commercial.description")}</p></div></li>
+        </ul>
+      </div>
+    </section>
+    <section className="section shell reveal" id="faq" aria-labelledby="faq-title">
+        <div className="section-heading"><p className="section-no"><SectionShinyText text={t("faq.sectionNo")} /></p><h2 id="faq-title"><SectionShinyText text={t("faq.title")} /></h2></div>
+        <div className="faq-list">
+          <details open><summary aria-expanded="true" aria-controls="faq-answer-1">{t("faq.items.charged.question")}<span aria-hidden="true">↓</span></summary><p id="faq-answer-1">{t("faq.items.charged.answer")}</p></details>
+          <details><summary aria-expanded="false" aria-controls="faq-answer-2">{t("faq.items.rollover.question")}<span aria-hidden="true">↓</span></summary><p id="faq-answer-2">{t("faq.items.rollover.answer")}</p></details>
+          <details><summary aria-expanded="false" aria-controls="faq-answer-3">{t("faq.items.refund.question")}<span aria-hidden="true">↓</span></summary><p id="faq-answer-3">{t("faq.items.refund.answer")}</p></details>
+          <details><summary aria-expanded="false" aria-controls="faq-answer-4">{t("faq.items.payment.question")}<span aria-hidden="true">↓</span></summary><p id="faq-answer-4">{t("faq.items.payment.answer")}</p></details>
+        </div>
+    </section>
+    <section className="section shell final-cta reveal" id="final-cta" aria-labelledby="final-title">
+      <FinalCtaHelix theme={theme} />
+      <div id="final-cta-copy">
+        <p className="section-no"><SectionShinyText text={t("finalCta.sectionNo")} /></p>
+        <h2 id="final-title"><SectionShinyText text={t("finalCta.title")} /></h2>
+      </div>
+      <div className="final-cta-detail">
+        <p className="lede">{t("finalCta.lede")}</p>
+        <div id="final-cta-actions">
+          <LandingTrackedLink className="button" ctaId="start_free_trial" href="/login" sourceSection="final_cta">{t("hero.startFreeTrial")}</LandingTrackedLink>
+          <LandingTrackedAnchor className="button button-secondary" ctaId="book_demo" href="mailto:team@knowhereto.ai" sourceSection="final_cta">{t("finalCta.bookDemo")}</LandingTrackedAnchor>
+        </div>
+        <ul className="final-cta-benefits" aria-label={t("finalCta.benefitsAria")}>
+          <li><svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M6.75 9 8.25 10.5 11.25 7.5M15.75 9c0 .886-.175 1.764-.514 2.583a6.75 6.75 0 0 1-3.653 3.653A6.75 6.75 0 0 1 9 15.75a6.75 6.75 0 0 1-2.583-.514 6.75 6.75 0 0 1-3.653-3.653A6.75 6.75 0 0 1 2.25 9a6.75 6.75 0 0 1 13.5 0Z" /></svg>{t("finalCta.trial")}</li>
+          <li><svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M6.75 9 8.25 10.5 11.25 7.5M15.75 9c0 .886-.175 1.764-.514 2.583a6.75 6.75 0 0 1-3.653 3.653A6.75 6.75 0 0 1 9 15.75a6.75 6.75 0 0 1-2.583-.514 6.75 6.75 0 0 1-3.653-3.653A6.75 6.75 0 0 1 2.25 9a6.75 6.75 0 0 1 13.5 0Z" /></svg>{t("finalCta.noCard")}</li>
+          <li><svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M6.75 9 8.25 10.5 11.25 7.5M15.75 9c0 .886-.175 1.764-.514 2.583a6.75 6.75 0 0 1-3.653 3.653A6.75 6.75 0 0 1 9 15.75a6.75 6.75 0 0 1-2.583-.514 6.75 6.75 0 0 1-3.653-3.653A6.75 6.75 0 0 1 2.25 9a6.75 6.75 0 0 1 13.5 0Z" /></svg>{t("finalCta.cancel")}</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+  <div className="toast" role="status" aria-live="polite" hidden><p data-toast-message /><button type="button" aria-label={t("toastClose")}>×</button></div>
+</div>
   );
 };

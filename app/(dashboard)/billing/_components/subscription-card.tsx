@@ -1,8 +1,8 @@
 "use client";
 
+import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
 import { useSubscribePlan } from "@app/(dashboard)/billing/_hooks/use-subscription";
 import { Badge } from "@components/ui/badge";
-import { Button } from "@components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
 import { trackCheckoutStarted } from "@lib/posthog";
 import type { Subscription, SubscriptionPlan } from "@server/external-api/subscriptions";
@@ -70,9 +70,9 @@ export function SubscriptionCard({
   };
 
   const getButtonVariant = () => {
-    if (isCurrentPlan && isActive) return "secondary";
-    if (plan.popular) return "default";
-    return "outline";
+    if (isCurrentPlan && isActive) return "secondary" as const;
+    if (plan.popular) return "primary" as const;
+    return "secondary" as const;
   };
 
   return (
@@ -132,7 +132,7 @@ export function SubscriptionCard({
           </ul>
         )}
 
-        <Button
+        <DashboardActionButton
           className="w-full"
           variant={getButtonVariant()}
           onClick={handleSubscribe}
@@ -140,7 +140,7 @@ export function SubscriptionCard({
         >
           {subscribeMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {getButtonText()}
-        </Button>
+        </DashboardActionButton>
       </CardContent>
     </Card>
   );

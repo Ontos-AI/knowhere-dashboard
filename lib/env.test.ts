@@ -81,6 +81,48 @@ describe("env database pools", (): void => {
   });
 });
 
+describe("env.WORDPRESS_SITE", () => {
+  it("defaults to the public Knowhere WordPress.com site id", async () => {
+    const { env } = await loadEnv({
+      WORDPRESS_SITE: undefined,
+    });
+
+    expect(env.WORDPRESS_SITE).toBe("knowheretoai.wordpress.com");
+  });
+
+  it("loads a configured WordPress.com site id", async () => {
+    const { env } = await loadEnv({
+      WORDPRESS_SITE: "example.wordpress.com",
+    });
+
+    expect(env.WORDPRESS_SITE).toBe("example.wordpress.com");
+  });
+});
+
+describe("env build-time validation", () => {
+  it("skips validation during next production build", async () => {
+    const envModule = await loadEnv({
+      NEXT_PHASE: "phase-production-build",
+      BETTER_AUTH_SECRET: undefined,
+      BETTER_AUTH_URL: undefined,
+      DATABASE_URL: undefined,
+      NEXT_PUBLIC_API_URL: undefined,
+      NEXT_PUBLIC_AUTH_BASE_URL: undefined,
+      NEXT_PUBLIC_APP_URL: undefined,
+    });
+
+    expect(envModule.env.DATABASE_URL).toBeUndefined();
+  });
+
+  it("treats blank GA measurement ids as unset", async () => {
+    const { env } = await loadEnv({
+      GA_MEASUREMENT_ID: "",
+    });
+
+    expect(env.GA_MEASUREMENT_ID).toBeUndefined();
+  });
+});
+
 describe("env.OPENAI_ADS", () => {
   it("normalizes blank OpenAI Ads values to undefined", async () => {
     const { env } = await loadEnv({

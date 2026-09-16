@@ -5,6 +5,22 @@ const externalApiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'knowheretoai.wordpress.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.wp.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'secure.gravatar.com',
+      },
+    ],
+  },
   async rewrites() {
     return [
       // Keep Better Auth routes handled by this app.

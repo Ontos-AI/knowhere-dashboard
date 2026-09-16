@@ -533,8 +533,9 @@ export const usersRouter = protectedProcedure.router({
    * No persistent Knowhere API key is created, stored, or returned.
    *
    * The Dashboard session cookie already authenticates the caller, so
-   * the JWT stays short-lived. If a relying app needs a fresh token
-   * later, it calls this endpoint again with the still-valid session.
+   * the JWT stays short-lived. Interactive callers refresh by calling this
+   * endpoint again with the still-valid session. Background workflows
+   * without a session cookie use `knowhereServiceJwt.refresh`.
    */
   issueServiceJwt: protectedProcedure.handler(async ({ context }) => {
     return {

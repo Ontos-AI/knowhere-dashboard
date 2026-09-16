@@ -54,12 +54,12 @@ export const dashboardDialogDesign: DashboardDialogDesign = {
   formatBuyCreditsDisplayAmount,
   usageWelcome: {
     codeIconTag:
-      "absolute left-0 top-0 flex size-10 items-center justify-center border border-[#ddd6fe] border-l-[4px] bg-[#ede9fe] min-[375px]:size-10 sm:size-12 lg:size-12",
+      "absolute left-0 top-0 flex size-10 items-center justify-center border border-[#7efedd] border-l-[4px] bg-[#caffee] min-[375px]:size-10 sm:size-12 lg:size-12",
     codePanelFrame:
       "px-4 pb-[38px] pt-0 min-[375px]:pb-[38px] min-[375px]:pl-[78px] min-[375px]:pr-[46px] sm:pb-10 sm:pl-20 sm:pr-12 sm:pt-0 lg:pb-10 lg:pl-20 lg:pr-12 lg:pt-0",
     codeTitleFrame:
       "relative px-0 pb-4 pl-16 pr-4 pt-[14px] min-[375px]:pl-[78px] min-[375px]:pr-[46px] sm:border-b-0 sm:pb-4 sm:pl-20 sm:pr-12 sm:pt-4 lg:pb-4 lg:pl-20 lg:pr-12 lg:pt-4",
     codeTitleText:
-      "text-[14px] font-medium leading-[22px] text-[#09090b] sm:pl-0 sm:text-[14px] sm:leading-[22px] lg:pl-0 lg:text-[16px] lg:leading-6",
+      "text-[14px] font-medium leading-[22px] text-foreground sm:pl-0 sm:text-[14px] sm:leading-[22px] lg:pl-0 lg:text-[16px] lg:leading-6",
   },
 } as const;

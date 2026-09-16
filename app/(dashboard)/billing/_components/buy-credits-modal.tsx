@@ -33,7 +33,7 @@ type AmountOptionButtonProps = {
 };
 
 const amountOptionBaseClassName =
-  "flex h-9 min-w-[72px] shrink-0 items-center justify-center whitespace-nowrap border px-6 text-[12px] leading-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8e51ff]/25";
+  "flex h-9 min-w-[72px] shrink-0 items-center justify-center whitespace-nowrap border px-6 text-[12px] leading-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19a88b]/25";
 
 const AmountOptionButton = ({ isSelected, label, onClick }: AmountOptionButtonProps) => {
   return (
@@ -42,8 +42,8 @@ const AmountOptionButton = ({ isSelected, label, onClick }: AmountOptionButtonPr
       className={cn(
         amountOptionBaseClassName,
         isSelected
-          ? "border-[#5d0ec0] bg-[#7f22fe] font-bold text-[#f5f3ff]"
-          : "border-[#e4e4e7] bg-white font-normal text-[#3f3f46] hover:bg-[#fafafa]"
+          ? "border-[#054437] bg-[#19a88b] font-bold text-[#f0f2e6]"
+          : "border-border bg-card font-normal text-foreground hover:bg-muted"
       )}
       onClick={onClick}
     >
@@ -194,14 +194,14 @@ export function BuyCreditsModal() {
         }
       }}
     >
-      <DialogContent className="w-screen max-w-none gap-0 rounded-none border-[#e4e4e7] bg-[#fafafa] p-0 shadow-none sm:w-[calc(100vw-2rem)] sm:max-w-[560px] [&>button]:hidden">
+      <DialogContent className="w-screen max-w-none gap-0 rounded-none border-border bg-background p-0 shadow-none sm:w-[calc(100vw-2rem)] sm:max-w-[560px] [&>button]:hidden">
         <div className="flex flex-col gap-[34px] px-0 py-[22px] sm:gap-14 sm:py-10">
           <div className="mx-auto flex w-[331px] max-w-[calc(100vw-44px)] items-start justify-between gap-8 sm:w-[464px] sm:max-w-none">
             <div className="min-w-0 flex-1">
-              <DialogTitle className="text-[20px] font-bold leading-[26px] text-[#09090b] sm:leading-7">
+              <DialogTitle className="text-[20px] font-bold leading-[26px] text-foreground sm:leading-7">
                 {t("title")}
               </DialogTitle>
-              <DialogDescription className="mt-0.5 max-w-[277px] text-[14px] leading-[18px] text-[#71717b] sm:mt-1 sm:max-w-[408px] sm:leading-5">
+              <DialogDescription className="mt-0.5 max-w-[277px] text-[14px] leading-[18px] text-muted-foreground sm:mt-1 sm:max-w-[408px] sm:leading-5">
                 {t("description")}
               </DialogDescription>
             </div>
@@ -209,7 +209,7 @@ export function BuyCreditsModal() {
             <DialogClose asChild>
               <button
                 type="button"
-                className="flex size-6 shrink-0 items-center justify-center rounded-full text-[#3f3f46] transition-colors hover:bg-[#f4f4f5]"
+                className="flex size-6 shrink-0 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted"
                 aria-label={t("cancel")}
               >
                 <Image
@@ -250,7 +250,7 @@ export function BuyCreditsModal() {
             {isCustom ? (
               <div className="flex w-full justify-center">
                 <div className="relative w-full max-w-[207px] sm:max-w-[336px]">
-                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[12px] leading-4 text-[#18181b]">
+                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[12px] leading-4 text-foreground">
                     $
                   </span>
                   <input
@@ -261,7 +261,7 @@ export function BuyCreditsModal() {
                     onChange={handleCustomInputChange}
                     placeholder={t("amountPlaceholder")}
                     aria-invalid={customAmountStr !== "" && !isValidSelection}
-                    className="h-10 w-full border border-[#a684ff] bg-white px-3 pl-8 text-[12px] leading-4 text-[#18181b] placeholder:text-[#9f9fa9] focus:outline-none"
+                    className="h-10 w-full border border-primary bg-card px-3 pl-8 text-[12px] leading-4 text-foreground placeholder:text-muted-foreground focus:outline-none"
                   />
                 </div>
               </div>

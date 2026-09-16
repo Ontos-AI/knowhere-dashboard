@@ -3,6 +3,7 @@
 import { Sidebar } from "@app/(dashboard)/_components/sidebar";
 import { BuyCreditsModal } from "@app/(dashboard)/billing/_components/buy-credits-modal";
 import { LanguageSwitcher } from "@components/language-switcher";
+import { ThemeSwitcher } from "@components/theme-switcher";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,9 +21,9 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-type DashboardTitleNamespace = "ApiKeys" | "Settings" | "Usage" | "Webhooks";
+type DashboardTitleNamespace = "ApiKeys" | "Billing" | "Settings" | "Usage" | "Webhooks";
 
 type DashboardShellProps = {
   children: React.ReactNode;
@@ -54,41 +55,46 @@ const buildBuyCreditsHref = (pathname: string, searchParams: URLSearchParams) =>
 };
 
 const ThemeButton = () => {
-  const { resolvedTheme, setTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
+  const t = useTranslations("Common");
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isDark = mounted && resolvedTheme === "dark";
 
   return (
-    <button
-      type="button"
-      className="flex h-12 w-12 items-center justify-center text-[#09090b] transition-colors hover:bg-[#f4f4f5] dark:text-[#fafafa] dark:hover:bg-[#27272a]"
-      onClick={() => setTheme(isDark ? "light" : "dark")}
-      aria-label="Toggle theme"
-    >
-      <KnowhereIcon name={isDark ? "theme-light" : "theme-dark"} className="h-[18px] w-[18px]" />
-    </button>
+    <ThemeSwitcher>
+      <button
+        type="button"
+        className="flex h-12 w-12 items-center justify-center text-[#083b3a] transition-colors hover:bg-[#f3f5ea] dark:text-[#f0f2e6] dark:hover:bg-[#073231]"
+        aria-label={t("toggleTheme")}
+      >
+        <KnowhereIcon name={isDark ? "theme-light" : "theme-dark"} className="h-[18px] w-[18px]" />
+      </button>
+    </ThemeSwitcher>
   );
 };
 
 const TabletActionsMenu = () => {
-  const locale = useLocale();
   const router = useRouter();
-  const { resolvedTheme, setTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
-  const nextThemeLabel =
-    locale === "zh" ? (isDark ? "浅色模式" : "深色模式") : isDark ? "Light mode" : "Dark mode";
+  const t = useTranslations("Common");
+  const { setTheme } = useTheme();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="flex h-full w-11 items-center justify-center text-[#09090b] transition-colors hover:bg-[#f4f4f5] dark:text-[#fafafa] dark:hover:bg-[#27272a]"
+          className="flex h-full w-11 items-center justify-center text-[#083b3a] transition-colors hover:bg-[#f3f5ea] dark:text-[#f0f2e6] dark:hover:bg-[#073231]"
           aria-label="Open actions"
         >
           <Menu className="h-4 w-4" />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-[140px] border-[#e4e4e7]">
+      <DropdownMenuContent align="end" className="min-w-[140px] border-[#bbbcb3]">
         <DropdownMenuItem
           onClick={() => {
             void setCookie("NEXT_LOCALE", "en").then(() => router.refresh());
@@ -103,13 +109,9 @@ const TabletActionsMenu = () => {
         >
           中文
         </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => {
-            setTheme(isDark ? "light" : "dark");
-          }}
-        >
-          {nextThemeLabel}
-        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("light")}>{t("themeLight")}</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("dark")}>{t("themeDark")}</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("system")}>{t("themeSystem")}</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -135,10 +137,10 @@ const CreditsButton = ({
       href={buyCreditsHref}
       onClick={() => trackBuyCreditsClicked("sidebar")}
       className={[
-        "flex h-10 min-w-[119px] items-center justify-center bg-white text-[12px] font-semibold text-[#292524] shadow-none transition-transform hover:-translate-y-px dark:border-[#3f3f46] dark:bg-[#18181b] dark:text-[#fafafa]",
+        "flex h-10 min-w-[119px] items-center justify-center bg-white font-sans text-[12px] font-semibold text-[#083b3a] shadow-none transition-transform hover:-translate-y-px dark:border-[#156462] dark:bg-[#073231] dark:text-[#f0f2e6]",
         compactTabletHeader
-          ? "gap-[10px] rounded-lg border-x-2 border-t-2 border-b-[6px] border-[#e7e5e4] px-[14px] pb-1 leading-[14px] sm:min-w-[115px] sm:gap-1 sm:rounded-md sm:border-x sm:border-t sm:border-b-[4px] sm:px-3 sm:pb-[3px] sm:leading-[18px] lg:h-12 lg:min-w-[136px] lg:gap-[6px] lg:rounded-lg lg:border-x-2 lg:border-t-2 lg:border-b-[6px] lg:px-[14px] lg:pb-1 lg:text-[14px] lg:leading-5"
-          : "gap-[10px] rounded-lg border-x-2 border-t-2 border-b-[6px] border-[#e7e5e4] px-[14px] pb-1 leading-[14px] sm:min-w-[115px] sm:gap-1.5 sm:px-3 sm:leading-[18px] lg:h-12 lg:min-w-[136px] lg:gap-[6px] lg:px-[14px] lg:text-[14px] lg:leading-5",
+          ? "gap-[10px] rounded-lg border-x-2 border-t-2 border-b-[6px] border-[#bbbcb3] px-[14px] pb-1 leading-[14px] sm:min-w-[115px] sm:gap-1 sm:rounded-md sm:border-x sm:border-t sm:border-b-[4px] sm:px-3 sm:pb-[3px] sm:leading-[18px] lg:h-12 lg:min-w-[136px] lg:gap-[6px] lg:rounded-lg lg:border-x-2 lg:border-t-2 lg:border-b-[6px] lg:px-[14px] lg:pb-1 lg:text-[14px] lg:leading-5"
+          : "gap-[10px] rounded-lg border-x-2 border-t-2 border-b-[6px] border-[#bbbcb3] px-[14px] pb-1 leading-[14px] sm:min-w-[115px] sm:gap-1.5 sm:px-3 sm:leading-[18px] lg:h-12 lg:min-w-[136px] lg:gap-[6px] lg:px-[14px] lg:text-[14px] lg:leading-5",
       ].join(" ")}
     >
       <Image
@@ -160,7 +162,7 @@ const NotificationButton = () => {
   return (
     <button
       type="button"
-      className="flex h-full w-11 items-center justify-center text-[#09090b] transition-colors hover:bg-[#f4f4f5] dark:text-[#fafafa] dark:hover:bg-[#27272a] lg:h-12 lg:w-12"
+      className="flex h-full w-11 items-center justify-center text-[#083b3a] transition-colors hover:bg-[#f3f5ea] dark:text-[#f0f2e6] dark:hover:bg-[#073231] lg:h-12 lg:w-12"
       aria-label="Notifications"
     >
       <Bell className="h-4 w-4" strokeWidth={1.75} />
@@ -186,15 +188,15 @@ export const DashboardShell = ({
     "px-[14px] pb-[22px] pt-[22px] sm:px-[30px] sm:pb-6 sm:pt-[22px] lg:px-12 lg:pt-6";
 
   return (
-    <div className="min-h-screen bg-[#fafafa] text-[#09090b] dark:bg-[#18181b] dark:text-[#fafafa]">
+    <div className="min-h-screen bg-[#f0f2e6] font-sans text-[#083b3a] dark:bg-[#083b3a] dark:text-[#f0f2e6]">
       <Sidebar user={user} open={mobileSidebarOpen} onOpenChange={setMobileSidebarOpen} />
 
       <div className="min-w-0 sm:pl-[160px] lg:pl-[200px]">
         <div className="w-full">
           <header
             className={[
-              "flex items-center gap-3 border-b border-[#d4d4d8] bg-[#fafafa] px-4 sm:px-[30px] lg:px-12",
-              "dark:border-[#3f3f46] dark:bg-[#18181b]",
+              "flex items-center gap-3 border-b border-[#bbbcb3] bg-[#f0f2e6] px-4 font-sans sm:px-[30px] lg:px-12",
+              "dark:border-[#156462] dark:bg-[#083b3a]",
               compactTabletHeader
                 ? compactMobileHeader
                   ? "h-12 sm:h-12 lg:h-16"
@@ -204,7 +206,7 @@ export const DashboardShell = ({
           >
             <button
               type="button"
-              className="flex h-full w-11 items-center justify-center text-[#09090b] transition-colors hover:bg-[#f4f4f5] dark:text-[#fafafa] dark:hover:bg-[#27272a] sm:hidden"
+              className="flex h-full w-11 items-center justify-center text-[#083b3a] transition-colors hover:bg-[#f3f5ea] dark:text-[#f0f2e6] dark:hover:bg-[#073231] sm:hidden"
               onClick={() => setMobileSidebarOpen(true)}
               aria-label="Open menu"
             >
@@ -212,8 +214,8 @@ export const DashboardShell = ({
             </button>
             <h1
               className={[
-                "hidden min-w-0 flex-1 truncate font-bold text-black sm:block",
-                "dark:text-[#fafafa]",
+                "hidden min-w-0 flex-1 truncate font-sans text-lg font-medium tracking-[-0.01em] text-[#083b3a] sm:block",
+                "dark:text-[#f0f2e6]",
                 compactTabletHeader
                   ? "sm:text-[16px] sm:leading-[26px] lg:text-[18px] lg:leading-7"
                   : "text-[18px] leading-7",
@@ -232,7 +234,7 @@ export const DashboardShell = ({
               <LanguageSwitcher>
                 <button
                   type="button"
-                  className="flex h-12 items-center gap-1 px-4 text-[12px] leading-4 text-[#09090b] transition-colors hover:bg-[#f4f4f5] dark:text-[#fafafa] dark:hover:bg-[#27272a]"
+                  className="flex h-12 items-center gap-1 px-4 font-sans text-[12px] leading-4 text-[#083b3a] transition-colors hover:bg-[#f3f5ea] dark:text-[#f0f2e6] dark:hover:bg-[#073231]"
                 >
                   <span>{localeLabels[locale as keyof typeof localeLabels] || "English"}</span>
                   <Image

@@ -28,10 +28,13 @@ export const env = createEnv({
     DATABASE_POOL_IDLE_TIMEOUT_MILLISECONDS: POSITIVE_INTEGER.default(10_000),
     DATABASE_POOL_CONNECTION_TIMEOUT_MILLISECONDS: POSITIVE_INTEGER.default(5_000),
     UNSAFE_DB_SSL_ENABLED: z.string().default("false"),
-    GA_MEASUREMENT_ID: z
-      .string()
-      .regex(/^G-[A-Z0-9]+$/)
-      .optional(),
+    GA_MEASUREMENT_ID: z.preprocess(
+      normalizeOptionalString,
+      z
+        .string()
+        .regex(/^G-[A-Z0-9]+$/)
+        .optional()
+    ),
     OPENAI_ADS_PIXEL_ID: z.preprocess(normalizeOptionalString, z.string().optional()),
     OPENAI_ADS_CONVERSIONS_API_KEY: z.preprocess(normalizeOptionalString, z.string().optional()),
     GITHUB_CLIENT_ID: z.string().optional(),
@@ -68,6 +71,14 @@ export const env = createEnv({
     DEV_EXTERNAL_API_AUTHORIZATION: z.string().optional(),
     HTTPS_PROXY: z.string().optional(),
     HTTP_PROXY: z.string().optional(),
+    /**
+     * WordPress.com site id for public Blog REST reads. Not a secret.
+     * Example: knowheretoai.wordpress.com
+     */
+    WORDPRESS_SITE: z.preprocess(
+      normalizeOptionalString,
+      z.string().default("knowheretoai.wordpress.com")
+    ),
   },
   client: {
     NEXT_PUBLIC_API_URL: z.url(),
@@ -120,6 +131,7 @@ export const env = createEnv({
     DEV_EXTERNAL_API_AUTHORIZATION: process.env.DEV_EXTERNAL_API_AUTHORIZATION,
     HTTPS_PROXY: process.env.HTTPS_PROXY,
     HTTP_PROXY: process.env.HTTP_PROXY,
+    WORDPRESS_SITE: process.env.WORDPRESS_SITE,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_AUTH_BASE_URL: process.env.NEXT_PUBLIC_AUTH_BASE_URL,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
@@ -128,5 +140,9 @@ export const env = createEnv({
     NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS:
       process.env.NEXT_PUBLIC_AUTH_ALLOWED_CALLBACK_ORIGINS,
   },
-  skipValidation: !!process.env.SKIP_ENV_VALIDATION,
+  emptyStringAsUndefined: true,
+  // Vercel Preview collects `/_not-found` during `next build` before runtime
+  // secrets are guaranteed. GitHub Quality already sets SKIP_ENV_VALIDATION.
+  skipValidation:
+    !!process.env.SKIP_ENV_VALIDATION || process.env.NEXT_PHASE === "phase-production-build",
 });

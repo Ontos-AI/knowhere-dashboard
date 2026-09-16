@@ -13,12 +13,9 @@ const createVisibleCopyPattern = (phrase: string): RegExp =>
   new RegExp(`([>"'\`])\\s*${escapeRegExp(phrase)}\\s*([<"'\`])`);
 
 const landingSourceFiles = [
-  "app/(landing)/_components/landing-header.tsx",
+  "components/site-chrome/site-header.tsx",
+  "components/site-chrome/site-footer.tsx",
   "app/(landing)/_components/landing-home.tsx",
-  "app/(landing)/_components/landing-home-data.ts",
-  "app/(landing)/_components/hero-playground.tsx",
-  "app/(landing)/_components/comparison-showcase.tsx",
-  "app/(landing)/_components/integrate-code-panel.tsx",
 ] as const;
 
 const hardcodedLandingCopy = [
@@ -29,13 +26,17 @@ const hardcodedLandingCopy = [
   "Drop a file here or pick a sample on the left",
   "Parsing your document into structured chunks...",
   "Get $5 free credits, no card",
-  "Feature",
-  "Others",
-  "Copied",
+  "Start free trial",
+  "Simple, transparent pricing.",
   "Copy",
 ] as const;
 
 type LocaleMessages = {
+  readonly SiteChrome?: {
+    readonly nav?: {
+      readonly playground?: string;
+    };
+  };
   readonly Landing?: {
     readonly header?: {
       readonly nav?: {
@@ -44,6 +45,26 @@ type LocaleMessages = {
     };
     readonly playground?: {
       readonly dragToParse?: string;
+    };
+    readonly skipToContent?: string;
+    readonly hero?: {
+      readonly title?: string;
+      readonly startFreeTrial?: string;
+    };
+    readonly product?: {
+      readonly title?: string;
+    };
+    readonly pricing?: {
+      readonly title?: string;
+    };
+    readonly comparison?: {
+      readonly feature?: string;
+    };
+    readonly integration?: {
+      readonly copy?: string;
+    };
+    readonly finalCta?: {
+      readonly title?: string;
     };
   };
 };
@@ -55,6 +76,15 @@ describe("landing localization contract", () => {
 
     expect(englishMessages.Landing).toBeDefined();
     expect(chineseMessages.Landing).toBeDefined();
+    expect(englishMessages.Landing?.hero?.title).toBeTruthy();
+    expect(chineseMessages.Landing?.hero?.title).toBeTruthy();
+    expect(englishMessages.Landing?.product?.title).toBeTruthy();
+    expect(englishMessages.Landing?.pricing?.title).toBe("Simple, transparent pricing.");
+    expect(chineseMessages.Landing?.pricing?.title).toBeTruthy();
+    expect(englishMessages.Landing?.comparison?.feature).toBe("Feature");
+    expect(englishMessages.Landing?.integration?.copy).toBe("Copy");
+    expect(englishMessages.Landing?.finalCta?.title).toBeTruthy();
+    expect(englishMessages.Landing?.skipToContent).toBe("Skip to content");
   });
 
   it("keeps the drag-to-parse hint in English for every locale", () => {
@@ -68,6 +98,7 @@ describe("landing localization contract", () => {
   it("uses a natural Chinese label for the playground nav item", () => {
     const chineseMessages = parseJsonFile<LocaleMessages>("i18n/locales/zh.json");
 
+    expect(chineseMessages.SiteChrome?.nav?.playground).toBe("在线体验");
     expect(chineseMessages.Landing?.header?.nav?.playground).toBe("在线体验");
   });
 

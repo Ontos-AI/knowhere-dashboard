@@ -2,10 +2,11 @@
 
 import { PaymentRedirectTracking } from "@providers/payment-redirect-tracking";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useState } from "react";
 import { Header } from "@/app/(dashboard)/_components/header";
 import { Sidebar } from "@/app/(dashboard)/_components/sidebar";
 import { ApiKeysDashboardShell } from "@/app/(dashboard)/api-keys/_components/api-keys-dashboard-shell";
+import { BillingDashboardShell } from "@/app/(dashboard)/billing/_components/billing-dashboard-shell";
 import { BuyCreditsModal } from "@/app/(dashboard)/billing/_components/buy-credits-modal";
 import { SettingsDashboardShell } from "@/app/(dashboard)/settings/_components/settings-dashboard-shell";
 import { UsageDashboardShell } from "@/app/(dashboard)/usage/_components/usage-dashboard-shell";
@@ -28,17 +29,7 @@ export function DashboardClient({ user, children }: DashboardClientProps) {
   const isApiKeysRoute = pathname === "/api-keys" || pathname.startsWith("/api-keys/");
   const isSettingsRoute = pathname === "/settings" || pathname.startsWith("/settings/");
   const isWebhooksRoute = pathname === "/webhooks" || pathname.startsWith("/webhooks/");
-  const isRedesignedDashboardRoute =
-    isUsageRoute || isApiKeysRoute || isSettingsRoute || isWebhooksRoute;
-
-  useEffect(() => {
-    if (isRedesignedDashboardRoute) {
-      return;
-    }
-
-    document.body.classList.add("console-tone");
-    return () => document.body.classList.remove("console-tone");
-  }, [isRedesignedDashboardRoute]);
+  const isBillingRoute = pathname === "/billing" || pathname.startsWith("/billing/");
 
   if (isUsageRoute) {
     return (
@@ -92,21 +83,29 @@ export function DashboardClient({ user, children }: DashboardClientProps) {
     );
   }
 
+  if (isBillingRoute) {
+    return (
+      <>
+        <Suspense fallback={null}>
+          <PaymentRedirectTracking />
+        </Suspense>
+        <BillingDashboardShell user={user} isBuyCreditsOpen={isBuyCreditsOpen}>
+          {children}
+        </BillingDashboardShell>
+      </>
+    );
+  }
+
   return (
-    <div className="landing-tone relative min-h-screen bg-background text-foreground">
+    <div className="relative min-h-screen bg-background font-sans text-foreground">
       <Suspense fallback={null}>
         <PaymentRedirectTracking />
       </Suspense>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(217,119,6,0.1),transparent_55%)]" />
-      {/* 侧边栏 */}
       <Sidebar user={user} open={sidebarOpen} onOpenChange={setSidebarOpen} />
 
-      {/* 主内容区域 */}
       <div className="relative z-10 sm:pl-[160px] lg:pl-[200px]">
-        {/* 顶部导航栏 */}
         <Header onMenuClick={() => setSidebarOpen(true)} />
 
-        {/* 页面内容 */}
         <main className="py-6">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>
         </main>

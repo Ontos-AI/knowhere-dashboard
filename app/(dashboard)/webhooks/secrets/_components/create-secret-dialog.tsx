@@ -73,10 +73,10 @@ export const CreateSecretDialog = ({
         >
           <div className="flex items-start gap-6 sm:gap-8">
             <div className="min-w-0 flex-1">
-              <h2 className="text-[20px] font-bold leading-[26px] text-[#09090b] lg:leading-7">
+              <h2 className="text-[20px] font-bold leading-[26px] text-foreground lg:leading-7">
                 {t("createSecret")}
               </h2>
-              <p className="mt-0.5 text-sm leading-[18px] text-[#71717b] lg:mt-1 lg:leading-5">
+              <p className="mt-0.5 text-sm leading-[18px] text-muted-foreground lg:mt-1 lg:leading-5">
                 {t("createSecretDescription")}
               </p>
             </div>
@@ -101,7 +101,7 @@ export const CreateSecretDialog = ({
               <p
                 className={cn(
                   "text-sm leading-[18px] lg:leading-5",
-                  validationError ? "text-destructive" : "text-[#71717b]"
+                  validationError ? "text-destructive" : "text-muted-foreground"
                 )}
               >
                 {validationError || t("endpointHint")}
