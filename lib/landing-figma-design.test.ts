@@ -57,14 +57,19 @@ describe("landing contracts", () => {
     expect(landingCss).toContain(".landing-page .skip-link");
     expect(landingCss).toContain("transform: translateY(-150%)");
     expect(landingCss).toContain("clip-path: inset(50%)");
-    expect(landingCss).toMatch(/\.hero\s*\{[^}]*display:\s*grid/);
-    expect(landingCss).toMatch(/#top\.hero-b-layout\s*\{[^}]*display:\s*grid/);
+    expect(landingCss).toMatch(/\.landing-page \.hero\s*\{[^}]*display:\s*grid/);
+    expect(landingCss).toMatch(/\.landing-page #top\.hero-b-layout\s*\{[^}]*display:\s*grid/);
     expect(landingCss).toContain("display: inline-flex !important");
     expect(landingCss).toMatch(
       /\.landing-page #main #final-cta #final-cta-actions\s*\{[^}]*display:\s*grid\s*!important/
     );
     expect(landingCss).toMatch(/\.landing-page #faq\s*\{[^}]*display:\s*grid/);
     expect(landingCss).not.toMatch(/(?:^|[,{}])\s*#faq(?:\s|,|\{|\.)/);
+    expect(landingCss).toContain("html:has(.landing-page)");
+    expect(landingCss).not.toMatch(/(?:^|[,{}])\s*\.hero-copy\s*[,{]/);
+    expect(landingCss).not.toMatch(/(?:^|[,{}])\s*\.github-link\s*[,{]/);
+    expect(landingCss).not.toMatch(/(?:^|[,{}])\s*\.section\s*\{/);
+    expect(landingCss).not.toMatch(/(?:^|[,{}])\s*#top\.hero-b-layout\s*\{/);
   });
 
   it("keeps the shared language switcher from shifting the page when opened", () => {
