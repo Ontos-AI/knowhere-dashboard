@@ -76,5 +76,7 @@ describe("wave 1 site chrome", () => {
     const pricingCss = readWorkspaceFile("app/(landing)/pricing/_components/pricing-page.css");
     expect(pricingCss).toContain("padding-block: 110px 60px");
     expect(pricingCss).not.toContain("110px - var(--header-height");
+    expect(pricingCss).toContain(".kh-pricing #faq");
+    expect(pricingCss).toMatch(/\.kh-pricing #faq\s*\{[^}]*display:\s*block/);
   });
 });

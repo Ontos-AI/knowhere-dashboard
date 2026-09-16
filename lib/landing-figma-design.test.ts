@@ -63,6 +63,8 @@ describe("landing contracts", () => {
     expect(landingCss).toMatch(
       /\.landing-page #main #final-cta #final-cta-actions\s*\{[^}]*display:\s*grid\s*!important/
     );
+    expect(landingCss).toMatch(/\.landing-page #faq\s*\{[^}]*display:\s*grid/);
+    expect(landingCss).not.toMatch(/(?:^|[,{}])\s*#faq(?:\s|,|\{|\.)/);
   });
 
   it("keeps the shared language switcher from shifting the page when opened", () => {
