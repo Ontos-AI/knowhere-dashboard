@@ -182,8 +182,8 @@ export const UsageWelcomeModal = () => {
         }
       }}
     >
-      <DialogContent className="w-screen max-w-none gap-0 rounded-none border-border bg-background p-0 shadow-none [&>button]:hidden sm:w-[560px] sm:max-w-[560px] lg:max-w-[724px]">
-        <div className="max-h-[100dvh] overflow-y-auto">
+      <DialogContent className="grid max-h-[100dvh] w-screen max-w-none grid-rows-[minmax(0,1fr)_auto] gap-0 overflow-hidden rounded-none border-border bg-background p-0 shadow-none [&>button]:hidden sm:max-h-[calc(100dvh-2rem)] sm:w-[560px] sm:max-w-[560px] lg:max-w-[724px]">
+        <div className="min-h-0 overflow-y-auto overscroll-contain">
           <div className="px-4 pb-8 pt-5 min-[375px]:px-[46px] min-[375px]:pb-[38px] min-[375px]:pt-[38px] sm:px-12 sm:pb-10 sm:pt-10 lg:px-12 lg:py-10">
             <div className="flex items-start justify-between gap-6 sm:gap-[30px]">
               <div className="min-w-0 flex-1 sm:max-w-[408px] lg:max-w-none">
@@ -369,46 +369,46 @@ export const UsageWelcomeModal = () => {
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="px-4 pb-0 pt-[38px] min-[375px]:px-[22px] min-[375px]:pb-0 min-[375px]:pt-[38px] sm:px-12 sm:pb-0 sm:pt-10 lg:px-12 lg:py-10">
-            <DashboardActionButton
-              asChild
-              variant="primary"
-              size="dialog"
-              className={cn(
-                "h-12 w-full justify-center min-[375px]:w-full sm:mx-auto sm:h-12 sm:w-[320px] sm:max-w-none sm:justify-center lg:max-w-[320px]",
-                (!canDismiss || isDismissing) && "pointer-events-none opacity-60"
-              )}
-            >
-              <Link
-                href={DOCUMENTATION_URL}
-                target="_blank"
-                rel="noreferrer"
-                onClick={() => {
-                  if (canDismiss) {
-                    dismiss();
-                  }
-                }}
-              >
-                <span>{t("viewDocumentation")}</span>
-                <ExternalLink className="h-5 w-5" strokeWidth={2} />
-              </Link>
-            </DashboardActionButton>
-
-            <button
-              type="button"
-              className="hidden"
+        <div className="shrink-0 px-4 pb-0 pt-[38px] min-[375px]:px-[22px] min-[375px]:pb-0 min-[375px]:pt-[38px] sm:px-12 sm:pb-0 sm:pt-10 lg:px-12 lg:py-10">
+          <DashboardActionButton
+            asChild
+            variant="primary"
+            size="dialog"
+            className={cn(
+              "h-12 w-full justify-center min-[375px]:w-full sm:mx-auto sm:h-12 sm:w-[320px] sm:max-w-none sm:justify-center lg:max-w-[320px]",
+              (!canDismiss || isDismissing) && "pointer-events-none opacity-60"
+            )}
+          >
+            <Link
+              href={DOCUMENTATION_URL}
+              target="_blank"
+              rel="noreferrer"
               onClick={() => {
                 if (canDismiss) {
                   dismiss();
                 }
               }}
-              disabled={!canDismiss || isDismissing}
             >
-              <Check className="h-4 w-4" strokeWidth={1.8} />
-              <span>{t("dismiss")}</span>
-            </button>
-          </div>
+              <span>{t("viewDocumentation")}</span>
+              <ExternalLink className="h-5 w-5" strokeWidth={2} />
+            </Link>
+          </DashboardActionButton>
+
+          <button
+            type="button"
+            className="hidden"
+            onClick={() => {
+              if (canDismiss) {
+                dismiss();
+              }
+            }}
+            disabled={!canDismiss || isDismissing}
+          >
+            <Check className="h-4 w-4" strokeWidth={1.8} />
+            <span>{t("dismiss")}</span>
+          </button>
         </div>
       </DialogContent>
     </Dialog>
