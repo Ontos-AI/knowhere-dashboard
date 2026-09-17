@@ -40,8 +40,8 @@ describe("landing contracts", () => {
     expect(landingHomeSource).toContain('id="pricing"');
     expect(landingHomeSource).toContain('id="comparison"');
     expect(landingHomeSource).toContain("LandingTrackedLink");
-    expect(landingHomeSource).toContain('className="footer"');
-    expect(landingHomeSource).toContain("footer-wordmark");
+    expect(landingHomeSource).not.toContain('className="footer"');
+    expect(landingHomeSource).not.toContain("footer-wordmark");
     expect(landingHomeSource).not.toContain("NewsletterSubscribePrompt");
     expect(landingHomeSource).not.toContain("SiteHeader");
     expect(landingHomeSource).not.toMatch(/['"]knowhere-language['"]/);
@@ -70,6 +70,16 @@ describe("landing contracts", () => {
     expect(landingCss).not.toMatch(/(?:^|[,{}])\s*\.github-link\s*[,{]/);
     expect(landingCss).not.toMatch(/(?:^|[,{}])\s*\.section\s*\{/);
     expect(landingCss).not.toMatch(/(?:^|[,{}])\s*#top\.hero-b-layout\s*\{/);
+  });
+
+  it("renders the Landing footer from the shared site chrome", () => {
+    const siteChromeSource: string = readFileSync(
+      join(process.cwd(), "components/site-chrome/site-chrome.tsx"),
+      "utf8"
+    );
+
+    expect(siteChromeSource).toContain("<SiteFooter page={page} />");
+    expect(siteChromeSource).not.toContain('page === "landing"');
   });
 
   it("keeps the shared language switcher from shifting the page when opened", () => {

@@ -56,7 +56,8 @@ describe("wave 1 site chrome", () => {
     expect(headerSource).not.toContain("knowhere-language");
 
     const chromeSource = readWorkspaceFile("components/site-chrome/site-chrome.tsx");
-    expect(chromeSource).toContain('page === "landing" ? null : <SiteFooter page={page} />');
+    expect(chromeSource).toContain("<SiteFooter page={page} />");
+    expect(chromeSource).not.toContain('page === "landing"');
   });
 
   it("ports the prototype language and theme option-list chrome", () => {

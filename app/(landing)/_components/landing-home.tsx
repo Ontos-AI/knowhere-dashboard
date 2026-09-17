@@ -10,11 +10,8 @@ import {
 import { initializeLandingCanvases } from "@app/(landing)/_components/landing/landing-canvas";
 import { initializeLandingInteractions } from "@app/(landing)/_components/landing/landing-interactions";
 import ShinyText from "@app/(landing)/_components/landing/shiny-text";
+import { useMainPaletteChange } from "@app/(landing)/_components/landing/use-main-palette-change";
 import { LandingTrackedAnchor, LandingTrackedLink } from "@app/(landing)/_components/landing-tracked-link";
-import { siteChromeNavigation } from "@components/site-chrome/links";
-import { FooterGrid } from "@components/site-chrome/site-footer";
-import Image from "next/image";
-import Link from "next/link";
 import { useTheme } from "next-themes";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
@@ -233,54 +230,14 @@ function FinalCtaHelix({ theme }: { theme: string }) {
   )
 }
 
-function LandingFooter() {
-  const t = useTranslations("SiteChrome");
-  const links = siteChromeNavigation("landing");
-
-  return (
-    <footer className="footer">
-      <FooterGrid className="footer-flickering-grid" />
-      <div className="footer-inner">
-        <div className="footer-navigation">
-          <Link className="footer-brand" href="#top" aria-label={t("backToTop")}>
-            <Image
-              src="/images/site-chrome/knowhere-footer-mark.svg"
-              width={37}
-              height={42}
-              alt=""
-              unoptimized
-            />
-          </Link>
-          <div className="footer-navigation-content">
-            <nav className="footer-links" aria-label={t("footerLinks")}>
-              {links.map((item) => (
-                <LandingTrackedLink
-                  key={item.key}
-                  href={item.href}
-                  ctaId={item.ctaId}
-                  external={item.external}
-                  sourceSection="footer"
-                >
-                  {t(`nav.${item.key}`)}
-                </LandingTrackedLink>
-              ))}
-            </nav>
-            <p className="footer-copyright">{t("copyright", { year: new Date().getFullYear() })}</p>
-          </div>
-        </div>
-        <span className="footer-wordmark" aria-hidden="true" />
-      </div>
-    </footer>
-  );
-}
-
-
 export const LandingHome = () => {
   const t = useTranslations("Landing");
   const locale = useLocale();
   const { resolvedTheme } = useTheme();
   const rootRef = useRef<HTMLDivElement>(null);
   const theme = resolvedTheme === "dark" ? "dark" : "light";
+
+  useMainPaletteChange();
 
   useEffect(() => {
     document.documentElement.classList.add("js");
@@ -576,7 +533,6 @@ curl -X POST "[endpoint-to-be-confirmed]" \\
       </div>
     </section>
   </main>
-  <LandingFooter />
   <div className="toast" role="status" aria-live="polite" hidden><p data-toast-message /><button type="button" aria-label={t("toastClose")}>×</button></div>
 </div>
   );

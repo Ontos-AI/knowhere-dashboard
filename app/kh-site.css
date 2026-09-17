@@ -11,7 +11,27 @@
   --kh-coral-signal: #ff634a;
 }
 
+/*
+  The prototype declares this palette on <html>, and the Landing canvas visuals
+  read it back with `getComputedStyle(document.documentElement)`, so every token
+  below has to resolve from `:root`.
+  `--accent` and `--muted` are the exception: the dashboard already owns those
+  two names as shadcn HSL triplets, so they stay scoped to `.kh-site`.
+*/
+:root,
 .kh-site {
+  --main-50: #caffee;
+  --main-100: #7efedd;
+  --main-200: #27efc6;
+  --main-300: #23d6b1;
+  --main-400: #1dbe9d;
+  --main-500: #19a88b;
+  --main-600: #12846c;
+  --main-700: #0a6351;
+  --main-800: #054437;
+  --main-900: #01251d;
+  --main-950: #011711;
+
   --mist-white-50: #ffffff;
   --mist-white-100: #fcfcfa;
   --mist-white-200: #f9faf5;
@@ -116,7 +136,8 @@
   --md-sys-color-on-surface-variant: var(--mist-white-600);
   --md-sys-color-outline: var(--mist-white-700);
   --md-sys-color-outline-variant: var(--deep-teal-500);
-  --md-sys-color-shadow: var(--black);
+  /* The prototype pins the Material shadow token to literal black; `var(--black)` flips it to a light glow in dark theme. */
+  --md-sys-color-shadow: #000000;
   --md-sys-color-scrim: var(--black);
   --md-sys-color-inverse-surface: var(--mist-white-200);
   --md-sys-color-inverse-on-surface: var(--deep-teal-900);
@@ -143,10 +164,8 @@
 
   --paper: #ffffff;
   --ink: #2e2e2c;
-  --muted: #888a82;
   --soft: var(--mist-white-700);
   --line: #bbbcb3;
-  --accent: var(--mineral-green-500);
   --page-primary: var(--mineral-green-500);
   --page-primary-foreground: #ffffff;
 
@@ -167,6 +186,13 @@
   --chrome-on-primary: #011711;
 }
 
+.kh-site {
+  --accent: var(--mineral-green-500);
+  --muted: #888a82;
+}
+
+html.dark,
+html[data-theme="dark"],
 .dark .kh-site,
 html[data-theme="dark"] .kh-site {
   --mineral-green-500: #1dbe9d;
@@ -194,10 +220,8 @@ html[data-theme="dark"] .kh-site {
 
   --paper: #010909;
   --ink: #f9faf5;
-  --muted: #bbbcb3;
   --soft: var(--mist-white-700);
   --line: #083b3a;
-  --accent: var(--md-sys-color-primary);
   --page-primary: var(--md-sys-color-primary);
   --page-primary-foreground: var(--md-sys-color-on-primary);
 
@@ -238,4 +262,10 @@ html[data-theme="dark"] .kh-site {
   --chrome-line: rgb(255 255 255 / 14%);
   --chrome-surface: #042626;
   --chrome-muted: #9aaead;
+}
+
+.dark .kh-site,
+html[data-theme="dark"] .kh-site {
+  --accent: var(--md-sys-color-primary);
+  --muted: #bbbcb3;
 }
