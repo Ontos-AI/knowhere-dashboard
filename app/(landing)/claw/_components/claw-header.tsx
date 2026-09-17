@@ -64,7 +64,7 @@ export const ClawHeader = ({
       >
         <div className="flex h-full items-center border-r border-[#e4e4e7] px-4 min-[640px]:max-[767px]:px-[14px] min-[768px]:max-[768px]:px-[14px] min-[769px]:border-l min-[769px]:px-4">
           <Link href="/" className="flex items-center">
-            <LandingBrand size="nav" />
+            <LandingBrand size="nav" tone="light" />
           </Link>
         </div>
         <div className="flex min-w-0 items-center pl-2 min-[640px]:max-[767px]:justify-between min-[769px]:justify-between">

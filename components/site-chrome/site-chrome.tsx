@@ -12,6 +12,6 @@ export const SiteChrome = ({ page, children }: SiteChromeProps) => (
   <div className="kh-site">
     <SiteHeader page={page} />
     <div className="kh-site-main">{children}</div>
-    {page === "landing" ? null : <SiteFooter page={page} />}
+    <SiteFooter page={page} />
   </div>
 );

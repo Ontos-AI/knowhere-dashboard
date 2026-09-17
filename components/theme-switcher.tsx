@@ -7,11 +7,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
+import { runThemeReveal } from "@lib/theme-reveal";
 import { ChevronDown, SunMoon } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { flushSync } from "react-dom";
 
 type SiteTheme = "light" | "dark" | "system";
 
@@ -83,8 +85,14 @@ export const ThemeSwitcher = ({
               key={menuTheme}
               aria-checked={isActive}
               className={contentClassName ? chromeMenuItemClassName : dashboardMenuItemClassName}
-              onSelect={() => {
-                setTheme(menuTheme);
+              onSelect={(event) => {
+                const origin = event.currentTarget;
+                if (!(origin instanceof HTMLElement)) return;
+                void runThemeReveal(origin, () => {
+                  flushSync(() => {
+                    setTheme(menuTheme);
+                  });
+                });
               }}
             >
               <span>{menuLabels[menuTheme]}</span>
