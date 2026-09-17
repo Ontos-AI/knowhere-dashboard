@@ -31,17 +31,27 @@ async function wpGet(path: string, search: URLSearchParams): Promise<Response> {
   const init: FetchInit = {
     headers: { Accept: "application/json" },
     next: { revalidate: WP_REVALIDATE_SECONDS },
+    signal: AbortSignal.timeout(5_000),
   };
-  const response = await fetch(wpUrl(path, search), init);
 
-  if (!response.ok) {
-    throw new WordpressFetchError(
-      `WordPress request failed for ${path} (${response.status})`,
-      response.status
-    );
+  try {
+    const response = await fetch(wpUrl(path, search), init);
+
+    if (!response.ok) {
+      throw new WordpressFetchError(
+        `WordPress request failed for ${path} (${response.status})`,
+        response.status
+      );
+    }
+
+    return response;
+  } catch (error) {
+    if (error instanceof WordpressFetchError) {
+      throw error;
+    }
+
+    throw new WordpressFetchError(`WordPress request failed for ${path}`, 504);
   }
-
-  return response;
 }
 
 function headerCount(response: Response, name: string, fallback: number): number {

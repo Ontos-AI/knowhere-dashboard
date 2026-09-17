@@ -920,9 +920,8 @@ html[data-theme="dark"] .kh-pricing .enterprise-card-action .button:hover {
 .kh-pricing .faq-section,
 .kh-pricing #faq {
   display: block;
-  width: auto;
-  max-width: none;
-  margin-inline: 0;
+  width: min(var(--content-max), calc(100% - var(--layout-grid-edge) * 2));
+  margin-inline: auto;
   padding-block: var(--space-section);
   padding-inline: 0;
   background: transparent;

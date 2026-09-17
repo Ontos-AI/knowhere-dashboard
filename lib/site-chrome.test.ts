@@ -78,5 +78,9 @@ describe("wave 1 site chrome", () => {
     expect(pricingCss).not.toContain("110px - var(--header-height");
     expect(pricingCss).toContain(".kh-pricing #faq");
     expect(pricingCss).toMatch(/\.kh-pricing #faq\s*\{[^}]*display:\s*block/);
+    expect(pricingCss).toMatch(
+      /\.kh-pricing #faq\s*\{[^}]*width:\s*min\(var\(--content-max\),\s*calc\(100% - var\(--layout-grid-edge\) \* 2\)\)/
+    );
+    expect(pricingCss).not.toMatch(/\.kh-pricing #faq\s*\{[^}]*max-width:\s*none/);
   });
 });
