@@ -39,6 +39,9 @@ jobs:
       - name: Type check
         run: pnpm type-check
 
+      - name: Site 1:1 CSS contracts
+        run: pnpm test:1-1-contracts
+
       - name: Build
         env:
           BETTER_AUTH_SECRET: build-validation-only-auth-secret-32-chars
@@ -50,3 +53,18 @@ jobs:
           RESEND_API_KEY: re_build_validation_placeholder
           SKIP_ENV_VALIDATION: "1"
         run: pnpm build
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: App 1:1 geometry
+        env:
+          BETTER_AUTH_SECRET: build-validation-only-auth-secret-32-chars
+          BETTER_AUTH_URL: http://localhost:3000
+          NEXT_PUBLIC_API_URL: http://localhost:5005/api
+          NEXT_PUBLIC_AUTH_BASE_URL: /api/auth
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
+          BILLING_ENABLED: "false"
+          RESEND_API_KEY: re_build_validation_placeholder
+          SKIP_ENV_VALIDATION: "1"
+        run: pnpm test:e2e:app

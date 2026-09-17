@@ -81,6 +81,16 @@
   },
   "overrides": [
     {
+      "includes": ["e2e/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": "off"
+          }
+        }
+      }
+    },
+    {
       "includes": ["app/layout.tsx", "server/external-api/index.ts", "lib/auth.ts"],
       "linter": {
         "rules": {
