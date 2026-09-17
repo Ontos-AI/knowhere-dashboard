@@ -31,13 +31,14 @@ export const ClawCtaSection = () => {
             <span className="font-mono-readable text-[42px] font-bold leading-[42px] text-[#09090b] min-[640px]:max-[767px]:text-[32px] min-[640px]:max-[767px]:leading-[42px] min-[768px]:max-[768px]:text-[36px] min-[768px]:max-[768px]:leading-10 min-[769px]:text-[36px] min-[769px]:leading-[48px]">
               Bring
             </span>
-            <span className="inline-flex w-[200px] items-center">
+            <span className="inline-flex w-[118px] items-center">
               <Image
                 alt="Knowhere"
                 className="h-auto w-full object-contain"
-                height={84}
-                src="/images/knowhere/logo.png"
-                width={360}
+                height={52}
+                src="/images/site-chrome/knowhere-back-to-top.svg"
+                unoptimized
+                width={132}
               />
             </span>
             <span className="font-mono-readable text-[42px] font-bold leading-[42px] text-[#09090b] min-[640px]:max-[767px]:text-[32px] min-[640px]:max-[767px]:leading-[42px] min-[768px]:max-[768px]:text-[36px] min-[768px]:max-[768px]:leading-10 min-[769px]:text-[36px] min-[769px]:leading-[48px]">

@@ -8,7 +8,7 @@ export const ClawFooter = () => {
           © 2026 Knowhere API. All rights reserved.
         </p>
         <div className="order-2 self-center min-[640px]:max-[767px]:order-1 min-[640px]:max-[767px]:self-auto min-[768px]:max-[768px]:order-1 min-[768px]:max-[768px]:self-auto min-[769px]:order-1 min-[769px]:self-auto">
-          <LandingBrand compact />
+          <LandingBrand compact tone="light" />
         </div>
       </div>
     </footer>

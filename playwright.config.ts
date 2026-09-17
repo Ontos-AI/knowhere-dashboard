@@ -19,7 +19,7 @@ export default defineConfig({
   projects: [
     {
       name: "app",
-      testMatch: "site-1-1.app.ts",
+      testMatch: ["site-1-1.app.ts", "site-1-1.parity.ts"],
     },
     {
       name: "proto",
