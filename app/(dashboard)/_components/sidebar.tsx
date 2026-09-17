@@ -47,7 +47,7 @@ const SIDEBAR_SHEET_WIDTH_CLASS = "w-[160px] min-w-[160px] max-w-[160px]";
 const SIDEBAR_STATIC_WIDTH_CLASS =
   "sm:w-[160px] sm:min-w-[160px] sm:max-w-[160px] lg:w-[200px] lg:min-w-[200px] lg:max-w-[200px]";
 
-const SIDEBAR_BRAND_WIDTH = "120px";
+const SIDEBAR_BRAND_WIDTH = "112px";
 
 const localeLabels = {
   en: "English",
@@ -111,7 +111,7 @@ const getNavigation = (labels: {
 const SidebarBrand = ({ onNavigate }: { onNavigate?: () => void }) => {
   return (
     <Link href="/" aria-label="Knowhere" className="inline-flex items-center" onClick={onNavigate}>
-      <KnowhereBrand className="w-[120px]" priority sizes={SIDEBAR_BRAND_WIDTH} tone="auto" />
+      <KnowhereBrand className="w-[112px]" priority sizes={SIDEBAR_BRAND_WIDTH} tone="auto" />
     </Link>
   );
 };
