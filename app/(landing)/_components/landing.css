@@ -8447,22 +8447,6 @@
   stroke: var(--coral-signal-500) !important;
 }
 
-/* Material role bindings for the user-selectable dark theme. */
-html[data-theme-transition="active"]:has(.landing-page)::view-transition-old(root),
-html[data-theme-transition="active"]:has(.landing-page)::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-
-html[data-theme-transition="active"]:has(.landing-page)::view-transition-new(root) {
-  animation: theme-circle-reveal 400ms ease-in-out both;
-}
-
-@keyframes theme-circle-reveal {
-  from { clip-path: circle(0% at var(--theme-reveal-origin)); }
-  to { clip-path: circle(var(--theme-reveal-radius) at var(--theme-reveal-origin)); }
-}
-
 .landing-page .site-header .theme-toggle {
   width: 44px;
   height: 44px;
