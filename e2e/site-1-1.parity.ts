@@ -35,13 +35,17 @@ const rootToken = async (page: Page, name: string): Promise<string> =>
 
 const normalizeColor = (value: string): string => value.replace(/\s+/g, " ").toLowerCase();
 
+/** `rgb(0, 0, 0)` is opaque; `rgba(0, 0, 0, 0)` is a surface painted by a descendant. */
+const isOpaque = (value: string): boolean => !/^rgba\(.*,\s*0(?:\.0+)?\)$/.test(value);
+
 /** Custom properties keep the authored literal, and `#fff` and `#ffffff` are the same colour. */
-const tokenColor = async (page: Page, name: string): Promise<string> => {
-  const value = (await rootToken(page, name)).toLowerCase();
-  return value.length === 4 && value.startsWith("#")
+const expandHex = (value: string): string =>
+  value.length === 4 && value.startsWith("#")
     ? `#${value[1]}${value[1]}${value[2]}${value[2]}${value[3]}${value[3]}`
     : value;
-};
+
+const tokenColor = async (page: Page, name: string): Promise<string> =>
+  expandHex((await rootToken(page, name)).toLowerCase());
 
 const openLanding = async (page: Page): Promise<void> => {
   await page.goto("/");
@@ -281,5 +285,56 @@ test.describe("landing 1:1 parity", () => {
     expect(after.origin).toBe("");
     expect(after.radius).toBe("");
     expect(after.background).toBe("rgb(1, 9, 9)");
+  });
+
+  test("Q: keeps the dark Material surface ramp on the prototype's dark values", async ({
+    page,
+  }) => {
+    await useTheme(page, "dark");
+    await openLanding(page);
+
+    expect(await tokenColor(page, "--md-sys-color-surface-container-lowest")).toBe("#000000");
+    expect(await tokenColor(page, "--md-sys-color-surface-container-high")).toBe("#042626");
+
+    // Inside `.landing-page` the prototype rebinds `--mist-white-*` to the Material ramp, so the
+    // lowest container has to stay black there instead of resolving through the ink `--black`.
+    const scoped = await page.evaluate(() =>
+      getComputedStyle(document.querySelector(".landing-page") as Element)
+        .getPropertyValue("--mist-white-50")
+        .trim()
+    );
+    expect(expandHex(scoped.toLowerCase())).toBe("#000000");
+
+    const surfaces = await page.evaluate(() =>
+      Array.from(document.querySelectorAll(".product-terminal, .product-output-content")).map(
+        (el) => {
+          const style = getComputedStyle(el);
+          return [style.backgroundColor, style.color] as const;
+        }
+      )
+    );
+    const opaqueSurfaces = surfaces.filter(([background]) => isOpaque(background));
+    expect(opaqueSurfaces.length).toBeGreaterThan(1);
+    for (const [background, color] of opaqueSurfaces) {
+      expect(background).toBe("rgb(0, 0, 0)");
+      expect(color).toBe("rgb(249, 250, 245)");
+    }
+  });
+
+  test("R: animates landing hash jumps and honours reduced motion", async ({ page }) => {
+    await useTheme(page, "light");
+    await openLanding(page);
+
+    const scrollBehavior = (): Promise<string> =>
+      page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior);
+
+    expect(await scrollBehavior()).toBe("smooth");
+
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    expect(await scrollBehavior()).toBe("auto");
+
+    // The rule is Landing-scoped, so the rest of the app keeps instant jumps.
+    await page.goto("/login");
+    expect(await scrollBehavior()).toBe("auto");
   });
 });
