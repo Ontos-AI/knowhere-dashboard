@@ -255,7 +255,7 @@ export const UsageWelcomeModal = () => {
                   </DashboardActionButton>
 
                   {hasProvisionError ? (
-                    <p className="text-[13px] leading-5 text-[#b91c1c] sm:text-[12px] sm:leading-[18px]">
+                    <p className="text-[13px] leading-5 text-destructive sm:text-[12px] sm:leading-[18px]">
                       {t("provisionError")}
                     </p>
                   ) : null}

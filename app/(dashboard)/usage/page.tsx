@@ -408,7 +408,7 @@ export default function UsagePage() {
             title={t("totalCreditsUsed")}
             value={formatMetricNumber(totalCreditsUsed)}
             unit={tTable("pts")}
-            valueClassName="text-[#00a63e]"
+            valueClassName="text-primary"
             icon={<SummaryIcon src="/icons/usage/summary-used.svg" width={19} height={19} />}
             helper={
               <span className="text-foreground dark:text-muted-foreground">
@@ -420,7 +420,7 @@ export default function UsagePage() {
             title={t("successRate")}
             value={formatMetricNumber(Number(successRate), 2)}
             unit="%"
-            valueClassName="text-[#19a88b]"
+            valueClassName="text-primary"
             icon={
               <SummaryIcon
                 src="/icons/usage/summary-success-fill.svg"

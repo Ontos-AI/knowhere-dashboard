@@ -658,7 +658,7 @@ const SettingsProfileSection = ({
               {...form.register("username")}
             />
             {form.formState.errors.username ? (
-              <p className="text-xs leading-4 text-[#dc2626]">
+              <p className="text-xs leading-4 text-destructive">
                 {form.formState.errors.username.message}
               </p>
             ) : null}
@@ -686,7 +686,7 @@ const SettingsProfileSection = ({
                 <span>{emailManagedByProviderLabel}</span>
               </p>
             ) : form.formState.errors.email ? (
-              <p className="text-xs leading-4 text-[#dc2626]">
+              <p className="text-xs leading-4 text-destructive">
                 {form.formState.errors.email.message}
               </p>
             ) : null}
@@ -718,12 +718,12 @@ const SettingsProfileSection = ({
               <div className="flex flex-wrap items-center gap-[10px]">
                 <p className={cn(fieldValueClassName, "break-all")}>{user.email}</p>
                 {user.emailVerified ? (
-                  <span className="inline-flex items-center gap-px border border-[#a4f4cf] bg-[#d0fae5] px-0.5 py-px text-xs font-medium leading-[14px] text-[#009966] lg:gap-0.5 lg:px-1 lg:py-0.5 lg:leading-4">
+                  <span className="inline-flex items-center gap-px border border-[#7efedd] bg-[#caffee] px-0.5 py-px text-xs font-medium leading-[14px] text-[#0a6351] lg:gap-0.5 lg:px-1 lg:py-0.5 lg:leading-4 dark:border-[#054437] dark:bg-[#01251d] dark:text-[#27efc6]">
                     <Check className="size-3.5" strokeWidth={2.25} />
                     <span>{verifiedLabel}</span>
                   </span>
                 ) : (
-                  <span className="inline-flex items-center border border-[#fde68a] bg-[#fef3c7] px-1 py-0.5 text-xs font-medium leading-4 text-[#b45309]">
+                  <span className="inline-flex items-center border border-[#ffe1df] bg-[#fff0ef] px-1 py-0.5 text-xs font-medium leading-4 text-[#a42900] dark:border-[#731a00] dark:bg-[#420b00] dark:text-[#ffa79f]">
                     {unverifiedLabel}
                   </span>
                 )}
@@ -763,7 +763,7 @@ const SettingsProfileSection = ({
             <SettingsInfoField
               label={accountStatusLabel}
               value={activeLabel}
-              valueClassName="text-[#00bc7d]"
+              valueClassName="text-primary"
             />
           </div>
         </div>
@@ -929,7 +929,7 @@ const SettingsPasswordField = ({
         type="password"
         {...registration}
       />
-      {error ? <p className="text-xs leading-4 text-[#dc2626]">{error}</p> : null}
+      {error ? <p className="text-xs leading-4 text-destructive">{error}</p> : null}
     </div>
   );
 };

@@ -97,60 +97,60 @@ const tableScrollThumbWidth: number = 151;
 
 const fileTypeColorMap = {
   pdf: {
-    background: "#fef2f2",
-    border: "#ffe2e2",
-    text: "#c10007",
-    darkBackground: "#450a0a",
-    darkBorder: "#7f1d1d",
-    darkText: "#fca5a5",
+    background: "#fff0ef",
+    border: "#ffe1df",
+    text: "#a42900",
+    darkBackground: "#420b00",
+    darkBorder: "#731a00",
+    darkText: "#ffa79f",
   },
   docx: {
-    background: "#eff6ff",
-    border: "#dbeafe",
-    text: "#1447e6",
-    darkBackground: "#172554",
-    darkBorder: "#1d4ed8",
-    darkText: "#93c5fd",
+    background: "#f6f7ef",
+    border: "#bbbcb3",
+    text: "#2e2e2c",
+    darkBackground: "#1b1c1a",
+    darkBorder: "#595a55",
+    darkText: "#f0f2e6",
   },
   jpg: {
-    background: "#fdf4ff",
-    border: "#fae8ff",
-    text: "#a800b7",
-    darkBackground: "#4a044e",
-    darkBorder: "#86198f",
-    darkText: "#f0abfc",
+    background: "#fff0ef",
+    border: "#ffe1df",
+    text: "#a42900",
+    darkBackground: "#420b00",
+    darkBorder: "#731a00",
+    darkText: "#ffa79f",
   },
   jpeg: {
-    background: "#fdf4ff",
-    border: "#fae8ff",
-    text: "#a800b7",
-    darkBackground: "#4a044e",
-    darkBorder: "#86198f",
-    darkText: "#f0abfc",
+    background: "#fff0ef",
+    border: "#ffe1df",
+    text: "#a42900",
+    darkBackground: "#420b00",
+    darkBorder: "#731a00",
+    darkText: "#ffa79f",
   },
   pptx: {
-    background: "#fff7ed",
-    border: "#ffedd4",
-    text: "#ca3500",
-    darkBackground: "#431407",
-    darkBorder: "#9a3412",
-    darkText: "#fdba74",
+    background: "#fff0ef",
+    border: "#ffe1df",
+    text: "#a42900",
+    darkBackground: "#420b00",
+    darkBorder: "#731a00",
+    darkText: "#ffa79f",
   },
   xlsx: {
-    background: "#ecfdf5",
-    border: "#d0fae5",
-    text: "#007a55",
-    darkBackground: "#052e16",
-    darkBorder: "#047857",
-    darkText: "#86efac",
+    background: "#caffee",
+    border: "#7efedd",
+    text: "#0a6351",
+    darkBackground: "#01251d",
+    darkBorder: "#054437",
+    darkText: "#27efc6",
   },
   csv: {
-    background: "#ecfeff",
-    border: "#cefafe",
-    text: "#007595",
-    darkBackground: "#083344",
-    darkBorder: "#0e7490",
-    darkText: "#67e8f9",
+    background: "#caffee",
+    border: "#7efedd",
+    text: "#0a6351",
+    darkBackground: "#01251d",
+    darkBorder: "#054437",
+    darkText: "#27efc6",
   },
   png: {
     background: "#caffee",
@@ -161,28 +161,28 @@ const fileTypeColorMap = {
     darkText: "#27efc6",
   },
   md: {
-    background: "#f7fee7",
-    border: "#ecfcca",
-    text: "#497d00",
-    darkBackground: "#1a2e05",
-    darkBorder: "#4d7c0f",
-    darkText: "#bef264",
+    background: "#f6f7ef",
+    border: "#bbbcb3",
+    text: "#2e2e2c",
+    darkBackground: "#1b1c1a",
+    darkBorder: "#595a55",
+    darkText: "#f0f2e6",
   },
   json: {
-    background: "#fefce8",
-    border: "#fef9c2",
-    text: "#a65f00",
-    darkBackground: "#422006",
-    darkBorder: "#a16207",
-    darkText: "#fde68a",
+    background: "#f6f7ef",
+    border: "#bbbcb3",
+    text: "#2e2e2c",
+    darkBackground: "#1b1c1a",
+    darkBorder: "#595a55",
+    darkText: "#f0f2e6",
   },
   txt: {
-    background: "#eef2ff",
-    border: "#e0e7ff",
-    text: "#432dd7",
-    darkBackground: "#1e1b4b",
-    darkBorder: "#4338ca",
-    darkText: "#a5b4fc",
+    background: "#f6f7ef",
+    border: "#bbbcb3",
+    text: "#2e2e2c",
+    darkBackground: "#1b1c1a",
+    darkBorder: "#595a55",
+    darkText: "#f0f2e6",
   },
 } satisfies Readonly<Record<string, FileTypeTheme>>;
 
@@ -241,15 +241,15 @@ const getStatusLabel = (
 
 const StatusIcon = ({ statusKind }: { statusKind: UsageStatusKind }) => {
   if (statusKind === "done") {
-    return <CheckCircle2 className="h-[14px] w-[14px] text-[#00a63e]" />;
+    return <CheckCircle2 className="h-[14px] w-[14px] text-primary" />;
   }
 
   if (statusKind === "failed") {
-    return <XCircle className="h-[14px] w-[14px] text-[#e7000b]" />;
+    return <XCircle className="h-[14px] w-[14px] text-destructive" />;
   }
 
   if (statusKind === "running") {
-    return <Loader2 className="h-[14px] w-[14px] animate-spin text-[#fd9a00]" />;
+    return <Loader2 className="h-[14px] w-[14px] animate-spin text-primary" />;
   }
 
   if (statusKind === "pending" || statusKind === "waiting-file") {
@@ -428,9 +428,9 @@ export function UsageTable({
                       <StatusIcon statusKind={row.statusKind} />
                       <span
                         className={cn(
-                          row.statusKind === "done" && "text-[#00a63e]",
-                          row.statusKind === "failed" && "text-[#e7000b]",
-                          row.statusKind === "running" && "text-[#fd9a00]",
+                          row.statusKind === "done" && "text-primary",
+                          row.statusKind === "failed" && "text-destructive",
+                          row.statusKind === "running" && "text-primary",
                           (row.statusKind === "pending" || row.statusKind === "waiting-file") &&
                             "text-muted-foreground"
                         )}
@@ -447,7 +447,7 @@ export function UsageTable({
 
                     <button
                       type="button"
-                      className="sticky right-0 z-10 flex h-10 w-12 items-center justify-center border-l border-border bg-background text-[#ff8904] transition-colors hover:bg-[#fff7ed] disabled:cursor-not-allowed disabled:text-muted-foreground dark:border-border dark:bg-muted dark:hover:bg-muted sm:h-[22px] lg:h-8"
+                      className="sticky right-0 z-10 flex h-10 w-12 items-center justify-center border-l border-border bg-background text-primary-dark transition-colors hover:bg-[#f3f5ea] disabled:cursor-not-allowed disabled:text-muted-foreground dark:border-border dark:bg-muted dark:hover:bg-[#042626] sm:h-[22px] lg:h-8"
                       onClick={() => onDownloadResult?.(row.jobId, row.resultUrl)}
                       disabled={!row.resultUrl}
                       aria-label={row.resultUrl ? t("download") : row.status}

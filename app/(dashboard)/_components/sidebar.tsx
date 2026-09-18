@@ -210,7 +210,7 @@ const DashboardSidebarContent = ({
                 "relative flex items-center gap-1.5 overflow-hidden border-b px-4 text-[12px] font-normal leading-4 tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19a88b]/25 focus-visible:ring-inset lg:h-9",
                 isActive
                   ? "h-7 border-[#0a6351] bg-[#19a88b] text-[#f0f2e6] shadow-[inset_-8px_0_0_#0a6351] lg:h-9"
-                  : "h-8 border-[#e5e7eb] text-[#083b3a] dark:border-[#156462] dark:text-[#f0f2e6] lg:h-9"
+                  : "h-8 border-[#bbbcb3] text-[#083b3a] dark:border-[#156462] dark:text-[#f0f2e6] lg:h-9"
               )}
             >
               <SidebarNavIcon icon={item.icon} isActive={isActive} />
@@ -351,7 +351,7 @@ const MobileSidebarContent = ({
                 "relative flex h-12 items-center gap-[10px] overflow-hidden border-b p-3 text-[14px] font-normal leading-5 tracking-normal transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19a88b]/25 focus-visible:ring-inset",
                 isActive
                   ? "border-[#0a6351] bg-[#19a88b] text-[#f0f2e6] shadow-[inset_-8px_0_0_#0a6351]"
-                  : "border-[#e5e7eb] text-[#083b3a] dark:border-[#156462] dark:text-[#f0f2e6]"
+                  : "border-[#bbbcb3] text-[#083b3a] dark:border-[#156462] dark:text-[#f0f2e6]"
               )}
             >
               <SidebarNavIcon icon={item.icon} isActive={isActive} />
