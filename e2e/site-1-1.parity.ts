@@ -9,7 +9,9 @@
   Findings covered (see notes/knowhere-dashboard-site-1-1-parity.md):
   A palette resolves from :root, B palette-change event, C theme reveal, D body type scale,
   E section eyebrow size, F section shell width and #playground full-bleed, G shared footer,
-  H button white-space, plus the FAQ disclosure row, the mono SDK code frame, and dark shadows.
+  H button white-space, plus the FAQ disclosure row, the mono SDK code frame, dark shadows, the
+  dark Material surface ramp, the Landing scroll behaviour, and the dashboard shell behind the
+  Landing.
 */
 import { expect, type Page, test } from "@playwright/test";
 import { boxOf, computed } from "./geometry";
@@ -348,5 +350,32 @@ test.describe("landing 1:1 parity", () => {
     // The rule is Landing-scoped, so the rest of the app keeps instant jumps.
     await page.goto("/login");
     expect(await scrollBehavior()).toBe("auto");
+  });
+
+  test("S: keeps the dashboard shell from painting behind the Landing", async ({ page }) => {
+    const shellBackground = (): Promise<string> =>
+      page.evaluate(
+        () =>
+          getComputedStyle(document.querySelector(".kh-landing-shell") as Element).backgroundColor
+      );
+    const documentBackground = (): Promise<string> =>
+      page.evaluate(() => getComputedStyle(document.documentElement).backgroundColor);
+
+    // A fresh context starts on the system theme, which headless Chrome resolves to light.
+    await openLanding(page);
+    expect(await shellBackground()).toBe("rgba(0, 0, 0, 0)");
+    expect(await documentBackground()).toBe("rgb(255, 255, 255)");
+
+    await page.evaluate(() => window.localStorage.setItem("theme", "dark"));
+    await openLanding(page);
+    expect(await shellBackground()).toBe("rgba(0, 0, 0, 0)");
+    expect(await documentBackground()).toBe("rgb(1, 9, 9)");
+
+    // The shell is the `(landing)` route group's, so the neutralisation is scoped to the Landing's
+    // own stylesheet: Pricing renders inside the same shell and keeps the dashboard's surface.
+    await page.evaluate(() => window.localStorage.setItem("theme", "light"));
+    await page.goto("/pricing");
+    await expect(page.locator(".kh-landing-shell")).toBeVisible();
+    expect(await shellBackground()).toBe("rgb(241, 243, 231)");
   });
 });

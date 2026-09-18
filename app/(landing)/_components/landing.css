@@ -2793,6 +2793,17 @@
       background-image: none;
     }
 
+    /*
+      The prototype goes straight from <body> to the page, which paints every pixel itself. The
+      dashboard wraps this route group in a shell that paints `bg-background`; that shell only
+      shows where a Landing section is transparent, and where it shows it does not match the
+      prototype. This stylesheet only ships with the Landing route, so neutralising the shell here
+      leaves the shell on Pricing, Claw, and Versus alone.
+    */
+    .kh-landing-shell {
+      background-color: transparent;
+    }
+
     .landing-page #top.hero-b-layout {
       background-color: var(--mist-white-50, var(--white));
       background-image:

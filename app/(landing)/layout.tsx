@@ -22,7 +22,7 @@ type LandingPageLayoutProps = {
 
 export default function LandingPageLayout({ children, modal }: LandingPageLayoutProps) {
   return (
-    <div className="min-h-dvh bg-background text-foreground">
+    <div className="kh-landing-shell min-h-dvh bg-background text-foreground">
       {children}
       {modal}
     </div>
