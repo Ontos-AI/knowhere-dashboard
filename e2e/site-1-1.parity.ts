@@ -319,6 +319,18 @@ test.describe("landing 1:1 parity", () => {
       expect(background).toBe("rgb(0, 0, 0)");
       expect(color).toBe("rgb(249, 250, 245)");
     }
+
+    // `#comparison` paints the same token on itself and on the 100vw `::before` band behind it.
+    // Before the fix both were ivory while the heading stayed near-white, so the heading vanished
+    // on the ivory band.
+    const comparison = await page.evaluate(() => {
+      const section = document.querySelector("#comparison") as Element;
+      const own = getComputedStyle(section);
+      const band = getComputedStyle(section, "::before");
+      const heading = getComputedStyle(section.querySelector("h2") as Element);
+      return [own.backgroundColor, band.backgroundColor, heading.color] as const;
+    });
+    expect(comparison).toEqual(["rgb(1, 9, 9)", "rgb(0, 0, 0)", "rgb(249, 250, 245)"]);
   });
 
   test("R: animates landing hash jumps and honours reduced motion", async ({ page }) => {
