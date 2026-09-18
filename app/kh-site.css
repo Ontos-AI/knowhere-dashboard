@@ -274,3 +274,28 @@ html[data-theme="dark"] .kh-site {
   --accent: var(--md-sys-color-primary);
   --muted: #bbbcb3;
 }
+
+/*
+  The prototype declares this block on every page it ships (its shared chrome stylesheet plus a
+  copy in the landing and login apps, which are separate bundles). The dashboard is one bundle, so
+  it lives here once: any page with the site theme control animates the change with the same
+  circular reveal instead of hard-switching.
+*/
+html[data-theme-transition="active"]::view-transition-old(root),
+html[data-theme-transition="active"]::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+html[data-theme-transition="active"]::view-transition-new(root) {
+  animation: theme-circle-reveal 400ms ease-in-out both;
+}
+
+@keyframes theme-circle-reveal {
+  from {
+    clip-path: circle(0% at var(--theme-reveal-origin));
+  }
+  to {
+    clip-path: circle(var(--theme-reveal-radius) at var(--theme-reveal-origin));
+  }
+}
