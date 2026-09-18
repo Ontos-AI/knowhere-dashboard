@@ -9,7 +9,9 @@
   Findings covered (see notes/knowhere-dashboard-site-1-1-parity.md):
   A palette resolves from :root, B palette-change event, C theme reveal, D body type scale,
   E section eyebrow size, F section shell width and #playground full-bleed, G shared footer,
-  H button white-space, plus the FAQ disclosure row, the mono SDK code frame, and dark shadows.
+  H button white-space, plus the FAQ disclosure row, the mono SDK code frame, dark shadows, the
+  dark Material surface ramp, the Landing scroll behaviour, and the dashboard shell behind the
+  Landing.
 */
 import { expect, type Page, test } from "@playwright/test";
 import { boxOf, computed } from "./geometry";
@@ -35,13 +37,17 @@ const rootToken = async (page: Page, name: string): Promise<string> =>
 
 const normalizeColor = (value: string): string => value.replace(/\s+/g, " ").toLowerCase();
 
+/** `rgb(0, 0, 0)` is opaque; `rgba(0, 0, 0, 0)` is a surface painted by a descendant. */
+const isOpaque = (value: string): boolean => !/^rgba\(.*,\s*0(?:\.0+)?\)$/.test(value);
+
 /** Custom properties keep the authored literal, and `#fff` and `#ffffff` are the same colour. */
-const tokenColor = async (page: Page, name: string): Promise<string> => {
-  const value = (await rootToken(page, name)).toLowerCase();
-  return value.length === 4 && value.startsWith("#")
+const expandHex = (value: string): string =>
+  value.length === 4 && value.startsWith("#")
     ? `#${value[1]}${value[1]}${value[2]}${value[2]}${value[3]}${value[3]}`
     : value;
-};
+
+const tokenColor = async (page: Page, name: string): Promise<string> =>
+  expandHex((await rootToken(page, name)).toLowerCase());
 
 const openLanding = async (page: Page): Promise<void> => {
   await page.goto("/");
@@ -281,5 +287,95 @@ test.describe("landing 1:1 parity", () => {
     expect(after.origin).toBe("");
     expect(after.radius).toBe("");
     expect(after.background).toBe("rgb(1, 9, 9)");
+  });
+
+  test("Q: keeps the dark Material surface ramp on the prototype's dark values", async ({
+    page,
+  }) => {
+    await useTheme(page, "dark");
+    await openLanding(page);
+
+    expect(await tokenColor(page, "--md-sys-color-surface-container-lowest")).toBe("#000000");
+    expect(await tokenColor(page, "--md-sys-color-surface-container-high")).toBe("#042626");
+
+    // Inside `.landing-page` the prototype rebinds `--mist-white-*` to the Material ramp, so the
+    // lowest container has to stay black there instead of resolving through the ink `--black`.
+    const scoped = await page.evaluate(() =>
+      getComputedStyle(document.querySelector(".landing-page") as Element)
+        .getPropertyValue("--mist-white-50")
+        .trim()
+    );
+    expect(expandHex(scoped.toLowerCase())).toBe("#000000");
+
+    const surfaces = await page.evaluate(() =>
+      Array.from(document.querySelectorAll(".product-terminal, .product-output-content")).map(
+        (el) => {
+          const style = getComputedStyle(el);
+          return [style.backgroundColor, style.color] as const;
+        }
+      )
+    );
+    const opaqueSurfaces = surfaces.filter(([background]) => isOpaque(background));
+    expect(opaqueSurfaces.length).toBeGreaterThan(1);
+    for (const [background, color] of opaqueSurfaces) {
+      expect(background).toBe("rgb(0, 0, 0)");
+      expect(color).toBe("rgb(249, 250, 245)");
+    }
+
+    // `#comparison` paints the same token on itself and on the 100vw `::before` band behind it.
+    // Before the fix both were ivory while the heading stayed near-white, so the heading vanished
+    // on the ivory band.
+    const comparison = await page.evaluate(() => {
+      const section = document.querySelector("#comparison") as Element;
+      const own = getComputedStyle(section);
+      const band = getComputedStyle(section, "::before");
+      const heading = getComputedStyle(section.querySelector("h2") as Element);
+      return [own.backgroundColor, band.backgroundColor, heading.color] as const;
+    });
+    expect(comparison).toEqual(["rgb(1, 9, 9)", "rgb(0, 0, 0)", "rgb(249, 250, 245)"]);
+  });
+
+  test("R: animates landing hash jumps and honours reduced motion", async ({ page }) => {
+    await useTheme(page, "light");
+    await openLanding(page);
+
+    const scrollBehavior = (): Promise<string> =>
+      page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior);
+
+    expect(await scrollBehavior()).toBe("smooth");
+
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    expect(await scrollBehavior()).toBe("auto");
+
+    // The rule is Landing-scoped, so the rest of the app keeps instant jumps.
+    await page.goto("/login");
+    expect(await scrollBehavior()).toBe("auto");
+  });
+
+  test("S: keeps the dashboard shell from painting behind the Landing", async ({ page }) => {
+    const shellBackground = (): Promise<string> =>
+      page.evaluate(
+        () =>
+          getComputedStyle(document.querySelector(".kh-landing-shell") as Element).backgroundColor
+      );
+    const documentBackground = (): Promise<string> =>
+      page.evaluate(() => getComputedStyle(document.documentElement).backgroundColor);
+
+    // A fresh context starts on the system theme, which headless Chrome resolves to light.
+    await openLanding(page);
+    expect(await shellBackground()).toBe("rgba(0, 0, 0, 0)");
+    expect(await documentBackground()).toBe("rgb(255, 255, 255)");
+
+    await page.evaluate(() => window.localStorage.setItem("theme", "dark"));
+    await openLanding(page);
+    expect(await shellBackground()).toBe("rgba(0, 0, 0, 0)");
+    expect(await documentBackground()).toBe("rgb(1, 9, 9)");
+
+    // The shell is the `(landing)` route group's, so the neutralisation is scoped to the Landing's
+    // own stylesheet: Pricing renders inside the same shell and keeps the dashboard's surface.
+    await page.evaluate(() => window.localStorage.setItem("theme", "light"));
+    await page.goto("/pricing");
+    await expect(page.locator(".kh-landing-shell")).toBeVisible();
+    expect(await shellBackground()).toBe("rgb(241, 243, 231)");
   });
 });

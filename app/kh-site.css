@@ -211,6 +211,11 @@ html[data-theme="dark"] .kh-site {
 
   --md-sys-color-background: #010909;
   --md-sys-color-surface: #010909;
+
+  /* The prototype pins the dark Material ramp's lowest container to literal black;
+     `var(--black)` flips to ink in this theme, which would make the lowest container
+     the brightest surface on the page. */
+  --md-sys-color-surface-container-lowest: #000000;
   --md-sys-color-on-background: #f9faf5;
   --md-sys-color-on-surface: #f9faf5;
   --md-sys-color-on-surface-variant: #bbbcb3;
