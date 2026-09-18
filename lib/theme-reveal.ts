@@ -7,10 +7,9 @@ const prefersReducedMotion = (): boolean =>
  * The prototype animates a theme change with a circular reveal: the new palette is
  * clipped into a circle that grows out of the control the user activated.
  *
- * This mirrors the prototype's maths so the Landing stylesheet's
- * `theme-circle-reveal` keyframes can run. It falls back to an instant change when
- * the browser cannot start a view transition, when the user asked for reduced
- * motion, or when the page does not carry the reveal stylesheet.
+ * This mirrors the prototype's maths so the `theme-circle-reveal` keyframes that
+ * ship with the site theme can run. It falls back to an instant change when the
+ * browser cannot start a view transition or when the user asked for reduced motion.
  *
  * `applyTheme` has to mutate the DOM synchronously (wrap React state updates in
  * `flushSync`), otherwise both snapshots of the transition show the old theme.
@@ -23,7 +22,7 @@ export const runThemeReveal = async (
 
   if (root.dataset[REVEAL_ATTRIBUTE] === "active") return;
 
-  if (!document.startViewTransition || !document.querySelector(".landing-page")) {
+  if (!document.startViewTransition) {
     applyTheme();
     return;
   }
