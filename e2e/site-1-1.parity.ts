@@ -57,8 +57,11 @@ const openLanding = async (page: Page): Promise<void> => {
   });
 };
 
+/** The chrome header carries `.kh-theme-toggle`; the standalone Login header carries its own button. */
+const themeControl = (page: Page) => page.locator(".kh-theme-toggle, .login-theme-button").first();
+
 const changeTheme = async (page: Page, label: RegExp): Promise<void> => {
-  await page.locator(".kh-theme-toggle").first().click();
+  await themeControl(page).click();
   const item = page.locator('[role="menuitem"]').filter({ hasText: label }).first();
   await expect(item).toBeVisible();
   await item.click();
@@ -287,6 +290,51 @@ test.describe("landing 1:1 parity", () => {
     expect(after.origin).toBe("");
     expect(after.radius).toBe("");
     expect(after.background).toBe("rgb(1, 9, 9)");
+  });
+
+  test("C: runs the same reveal on the other prototype pages", async ({ page }) => {
+    // The prototype declares the reveal keyframes on every page it ships and its toggler never
+    // checks for a page id, so Pricing, Blog, and Login animate the change exactly like the
+    // Landing does.
+    await page.addInitScript(() => {
+      // Every navigation starts light so picking Dark always changes the palette and the reveal runs.
+      window.localStorage.setItem("theme", "light");
+      (window as unknown as { __reveal: { transitions: number } }).__reveal = { transitions: 0 };
+      const original = document.startViewTransition?.bind(document);
+      Object.defineProperty(document, "startViewTransition", {
+        configurable: true,
+        value: (callback: () => void) => {
+          (window as unknown as { __reveal: { transitions: number } }).__reveal.transitions += 1;
+          return original
+            ? original(callback)
+            : { finished: Promise.resolve(), skipTransition() {} };
+        },
+      });
+    });
+
+    for (const path of ["/pricing", "/blog", "/login"]) {
+      await page.goto(path);
+      await expect(themeControl(page)).toBeVisible();
+      await changeTheme(page, /dark|深色/i);
+
+      const during = await page.evaluate(() => {
+        const root = document.documentElement;
+        return {
+          transitions: (window as unknown as { __reveal: { transitions: number } }).__reveal
+            .transitions,
+          themeTransition: root.dataset.themeTransition ?? null,
+          origin: root.style.getPropertyValue("--theme-reveal-origin"),
+          animation: getComputedStyle(root, "::view-transition-new(root)").animationName,
+        };
+      });
+
+      expect(during.transitions, `${path} never started a view transition`).toBeGreaterThan(0);
+      expect(during.themeTransition, `${path} did not set the reveal attribute`).toBe("active");
+      expect(during.origin, `${path} did not set the reveal origin`).toMatch(/^[\d.]+% [\d.]+%$/);
+      expect(during.animation, `${path} did not load the reveal keyframes`).toBe(
+        "theme-circle-reveal"
+      );
+    }
   });
 
   test("Q: keeps the dark Material surface ramp on the prototype's dark values", async ({
