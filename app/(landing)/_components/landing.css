@@ -27,6 +27,18 @@
     @media (max-width: 479px) {
       body:has(.landing-page) { font-size: 17px; }
     }
+    /*
+      Prototype `html { scroll-behavior: smooth }` so in-page anchors animate, and its
+      `prefers-reduced-motion` opt-out. Scoped with `:has()` because `html` sits outside
+      `.landing-page` and Dashboard routes must keep instant jumps.
+    */
+    html:has(.landing-page) {
+      scroll-behavior: smooth;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html:has(.landing-page) { scroll-behavior: auto; }
+    }
 
     .landing-page .skip-link {
       position: absolute !important;
