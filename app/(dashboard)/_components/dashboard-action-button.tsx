@@ -7,7 +7,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 
 const dashboardActionButtonVariants = cva(
-  "inline-flex items-center rounded-none border font-mono-display text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19a88b]/25 disabled:cursor-not-allowed [&_svg]:shrink-0",
+  "inline-flex items-center whitespace-nowrap rounded-none border font-mono-display text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#19a88b]/25 disabled:cursor-not-allowed [&_svg]:shrink-0",
   {
     variants: {
       size: {

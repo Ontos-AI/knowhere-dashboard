@@ -459,9 +459,8 @@ export default function UsagePage() {
                     key={`range-${range}`}
                     type="button"
                     className={cn(
-                      "flex h-9 w-[68px] items-center justify-center overflow-hidden bg-muted px-4 pb-[10px] pt-2 font-mono-display text-[12px] font-normal leading-4 tracking-normal whitespace-nowrap text-foreground sm:h-8 sm:pb-[10px]",
-                      isActive &&
-                        "border-b-4 border-primary bg-primary font-semibold text-primary-foreground max-[639px]:pb-3"
+                      "flex h-9 w-[68px] items-center justify-center overflow-hidden bg-muted px-4 font-mono-display text-[12px] font-normal leading-4 tracking-normal whitespace-nowrap text-foreground sm:h-8",
+                      isActive && "bg-primary font-semibold text-primary-foreground"
                     )}
                     onClick={() => {
                       setActiveRange(range as TimeRangePreset);
@@ -483,7 +482,7 @@ export default function UsagePage() {
               type="button"
               variant="secondary"
               size="small"
-              className="h-9 w-[121px] disabled:opacity-60 sm:h-8 lg:ml-auto lg:w-[127px]"
+              className="h-9 min-w-[121px] disabled:opacity-60 sm:h-8 lg:ml-auto lg:min-w-[127px]"
               onClick={() => void handleExportCsv()}
               disabled={isExporting || totalCount === 0}
             >

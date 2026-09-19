@@ -536,9 +536,9 @@ const SettingsSectionTabs = ({
       <button
         type="button"
         className={cn(
-          "flex h-9 min-w-[83px] items-end justify-center px-[14px] pb-3 pt-[6px] font-mono-display text-xs leading-4 transition-colors lg:h-8 lg:min-w-[87px] lg:px-4 lg:pb-2 lg:pt-2",
+          "flex h-9 min-w-[83px] items-center justify-center px-[14px] font-mono-display text-xs leading-4 transition-colors lg:h-8 lg:min-w-[87px] lg:px-4",
           activeSection === "profile"
-            ? "border-b-[3px] border-primary bg-primary font-semibold text-primary-foreground lg:border-b-4"
+            ? "bg-primary font-semibold text-primary-foreground"
             : "bg-muted font-normal text-foreground"
         )}
         aria-current={activeSection === "profile" ? "page" : undefined}
@@ -550,9 +550,9 @@ const SettingsSectionTabs = ({
         <button
           type="button"
           className={cn(
-            "flex h-9 min-w-[83px] items-end justify-center px-[14px] pb-3 pt-[6px] font-mono-display text-xs leading-4 transition-colors lg:h-8 lg:min-w-[87px] lg:px-4 lg:pb-2 lg:pt-2",
+            "flex h-9 min-w-[83px] items-center justify-center px-[14px] font-mono-display text-xs leading-4 transition-colors lg:h-8 lg:min-w-[87px] lg:px-4",
             activeSection === "security"
-              ? "border-b-[3px] border-primary bg-primary font-semibold text-primary-foreground lg:border-b-4"
+              ? "bg-primary font-semibold text-primary-foreground"
               : "bg-muted font-normal text-foreground"
           )}
           aria-current={activeSection === "security" ? "page" : undefined}
@@ -564,9 +564,9 @@ const SettingsSectionTabs = ({
       <button
         type="button"
         className={cn(
-          "flex h-9 min-w-[114px] items-end justify-center px-[14px] pb-[10px] pt-[6px] font-mono-display text-xs leading-4 transition-colors lg:h-8 lg:min-w-[118px] lg:px-4 lg:pb-2 lg:pt-2",
+          "flex h-9 min-w-[114px] items-center justify-center px-[14px] font-mono-display text-xs leading-4 transition-colors lg:h-8 lg:min-w-[118px] lg:px-4",
           activeSection === "preferences"
-            ? "border-b-[3px] border-primary bg-primary font-semibold text-primary-foreground lg:border-b-4"
+            ? "bg-primary font-semibold text-primary-foreground"
             : "bg-muted font-normal text-foreground"
         )}
         aria-current={activeSection === "preferences" ? "page" : undefined}
