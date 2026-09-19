@@ -538,8 +538,8 @@ const SettingsSectionTabs = ({
         className={cn(
           "flex h-9 min-w-[83px] items-end justify-center px-[14px] pb-3 pt-[6px] font-mono-display text-xs leading-4 transition-colors lg:h-8 lg:min-w-[87px] lg:px-4 lg:pb-2 lg:pt-2",
           activeSection === "profile"
-            ? "border-b-[3px] border-primary bg-primary font-bold text-primary-foreground lg:border-b-4"
-            : "bg-muted font-light text-foreground"
+            ? "border-b-[3px] border-primary bg-primary font-semibold text-primary-foreground lg:border-b-4"
+            : "bg-muted font-normal text-foreground"
         )}
         aria-current={activeSection === "profile" ? "page" : undefined}
         onClick={() => onSectionSelect("profile")}
@@ -552,8 +552,8 @@ const SettingsSectionTabs = ({
           className={cn(
             "flex h-9 min-w-[83px] items-end justify-center px-[14px] pb-3 pt-[6px] font-mono-display text-xs leading-4 transition-colors lg:h-8 lg:min-w-[87px] lg:px-4 lg:pb-2 lg:pt-2",
             activeSection === "security"
-              ? "border-b-[3px] border-primary bg-primary font-bold text-primary-foreground lg:border-b-4"
-              : "bg-muted font-light text-foreground"
+              ? "border-b-[3px] border-primary bg-primary font-semibold text-primary-foreground lg:border-b-4"
+              : "bg-muted font-normal text-foreground"
           )}
           aria-current={activeSection === "security" ? "page" : undefined}
           onClick={() => onSectionSelect("security")}
@@ -566,8 +566,8 @@ const SettingsSectionTabs = ({
         className={cn(
           "flex h-9 min-w-[114px] items-end justify-center px-[14px] pb-[10px] pt-[6px] font-mono-display text-xs leading-4 transition-colors lg:h-8 lg:min-w-[118px] lg:px-4 lg:pb-2 lg:pt-2",
           activeSection === "preferences"
-            ? "border-b-[3px] border-primary bg-primary font-bold text-primary-foreground lg:border-b-4"
-            : "bg-muted font-light text-foreground"
+            ? "border-b-[3px] border-primary bg-primary font-semibold text-primary-foreground lg:border-b-4"
+            : "bg-muted font-normal text-foreground"
         )}
         aria-current={activeSection === "preferences" ? "page" : undefined}
         onClick={() => onSectionSelect("preferences")}
@@ -705,7 +705,7 @@ const SettingsProfileSection = ({
         </form>
 
         <div className="flex flex-col gap-[22px] sm:gap-[38px] lg:gap-10">
-          <h2 className="text-xs font-bold leading-[18px] text-foreground lg:text-sm lg:leading-5">
+          <h2 className="text-xs font-semibold leading-[18px] text-foreground lg:text-sm lg:leading-5">
             {accountInformationLabel}
           </h2>
 
@@ -814,7 +814,7 @@ const SettingsPasswordSection = ({
     >
       <div className="flex flex-col gap-6">
         <div className="space-y-2">
-          <h2 className="text-sm font-bold leading-5 text-foreground">{title}</h2>
+          <h2 className="text-sm font-semibold leading-5 text-foreground">{title}</h2>
           <p className="max-w-[520px] text-sm leading-5 text-muted-foreground">{description}</p>
         </div>
 

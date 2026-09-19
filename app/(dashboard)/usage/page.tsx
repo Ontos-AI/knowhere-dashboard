@@ -124,7 +124,7 @@ const UsageSummaryCard = ({
       <div className="flex items-baseline gap-2 sm:gap-1.5">
         <span
           className={cn(
-            "font-sans text-[18px] font-extrabold leading-none sm:text-[22px] lg:text-2xl",
+            "font-sans text-[18px] font-semibold leading-none sm:text-[22px] lg:text-2xl",
             valueClassName
           )}
         >
@@ -361,7 +361,7 @@ export default function UsagePage() {
       <UsageWelcomeModal />
       <div className="w-full space-y-[18px] sm:space-y-[22px] lg:space-y-5">
         <section className="space-y-1 sm:hidden">
-          <h1 className="text-base font-bold leading-6 text-foreground dark:text-foreground">
+          <h1 className="text-base font-semibold leading-6 text-foreground dark:text-foreground">
             {billingEnabled ? t("title") : t("selfHostedTitle")}
           </h1>
           <p className="text-[14px] leading-5 text-muted-foreground">
@@ -459,9 +459,9 @@ export default function UsagePage() {
                     key={`range-${range}`}
                     type="button"
                     className={cn(
-                      "flex h-9 w-[68px] items-center justify-center overflow-hidden bg-muted px-4 pb-[10px] pt-2 font-mono-display text-[12px] font-light leading-4 tracking-normal whitespace-nowrap text-foreground sm:h-8 sm:pb-[10px]",
+                      "flex h-9 w-[68px] items-center justify-center overflow-hidden bg-muted px-4 pb-[10px] pt-2 font-mono-display text-[12px] font-normal leading-4 tracking-normal whitespace-nowrap text-foreground sm:h-8 sm:pb-[10px]",
                       isActive &&
-                        "border-b-4 border-primary bg-primary font-bold text-primary-foreground max-[639px]:pb-3"
+                        "border-b-4 border-primary bg-primary font-semibold text-primary-foreground max-[639px]:pb-3"
                     )}
                     onClick={() => {
                       setActiveRange(range as TimeRangePreset);

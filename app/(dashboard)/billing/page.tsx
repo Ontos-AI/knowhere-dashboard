@@ -161,7 +161,7 @@ function BillingContent() {
 
   return (
     <div className="container mx-auto py-10">
-      <h1 className="text-3xl font-bold text-center mb-4">{t("page.title")}</h1>
+      <h1 className="text-3xl font-semibold text-center mb-4">{t("page.title")}</h1>
       <p className="text-center text-muted-foreground">{t("page.instruction")}</p>
       <BillingPlansSection />
     </div>

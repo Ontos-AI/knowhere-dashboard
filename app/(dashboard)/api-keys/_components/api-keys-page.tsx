@@ -296,7 +296,7 @@ export const ApiKeysPage = () => {
     <>
       <div className="flex w-full flex-col gap-3.5 sm:gap-[18px] lg:gap-5">
         <div className="flex flex-col gap-0.5 sm:hidden">
-          <h2 className="truncate text-sm font-bold leading-[22px] text-foreground">
+          <h2 className="truncate text-sm font-semibold leading-[22px] text-foreground">
             {t("title")}
           </h2>
           <p className="text-xs leading-[18px] text-muted-foreground">{t("subtitle")}</p>

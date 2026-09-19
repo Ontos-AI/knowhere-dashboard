@@ -545,7 +545,7 @@ export function UsageTable({
                 className={cn(
                   "flex h-8 w-8 items-center justify-center border border-border bg-card text-[12px] leading-[14px] text-foreground transition-colors hover:bg-muted",
                   isActive &&
-                    "font-bold text-[#19a88b] underline decoration-solid underline-offset-4"
+                    "font-semibold text-[#19a88b] underline decoration-solid underline-offset-4"
                 )}
                 onClick={() => onPageChange(item)}
               >
@@ -586,7 +586,7 @@ export function UsageTable({
             max={Math.max(pageCount, 1)}
             value={goToPageValue}
             onChange={(event) => setGoToPageValue(event.target.value)}
-            className="h-8 w-[77px] border border-border px-3 text-[12px] leading-[14px] text-foreground placeholder:text-muted-foreground focus:outline-none dark:border-border dark:bg-card dark:text-foreground"
+            className="h-8 w-[77px] border border-border bg-card px-3 text-[12px] leading-[14px] text-foreground placeholder:text-muted-foreground focus:outline-none dark:border-border dark:bg-card dark:text-foreground"
             placeholder="Number"
           />
           <button

@@ -94,11 +94,11 @@ export function SubscriptionCard({
                 ? plan.price
                 : Number.parseFloat(String(plan.price || 0));
             if (price === 0 || Number.isNaN(price)) {
-              return <span className="text-2xl font-bold text-primary">{t("free")}</span>;
+              return <span className="text-2xl font-semibold text-primary">{t("free")}</span>;
             }
             const formattedPrice = price.toFixed(2);
             return (
-              <span className="text-2xl font-bold">
+              <span className="text-2xl font-semibold">
                 ¥{formattedPrice}
                 {plan.period && (
                   <span className="text-sm font-normal text-muted-foreground">/{plan.period}</span>
@@ -116,7 +116,9 @@ export function SubscriptionCard({
 
         {plan.credits !== undefined && (
           <div className="text-center">
-            <div className="text-3xl font-bold text-primary">{plan.credits.toLocaleString()}</div>
+            <div className="text-3xl font-semibold text-primary">
+              {plan.credits.toLocaleString()}
+            </div>
             <div className="text-sm text-muted-foreground">{t("creditsPerMonth")}</div>
           </div>
         )}

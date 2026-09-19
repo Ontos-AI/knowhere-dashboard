@@ -1,10 +1,22 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { brandColor } from "@lib/knowhere-tokens";
 import { describe, expect, it } from "vitest";
 
 const readWorkspaceFile = (relativePath: string): string => {
   return readFileSync(join(process.cwd(), relativePath), "utf8");
+};
+
+const collectSourceFiles = (directory: string): readonly string[] => {
+  return readdirSync(join(process.cwd(), directory), { withFileTypes: true }).flatMap((entry) => {
+    const relativePath: string = join(directory, entry.name);
+
+    if (entry.isDirectory()) {
+      return collectSourceFiles(relativePath);
+    }
+
+    return entry.name.endsWith(".tsx") || entry.name.endsWith(".ts") ? [relativePath] : [];
+  });
 };
 
 describe("wave 6 dashboard brand restyle", () => {
@@ -114,5 +126,48 @@ describe("wave 6 dashboard brand restyle", () => {
         expect(source, `${relativePath} still contains ${hex}`).not.toContain(hex);
       }
     }
+  });
+});
+
+describe("wave 7 dashboard brand restyle", () => {
+  it("keeps logged-in type inside the documented Regular / Medium / SemiBold hierarchy", () => {
+    const undocumentedWeights = /\bfont-(light|bold|extrabold|black)\b/;
+
+    for (const relativePath of collectSourceFiles("app/(dashboard)")) {
+      expect(
+        readWorkspaceFile(relativePath),
+        `${relativePath} uses a weight outside 400 / 500 / 600`
+      ).not.toMatch(undocumentedWeights);
+    }
+  });
+
+  it("renders the error boundary with the dashboard button instead of the legacy primitive", () => {
+    const boundarySource: string = readWorkspaceFile("components/common/error-boundary.tsx");
+
+    expect(boundarySource).toContain("DashboardActionButton");
+    expect(boundarySource).not.toContain("@components/ui/button");
+    expect(boundarySource).not.toContain("rounded-2xl");
+  });
+
+  it("renders the usage upload flow with brand surfaces and the dashboard button", () => {
+    const uploadSource: string = readWorkspaceFile("components/features/jobs/file-upload-flow.tsx");
+    const offBrandPalette =
+      /\b(text|bg|border|from|to|via)-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-[0-9]{2,3}\b/;
+
+    expect(uploadSource).toContain("DashboardActionButton");
+    expect(uploadSource).not.toContain("@components/ui/button");
+    expect(uploadSource).not.toMatch(offBrandPalette);
+  });
+
+  it("gives the usage pagination input a light-theme surface", () => {
+    const tableSource: string = readWorkspaceFile(
+      "app/(dashboard)/usage/_components/usage-table.tsx"
+    );
+    const paginationInputClassName: string | undefined = tableSource
+      .match(/className="h-8 w-\[77px\][^"]*"/)?.[0]
+      .replace(/^className="/, "");
+
+    expect(paginationInputClassName).toBeDefined();
+    expect(paginationInputClassName).toContain("bg-card");
   });
 });
