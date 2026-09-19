@@ -65,9 +65,14 @@ describe("Usage table contracts", () => {
     );
     const usagePageSource: string = readWorkspaceFile("app/(dashboard)/usage/page.tsx");
 
-    expect(usageTableSource).toContain(
-      "font-mono-display leading-4 whitespace-nowrap text-[#3f3f46]"
-    );
+    const dateCellClassName: string =
+      usageTableSource.match(/className="([^"]*)"\s*>\s*\{formatDateLabel\(row\.date\)\}/)?.[1] ??
+      "";
+
+    expect(dateCellClassName, "the date cell should still be findable").not.toBe("");
+    expect(dateCellClassName).toContain("font-mono-display");
+    expect(dateCellClassName).toContain("leading-4");
+    expect(dateCellClassName).toContain("whitespace-nowrap");
     expect(usagePageSource).not.toContain('format: "long"');
   });
 
