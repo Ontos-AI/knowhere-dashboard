@@ -139,8 +139,8 @@ const CreditsButton = ({
       className={[
         "flex h-10 min-w-[119px] items-center justify-center bg-white font-sans text-[12px] font-semibold text-[#083b3a] shadow-none transition-transform hover:-translate-y-px dark:border-[#156462] dark:bg-[#073231] dark:text-[#f0f2e6]",
         compactTabletHeader
-          ? "gap-[10px] rounded-lg border-x-2 border-t-2 border-b-[6px] border-[#bbbcb3] px-[14px] pb-1 leading-[14px] sm:min-w-[115px] sm:gap-1 sm:rounded-md sm:border-x sm:border-t sm:border-b-[4px] sm:px-3 sm:pb-[3px] sm:leading-[18px] lg:h-12 lg:min-w-[136px] lg:gap-[6px] lg:rounded-lg lg:border-x-2 lg:border-t-2 lg:border-b-[6px] lg:px-[14px] lg:pb-1 lg:text-[14px] lg:leading-5"
-          : "gap-[10px] rounded-lg border-x-2 border-t-2 border-b-[6px] border-[#bbbcb3] px-[14px] pb-1 leading-[14px] sm:min-w-[115px] sm:gap-1.5 sm:px-3 sm:leading-[18px] lg:h-12 lg:min-w-[136px] lg:gap-[6px] lg:px-[14px] lg:text-[14px] lg:leading-5",
+          ? "gap-[10px] rounded-none border-x-2 border-t-2 border-b-[6px] border-[#bbbcb3] px-[14px] pb-1 leading-[14px] sm:min-w-[115px] sm:gap-1 sm:rounded-none sm:border-x sm:border-t sm:border-b-[4px] sm:px-3 sm:pb-[3px] sm:leading-[18px] lg:h-12 lg:min-w-[136px] lg:gap-[6px] lg:rounded-none lg:border-x-2 lg:border-t-2 lg:border-b-[6px] lg:px-[14px] lg:pb-1 lg:text-[14px] lg:leading-5"
+          : "gap-[10px] rounded-none border-x-2 border-t-2 border-b-[6px] border-[#bbbcb3] px-[14px] pb-1 leading-[14px] sm:min-w-[115px] sm:gap-1.5 sm:px-3 sm:leading-[18px] lg:h-12 lg:min-w-[136px] lg:gap-[6px] lg:px-[14px] lg:text-[14px] lg:leading-5",
       ].join(" ")}
     >
       <Image

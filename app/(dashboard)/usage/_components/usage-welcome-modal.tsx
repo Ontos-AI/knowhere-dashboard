@@ -187,7 +187,7 @@ export const UsageWelcomeModal = () => {
           <div className="px-4 pb-8 pt-5 min-[375px]:px-[46px] min-[375px]:pb-[38px] min-[375px]:pt-[38px] sm:px-12 sm:pb-10 sm:pt-10 lg:px-12 lg:py-10">
             <div className="flex items-start justify-between gap-6 sm:gap-[30px]">
               <div className="min-w-0 flex-1 sm:max-w-[408px] lg:max-w-none">
-                <DialogTitle className="text-[18px] font-bold leading-[26px] text-foreground sm:text-[18px] sm:leading-[26px] sm:tracking-normal lg:text-[20px] lg:leading-7">
+                <DialogTitle className="text-[18px] font-semibold leading-[26px] text-foreground sm:text-[18px] sm:leading-[26px] sm:tracking-normal lg:text-[20px] lg:leading-7">
                   {t("title")}
                 </DialogTitle>
                 <DialogDescription className="mt-0.5 max-w-[34rem] text-[12px] leading-[18px] text-muted-foreground sm:mt-1 sm:max-w-[408px] sm:text-[12px] sm:leading-[18px] lg:mt-1.5 lg:max-w-[34rem] lg:text-[14px] lg:leading-5">
@@ -255,7 +255,7 @@ export const UsageWelcomeModal = () => {
                   </DashboardActionButton>
 
                   {hasProvisionError ? (
-                    <p className="text-[13px] leading-5 text-[#b91c1c] sm:text-[12px] sm:leading-[18px]">
+                    <p className="text-[13px] leading-5 text-destructive sm:text-[12px] sm:leading-[18px]">
                       {t("provisionError")}
                     </p>
                   ) : null}

@@ -47,11 +47,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   // 获取翻译消息
   const messages = await getMessages();
 
+  /*
+    The font variables have to sit on <html>: `--font-sans` is declared on `:root` and reads
+    `var(--font-poppins)` / `var(--font-frex)`. Declaring those on <body> leaves the `:root`
+    declaration referencing variables that do not exist yet, which makes `--font-sans` invalid and
+    drops every `font-sans` utility back to the browser default.
+  */
   return (
-    <html lang={locale} suppressHydrationWarning>
-      <body
-        className={`${poppins.variable} ${frexSans.variable} ${geistMono.variable} font-sans antialiased`}
-      >
+    <html
+      className={`${poppins.variable} ${frexSans.variable} ${geistMono.variable}`}
+      lang={locale}
+      suppressHydrationWarning
+    >
+      <body className="font-sans antialiased">
         <NextIntlClientProvider messages={messages} locale={locale}>
           <ConfigProvider config={appConfig}>
             <ThemeProvider>

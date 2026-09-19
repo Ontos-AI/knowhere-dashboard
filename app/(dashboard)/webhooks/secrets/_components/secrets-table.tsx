@@ -57,7 +57,7 @@ export const WebhookSecretsTable = ({
               >
                 <td className="h-[52px] px-[14px] lg:px-4">
                   <div className="inline-flex max-w-full items-center bg-[#caffee] px-[6px] py-0.5 lg:px-2 lg:py-1">
-                    <code className="block truncate font-mono-readable text-xs leading-[18px] text-[#4d179a] lg:text-sm lg:leading-5">
+                    <code className="block truncate font-mono-readable text-xs leading-[18px] text-primary-dark lg:text-sm lg:leading-5">
                       {secret.secret_masked}
                     </code>
                   </div>
@@ -69,7 +69,7 @@ export const WebhookSecretsTable = ({
                   <span
                     className={cn(
                       "text-xs font-medium leading-[18px] lg:text-sm lg:leading-5",
-                      secret.status === "active" ? "text-[#00bc7d]" : "text-[#fd9a00]"
+                      secret.status === "active" ? "text-primary" : "text-muted-foreground"
                     )}
                   >
                     {secret.status === "active" ? t("statusActive") : t("statusRevoked")}

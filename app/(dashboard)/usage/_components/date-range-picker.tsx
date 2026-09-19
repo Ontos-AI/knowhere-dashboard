@@ -142,18 +142,18 @@ export function DatePickerWithRange({ className, date, setDate }: DatePickerWith
         >
           {date?.from ? (
             <>
-              <span className="truncate font-mono-display text-[12px] font-light leading-4 text-foreground">
+              <span className="truncate font-mono-display text-[12px] font-normal leading-4 text-foreground">
                 {format(date.from, "MMM dd,yyyy")}
               </span>
-              <span className="font-mono-display text-[14px] font-light leading-5 text-muted-foreground">
+              <span className="font-mono-display text-[14px] font-normal leading-5 text-muted-foreground">
                 -
               </span>
-              <span className="truncate font-mono-display text-[12px] font-light leading-4 text-foreground">
+              <span className="truncate font-mono-display text-[12px] font-normal leading-4 text-foreground">
                 {format(date.to ?? date.from, "MMM dd,yyyy")}
               </span>
             </>
           ) : (
-            <span className="truncate font-mono-display text-[12px] font-light leading-4 text-foreground">
+            <span className="truncate font-mono-display text-[12px] font-normal leading-4 text-foreground">
               {formatRangeLabel(date, t("pickDate"))}
             </span>
           )}
