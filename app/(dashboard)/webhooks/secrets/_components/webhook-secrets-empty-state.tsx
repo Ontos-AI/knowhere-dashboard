@@ -39,7 +39,7 @@ export const WebhookSecretsEmptyState = ({
           type="button"
           variant="secondary"
           size="compact"
-          className="w-[122px] lg:w-[126px]"
+          className="min-w-[122px] lg:min-w-[126px]"
           onClick={onAction}
         >
           {actionLabel}
