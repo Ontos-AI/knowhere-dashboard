@@ -95,4 +95,21 @@ test.describe("site 1:1 app geometry", () => {
     await clientNavigate(page, ".kh-header-api", "/login");
     await assertNoLandingPageLeak(page, ".kh-login");
   });
+
+  test("unknown routes answer 404 with the shared chrome in brand type", async ({ page }) => {
+    const response = await page.goto("/no-such-route-xyz");
+
+    expect(response?.status()).toBe(404);
+    await expect(page.locator(".kh-site-not-found")).toBeVisible();
+    expect(await page.locator(".kh-site-header").count()).toBe(1);
+    expect(await page.locator(".kh-site-footer").count()).toBe(1);
+    // A 404 is nobody's current page, so no nav item may claim it.
+    expect(await page.locator(".kh-site-header [aria-current='page']").count()).toBe(0);
+
+    const title = await computed(page, ".kh-not-found-title", ["font-family"]);
+    expect(title?.["font-family"]).toMatch(/poppins/i);
+
+    const eyebrow = await computed(page, ".kh-not-found-eyebrow", ["font-family"]);
+    expect(eyebrow?.["font-family"]).toMatch(/geist mono/i);
+  });
 });

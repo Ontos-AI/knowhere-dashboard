@@ -31,8 +31,8 @@ function FieldLegend({
       data-variant={variant}
       className={cn(
         "mb-3 font-medium",
-        "data-[variant=legend]:text-base data-[variant=legend]:text-slate-950",
-        "data-[variant=label]:text-sm data-[variant=label]:leading-5 data-[variant=label]:text-slate-500",
+        "data-[variant=legend]:text-base data-[variant=legend]:text-foreground",
+        "data-[variant=label]:text-sm data-[variant=label]:leading-5 data-[variant=label]:text-muted-foreground",
         className
       )}
       {...props}
@@ -104,7 +104,7 @@ function FieldLabel({ className, ...props }: React.ComponentProps<typeof Label>)
     <Label
       data-slot="field-label"
       className={cn(
-        "group/field-label peer/field-label flex w-fit gap-2 text-sm font-medium leading-5 text-slate-500 group-data-[disabled=true]/field:opacity-50",
+        "group/field-label peer/field-label flex w-fit gap-2 text-sm font-medium leading-5 text-muted-foreground group-data-[disabled=true]/field:opacity-50",
         className
       )}
       {...props}

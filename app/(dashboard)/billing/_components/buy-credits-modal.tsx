@@ -42,7 +42,7 @@ const AmountOptionButton = ({ isSelected, label, onClick }: AmountOptionButtonPr
       className={cn(
         amountOptionBaseClassName,
         isSelected
-          ? "border-[#054437] bg-[#19a88b] font-bold text-[#f0f2e6]"
+          ? "border-[#054437] bg-[#19a88b] font-semibold text-[#f0f2e6]"
           : "border-border bg-card font-normal text-foreground hover:bg-muted"
       )}
       onClick={onClick}
@@ -198,7 +198,7 @@ export function BuyCreditsModal() {
         <div className="flex flex-col gap-[34px] px-0 py-[22px] sm:gap-14 sm:py-10">
           <div className="mx-auto flex w-[331px] max-w-[calc(100vw-44px)] items-start justify-between gap-8 sm:w-[464px] sm:max-w-none">
             <div className="min-w-0 flex-1">
-              <DialogTitle className="text-[20px] font-bold leading-[26px] text-foreground sm:leading-7">
+              <DialogTitle className="text-[20px] font-semibold leading-[26px] text-foreground sm:leading-7">
                 {t("title")}
               </DialogTitle>
               <DialogDescription className="mt-0.5 max-w-[277px] text-[14px] leading-[18px] text-muted-foreground sm:mt-1 sm:max-w-[408px] sm:leading-5">
@@ -226,7 +226,7 @@ export function BuyCreditsModal() {
 
           <div className="mx-auto flex w-[331px] max-w-[calc(100vw-44px)] flex-col gap-[22px] sm:w-[464px] sm:max-w-none sm:gap-10">
             <div className="flex items-center justify-center">
-              <p className="text-center text-[42px] font-bold leading-[42px] tracking-normal text-black sm:text-[48px] sm:leading-[48px]">
+              <p className="text-center text-[42px] font-semibold leading-[42px] tracking-normal text-black sm:text-[48px] sm:leading-[48px]">
                 {displayAmount}
               </p>
             </div>

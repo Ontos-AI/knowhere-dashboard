@@ -1,8 +1,8 @@
 "use client";
 
+import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
 import { Alert, AlertDescription } from "@components/ui/alert";
 import { Badge } from "@components/ui/badge";
-import { Button } from "@components/ui/button";
 import { Card, CardContent } from "@components/ui/card";
 import { Progress } from "@components/ui/progress";
 import {
@@ -176,13 +176,13 @@ export default function FileUploadFlow({
       case "uploading":
         return <Upload className="h-8 w-8 text-primary" />;
       case "confirming":
-        return <Clock className="h-8 w-8 text-orange-500" />;
+        return <Clock className="h-8 w-8 text-primary" />;
       case "success":
-        return <CheckCircle className="h-8 w-8 text-green-500" />;
+        return <CheckCircle className="h-8 w-8 text-primary" />;
       case "error":
-        return <XCircle className="h-8 w-8 text-red-500" />;
+        return <XCircle className="h-8 w-8 text-destructive" />;
       default:
-        return <AlertCircle className="h-8 w-8 text-gray-500" />;
+        return <AlertCircle className="h-8 w-8 text-muted-foreground" />;
     }
   };
 
@@ -227,14 +227,16 @@ export default function FileUploadFlow({
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="mx-auto w-full max-w-md rounded-none">
       <CardContent className="p-6 space-y-4">
         {/* 文件信息 */}
         <div className="flex items-center space-x-3">
           <FileText className="h-10 w-10 text-primary" />
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
-            <p className="text-sm text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+            <p className="truncate text-sm font-medium text-foreground">{file.name}</p>
+            <p className="text-sm text-muted-foreground">
+              {(file.size / 1024 / 1024).toFixed(2)} MB
+            </p>
           </div>
         </div>
 
@@ -245,12 +247,12 @@ export default function FileUploadFlow({
             <div className="flex items-center justify-between">
               <p className="text-sm font-medium">{getStepText()}</p>
               {step === "success" && job && (
-                <Badge variant="outline" className="text-green-600 border-green-600">
+                <Badge variant="outline" className="border-primary text-primary">
                   {job.status}
                 </Badge>
               )}
             </div>
-            <p className="text-xs text-gray-500 mt-1">{getStepDescription()}</p>
+            <p className="mt-1 text-xs text-muted-foreground">{getStepDescription()}</p>
           </div>
         </div>
 
@@ -259,7 +261,7 @@ export default function FileUploadFlow({
           <div className="space-y-2">
             <Progress value={step === "uploading" ? progress : 100} className="h-2" />
             {step === "uploading" && (
-              <p className="text-xs text-center text-gray-500">{progress}% 完成</p>
+              <p className="text-center text-xs text-muted-foreground">{progress}% 完成</p>
             )}
           </div>
         )}
@@ -275,36 +277,45 @@ export default function FileUploadFlow({
         {/* 操作按钮 */}
         <div className="flex space-x-2">
           {step === "idle" && (
-            <Button onClick={handleStartUpload} className="flex-1" disabled={isPending}>
+            <DashboardActionButton
+              className="flex-1"
+              disabled={isPending}
+              onClick={handleStartUpload}
+            >
               <Upload className="mr-2 h-4 w-4" />
               {t("buttons.startUpload")}
-            </Button>
+            </DashboardActionButton>
           )}
 
           {step === "error" && retryCount < 3 && (
-            <Button onClick={handleRetry} variant="outline" className="flex-1" disabled={isPending}>
+            <DashboardActionButton
+              className="flex-1"
+              disabled={isPending}
+              onClick={handleRetry}
+              variant="secondary"
+            >
               <RefreshCw className="mr-2 h-4 w-4" />
               {t("buttons.retry")} ({retryCount}/3)
-            </Button>
+            </DashboardActionButton>
           )}
 
           {onCancel && step !== "success" && (
-            <Button onClick={onCancel} variant="outline" disabled={isPending}>
+            <DashboardActionButton disabled={isPending} onClick={onCancel} variant="secondary">
               {t("buttons.cancel")}
-            </Button>
+            </DashboardActionButton>
           )}
         </div>
 
         {/* 成功后的任务信息 */}
         {step === "success" && job && (
-          <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-md">
-            <p className="text-sm text-green-800">
+          <div className="mt-4 border border-border bg-muted p-3">
+            <p className="text-sm text-foreground">
               <strong>{t("result.jobId")}</strong> {job.job_id}
             </p>
-            <p className="text-sm text-green-800">
+            <p className="text-sm text-foreground">
               <strong>{t("result.status")}</strong> {job.status}
             </p>
-            <p className="text-xs text-green-600 mt-1">{t("result.checkProgress")}</p>
+            <p className="mt-1 text-xs text-primary">{t("result.checkProgress")}</p>
           </div>
         )}
       </CardContent>

@@ -538,8 +538,8 @@ const SettingsSectionTabs = ({
         className={cn(
           "flex h-9 min-w-[83px] items-end justify-center px-[14px] pb-3 pt-[6px] font-mono-display text-xs leading-4 transition-colors lg:h-8 lg:min-w-[87px] lg:px-4 lg:pb-2 lg:pt-2",
           activeSection === "profile"
-            ? "border-b-[3px] border-primary bg-primary font-bold text-primary-foreground lg:border-b-4"
-            : "bg-muted font-light text-foreground"
+            ? "border-b-[3px] border-primary bg-primary font-semibold text-primary-foreground lg:border-b-4"
+            : "bg-muted font-normal text-foreground"
         )}
         aria-current={activeSection === "profile" ? "page" : undefined}
         onClick={() => onSectionSelect("profile")}
@@ -552,8 +552,8 @@ const SettingsSectionTabs = ({
           className={cn(
             "flex h-9 min-w-[83px] items-end justify-center px-[14px] pb-3 pt-[6px] font-mono-display text-xs leading-4 transition-colors lg:h-8 lg:min-w-[87px] lg:px-4 lg:pb-2 lg:pt-2",
             activeSection === "security"
-              ? "border-b-[3px] border-primary bg-primary font-bold text-primary-foreground lg:border-b-4"
-              : "bg-muted font-light text-foreground"
+              ? "border-b-[3px] border-primary bg-primary font-semibold text-primary-foreground lg:border-b-4"
+              : "bg-muted font-normal text-foreground"
           )}
           aria-current={activeSection === "security" ? "page" : undefined}
           onClick={() => onSectionSelect("security")}
@@ -566,8 +566,8 @@ const SettingsSectionTabs = ({
         className={cn(
           "flex h-9 min-w-[114px] items-end justify-center px-[14px] pb-[10px] pt-[6px] font-mono-display text-xs leading-4 transition-colors lg:h-8 lg:min-w-[118px] lg:px-4 lg:pb-2 lg:pt-2",
           activeSection === "preferences"
-            ? "border-b-[3px] border-primary bg-primary font-bold text-primary-foreground lg:border-b-4"
-            : "bg-muted font-light text-foreground"
+            ? "border-b-[3px] border-primary bg-primary font-semibold text-primary-foreground lg:border-b-4"
+            : "bg-muted font-normal text-foreground"
         )}
         aria-current={activeSection === "preferences" ? "page" : undefined}
         onClick={() => onSectionSelect("preferences")}
@@ -658,7 +658,7 @@ const SettingsProfileSection = ({
               {...form.register("username")}
             />
             {form.formState.errors.username ? (
-              <p className="text-xs leading-4 text-[#dc2626]">
+              <p className="text-xs leading-4 text-destructive">
                 {form.formState.errors.username.message}
               </p>
             ) : null}
@@ -686,7 +686,7 @@ const SettingsProfileSection = ({
                 <span>{emailManagedByProviderLabel}</span>
               </p>
             ) : form.formState.errors.email ? (
-              <p className="text-xs leading-4 text-[#dc2626]">
+              <p className="text-xs leading-4 text-destructive">
                 {form.formState.errors.email.message}
               </p>
             ) : null}
@@ -705,7 +705,7 @@ const SettingsProfileSection = ({
         </form>
 
         <div className="flex flex-col gap-[22px] sm:gap-[38px] lg:gap-10">
-          <h2 className="text-xs font-bold leading-[18px] text-foreground lg:text-sm lg:leading-5">
+          <h2 className="text-xs font-semibold leading-[18px] text-foreground lg:text-sm lg:leading-5">
             {accountInformationLabel}
           </h2>
 
@@ -718,12 +718,12 @@ const SettingsProfileSection = ({
               <div className="flex flex-wrap items-center gap-[10px]">
                 <p className={cn(fieldValueClassName, "break-all")}>{user.email}</p>
                 {user.emailVerified ? (
-                  <span className="inline-flex items-center gap-px border border-[#a4f4cf] bg-[#d0fae5] px-0.5 py-px text-xs font-medium leading-[14px] text-[#009966] lg:gap-0.5 lg:px-1 lg:py-0.5 lg:leading-4">
+                  <span className="inline-flex items-center gap-px border border-[#7efedd] bg-[#caffee] px-0.5 py-px text-xs font-medium leading-[14px] text-[#0a6351] lg:gap-0.5 lg:px-1 lg:py-0.5 lg:leading-4 dark:border-[#054437] dark:bg-[#01251d] dark:text-[#27efc6]">
                     <Check className="size-3.5" strokeWidth={2.25} />
                     <span>{verifiedLabel}</span>
                   </span>
                 ) : (
-                  <span className="inline-flex items-center border border-[#fde68a] bg-[#fef3c7] px-1 py-0.5 text-xs font-medium leading-4 text-[#b45309]">
+                  <span className="inline-flex items-center border border-[#ffe1df] bg-[#fff0ef] px-1 py-0.5 text-xs font-medium leading-4 text-[#a42900] dark:border-[#731a00] dark:bg-[#420b00] dark:text-[#ffa79f]">
                     {unverifiedLabel}
                   </span>
                 )}
@@ -763,7 +763,7 @@ const SettingsProfileSection = ({
             <SettingsInfoField
               label={accountStatusLabel}
               value={activeLabel}
-              valueClassName="text-[#00bc7d]"
+              valueClassName="text-primary"
             />
           </div>
         </div>
@@ -814,7 +814,7 @@ const SettingsPasswordSection = ({
     >
       <div className="flex flex-col gap-6">
         <div className="space-y-2">
-          <h2 className="text-sm font-bold leading-5 text-foreground">{title}</h2>
+          <h2 className="text-sm font-semibold leading-5 text-foreground">{title}</h2>
           <p className="max-w-[520px] text-sm leading-5 text-muted-foreground">{description}</p>
         </div>
 
@@ -929,7 +929,7 @@ const SettingsPasswordField = ({
         type="password"
         {...registration}
       />
-      {error ? <p className="text-xs leading-4 text-[#dc2626]">{error}</p> : null}
+      {error ? <p className="text-xs leading-4 text-destructive">{error}</p> : null}
     </div>
   );
 };
