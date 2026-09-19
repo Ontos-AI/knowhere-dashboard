@@ -9,6 +9,14 @@
   --login-error-color: var(--coral-signal-600, #dd3b00);
   --login-background-color: var(--black-3);
   --login-data-stream-color: var(--mineral-green-500);
+  /*
+    The prototype paints the login chrome's muted copy with three loose greys that never
+    made it into the ramp, and the dark theme collapses all three to a single ink. They are
+    tokens here so dark can restate them instead of re-declaring `color` on every selector.
+  */
+  --login-ink-eyebrow: #8a8e83;
+  --login-ink-muted: #91948b;
+  --login-ink-soft: #91958a;
   --content-max: 1280px;
   --layout-grid-edge: 80px;
   --layout-grid-width: min(var(--content-max), calc(100vw - var(--layout-grid-edge) * 2));
@@ -328,7 +336,7 @@ html[data-theme="dark"] .kh-login .login-theme-button:hover {
 
 .kh-login .form-heading .eyebrow {
   justify-content: center;
-  color: #8a8e83;
+  color: var(--login-ink-eyebrow);
   font-size: var(--type-meta-size);
   letter-spacing: 1.5px;
   line-height: var(--type-meta-line-height);
@@ -359,7 +367,7 @@ html[data-theme="dark"] .kh-login .login-theme-button:hover {
 
 .kh-login .form-heading-desc {
   margin: 10px 0 0;
-  color: #91948b;
+  color: var(--login-ink-muted);
   font-size: var(--type-meta-size);
   line-height: var(--type-meta-line-height);
 }
@@ -374,7 +382,7 @@ html[data-theme="dark"] .kh-login .login-theme-button:hover {
   align-items: center;
   gap: 14px;
   margin: 26px 0;
-  color: #91948b;
+  color: var(--login-ink-muted);
   font-size: var(--type-meta-size);
   line-height: var(--type-meta-line-height);
 }
@@ -431,7 +439,7 @@ html[data-theme="dark"] .kh-login .login-theme-button:hover {
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-  color: #91958a;
+  color: var(--login-ink-soft);
   font-size: var(--type-caption-size);
   line-height: var(--type-caption-line-height);
 }
@@ -473,7 +481,7 @@ html[data-theme="dark"] .kh-login .login-theme-button:hover {
 .kh-login .auth-aux {
   margin-top: 18px;
   text-align: center;
-  color: #91948b;
+  color: var(--login-ink-muted);
   font-size: var(--type-meta-size);
   line-height: var(--type-meta-line-height);
 }
@@ -783,18 +791,14 @@ html[data-theme="dark"] .kh-login {
   --control-black-surface: #23d6b1;
   --control-black-hover: color-mix(in srgb, #23d6b1 92%, #011711);
   --control-black-pressed: color-mix(in srgb, #23d6b1 88%, #011711);
+  --login-ink-eyebrow: #bbbcb3;
+  --login-ink-muted: #bbbcb3;
+  --login-ink-soft: #bbbcb3;
 }
 
 .dark .kh-login .control-button--black,
 html[data-theme="dark"] .kh-login .control-button--black {
   --button-ink: #011711;
-}
-
-.dark .kh-login :is(.form-heading .eyebrow, .form-heading-desc, .divider, .login-footer, .auth-aux),
-html[data-theme="dark"]
-  .kh-login
-  :is(.form-heading .eyebrow, .form-heading-desc, .divider, .login-footer, .auth-aux) {
-  color: #bbbcb3;
 }
 
 .dark .kh-login .divider::before,

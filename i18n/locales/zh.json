@@ -1276,5 +1276,13 @@
     "unsubscribeSubmit": "取消订阅",
     "unsubscribing": "正在取消订阅...",
     "unsubscribeError": "无法取消此邮箱的订阅，请重试。"
+  },
+  "NotFound": {
+    "metaTitle": "页面不存在 — Knowhere",
+    "metaDescription": "你访问的页面不存在或已被移动。",
+    "eyebrow": "[ 404 ]",
+    "title": "这个页面不存在。",
+    "description": "链接可能已失效，或者页面已被移动或删除。",
+    "backHome": "返回首页"
   }
 }
