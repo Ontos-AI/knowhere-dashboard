@@ -48,7 +48,7 @@ export const ApiKeyCreatedDialog = ({ apiKey, onOpenChange }: ApiKeyCreatedDialo
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1">
                 <DashboardSuccessCircleIcon />
-                <h2 className="text-[20px] font-bold leading-[26px] text-foreground lg:leading-7">
+                <h2 className="text-[20px] font-semibold leading-[26px] text-foreground lg:leading-7">
                   {t("createSuccess")}
                 </h2>
               </div>

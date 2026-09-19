@@ -1276,5 +1276,13 @@
     "unsubscribeSubmit": "Unsubscribe",
     "unsubscribing": "Unsubscribing...",
     "unsubscribeError": "We could not unsubscribe this email. Please try again."
+  },
+  "NotFound": {
+    "metaTitle": "Page not found — Knowhere",
+    "metaDescription": "The page you were looking for does not exist or has moved.",
+    "eyebrow": "[ 404 ]",
+    "title": "This page does not exist.",
+    "description": "The link may be broken, or the page may have been moved or removed.",
+    "backHome": "Back to home"
   }
 }

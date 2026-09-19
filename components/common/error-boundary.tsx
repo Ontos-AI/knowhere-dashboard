@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@components/ui/button";
+import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-action-button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card";
 import { trackError } from "@lib/posthog";
 import { AlertTriangle, RefreshCw } from "lucide-react";
@@ -45,7 +45,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       }
 
       return (
-        <Card className="mx-auto max-w-md mt-8">
+        <Card className="mx-auto mt-8 max-w-md rounded-none">
           <CardHeader>
             <div className="flex items-center space-x-2">
               <AlertTriangle className="h-5 w-5 text-destructive" />
@@ -55,18 +55,20 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
           </CardHeader>
           <CardContent className="space-y-4">
             {this.state.error && (
-              <div className="p-3 bg-muted rounded-md">
-                <p className="text-sm font-mono text-muted-foreground">
+              <div className="border border-border bg-muted p-3">
+                <p className="font-mono text-sm text-muted-foreground">
                   {this.state.error.message}
                 </p>
               </div>
             )}
             <div className="flex space-x-2">
-              <Button onClick={this.handleReset} variant="outline">
-                <RefreshCw className="h-4 w-4 mr-2" />
+              <DashboardActionButton onClick={this.handleReset} variant="secondary">
+                <RefreshCw className="mr-2 h-4 w-4" />
                 重试
-              </Button>
-              <Button onClick={() => window.location.reload()}>刷新页面</Button>
+              </DashboardActionButton>
+              <DashboardActionButton onClick={() => window.location.reload()}>
+                刷新页面
+              </DashboardActionButton>
             </div>
           </CardContent>
         </Card>

@@ -1,4 +1,8 @@
-export type SiteChromePage = "landing" | "blog" | "pricing";
+/*
+  `not-found` has no entry in the header nav on purpose: the 404 renders the shared chrome
+  so it looks like the rest of the site, but no nav item is the current page there.
+*/
+export type SiteChromePage = "landing" | "blog" | "pricing" | "not-found";
 
 export type SiteChromeNavKey = "comparison" | "pricing" | "docs" | "playground" | "blog";
 
