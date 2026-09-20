@@ -37,7 +37,7 @@ A deprecated public page. Leave it. Do not restyle it in this pass.
 _Avoid_: OpenClaw, claw landing
 
 **Versus**:
-The empty `/versus/[product]` stub and the unused `_(landing)/versus` pile. Out of this pass. Leave them.
+The empty `/versus/[product]` stub. Out of this pass. Leave it.
 _Avoid_: Comparison page (when you mean this stub), versus app
 
 **Newsletter**:
