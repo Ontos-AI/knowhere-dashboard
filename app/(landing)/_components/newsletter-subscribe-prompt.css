@@ -9,8 +9,13 @@
 
 .newsletter-prompt {
   position: fixed;
-  z-index: 50;
-  inset: 12px 12px auto;
+  z-index: 130;
+  right: 12px;
+  bottom: calc(max(12px, env(safe-area-inset-bottom, 0px)) + var(--newsletter-obstruction, 0px));
+  left: 12px;
+  display: flex;
+  max-height: calc(100dvh - var(--header-height, 76px) - 12px - var(--newsletter-obstruction, 0px));
+  flex-direction: column;
   overflow: hidden;
   border: 1px solid var(--control-border);
   border-radius: var(--radius-card);
@@ -34,7 +39,9 @@
 
 .newsletter-prompt-body {
   display: flex;
+  min-height: 0;
   gap: 12px;
+  overflow: auto;
   padding: 16px;
 }
 
@@ -236,7 +243,9 @@ html[data-theme="dark"] .newsletter-prompt-error,
 
 @media (min-width: 768px) {
   .newsletter-prompt {
-    inset: auto 24px 24px auto;
+    right: 24px;
+    bottom: calc(24px + var(--newsletter-obstruction, 0px));
+    left: auto;
     width: 448px;
   }
 

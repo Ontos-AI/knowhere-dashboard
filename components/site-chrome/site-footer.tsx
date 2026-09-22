@@ -124,7 +124,7 @@ export const SiteFooter = ({ page = "landing" }: SiteFooterProps) => {
           <Link className="kh-footer-brand" href={brandHref} aria-label={t("backToTop")}>
             <Image
               src="/images/site-chrome/knowhere-footer-mark.svg"
-              width={45}
+              width={37}
               height={42}
               alt=""
               unoptimized

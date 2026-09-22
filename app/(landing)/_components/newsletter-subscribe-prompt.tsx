@@ -5,7 +5,7 @@ import { NEWSLETTER_DISMISS_DURATION_MS, NEWSLETTER_DISMISS_STORAGE_KEY } from "
 import { orpcClient } from "@lib/orpc/client";
 import { ArrowRight, Mail, X } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { type FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 type SubmissionState = "idle" | "submitting" | "sent" | "error";
 
@@ -34,8 +34,65 @@ function setDismissedUntil(timestamp: number): void {
   }
 }
 
+function considerOverlay(box: DOMRect, prompt: DOMRect, overlayTop: number): number {
+  if (box.width < 8 || box.height < 8 || box.height > 180) {
+    return overlayTop;
+  }
+
+  const overlapsX = box.right > prompt.left + 4 && box.left < prompt.right - 4;
+  const overlapsY = box.bottom > prompt.top && box.top < prompt.bottom;
+  if (!overlapsX || !overlapsY) {
+    return overlayTop;
+  }
+
+  return Math.min(overlayTop, box.top);
+}
+
+function measureObstruction(node: HTMLElement): number {
+  node.style.setProperty("--newsletter-obstruction", "0px");
+  const prompt = node.getBoundingClientRect();
+  let overlayTop = Number.POSITIVE_INFINITY;
+
+  document.querySelectorAll("nextjs-portal").forEach((portal) => {
+    const toast = portal.shadowRoot?.querySelector(".nextjs-toast");
+    if (toast instanceof Element) {
+      overlayTop = considerOverlay(toast.getBoundingClientRect(), prompt, overlayTop);
+    }
+  });
+
+  const y = Math.min(window.innerHeight - 1, Math.max(0, prompt.bottom - 4));
+  for (const x of [prompt.left + 16, prompt.right - 16]) {
+    if (x < 0 || x > window.innerWidth) {
+      continue;
+    }
+
+    for (const hit of document.elementsFromPoint(x, y)) {
+      if (!(hit instanceof Element) || hit === node || node.contains(hit)) {
+        continue;
+      }
+
+      let current: Element | null = hit;
+      while (current && current !== document.documentElement) {
+        const position = getComputedStyle(current).position;
+        if (position === "fixed" || position === "absolute") {
+          overlayTop = considerOverlay(current.getBoundingClientRect(), prompt, overlayTop);
+          break;
+        }
+        current = current.parentElement;
+      }
+    }
+  }
+
+  if (!Number.isFinite(overlayTop)) {
+    return 0;
+  }
+
+  return Math.max(0, Math.ceil(prompt.bottom - overlayTop + 8));
+}
+
 export function NewsletterSubscribePrompt() {
   const t = useTranslations("Landing.newsletter");
+  const promptRef = useRef<HTMLElement>(null);
   const [email, setEmail] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const [submissionState, setSubmissionState] = useState<SubmissionState>("idle");
@@ -45,6 +102,29 @@ export function NewsletterSubscribePrompt() {
       setIsVisible(true);
     }
   }, []);
+
+  useLayoutEffect(() => {
+    if (!isVisible) {
+      return;
+    }
+
+    const node = promptRef.current;
+    if (!node) {
+      return;
+    }
+
+    const update = (): void => {
+      node.style.setProperty("--newsletter-obstruction", `${measureObstruction(node)}px`);
+    };
+
+    update();
+    const timer = window.setTimeout(update, 250);
+    window.addEventListener("resize", update);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("resize", update);
+    };
+  }, [isVisible]);
 
   const dismissPrompt = (): void => {
     setDismissedUntil(Date.now() + NEWSLETTER_DISMISS_DURATION_MS);
@@ -78,7 +158,7 @@ export function NewsletterSubscribePrompt() {
   const isSent = submissionState === "sent";
 
   return (
-    <aside aria-live="polite" className="newsletter-prompt">
+    <aside ref={promptRef} aria-live="polite" className="newsletter-prompt">
       <div className="newsletter-prompt-body">
         <span className="newsletter-prompt-icon" aria-hidden="true">
           <Mail />
