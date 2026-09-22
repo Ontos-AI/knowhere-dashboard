@@ -37,7 +37,7 @@ export const ApiKeysEmptyState = ({
           type="button"
           variant="secondary"
           size="compact"
-          className="w-[122px] sm:w-[122px] lg:w-auto"
+          className="min-w-[122px] lg:min-w-0"
           onClick={onAction}
         >
           {actionLabel}
