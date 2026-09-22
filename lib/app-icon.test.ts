@@ -4,7 +4,7 @@ import { appMetadata } from "@lib/app-metadata";
 import { describe, expect, test } from "vitest";
 
 const dashboardIconPath = "/images/knowhere/app-icon.png" as const;
-const brandFaviconPath = "/assets/knowhere-favicon.svg" as const;
+const prototypeFaviconPath = "/assets/knowhere-favicon.svg" as const;
 const rootDirectory: string = process.cwd();
 
 async function hasFile(filePath: string): Promise<boolean> {
@@ -21,7 +21,7 @@ describe("dashboard page icon", () => {
     const serializedIcons: string = JSON.stringify(appMetadata.icons);
 
     expect(serializedIcons).toContain("/favicon.ico");
-    expect(serializedIcons).toContain(brandFaviconPath);
+    expect(serializedIcons).toContain(prototypeFaviconPath);
     expect(serializedIcons).toContain(dashboardIconPath);
     expect(serializedIcons).toContain("image/svg+xml");
     expect(serializedIcons).toContain("image/png");
@@ -36,7 +36,7 @@ describe("dashboard page icon", () => {
       "knowhere",
       "app-icon.png"
     );
-    const brandFaviconFilePath: string = path.join(
+    const prototypeFaviconFilePath: string = path.join(
       rootDirectory,
       "public",
       "assets",
@@ -45,17 +45,17 @@ describe("dashboard page icon", () => {
     const faviconIcoPath: string = path.join(rootDirectory, "public", "favicon.ico");
 
     await expect(hasFile(iconFilePath)).resolves.toBe(true);
-    await expect(hasFile(brandFaviconFilePath)).resolves.toBe(true);
+    await expect(hasFile(prototypeFaviconFilePath)).resolves.toBe(true);
     await expect(hasFile(faviconIcoPath)).resolves.toBe(true);
   });
 
-  test("declares the Knowhere mark on landing routes without a favicon.ico entry", async (): Promise<void> => {
+  test("declares the prototype mark on landing routes without a favicon.ico entry", async (): Promise<void> => {
     const landingLayoutSource: string = await readFile(
       path.join(rootDirectory, "app", "(landing)", "layout.tsx"),
       "utf8"
     );
 
-    expect(landingLayoutSource).toContain(brandFaviconPath);
+    expect(landingLayoutSource).toContain(prototypeFaviconPath);
     expect(landingLayoutSource).not.toContain("/favicon.ico");
   });
 });

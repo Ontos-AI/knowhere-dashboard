@@ -52,12 +52,12 @@ const BRAND_ASSETS = {
     light: {
       height: 42,
       src: "/images/site-chrome/knowhere-mark.svg",
-      width: 45,
+      width: 37,
     },
     dark: {
       height: 42,
       src: "/images/site-chrome/knowhere-mark.svg",
-      width: 45,
+      width: 37,
     },
   },
 } as const satisfies Record<KnowhereBrandVariant, Record<ResolvedKnowhereBrandTone, BrandAsset>>;
