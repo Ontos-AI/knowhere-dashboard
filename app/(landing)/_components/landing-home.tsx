@@ -12,6 +12,7 @@ import { initializeLandingInteractions } from "@app/(landing)/_components/landin
 import ShinyText from "@app/(landing)/_components/landing/shiny-text";
 import { useMainPaletteChange } from "@app/(landing)/_components/landing/use-main-palette-change";
 import { LandingTrackedAnchor, LandingTrackedLink } from "@app/(landing)/_components/landing-tracked-link";
+import { NewsletterSubscribePrompt } from "@app/(landing)/_components/newsletter-subscribe-prompt";
 import { useTheme } from "next-themes";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
@@ -534,6 +535,7 @@ curl -X POST "[endpoint-to-be-confirmed]" \\
     </section>
   </main>
   <div className="toast" role="status" aria-live="polite" hidden><p data-toast-message /><button type="button" aria-label={t("toastClose")}>×</button></div>
+  <NewsletterSubscribePrompt />
 </div>
   );
 };

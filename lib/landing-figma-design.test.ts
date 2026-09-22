@@ -30,7 +30,7 @@ describe("landing contracts", () => {
     expect(siteChromeLinksSource).not.toContain("/#pricing");
   });
 
-  it("ports prototype landing sections without the newsletter prompt", () => {
+  it("ports prototype landing sections and mounts the newsletter prompt as an Addition", () => {
     const landingHomeSource: string = readFileSync(
       join(process.cwd(), "app/(landing)/_components/landing-home.tsx"),
       "utf8"
@@ -42,7 +42,10 @@ describe("landing contracts", () => {
     expect(landingHomeSource).toContain("LandingTrackedLink");
     expect(landingHomeSource).not.toContain('className="footer"');
     expect(landingHomeSource).not.toContain("footer-wordmark");
-    expect(landingHomeSource).not.toContain("NewsletterSubscribePrompt");
+    expect(landingHomeSource).toContain(
+      'import { NewsletterSubscribePrompt } from "@app/(landing)/_components/newsletter-subscribe-prompt"'
+    );
+    expect(landingHomeSource).toContain("<NewsletterSubscribePrompt />");
     expect(landingHomeSource).not.toContain("SiteHeader");
     expect(landingHomeSource).not.toMatch(/['"]knowhere-language['"]/);
     expect(existsSync(join(process.cwd(), "public/assets/section-one-grid.svg"))).toBe(true);
@@ -70,6 +73,37 @@ describe("landing contracts", () => {
     expect(landingCss).not.toMatch(/(?:^|[,{}])\s*\.github-link\s*[,{]/);
     expect(landingCss).not.toMatch(/(?:^|[,{}])\s*\.section\s*\{/);
     expect(landingCss).not.toMatch(/(?:^|[,{}])\s*#top\.hero-b-layout\s*\{/);
+  });
+
+  it("keeps the mounted newsletter prompt on the Landing surface tokens", () => {
+    const promptSource: string = readFileSync(
+      join(process.cwd(), "app/(landing)/_components/newsletter-subscribe-prompt.tsx"),
+      "utf8"
+    );
+    const promptCss: string = readFileSync(
+      join(process.cwd(), "app/(landing)/_components/newsletter-subscribe-prompt.css"),
+      "utf8"
+    );
+
+    expect(promptSource).toContain(
+      'import "@app/(landing)/_components/newsletter-subscribe-prompt.css"'
+    );
+    expect(promptSource).toContain("NEWSLETTER_DISMISS_STORAGE_KEY");
+    expect(promptSource).toContain('aria-live="polite"');
+
+    // The prompt floats over Landing, so it reads the tokens `.landing-page` declares instead of
+    // carrying its own palette. A literal colour here would escape the brand ramp and the dark
+    // theme in landing.css, which is exactly what the old violet prompt did.
+    expect(promptCss).not.toMatch(/#[0-9a-f]{3,8}\b/i);
+    expect(promptCss).toContain("var(--control-surface)");
+    expect(promptCss).toContain("var(--control-border)");
+    expect(promptCss).toContain("var(--control-black-surface)");
+    expect(promptCss).toContain("var(--control-focus)");
+    expect(promptCss).toContain("var(--radius-card)");
+    expect(promptCss).toContain("var(--page-primary)");
+    expect(promptCss).toContain("var(--ink)");
+    expect(promptCss).toContain("var(--muted)");
+    expect(promptCss).toMatch(/\.newsletter-prompt-input:focus-visible\s*\{[^}]*outline:/);
   });
 
   it("renders the Landing footer from the shared site chrome", () => {

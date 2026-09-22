@@ -9,7 +9,6 @@ describe("Knowhere SDK code examples", () => {
     const files: readonly string[] = [
       "app/(dashboard)/usage/_components/usage-welcome-modal.tsx",
       "app/(landing)/_components/integrate-code-panel.tsx",
-      "app/_(landing)/_components/code-demo.tsx",
       "app/design-system/_components/generic-components-showcase.tsx",
     ];
 
