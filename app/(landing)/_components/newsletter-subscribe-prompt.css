@@ -1,0 +1,250 @@
+/*
+  Landing newsletter prompt.
+  Scoped to `.newsletter-prompt` and built only from the tokens `.landing-page`
+  already declares, so it inherits the Landing surface in both themes:
+  `--control-*` for the field and button, `--radius-*` for the corners, and
+  `--ink` / `--muted` / `--page-primary` for the type. Do not hard-code a
+  palette here; the dark ramp for these tokens lives in landing.css.
+*/
+
+.newsletter-prompt {
+  position: fixed;
+  z-index: 50;
+  inset: 12px 12px auto;
+  overflow: hidden;
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius-card);
+  background: var(--control-surface);
+  color: var(--ink);
+  box-shadow: 0 8px 30px var(--black-20);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+}
+
+/* The accent rule replaces the off-brand violet bar the prompt used to carry. */
+.newsletter-prompt::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: var(--page-primary);
+  content: "";
+}
+
+.newsletter-prompt-body {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+}
+
+.newsletter-prompt-icon {
+  display: flex;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius-compact);
+  background: color-mix(in srgb, var(--page-primary) 10%, transparent);
+  color: var(--page-primary);
+}
+
+.newsletter-prompt-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.newsletter-prompt-copy {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.newsletter-prompt-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.newsletter-prompt-eyebrow {
+  margin: 0;
+  color: var(--page-primary);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.newsletter-prompt-title {
+  margin: 4px 0 0;
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.newsletter-prompt-description {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.newsletter-prompt-close {
+  display: flex;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius-compact);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    background-color var(--control-motion-duration),
+    border-color var(--control-motion-duration),
+    color var(--control-motion-duration);
+}
+
+.newsletter-prompt-close svg {
+  width: 14px;
+  height: 14px;
+}
+
+.newsletter-prompt-close:hover {
+  border-color: var(--control-border-hover);
+  background: var(--control-surface-hover);
+  color: var(--ink);
+}
+
+.newsletter-prompt-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.newsletter-prompt-input,
+.newsletter-prompt-submit {
+  height: 44px;
+  box-sizing: border-box;
+  transition:
+    background-color var(--control-motion-duration),
+    border-color var(--control-motion-duration),
+    color var(--control-motion-duration);
+}
+
+.newsletter-prompt-input {
+  min-width: 0;
+  padding: 0 13px;
+  border: 1px solid var(--control-border);
+  border-radius: var(--radius-control);
+  background: var(--control-surface);
+  color: var(--control-ink);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.newsletter-prompt-input::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
+.newsletter-prompt-input:not(:disabled):hover {
+  border-color: var(--control-border-hover);
+}
+
+.newsletter-prompt-input:focus-visible {
+  border-color: var(--control-focus);
+  outline: 2px solid var(--control-focus);
+  outline-offset: 2px;
+}
+
+.newsletter-prompt-input:disabled {
+  background: var(--control-surface-hover);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.newsletter-prompt-submit {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px;
+  border: 1px solid var(--control-black-surface);
+  border-radius: 2px;
+  background: var(--control-black-surface);
+  color: var(--control-surface);
+  font-family: var(--mono);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.newsletter-prompt-submit svg {
+  width: 16px;
+  height: 16px;
+}
+
+.newsletter-prompt-submit:not(:disabled):hover {
+  border-color: var(--control-black-hover);
+  background: var(--control-black-hover);
+}
+
+.newsletter-prompt-submit:not(:disabled):active {
+  border-color: var(--control-black-pressed);
+  background: var(--control-black-pressed);
+  transform: translateY(1px);
+}
+
+.newsletter-prompt-submit:disabled {
+  border-color: var(--black-10);
+  background: var(--black-10);
+  color: var(--black-40);
+  cursor: not-allowed;
+}
+
+.newsletter-prompt-close:focus-visible,
+.newsletter-prompt-submit:focus-visible {
+  outline: 2px solid var(--control-focus);
+  outline-offset: 2px;
+}
+
+.newsletter-prompt-error {
+  margin: 8px 0 0;
+  color: var(--coral-signal-600);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+html[data-theme="dark"] .newsletter-prompt-error,
+.dark .newsletter-prompt-error {
+  color: var(--coral-signal-500);
+}
+
+@media (min-width: 768px) {
+  .newsletter-prompt {
+    inset: auto 24px 24px auto;
+    width: 448px;
+  }
+
+  .newsletter-prompt-body {
+    padding: 20px;
+  }
+
+  .newsletter-prompt-form {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}
