@@ -128,11 +128,11 @@ const MobileSidebarBrand = ({ onNavigate }: { onNavigate?: () => void }) => {
         src="/images/site-chrome/knowhere-mark.svg"
         alt=""
         aria-hidden
-        width={45}
+        width={37}
         height={42}
         priority
         unoptimized
-        className="h-[21px] w-[22.5px] shrink-0 object-contain opacity-80 dark:invert"
+        className="h-[21px] w-[18.5px] shrink-0 object-contain opacity-80 dark:invert"
       />
       <span className="font-[family-name:var(--font-brand)] text-base font-medium leading-[21px] text-[#083b3a] dark:text-[#f0f2e6]">
         Knowhere

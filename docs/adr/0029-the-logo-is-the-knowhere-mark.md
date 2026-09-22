@@ -1,3 +1,7 @@
+---
+status: superseded by ADR-0030
+---
+
 # The logo is the Knowhere mark, not the prototype's
 
 The site and the Dashboard carried the Design Prototype's stepped mark as the Knowhere logo. They carry the
