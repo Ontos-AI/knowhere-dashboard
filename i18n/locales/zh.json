@@ -905,7 +905,7 @@
         },
         "format": {
           "title": "多格式支持",
-          "description": "通过统一 API 处理 20+ 主流格式：PDF、DOCX、XLSX、PPT、HTML、图片等"
+          "description": "通过统一 API 处理 30+ 主流格式：PDF、DOCX、XLSX、PPTX、HTML、图片、音频、视频等"
         },
         "trace": {
           "title": "完整来源追踪",
@@ -923,7 +923,7 @@
       "transformSteps": {
         "input": {
           "title": "输入",
-          "description": "上传文档 (PDF、DOCX、XLSX 等)"
+          "description": "上传文档或录音 (PDF、DOCX、XLSX、MP3、MP4 等)"
         },
         "detection": {
           "title": "OCR 与检测",
@@ -1077,12 +1077,12 @@
       "sectionNo": "[ 能力 ]",
       "title": "专为纯文本无法捕捉的文档而构建。",
       "description": "在复杂文件格式中保留页面结构、视觉含义、公式与来源关系。",
-      "supportedIntro": "支持常见的文档、演示文稿、",
-      "supportedIntroLineTwo": "电子表格、图片与文本格式：",
-      "supportedList": "DOCX、PDF、JPG、PPTX、XLSX、CSV、PNG、MD、JSON 和 TXT。",
+      "supportedIntro": "支持常见的文档、演示文稿、电子表格、",
+      "supportedIntroLineTwo": "图片、文本、音频与视频格式：",
+      "supportedList": "PDF、DOCX、PPTX、XLSX、TSV、HEIC、HTML、MP3、MP4 等。",
       "orbitAria": "示意格式",
-      "comingSoonLineOne": "即将支持 EPUB、HTML、XML、MP4、",
-      "comingSoonLineTwo": "MP3 和 SKILL.md，",
+      "comingSoonLineOne": "即将支持 EPUB、XML、SRT/VTT 字幕",
+      "comingSoonLineTwo": "和 SKILL.md，",
       "comingSoon": "敬请期待。",
       "features": {
         "pageNative": {

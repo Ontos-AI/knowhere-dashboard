@@ -1681,15 +1681,15 @@ function initializeFormatGlobe(root, cleanups) {
       [0.22, 1.05, 1.16]
     ];
     const movingDashRingIndex = 2;
-    const formatLabels = ['.docx', '.pdf', '.jpg', '.pptx', '.xlsx', '.csv', '.png', '.md', '.json', '.txt'];
+    const formatLabels = ['.docx', '.pdf', '.jpg', '.pptx', '.xlsx', '.csv', '.mp4', '.md', '.mp3', '.txt'];
     const formatIconPaths = {
       '.csv': '/assets/file-icons/table.svg',
       '.docx': '/assets/file-icons/word.svg',
       '.jpg': '/assets/file-icons/image.svg',
-      '.json': '/assets/file-icons/json.svg',
       '.md': '/assets/file-icons/markdown.svg',
+      '.mp3': '/assets/file-icons/audio.svg',
+      '.mp4': '/assets/file-icons/video.svg',
       '.pdf': '/assets/file-icons/pdf.svg',
-      '.png': '/assets/file-icons/image.svg',
       '.pptx': '/assets/file-icons/powerpoint.svg',
       '.txt': '/assets/file-icons/document.svg',
       '.xlsx': '/assets/file-icons/table.svg'
