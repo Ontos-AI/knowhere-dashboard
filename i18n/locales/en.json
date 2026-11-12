@@ -905,7 +905,7 @@
         },
         "format": {
           "title": "Multi-format Support",
-          "description": "Process 20+ major file formats: PDF, DOCX, XLSX, PPT, HTML, Images, and more with unified API"
+          "description": "Process 30+ major file formats: PDF, DOCX, XLSX, PPTX, HTML, images, audio, video, and more with unified API"
         },
         "trace": {
           "title": "Full Provenance Tracing",
@@ -923,7 +923,7 @@
       "transformSteps": {
         "input": {
           "title": "Input",
-          "description": "Upload document (PDF, DOCX, XLSX, etc.)"
+          "description": "Upload a document or recording (PDF, DOCX, XLSX, MP3, MP4, etc.)"
         },
         "detection": {
           "title": "OCR & Detection",
@@ -1077,12 +1077,12 @@
       "sectionNo": "[ CAPABILITIES ]",
       "title": "Built for documents that plain text cannot capture.",
       "description": "Preserve page structure, visual meaning, formulas, and source relationships across complex file formats.",
-      "supportedIntro": "Works with common document, presentation,",
-      "supportedIntroLineTwo": "spreadsheet, image, and text formats:",
-      "supportedList": "DOCX, PDF, JPG, PPTX, XLSX, CSV, PNG, MD, JSON, and TXT.",
+      "supportedIntro": "Works with common document, presentation, spreadsheet,",
+      "supportedIntroLineTwo": "image, text, audio, and video formats:",
+      "supportedList": "PDF, DOCX, PPTX, XLSX, TSV, HEIC, HTML, MP3, MP4, and more.",
       "orbitAria": "Illustrative formats",
-      "comingSoonLineOne": "Support for EPUB, HTML, XML, MP4,",
-      "comingSoonLineTwo": "MP3, and SKILL.md is",
+      "comingSoonLineOne": "Support for EPUB, XML, SRT/VTT subtitles,",
+      "comingSoonLineTwo": "and SKILL.md is",
       "comingSoon": "coming soon.",
       "features": {
         "pageNative": {
