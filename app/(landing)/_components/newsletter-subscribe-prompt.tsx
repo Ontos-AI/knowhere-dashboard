@@ -1,7 +1,11 @@
 "use client";
 
 import "@app/(landing)/_components/newsletter-subscribe-prompt.css";
-import { NEWSLETTER_DISMISS_DURATION_MS, NEWSLETTER_DISMISS_STORAGE_KEY } from "@lib/newsletter";
+import {
+  NEWSLETTER_DISMISS_DURATION_MS,
+  NEWSLETTER_DISMISS_STORAGE_KEY,
+  NEWSLETTER_PROMPT_DELAY_MS,
+} from "@lib/newsletter";
 import { orpcClient } from "@lib/orpc/client";
 import { ArrowRight, Mail, X } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -97,10 +101,21 @@ export function NewsletterSubscribePrompt() {
   const [isVisible, setIsVisible] = useState(false);
   const [submissionState, setSubmissionState] = useState<SubmissionState>("idle");
 
+  // The prompt is an Addition on a Landing page that is still settling when it mounts, so it waits for the
+  // Hero and the sections to reach the screen first, then for NEWSLETTER_PROMPT_DELAY_MS. The dismissal is
+  // read again when the wait ends, so a prompt dismissed in another tab does not appear late on this one.
   useEffect(() => {
-    if (Date.now() >= getDismissedUntil()) {
-      setIsVisible(true);
+    if (Date.now() < getDismissedUntil()) {
+      return;
     }
+
+    const timer = window.setTimeout(() => {
+      if (Date.now() >= getDismissedUntil()) {
+        setIsVisible(true);
+      }
+    }, NEWSLETTER_PROMPT_DELAY_MS);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   useLayoutEffect(() => {

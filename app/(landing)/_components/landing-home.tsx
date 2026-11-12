@@ -371,8 +371,9 @@ export const LandingHome = () => {
                 <div className="format-orbit-shell format-orbit-shell--outer">
                   <div className="format-chips format-orbit-track">
                     <span className="format-orbit-item" style={{['--orbit-x' as string]: '100%', ['--orbit-y' as string]: '50%'}}><span className="format-orbit-counter"><button type="button" className="format-orbit-chip" data-format="documents">Markdown</button></span></span>
-                    <span className="format-orbit-item" style={{['--orbit-x' as string]: '25%', ['--orbit-y' as string]: '93.3%'}}><span className="format-orbit-counter"><button type="button" className="format-orbit-chip" data-format="visual">JPG / PNG</button></span></span>
-                    <span className="format-orbit-item" style={{['--orbit-x' as string]: '25%', ['--orbit-y' as string]: '6.7%'}}><span className="format-orbit-counter"><button type="button" className="format-orbit-chip" data-format="data">TXT / JSON</button></span></span>
+                    <span className="format-orbit-item" style={{['--orbit-x' as string]: '50%', ['--orbit-y' as string]: '100%'}}><span className="format-orbit-counter"><button type="button" className="format-orbit-chip" data-format="visual">JPG / PNG / HEIC</button></span></span>
+                    <span className="format-orbit-item" style={{['--orbit-x' as string]: '0%', ['--orbit-y' as string]: '50%'}}><span className="format-orbit-counter"><button type="button" className="format-orbit-chip" data-format="documents">TXT / HTML</button></span></span>
+                    <span className="format-orbit-item" style={{['--orbit-x' as string]: '50%', ['--orbit-y' as string]: '0%'}}><span className="format-orbit-counter"><button type="button" className="format-orbit-chip" data-format="media">MP3 / MP4</button></span></span>
                   </div>
                 </div>
               </div>

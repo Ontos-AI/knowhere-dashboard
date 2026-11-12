@@ -1,3 +1,7 @@
+---
+status: amended by ADR-0031
+---
+
 # Landing carries the newsletter prompt again, on Landing's own tokens
 
 ADR-0021 removed the subscribe prompt because the Design Prototype has none. The prompt is back, so that
