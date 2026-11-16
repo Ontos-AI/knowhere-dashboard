@@ -50,6 +50,43 @@
   padding-top: 0;
 }
 
+.kh-site-announcement {
+  --announcement-header-offset: calc(var(--header-height) + 1px);
+  position: relative;
+  z-index: 2;
+  /* The landing hero already reserves space for the fixed header. */
+  margin-block: var(--announcement-header-offset) calc(-1 * var(--announcement-header-offset));
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 14px;
+  padding: 5px 16px;
+  background: color-mix(in srgb, var(--chrome-primary) 14%, var(--chrome-paper));
+  border-block-end: 1px solid var(--chrome-line);
+  color: var(--chrome-ink);
+  font: 400 0.875rem / 1.5 var(--sans);
+  text-align: center;
+}
+
+.kh-site-announcement a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-block-size: 24px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.kh-site-announcement a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.kh-site-announcement + .landing-page #formats {
+  scroll-margin-block-start: calc(var(--header-height) + 8px);
+}
+
 .kh-site-header {
   position: fixed;
   inset: 0 0 auto;

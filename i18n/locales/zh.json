@@ -724,6 +724,10 @@
     "notFoundDescription": "它可能已下线，或链接已过期。"
   },
   "Landing": {
+    "audioAnnouncement": {
+      "message": "Knowhere 现已支持音频解析",
+      "viewFormats": "查看支持的格式"
+    },
     "header": {
       "nav": {
         "comparison": "对比",
