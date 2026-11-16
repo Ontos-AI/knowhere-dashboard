@@ -4,6 +4,7 @@ import { DashboardActionButton } from "@app/(dashboard)/_components/dashboard-ac
 import FileUploadFlow from "@components/features/jobs/file-upload-flow";
 import { Dialog, DialogContent } from "@components/ui/dialog";
 import { useQueryClient } from "@tanstack/react-query";
+import { getAllSupportedExtensions } from "@utils/file";
 import { Upload } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
@@ -29,7 +30,7 @@ export function UsageFileUpload({ className }: UsageFileUploadProps) {
         ref={inputRef}
         type="file"
         className="hidden"
-        accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg,.webp,.txt,.md,.csv"
+        accept={getAllSupportedExtensions().join(",")}
         onChange={(event) => {
           const file = event.target.files?.[0];
           event.target.value = "";

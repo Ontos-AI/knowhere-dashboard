@@ -106,6 +106,22 @@ describe("landing contracts", () => {
     expect(promptCss).toMatch(/\.newsletter-prompt-input:focus-visible\s*\{[^}]*outline:/);
   });
 
+  it("keeps the Landing newsletter prompt off the first paint", () => {
+    const promptSource: string = readFileSync(
+      join(process.cwd(), "app/(landing)/_components/newsletter-subscribe-prompt.tsx"),
+      "utf8"
+    );
+    const newsletterSource: string = readFileSync(join(process.cwd(), "lib/newsletter.ts"), "utf8");
+
+    // The prompt is an Addition on Landing, so it yields to the content: it stays unmounted for
+    // NEWSLETTER_PROMPT_DELAY_MS after the page has painted instead of arriving with the Hero.
+    expect(newsletterSource).toContain("NEWSLETTER_PROMPT_DELAY_MS = 10 * 1000");
+    expect(promptSource).toMatch(
+      /setTimeout\(\(\) => \{[\s\S]*setIsVisible\(true\)[\s\S]*\}, NEWSLETTER_PROMPT_DELAY_MS\)/
+    );
+    expect(promptSource).toContain("window.clearTimeout(timer)");
+  });
+
   it("renders the Landing footer from the shared site chrome", () => {
     const siteChromeSource: string = readFileSync(
       join(process.cwd(), "components/site-chrome/site-chrome.tsx"),

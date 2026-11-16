@@ -301,7 +301,7 @@ if (!(root instanceof Element)) return () => {};
     'Turn any document into RAG-ready chunks.': '将任意文档转化为可直接用于 RAG 的内容块。',
     'Grab a file below and experience Knowhere turn messy documents into clean & structured JSON.': '选择下方文件，体验 Knowhere 如何将杂乱文档转化为清晰、结构化的 JSON。',
     'Multi-format Support': '多格式支持',
-    'Process 20+ major file formats: PDF, DOCX, XLSX, PPT, HTML, Images, and more with unified API.': '通过统一 API 处理 PDF、DOCX、XLSX、PPT、HTML、图片等 20 多种主要文件格式。',
+    'Process 30+ major file formats: PDF, DOCX, XLSX, PPTX, HTML, images, audio, video, and more with unified API': '通过统一 API 处理 30+ 主流格式：PDF、DOCX、XLSX、PPTX、HTML、图片、音频、视频等',
     'Supports local deployment for enterprise long-tail needs: conflict detection, compliance auditing, risk identification, and more.': '支持本地部署，满足冲突检测、合规审计、风险识别等企业长尾需求。',
     'RESTful API with webhooks, comprehensive SDKs for all major languages, and detailed documentation.': '提供 RESTful API、Webhook、覆盖主流语言的完整 SDK 和详细文档。',
     'Connect Knowhere to your workflow with a simple API, webhooks, and MCP.': '通过简洁的 API、Webhook 和 MCP，将 Knowhere 接入你的工作流。',
@@ -311,7 +311,7 @@ if (!(root instanceof Element)) return () => {};
     'PROCESS': '处理流程', 'Watch Your Data Transform': '查看数据如何完成转化',
     'Our intelligent pipeline processes documents through multiple stages to deliver high-quality results.': '智能处理管线通过多个阶段解析文档，输出高质量结果。',
     'File Formats': '文件格式', 'Formula Accuracy': '公式准确率', 'RAG Top-K Boost': 'RAG Top-K 提升',
-    'Input': '输入', 'Upload document (PDF, DOCX, XLSX, etc.).': '上传文档（PDF、DOCX、XLSX 等）。', 'Document received': '文档已接收',
+    'Input': '输入', 'Upload a document or recording (PDF, DOCX, XLSX, MP3, MP4, etc.)': '上传文档或录音 (PDF、DOCX、XLSX、MP3、MP4 等)', 'Document received': '文档已接收',
     'OCR & Detection': 'OCR 与检测', 'Extract text, detect tables, formulas, images.': '提取文本，并检测表格、公式和图片。', 'Content detected': '内容已识别',
     'Structure Analysis': '结构分析', 'Analyze layout, relationships, hierarchies.': '分析版式、关系和层级。', 'Structure mapped': '结构已映射',
     'JSON Output': 'JSON 输出', 'Clean, structured data for AI consumption.': '输出供 AI 使用的清晰结构化数据。', 'Structured JSON ready': '结构化 JSON 已生成',
@@ -379,7 +379,7 @@ if (!(root instanceof Element)) return () => {};
     '>_Comparison': '>_对比', '>_Integration': '>_集成', '>_Pricing': '>_价格',
     '>_Enterprise': '>_企业版', '>_Faq': '>_常见问题',
     'Works with common file formats, including': '支持常见文件格式，包括',
-    'DOCX, PDF, JPG, PPTX, XLSX, CSV, PNG, MD, JSON, and TXT.': 'DOCX、PDF、JPG、PPTX、XLSX、CSV、PNG、MD、JSON 和 TXT。',
+    'PDF, DOCX, PPTX, XLSX, TSV, HEIC, HTML, MP3, MP4, and more.': 'PDF、DOCX、PPTX、XLSX、TSV、HEIC、HTML、MP3、MP4 等。',
     'Support for': '即将支持',
     'EPUB, HTML, XML, MP4, MP3, and skills.md': 'EPUB、HTML、XML、MP4、MP3 和 skills.md',
     'is coming soon.': '。',
@@ -426,10 +426,10 @@ if (!(root instanceof Element)) return () => {};
     'source regions': '个来源区域',
     'across': '涉及',
     'From ingestion to structured output, every step keeps the document connected to its original source.': '从接收文档到输出结构化结果，每一步都让内容与原始来源保持关联。',
-    'Works with common document, presentation,': '支持常见的文档、演示文稿、',
-    'spreadsheet, image, and text formats:': '电子表格、图片与文本格式：',
-    'Support for EPUB, HTML, XML, MP4,': '即将支持 EPUB、HTML、XML、MP4、',
-    'MP3, and SKILL.md is': 'MP3 和 SKILL.md，',
+    'Works with common document, presentation, spreadsheet,': '支持常见的文档、演示文稿、电子表格、',
+    'image, text, audio, and video formats:': '图片、文本、音频与视频格式：',
+    'Support for EPUB, XML, SRT/VTT subtitles,': '即将支持 EPUB、XML、SRT/VTT 字幕',
+    'and SKILL.md is': '和 SKILL.md，',
     'coming soon.': '敬请期待。',
     'Compare document understanding across structure, accuracy, and traceability.': '从结构、准确性与可追溯性维度对比文档理解能力。',
     'See how Knowhere and other document-processing tools compare across efficiency, accuracy, structure, and source tracing.': '比较 Knowhere 与其他文档处理工具在效率、准确性、结构和来源追溯方面的表现。',
@@ -2405,7 +2405,7 @@ syncPricingCalculator();
       [0.22, 1.05, 1.16]
     ];
     const movingDashRingIndex = 2;
-    const formatLabels = ['.docx', '.pdf', '.jpg', '.pptx', '.xlsx', '.csv', '.png', '.md', '.json', '.txt'];
+    const formatLabels = ['.docx', '.pdf', '.jpg', '.pptx', '.xlsx', '.csv', '.mp4', '.md', '.mp3', '.txt'];
     const colorToken = (property, fallback) => getComputedStyle(document.documentElement)
       .getPropertyValue(property).trim() || fallback;
     const formatLabelColors = [
