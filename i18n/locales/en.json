@@ -724,6 +724,10 @@
     "notFoundDescription": "It may have been unpublished or the link is out of date."
   },
   "Landing": {
+    "audioAnnouncement": {
+      "message": "Audio parsing is now available",
+      "viewFormats": "View supported formats"
+    },
     "header": {
       "nav": {
         "comparison": "Comparison",

@@ -69,6 +69,32 @@ test.describe("site 1:1 app geometry", () => {
     expect(styles?.display).toBe("grid");
   });
 
+  test("homepage announces audio parsing and links to supported formats", async ({ page }) => {
+    await page.goto("/");
+
+    const announcement = page.getByRole("link", { name: "View supported formats" });
+    await expect(page.getByText("Audio parsing is now available")).toBeInViewport();
+    await expect(announcement).toBeInViewport();
+    await announcement.focus();
+    await announcement.press("Enter");
+
+    await expect(page).toHaveURL(/#formats$/);
+    await expect(page.locator("#formats-title")).toBeInViewport();
+  });
+
+  test("the audio announcement fits the Chinese mobile homepage", async ({
+    page,
+    context,
+    baseURL,
+  }) => {
+    await page.setViewportSize({ width: 320, height: 720 });
+    await context.addCookies([{ name: "NEXT_LOCALE", value: "zh", url: baseURL }]);
+    await page.goto("/");
+
+    await expect(page.getByText("Knowhere 现已支持音频解析")).toBeInViewport({ ratio: 1 });
+    await expect(page.getByRole("link", { name: "查看支持的格式" })).toBeInViewport({ ratio: 1 });
+  });
+
   test("direct /pricing keeps the prototype FAQ shell", async ({ page }) => {
     await page.goto("/pricing");
     await assertPricingFaqGeometry(page);
