@@ -33,6 +33,11 @@ const nextConfig = {
         source: '/api/orpc/:path*',
         destination: '/api/orpc/:path*',
       },
+      // Keep blog-email cron handled by this app.
+      {
+        source: '/api/cron/:path*',
+        destination: '/api/cron/:path*',
+      },
       // Proxy remaining API routes to the configured backend API.
       {
         source: '/api/:path*',

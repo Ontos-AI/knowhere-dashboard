@@ -81,6 +81,28 @@ describe("env database pools", (): void => {
   });
 });
 
+describe("env blog email", () => {
+  it("leaves the cron secret and user database unset until configured", async () => {
+    const { env } = await loadEnv({
+      CRON_SECRET: undefined,
+      KNOWHERE_USER_DATABASE_URL: undefined,
+    });
+
+    expect(env.CRON_SECRET).toBeUndefined();
+    expect(env.KNOWHERE_USER_DATABASE_URL).toBeUndefined();
+  });
+
+  it("accepts the read-only user database URL", async () => {
+    const { env } = await loadEnv({
+      KNOWHERE_USER_DATABASE_URL: "postgresql+asyncpg://reader:secret@db.example.com:5432/knowhere",
+    });
+
+    expect(env.KNOWHERE_USER_DATABASE_URL).toBe(
+      "postgresql://reader:secret@db.example.com:5432/knowhere"
+    );
+  });
+});
+
 describe("env.WORDPRESS_SITE", () => {
   it("defaults to the public Knowhere WordPress.com site id", async () => {
     const { env } = await loadEnv({

@@ -1,5 +1,6 @@
 import { base } from "@server/context";
 import { apiKeysRouter } from "@server/routers/api-keys";
+import { blogEmailRouter } from "@server/routers/blog-email";
 import { creditsRouter } from "@server/routers/credits";
 import { jobsRouter } from "@server/routers/jobs";
 import { knowhereServiceJwtRouter } from "@server/routers/knowhere-service-jwt";
@@ -17,6 +18,7 @@ export const appRouter = base.router({
   credits: creditsRouter,
   subscriptions: subscriptionsRouter,
   newsletter: newsletterRouter,
+  blogEmail: blogEmailRouter,
   usage: usageRouter,
   jobs: jobsRouter,
   webhookSecrets: webhookSecretsRouter,
