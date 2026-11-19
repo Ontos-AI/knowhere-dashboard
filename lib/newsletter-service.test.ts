@@ -6,8 +6,17 @@ const dbMocks = vi.hoisted(() => {
   const updateWhere = vi.fn(async () => undefined);
   const updateSet = vi.fn(() => ({ where: updateWhere }));
   const update = vi.fn(() => ({ set: updateSet }));
-  const insertValues = vi.fn(async () => undefined);
+  const onConflictDoNothing = vi.fn(async () => undefined);
+  const insertValues = vi.fn(() => Object.assign(Promise.resolve(), { onConflictDoNothing }));
   const insert = vi.fn(() => ({ values: insertValues }));
+  const newsletterDeleteWhere = vi.fn(async () => undefined);
+  const newsletterDelete = vi.fn(() => ({ where: newsletterDeleteWhere }));
+  const sharedInsert = vi.fn(() => {
+    throw new Error("Newsletter storage must not use the shared dashboard database");
+  });
+  const sharedDelete = vi.fn(() => {
+    throw new Error("Newsletter storage must not use the shared dashboard database");
+  });
   const touchSharedDashboardDb = vi.fn(() => {
     throw new Error("Newsletter storage must not use the shared dashboard database");
   });
@@ -21,6 +30,7 @@ const dbMocks = vi.hoisted(() => {
       },
       update,
       insert,
+      delete: newsletterDelete,
     },
     sharedDashboardDb: {
       query: {
@@ -29,7 +39,8 @@ const dbMocks = vi.hoisted(() => {
         },
       },
       update: touchSharedDashboardDb,
-      insert: touchSharedDashboardDb,
+      insert: sharedInsert,
+      delete: sharedDelete,
     },
     findFirst,
     updateWhere,
@@ -37,6 +48,11 @@ const dbMocks = vi.hoisted(() => {
     update,
     insertValues,
     insert,
+    onConflictDoNothing,
+    newsletterDeleteWhere,
+    newsletterDelete,
+    sharedInsert,
+    sharedDelete,
     touchSharedDashboardDb,
   };
 });
@@ -79,7 +95,9 @@ beforeEach(() => {
   vi.clearAllMocks();
   dbMocks.findFirst.mockResolvedValue(null);
   dbMocks.updateWhere.mockResolvedValue(undefined);
-  dbMocks.insertValues.mockResolvedValue(undefined);
+  dbMocks.insertValues.mockImplementation(() =>
+    Object.assign(Promise.resolve(), { onConflictDoNothing: dbMocks.onConflictDoNothing })
+  );
   vi.spyOn(console, "log").mockImplementation(() => undefined);
 });
 
@@ -103,6 +121,8 @@ describe("newsletter service database routing", () => {
       })
     );
     expectSharedDashboardDbUntouched();
+    expect(dbMocks.sharedInsert).not.toHaveBeenCalled();
+    expect(dbMocks.sharedDelete).not.toHaveBeenCalled();
   });
 
   it("confirms subscription tokens in the newsletter database", async () => {
@@ -136,6 +156,9 @@ describe("newsletter service database routing", () => {
         unsubscribedAt: null,
       })
     );
+    expect(dbMocks.newsletterDelete).not.toHaveBeenCalled();
+    expect(dbMocks.sharedDelete).not.toHaveBeenCalled();
+    expect(dbMocks.sharedInsert).not.toHaveBeenCalled();
     expectSharedDashboardDbUntouched();
   });
 
@@ -153,6 +176,9 @@ describe("newsletter service database routing", () => {
         confirmationSentAt: null,
       })
     );
+    expect(dbMocks.insert).not.toHaveBeenCalled();
+    expect(dbMocks.sharedInsert).not.toHaveBeenCalled();
+    expect(dbMocks.sharedDelete).not.toHaveBeenCalled();
     expectSharedDashboardDbUntouched();
   });
 });

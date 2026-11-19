@@ -151,7 +151,7 @@ describe("wordpress client", () => {
       vi.stubEnv(key, value);
     }
 
-    const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
+    const fetchMock = vi.fn(async (input: RequestInfo | URL, _init?: RequestInit) => {
       const url = String(input);
       if (url.includes("/categories?")) {
         return new Response(
@@ -231,6 +231,11 @@ describe("wordpress client", () => {
       true
     );
     expect(urls.every((url) => url.includes("knowheretoai.wordpress.com"))).toBe(true);
+    const inits = fetchMock.mock.calls.map(
+      (call) => call[1] as { cache?: string; next?: { revalidate?: number } } | undefined
+    );
+    expect(inits.every((init) => init?.next?.revalidate === 90)).toBe(true);
+    expect(inits.every((init) => init?.cache !== "no-store")).toBe(true);
   });
 
   it("returns null for a published slug whose date path does not match", async () => {

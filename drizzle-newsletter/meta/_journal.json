@@ -8,6 +8,20 @@
       "when": 1783916177742,
       "tag": "0000_init_newsletter",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794905813205,
+      "tag": "0001_blog_email_ledger",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794928480830,
+      "tag": "0002_blog_email_manual_send",
+      "breakpoints": true
     }
   ]
 }

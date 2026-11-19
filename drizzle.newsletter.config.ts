@@ -9,4 +9,11 @@ export default {
   dbCredentials: {
     url: newsletterDatabaseUrl,
   },
-} satisfies Config;
+  // The growth Neon database already uses drizzle.__drizzle_migrations for its own
+  // tables. Newsletter migrations keep a separate journal so they cannot advance
+  // that watermark or replay onto those tables.
+  migrations: {
+    schema: "drizzle_newsletter",
+    table: "__drizzle_migrations",
+  },
+} satisfies Config

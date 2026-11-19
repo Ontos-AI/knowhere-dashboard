@@ -15,6 +15,15 @@ function normalizeOptionalUrl(value: unknown): unknown {
   return normalizeOptionalString(value);
 }
 
+function normalizePostgresUrl(value: unknown): unknown {
+  const normalized = normalizeOptionalString(value);
+  if (typeof normalized !== "string") {
+    return normalized;
+  }
+
+  return normalized.replace(/^postgresql\+asyncpg:\/\//, "postgresql://");
+}
+
 const POSITIVE_INTEGER: z.ZodCoercedNumber = z.coerce.number().int().positive();
 
 export const env = createEnv({
@@ -79,6 +88,16 @@ export const env = createEnv({
       normalizeOptionalString,
       z.string().default("knowheretoai.wordpress.com")
     ),
+    /**
+     * Vercel Cron sends this value as `Authorization: Bearer <CRON_SECRET>`
+     * when calling `/api/cron/blog-email`. Requests without it are rejected.
+     */
+    CRON_SECRET: z.preprocess(normalizeOptionalString, z.string().min(16).optional()),
+    /**
+     * Read-only connection to the Knowhere production database. Blog email
+     * selects verified users from `"user"` and never writes to this database.
+     */
+    KNOWHERE_USER_DATABASE_URL: z.preprocess(normalizePostgresUrl, z.url().optional()),
   },
   client: {
     NEXT_PUBLIC_API_URL: z.url(),
@@ -132,6 +151,8 @@ export const env = createEnv({
     HTTPS_PROXY: process.env.HTTPS_PROXY,
     HTTP_PROXY: process.env.HTTP_PROXY,
     WORDPRESS_SITE: process.env.WORDPRESS_SITE,
+    CRON_SECRET: process.env.CRON_SECRET,
+    KNOWHERE_USER_DATABASE_URL: process.env.KNOWHERE_USER_DATABASE_URL,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_AUTH_BASE_URL: process.env.NEXT_PUBLIC_AUTH_BASE_URL,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,

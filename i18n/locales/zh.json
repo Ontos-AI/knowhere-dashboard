@@ -1279,7 +1279,13 @@
     "unsubscribedDescription": "如果此邮箱已订阅，将不再收到 Knowhere Newsletter 邮件。",
     "unsubscribeSubmit": "取消订阅",
     "unsubscribing": "正在取消订阅...",
-    "unsubscribeError": "无法取消此邮箱的订阅，请重试。"
+    "unsubscribeError": "无法取消此邮箱的订阅，请重试。",
+    "blogUnsubscribingTitle": "正在取消博客邮件",
+    "blogUnsubscribingDescription": "请保持此页面打开，我们正在为这个地址取消 Knowhere 博客邮件。",
+    "blogUnsubscribedTitle": "已取消博客邮件",
+    "blogUnsubscribedDescription": "这个地址不会再收到 Knowhere 博客邮件。Newsletter 订阅保持不变。",
+    "blogUnsubscribeInvalidTitle": "退订链接无效",
+    "blogUnsubscribeInvalidDescription": "此链接已失效。"
   },
   "NotFound": {
     "metaTitle": "页面不存在 — Knowhere",

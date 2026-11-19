@@ -1279,7 +1279,13 @@
     "unsubscribedDescription": "If this email was subscribed, it will no longer receive Knowhere newsletter emails.",
     "unsubscribeSubmit": "Unsubscribe",
     "unsubscribing": "Unsubscribing...",
-    "unsubscribeError": "We could not unsubscribe this email. Please try again."
+    "unsubscribeError": "We could not unsubscribe this email. Please try again.",
+    "blogUnsubscribingTitle": "Unsubscribing from blog emails",
+    "blogUnsubscribingDescription": "Please keep this page open while we unsubscribe this address from Knowhere blog emails.",
+    "blogUnsubscribedTitle": "Blog emails unsubscribed",
+    "blogUnsubscribedDescription": "This address will no longer receive Knowhere blog emails. Newsletter subscription is unchanged.",
+    "blogUnsubscribeInvalidTitle": "Unsubscribe link is invalid",
+    "blogUnsubscribeInvalidDescription": "This link is no longer valid."
   },
   "NotFound": {
     "metaTitle": "Page not found — Knowhere",
