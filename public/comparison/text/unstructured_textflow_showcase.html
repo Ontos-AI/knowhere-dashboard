@@ -4,12 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Unstructured API PDF Text Flow</title>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7YRER1DBL6"></script>
   <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-7YRER1DBL6');
+    if (['knowhereto.ai', 'www.knowhereto.ai'].includes(window.location.hostname)) {
+      const measurementId = 'G-KD6HJW62TY';
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function gtag() { window.dataLayer.push(arguments); };
+      window.gtag('js', new Date());
+      window.gtag('config', measurementId);
+
+      const googleTagScript = document.createElement('script');
+      googleTagScript.async = true;
+      googleTagScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + measurementId;
+      document.head.appendChild(googleTagScript);
+    }
   </script>
   <style>
     body {
